@@ -1,0 +1,75 @@
+package com.example.walletapp.data
+
+import android.content.Context
+import androidx.compose.runtime.mutableStateListOf
+import java.util.UUID
+
+/**
+ * Single in-memory source of truth for transactions, shared between the
+ * SMS BroadcastReceiver, the SMS inbox re-scan, and the Compose dashboard.
+ *
+ * Also persists to disk (via [TransactionPersistence]) so transactions
+ * survive the app process being killed — call [attachContext] as early as
+ * possible from every entry point (MainActivity, SmsReceiver,
+ * SmsInboxScanner) since each may run in its own fresh process.
+ */
+object TransactionStore {
+    val transactions = mutableStateListOf<Transaction>()
+
+    private var appContext: Context? = null
+    private var loadedFromDisk = false
+
+    /** Call this from every entry point (Activity, BroadcastReceiver, etc.) before mutating the store. */
+    fun attachContext(context: Context) {
+        if (appContext == null) {
+            appContext = context.applicationContext
+        }
+        if (!loadedFromDisk) {
+            loadedFromDisk = true
+            appContext?.let { ctx ->
+                val loaded = TransactionPersistence.load(ctx)
+                if (loaded.isNotEmpty()) {
+                    transactions.clear()
+                    transactions.addAll(loaded)
+                }
+            }
+        }
+    }
+
+    private fun persist() {
+        appContext?.let { TransactionPersistence.save(it, transactions) }
+    }
+
+    fun addManual(transaction: Transaction) {
+        transactions.add(0, transaction)
+        persist()
+    }
+
+    fun update(transaction: Transaction) {
+        val index = transactions.indexOfFirst { it.id == transaction.id }
+        if (index >= 0) {
+            transactions[index] = transaction
+            persist()
+        }
+    }
+
+    fun remove(id: String) {
+        transactions.removeAll { it.id == id }
+        persist()
+    }
+
+    fun addFromBankSms(bankName: String, amount: Long, merchant: String?, type: TransactionType) {
+        transactions.add(
+            0,
+            Transaction(
+                id = UUID.randomUUID().toString(),
+                title = merchant?.takeIf { it.isNotBlank() } ?: bankName,
+                subtitle = if (merchant != null) bankName else "تراکنش بانکی",
+                amount = amount,
+                type = type,
+                iconKey = "بانک",
+            ),
+        )
+        persist()
+    }
+}
