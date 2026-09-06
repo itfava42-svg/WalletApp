@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,7 +29,7 @@ import com.example.walletapp.ui.theme.Primary
 import kotlinx.coroutines.launch
 
 // Soft pastel background colors for the tools grid, one per card, cycled if
-// there are more cards than colors — matches the reference design's playful
+// there are more cards than colors â€” matches the reference design's playful
 // but gentle palette rather than the app's bold primary accent colors.
 private val toolCardPalette = listOf(
     Color(0xFFDCEBFB), // soft blue
@@ -55,6 +55,8 @@ fun ToolsScreen(
     selectedNavIndex: Int,
     onNavSelect: (Int) -> Unit,
     onOpenSettingsList: () -> Unit,
+    onOpenReminder: () -> Unit,
+    onOpenLoanManagement: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -66,7 +68,9 @@ fun ToolsScreen(
     fun handleClick(action: ToolAction, title: String) {
         when (action) {
             ToolAction.OPEN_SETTINGS_LIST -> onOpenSettingsList()
-            else -> showMessage("$title — به‌زودی")
+            ToolAction.REMINDER -> onOpenReminder()
+            ToolAction.LOAN_MANAGEMENT -> onOpenLoanManagement()
+            else -> showMessage("$title")
         }
     }
 
@@ -84,7 +88,7 @@ fun ToolsScreen(
         ) {
             Spacer(Modifier.height(16.dp))
 
-            // Top quick-access row: پروفایل / اشتراک / شخصی‌سازی / تنظیمات
+            // Top quick-access row: ظ¾ط±ظˆظپط§غŒظ„ / ط§ط´طھط±ط§ع© / ط´ط®طµغŒâ€Œط³ط§ط²غŒ / طھظ†ط¸غŒظ…ط§طھ
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -107,7 +111,7 @@ fun ToolsScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("همه ابزارها", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
+                    Text("ظ‡ظ…ظ‡ ط§ط¨ط²ط§ط±ظ‡ط§", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
                     Spacer(Modifier.width(6.dp))
                     Icon(Icons.Filled.Apps, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(18.dp))
                 }
@@ -130,7 +134,7 @@ fun ToolsScreen(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 toolsGrid.forEachIndexed { index, item ->
-                    // "قیمت‌ها" spans the full width, like the reference design.
+                    // "ظ‚غŒظ…طھâ€Œظ‡ط§" spans the full width, like the reference design.
                     val fullWidth = item.action == ToolAction.PRICES
                     item(
                         span = { GridItemSpan(if (fullWidth) maxLineSpan else 1) },
@@ -214,3 +218,4 @@ private fun ToolGridCard(
         }
     }
 }
+

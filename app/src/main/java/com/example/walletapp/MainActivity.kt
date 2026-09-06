@@ -1,4 +1,4 @@
-package com.example.walletapp
+﻿package com.example.walletapp
 
 import android.Manifest
 import android.content.Intent
@@ -20,10 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import com.example.walletapp.data.TransactionStore
+import com.example.walletapp.data.LoanStore
 import com.example.walletapp.ui.screens.AddTransactionScreen
 import com.example.walletapp.ui.screens.BudgetScreen
 import com.example.walletapp.ui.screens.DashboardScreen
 import com.example.walletapp.ui.screens.SettingsListScreen
+import com.example.walletapp.ui.screens.ReminderScreen
+import com.example.walletapp.ui.screens.AddReminderScreen
+import com.example.walletapp.ui.screens.LoanManagementScreen
+import com.example.walletapp.data.Reminder
 import com.example.walletapp.ui.screens.ToolsScreen
 import com.example.walletapp.ui.theme.Background
 import com.example.walletapp.ui.theme.WalletAppTheme
@@ -34,6 +39,9 @@ private sealed class AppScreen {
     data object Tools : AppScreen()
     data object Budget : AppScreen()
     data object SettingsList : AppScreen()
+    data object Reminder : AppScreen()
+    data object AddReminder : AppScreen()
+    data object LoanManagement : AppScreen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -45,7 +53,7 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { _ ->
         // Regardless of the SMS permission result, also ask for the overlay
-        // ("display over other apps") permission — it can't be requested
+        // ("display over other apps") permission â€” it can't be requested
         // through a normal runtime dialog, only via a Settings screen.
         maybeRequestOverlayPermission()
     }
@@ -54,6 +62,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         TransactionStore.attachContext(applicationContext)
+        LoanStore.attachContext(applicationContext)
 
         setContent {
             // App content is Persian, so force RTL layout direction regardless
@@ -62,11 +71,12 @@ class MainActivity : ComponentActivity() {
                 WalletAppTheme {
                     Surface(modifier = Modifier.fillMaxSize(), color = Background) {
                         var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.Dashboard) }
+                        var selectedReminder by remember { mutableStateOf<Reminder?>(null) }
                         var selectedNavIndex by remember { mutableStateOf(0) }
 
                         fun onNavSelect(index: Int) {
                             selectedNavIndex = index
-                            // Only "داشبورد" (0), "ابزارها" (4), and "بودجه" (5)
+                            // Only "ط¯ط§ط´ط¨ظˆط±ط¯" (0), "ط§ط¨ط²ط§ط±ظ‡ط§" (4), and "ط¨ظˆط¯ط¬ظ‡" (5)
                             // have a real destination so far; other tabs just
                             // update the selected indicator and land back on
                             // the dashboard.
@@ -98,12 +108,46 @@ class MainActivity : ComponentActivity() {
                                 selectedNavIndex = selectedNavIndex,
                                 onNavSelect = ::onNavSelect,
                                 onOpenSettingsList = { currentScreen = AppScreen.SettingsList },
+                                onOpenReminder = { currentScreen = AppScreen.Reminder },
+                                onOpenLoanManagement = {
+                                    currentScreen = AppScreen.LoanManagement
+                                },
                             )
                             is AppScreen.Budget -> BudgetScreen(
                                 selectedNavIndex = selectedNavIndex,
                                 onNavSelect = ::onNavSelect,
                             )
+                            is AppScreen.Reminder -> ReminderScreen(
+                                onBack = { currentScreen = AppScreen.Tools },
+                                onAddReminder = {
+                                    selectedReminder = null
+                                    currentScreen = AppScreen.AddReminder
+                                },
+                                onEditReminder = { reminder ->
+                                    selectedReminder = reminder
+                                    currentScreen = AppScreen.AddReminder
+                                },
+                            )
+
+                            is AppScreen.AddReminder -> {
+                                AddReminderScreen(
+                                    existingReminder = selectedReminder,
+                                    onBack = {
+                                        selectedReminder = null
+                                        currentScreen = AppScreen.Reminder
+                                    },
+                                    onSaved = {
+                                        selectedReminder = null
+                                        currentScreen = AppScreen.Reminder
+                                    },
+                                )
+                            }
+
                             is AppScreen.SettingsList -> SettingsListScreen(
+                                onBack = { currentScreen = AppScreen.Tools },
+                            )
+
+                            is AppScreen.LoanManagement -> LoanManagementScreen(
                                 onBack = { currentScreen = AppScreen.Tools },
                             )
                         }
@@ -143,3 +187,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
