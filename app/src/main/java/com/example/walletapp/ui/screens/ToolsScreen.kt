@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -57,7 +57,8 @@ fun ToolsScreen(
     onOpenSettingsList: () -> Unit,
     onOpenReminder: () -> Unit,
     onOpenLoanManagement: () -> Unit,
-) {
+    onOpenCheckManagement: () -> Unit,
+    onOpenOperations: () -> Unit,) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -70,7 +71,8 @@ fun ToolsScreen(
             ToolAction.OPEN_SETTINGS_LIST -> onOpenSettingsList()
             ToolAction.REMINDER -> onOpenReminder()
             ToolAction.LOAN_MANAGEMENT -> onOpenLoanManagement()
-            else -> showMessage("$title")
+            ToolAction.CHECK_MANAGEMENT -> onOpenCheckManagement()
+                    ToolAction.OPERATIONS -> onOpenOperations()else -> showMessage("$title")
         }
     }
 
@@ -218,4 +220,5 @@ private fun ToolGridCard(
         }
     }
 }
+
 

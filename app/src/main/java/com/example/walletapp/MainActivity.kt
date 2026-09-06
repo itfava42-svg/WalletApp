@@ -1,4 +1,4 @@
-﻿package com.example.walletapp
+package com.example.walletapp
 
 import android.Manifest
 import android.content.Intent
@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.LoanStore
+import com.example.walletapp.data.CheckStore
 import com.example.walletapp.ui.screens.AddTransactionScreen
 import com.example.walletapp.ui.screens.BudgetScreen
 import com.example.walletapp.ui.screens.DashboardScreen
@@ -28,8 +29,10 @@ import com.example.walletapp.ui.screens.SettingsListScreen
 import com.example.walletapp.ui.screens.ReminderScreen
 import com.example.walletapp.ui.screens.AddReminderScreen
 import com.example.walletapp.ui.screens.LoanManagementScreen
+import com.example.walletapp.ui.screens.CheckManagementScreen
 import com.example.walletapp.data.Reminder
-import com.example.walletapp.ui.screens.ToolsScreen
+import com.example.walletapp.ui.screens.ToolsScreen
+import com.example.walletapp.ui.screens.OperationsScreen
 import com.example.walletapp.ui.theme.Background
 import com.example.walletapp.ui.theme.WalletAppTheme
 
@@ -37,11 +40,13 @@ private sealed class AppScreen {
     data object Dashboard : AppScreen()
     data object AddTransaction : AppScreen()
     data object Tools : AppScreen()
-    data object Budget : AppScreen()
+        data object Operations : AppScreen()
+data object Budget : AppScreen()
     data object SettingsList : AppScreen()
     data object Reminder : AppScreen()
     data object AddReminder : AppScreen()
     data object LoanManagement : AppScreen()
+    data object CheckManagement : AppScreen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -63,6 +68,7 @@ class MainActivity : ComponentActivity() {
 
         TransactionStore.attachContext(applicationContext)
         LoanStore.attachContext(applicationContext)
+        CheckStore.attachContext(applicationContext)
 
         setContent {
             // App content is Persian, so force RTL layout direction regardless
@@ -81,8 +87,8 @@ class MainActivity : ComponentActivity() {
                             // update the selected indicator and land back on
                             // the dashboard.
                             currentScreen = when (index) {
-                                4 -> AppScreen.Tools
-                                5 -> AppScreen.Budget
+        3 -> AppScreen.Tools
+        4 -> AppScreen.Budget
                                 else -> AppScreen.Dashboard
                             }
                         }
@@ -91,7 +97,7 @@ class MainActivity : ComponentActivity() {
                             is AppScreen.Dashboard -> DashboardScreen(
                                 onAddTransactionClick = { currentScreen = AppScreen.AddTransaction },
                                 onOpenBudgetClick = {
-                                    selectedNavIndex = 5
+                                    selectedNavIndex = 4
                                     currentScreen = AppScreen.Budget
                                 },
                                 selectedNavIndex = selectedNavIndex,
@@ -112,6 +118,10 @@ class MainActivity : ComponentActivity() {
                                 onOpenLoanManagement = {
                                     currentScreen = AppScreen.LoanManagement
                                 },
+                                onOpenCheckManagement = {
+                                    currentScreen = AppScreen.CheckManagement
+                                },
+            onOpenOperations = { currentScreen = AppScreen.Operations },
                             )
                             is AppScreen.Budget -> BudgetScreen(
                                 selectedNavIndex = selectedNavIndex,
@@ -143,11 +153,24 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
 
+        is AppScreen.Operations -> OperationsScreen(
+            onBack = { currentScreen = AppScreen.Tools },
+            onOpenCheckManagement = {
+                currentScreen = AppScreen.CheckManagement
+            },
+            onOpenLoanManagement = {
+                currentScreen = AppScreen.LoanManagement
+            },
+        )
                             is AppScreen.SettingsList -> SettingsListScreen(
                                 onBack = { currentScreen = AppScreen.Tools },
                             )
 
                             is AppScreen.LoanManagement -> LoanManagementScreen(
+                                onBack = { currentScreen = AppScreen.Tools },
+                            )
+
+                            is AppScreen.CheckManagement -> CheckManagementScreen(
                                 onBack = { currentScreen = AppScreen.Tools },
                             )
                         }
@@ -187,4 +210,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 

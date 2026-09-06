@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.WorkspacePremium
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class ToolAction {
@@ -30,7 +31,7 @@ enum class ToolAction {
     PERSONALIZATION, SECURITY, PROFILE, SUBSCRIPTION,
     // Main colorful tools grid
     SAVINGS, FINANCIAL_GOALS, DEBT_CREDIT, BILL_SPLIT, PRICES,
-    CHECK_MANAGEMENT, LOAN_MANAGEMENT, FINANCIAL_CALENDAR, REMINDER,
+    OPERATIONS, CHECK_MANAGEMENT, LOAN_MANAGEMENT, FINANCIAL_CALENDAR, REMINDER,
     // Opens the secondary "settings & more" list
     OPEN_SETTINGS_LIST,
     // Secondary "more settings" list (opened via the top ⚙ icon)
@@ -59,11 +60,10 @@ val toolsTopRow = listOf(
 val toolsGrid = listOf(
     ToolItem("پس‌انداز", "کیف پول، برداشتِ مستقیم و پس‌اندازِ خودکار", Icons.Filled.Savings, ToolAction.SAVINGS),
     ToolItem("اهداف مالی", "پس‌انداز هدفمند و پیگیری پیشرفت اهداف مالی", Icons.Filled.Flag, ToolAction.FINANCIAL_GOALS),
-    ToolItem("طلب و بدهی", "مدیریت طلب‌ها و بدهی‌های خود را به راحتی...", Icons.Filled.AttachMoney, ToolAction.DEBT_CREDIT),
-    ToolItem("دُنگ", "تقسیم هزینه‌های گروهی و محاسبه سهم هر نفر", Icons.Filled.Groups, ToolAction.BILL_SPLIT),
     ToolItem("قیمت‌ها", "قیمت لحظه‌ای طلا، سکه، ارز و...", Icons.Filled.TrendingUp, ToolAction.PRICES),
     ToolItem("مدیریت چک", "ثبت و پیگیری چک‌های دریافتی و پرداختی", Icons.Filled.FactCheck, ToolAction.CHECK_MANAGEMENT),
     ToolItem("مدیریت وام", "ثبت و پیگیری وام‌های دریافتی", Icons.Filled.AccountBalance, ToolAction.LOAN_MANAGEMENT),
+    ToolItem("عملیات", "مدیریت سایر عملیات مالی برنامه", Icons.Filled.SwapHoriz, ToolAction.OPERATIONS),
     ToolItem("تقویم مالی", "مشاهده دخل و خرج در یک نگاه", Icons.Filled.CalendarMonth, ToolAction.FINANCIAL_CALENDAR),
     ToolItem("یادآور", "یادآوری اقساط و پرداخت‌های مهم", Icons.Filled.Alarm, ToolAction.REMINDER),
 )
