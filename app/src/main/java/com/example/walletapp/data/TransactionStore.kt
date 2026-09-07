@@ -1,4 +1,4 @@
-package com.example.walletapp.data
+﻿package com.example.walletapp.data
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
@@ -9,7 +9,7 @@ import java.util.UUID
  * SMS BroadcastReceiver, the SMS inbox re-scan, and the Compose dashboard.
  *
  * Also persists to disk (via [TransactionPersistence]) so transactions
- * survive the app process being killed — call [attachContext] as early as
+ * survive the app process being killed â€” call [attachContext] as early as
  * possible from every entry point (MainActivity, SmsReceiver,
  * SmsInboxScanner) since each may run in its own fresh process.
  */
@@ -64,12 +64,14 @@ object TransactionStore {
             Transaction(
                 id = UUID.randomUUID().toString(),
                 title = merchant?.takeIf { it.isNotBlank() } ?: bankName,
-                subtitle = if (merchant != null) bankName else "تراکنش بانکی",
+                subtitle = if (merchant != null) bankName else "طھط±ط§ع©ظ†ط´ ط¨ط§ظ†ع©غŒ",
                 amount = amount,
                 type = type,
-                iconKey = "بانک",
+                requiresCompletion = true,
+                iconKey = "ط¨ط§ظ†ع©",
             ),
         )
         persist()
     }
 }
+
