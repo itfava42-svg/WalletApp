@@ -4,12 +4,6 @@ import android.content.Context
 import android.net.Uri
 import com.example.walletapp.data.TransactionStore
 
-/**
- * Scans the device SMS inbox inside a selected time range.
- *
- * Already processed SMS row IDs are persisted so the same SMS
- * cannot create duplicate transactions.
- */
 object SmsInboxScanner {
 
     private const val PREFS = "wallet_app_prefs"
@@ -18,10 +12,6 @@ object SmsInboxScanner {
     private val INBOX_URI: Uri =
         Uri.parse("content://sms/inbox")
 
-    /**
-     * Imports bank transactions from SMS messages between
-     * [fromMillis] (inclusive) and [toMillis] (exclusive).
-     */
     fun scanAndImport(
         context: Context,
         fromMillis: Long,
@@ -30,18 +20,19 @@ object SmsInboxScanner {
 
         TransactionStore.attachContext(context)
         SmsTransactionMetadataStore.attachContext(context)
+        SmsProcessedStore.attachContext(context)
 
         val prefs =
             context.getSharedPreferences(
                 PREFS,
-                Context.MODE_PRIVATE
+                Context.MODE_PRIVATE,
             )
 
         val processed =
             (
                 prefs.getStringSet(
                     KEY_PROCESSED_IDS,
-                    emptySet()
+                    emptySet(),
                 ) ?: emptySet()
             ).toMutableSet()
 
@@ -121,6 +112,23 @@ object SmsInboxScanner {
                     it.getString(bodyIdx)
                         ?: continue
 
+                /*
+                 * The live SmsReceiver and this scanner now share
+                 * the exact same fingerprint.
+                 */
+                val claimed =
+                    SmsProcessedStore.tryClaim(
+                        context = context,
+                        sender = address,
+                        body = body,
+                        smsDate = smsDate,
+                    )
+
+                if (!claimed) {
+                    processed.add(id)
+                    continue
+                }
+
                 val decision =
                     SmsDecisionEngine.decide(
                         context = context,
@@ -144,67 +152,70 @@ object SmsInboxScanner {
                     amount != null
                 ) {
 
-                    /*
-                     * Create the transaction and keep
-                     * the exact generated transaction ID.
-                     */
-                    val transaction =
-                        TransactionStore.addFromBankSms(
-                            bankName = parsed.bankName,
-                            amount = amount,
-                            merchant = parsed.merchant,
-                            type = parsed.type,
+                    try {
+
+                        val transaction =
+                            TransactionStore.addFromBankSms(
+                                bankName = parsed.bankName,
+                                amount = amount,
+                                merchant = parsed.merchant,
+                                type = parsed.type,
+                            )
+
+                        SmsTransactionMetadataStore.save(
+                            transactionId = transaction.id,
+                            sender = address,
+                            rawBody = body,
+                            smsDate = smsDate,
+                            originalBank = parsed.bankName,
                         )
 
-                    /*
-                     * Store SMS-specific metadata separately
-                     * from the Transaction model.
-                     */
-                    SmsTransactionMetadataStore.save(
-                        transactionId =
-                            transaction.id,
-                        sender = address,
-                        rawBody = body,
-                        smsDate = smsDate,
-                        originalBank =
-                            parsed.bankName,
-                    )
+                        addedCount++
 
-                    addedCount++
+                    } catch (error: Throwable) {
+
+                        SmsProcessedStore.release(
+                            context = context,
+                            sender = address,
+                            body = body,
+                            smsDate = smsDate,
+                        )
+
+                        throw error
+                    }
+                } else {
+
+                    /*
+                     * Parser did not recognize the SMS as a transaction.
+                     * Release it so future parser improvements can retry it.
+                     */
+                    SmsProcessedStore.release(
+                        context = context,
+                        sender = address,
+                        body = body,
+                        smsDate = smsDate,
+                    )
                 }
 
-                /*
-                 * Mark the SMS as processed even when it
-                 * isn't a bank transaction or has been ignored.
-                 *
-                 * This preserves the original duplicate-prevention
-                 * behavior.
-                 */
                 processed.add(id)
             }
         }
 
-        prefs.edit()
+        prefs
+            .edit()
             .putStringSet(
                 KEY_PROCESSED_IDS,
-                processed
+                processed,
             )
             .apply()
 
         if (addedCount > 0) {
-            SmsTransactionQueue.showNextIfNeeded(
-                context
-            )
+            SmsTransactionQueue.showNextIfNeeded(context)
         }
 
         return addedCount
     }
 
-    /**
-     * Backward-compatible scan method.
-     *
-     * Scans the last 30 days.
-     */
     fun scanAndImport(
         context: Context
     ): Int {

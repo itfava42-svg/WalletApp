@@ -26,6 +26,8 @@ import com.example.walletapp.ui.screens.AddTransactionScreen
 import com.example.walletapp.ui.screens.BudgetScreen
 import com.example.walletapp.ui.screens.DashboardScreen
 import com.example.walletapp.ui.screens.SettingsListScreen
+import com.example.walletapp.ui.screens.SmsLearningScreen
+import com.example.walletapp.ui.screens.ThemeBuilderScreen
 import com.example.walletapp.ui.screens.ReminderScreen
 import com.example.walletapp.ui.screens.AddReminderScreen
 import com.example.walletapp.ui.screens.LoanManagementScreen
@@ -45,6 +47,8 @@ private sealed class AppScreen {
         data object Operations : AppScreen()
 data object Budget : AppScreen()
     data object SettingsList : AppScreen()
+    data object SmsLearning : AppScreen()
+    data object ThemeBuilder : AppScreen()
     data object Reminder : AppScreen()
     data object AddReminder : AppScreen()
     data object LoanManagement : AppScreen()
@@ -170,6 +174,16 @@ class MainActivity : ComponentActivity() {
         )
                             is AppScreen.SettingsList -> SettingsListScreen(
                                 onBack = { currentScreen = AppScreen.Tools },
+                                onOpenThemeBuilder = { currentScreen = AppScreen.ThemeBuilder },
+        onOpenSmsLearning = {
+                                    currentScreen = AppScreen.SmsLearning
+                                },
+                            )
+
+                            is AppScreen.SmsLearning -> SmsLearningScreen(
+                                onBack = {
+                                    currentScreen = AppScreen.SettingsList
+                                },
                             )
 
                             is AppScreen.LoanManagement -> LoanManagementScreen(
@@ -216,6 +230,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
+
 
 
 

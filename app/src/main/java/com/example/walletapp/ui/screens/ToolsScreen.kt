@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,24 +28,27 @@ import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.Primary
 import kotlinx.coroutines.launch
 
-// Soft pastel background colors for the tools grid, one per card, cycled if
-// there are more cards than colors â€” matches the reference design's playful
-// but gentle palette rather than the app's bold primary accent colors.
 private val toolCardPalette = listOf(
-    Color(0xFFDCEBFB), // soft blue
-    Color(0xFFDBF3EA), // soft mint
-    Color(0xFFDFF3E3), // soft green
-    Color(0xFFE1F3E6), // soft green 2
-    Color(0xFFD9E9FB), // soft sky blue
-    Color(0xFFE7DEF6), // soft lavender
-    Color(0xFFF1E0F3), // soft pink-purple
-    Color(0xFFE3DFF6), // soft indigo
-    Color(0xFFFBEAD2), // soft peach
+    Color(0xFFDCEBFB),
+    Color(0xFFDBF3EA),
+    Color(0xFFDFF3E3),
+    Color(0xFFE1F3E6),
+    Color(0xFFD9E9FB),
+    Color(0xFFE7DEF6),
+    Color(0xFFF1E0F3),
+    Color(0xFFE3DFF6),
+    Color(0xFFFBEAD2),
 )
 
 private val toolIconPalette = listOf(
-    Color(0xFF3A7CC7), Color(0xFF2FA37E), Color(0xFF3FA85C), Color(0xFF3FA173),
-    Color(0xFF3A7CC7), Color(0xFF7C5CC4), Color(0xFFB2529C), Color(0xFF6B5CC4),
+    Color(0xFF3A7CC7),
+    Color(0xFF2FA37E),
+    Color(0xFF3FA85C),
+    Color(0xFF3FA173),
+    Color(0xFF3A7CC7),
+    Color(0xFF7C5CC4),
+    Color(0xFFB2529C),
+    Color(0xFF6B5CC4),
     Color(0xFFC48A2F),
 )
 
@@ -58,49 +61,104 @@ fun ToolsScreen(
     onOpenReminder: () -> Unit,
     onOpenLoanManagement: () -> Unit,
     onOpenCheckManagement: () -> Unit,
-    onOpenOperations: () -> Unit,) {
+    onOpenOperations: () -> Unit,
+) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     fun showMessage(text: String) {
-        scope.launch { snackbarHostState.showSnackbar(text) }
+        scope.launch {
+            snackbarHostState.showSnackbar(text)
+        }
     }
 
     fun handleClick(action: ToolAction, title: String) {
         when (action) {
-            ToolAction.OPEN_SETTINGS_LIST -> onOpenSettingsList()
-            ToolAction.REMINDER -> onOpenReminder()
-            ToolAction.LOAN_MANAGEMENT -> onOpenLoanManagement()
-            ToolAction.CHECK_MANAGEMENT -> onOpenCheckManagement()
-                    ToolAction.OPERATIONS -> onOpenOperations()else -> showMessage("$title")
+
+            ToolAction.OPEN_SETTINGS_LIST ->
+                onOpenSettingsList()
+
+            ToolAction.REMINDER ->
+                onOpenReminder()
+
+            ToolAction.LOAN_MANAGEMENT ->
+                onOpenLoanManagement()
+
+            ToolAction.CHECK_MANAGEMENT ->
+                onOpenCheckManagement()
+
+            ToolAction.OPERATIONS ->
+                onOpenOperations()
+
+            ToolAction.PROFILE ->
+                showMessage("صفحه پروفایل هنوز فعال نشده است.")
+
+            ToolAction.PERSONALIZATION ->
+                showMessage("شخصی‌سازی هنوز فعال نشده است.")
+
+            ToolAction.SUBSCRIPTION ->
+                showMessage("مدیریت اشتراک هنوز فعال نشده است.")
+
+            ToolAction.SAVINGS ->
+                showMessage("بخش پس‌انداز هنوز فعال نشده است.")
+
+            ToolAction.FINANCIAL_GOALS ->
+                showMessage("اهداف مالی هنوز فعال نشده است.")
+
+            ToolAction.PRICES ->
+                showMessage("بخش قیمت‌ها هنوز فعال نشده است.")
+
+            ToolAction.FINANCIAL_CALENDAR ->
+                showMessage("تقویم مالی هنوز فعال نشده است.")
+
+            else ->
+                showMessage(title)
         }
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
         bottomBar = {
-            DashboardBottomBar(items = appNavItems, selectedIndex = selectedNavIndex, onSelect = onNavSelect)
+            DashboardBottomBar(
+                items = appNavItems,
+                selectedIndex = selectedNavIndex,
+                onSelect = onNavSelect
+            )
         },
     ) { innerPadding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp),
         ) {
+
             Spacer(Modifier.height(16.dp))
 
-            // Top quick-access row: ظ¾ط±ظˆظپط§غŒظ„ / ط§ط´طھط±ط§ع© / ط´ط®طµغŒâ€Œط³ط§ط²غŒ / طھظ†ط¸غŒظ…ط§طھ
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
+
                 toolsTopRow.forEachIndexed { index, item ->
+
                     TopIconButton(
                         item = item,
-                        background = toolCardPalette[index % toolCardPalette.size],
-                        tint = toolIconPalette[index % toolIconPalette.size],
-                        onClick = { handleClick(item.action, item.title) },
+                        background = toolCardPalette[
+                            index % toolCardPalette.size
+                        ],
+                        tint = toolIconPalette[
+                            index % toolIconPalette.size
+                        ],
+                        onClick = {
+                            handleClick(
+                                item.action,
+                                item.title
+                            )
+                        },
                     )
                 }
             }
@@ -112,11 +170,27 @@ fun ToolsScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("ظ‡ظ…ظ‡ ط§ط¨ط²ط§ط±ظ‡ط§", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        "ابزارها",
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+
                     Spacer(Modifier.width(6.dp))
-                    Icon(Icons.Filled.Apps, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(18.dp))
+
+                    Icon(
+                        Icons.Filled.Apps,
+                        contentDescription = null,
+                        tint = OnSurfaceVariant,
+                        modifier = Modifier.size(18.dp)
+                    )
                 }
+
                 Box(
                     modifier = Modifier
                         .width(3.dp)
@@ -135,17 +209,38 @@ fun ToolsScreen(
                 contentPadding = PaddingValues(bottom = 24.dp),
                 modifier = Modifier.fillMaxSize(),
             ) {
+
                 toolsGrid.forEachIndexed { index, item ->
-                    // "ظ‚غŒظ…طھâ€Œظ‡ط§" spans the full width, like the reference design.
-                    val fullWidth = item.action == ToolAction.PRICES
+
+                    val fullWidth =
+                        item.action == ToolAction.PRICES
+
                     item(
-                        span = { GridItemSpan(if (fullWidth) maxLineSpan else 1) },
+                        span = {
+                            GridItemSpan(
+                                if (fullWidth) {
+                                    maxLineSpan
+                                } else {
+                                    1
+                                }
+                            )
+                        },
                     ) {
+
                         ToolGridCard(
                             item = item,
-                            background = toolCardPalette[index % toolCardPalette.size],
-                            iconTint = toolIconPalette[index % toolIconPalette.size],
-                            onClick = { handleClick(item.action, item.title) },
+                            background = toolCardPalette[
+                                index % toolCardPalette.size
+                            ],
+                            iconTint = toolIconPalette[
+                                index % toolIconPalette.size
+                            ],
+                            onClick = {
+                                handleClick(
+                                    item.action,
+                                    item.title
+                                )
+                            },
                         )
                     }
                 }
@@ -161,19 +256,38 @@ private fun TopIconButton(
     tint: Color,
     onClick: () -> Unit,
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
         Surface(
             onClick = onClick,
             shape = RoundedCornerShape(18.dp),
             color = background,
             modifier = Modifier.size(64.dp),
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(item.icon, contentDescription = item.title, tint = tint, modifier = Modifier.size(26.dp))
+
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+
+                Icon(
+                    item.icon,
+                    contentDescription = item.title,
+                    tint = tint,
+                    modifier = Modifier.size(26.dp)
+                )
             }
         }
+
         Spacer(Modifier.height(6.dp))
-        Text(item.title, style = MaterialTheme.typography.labelMedium, color = OnSurface, fontWeight = FontWeight.Bold)
+
+        Text(
+            item.title,
+            style = MaterialTheme.typography.labelMedium,
+            color = OnSurface,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -193,7 +307,13 @@ private fun ToolGridCard(
             .fillMaxWidth()
             .height(132.dp),
     ) {
-        Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+
             Icon(
                 item.icon,
                 contentDescription = null,
@@ -202,14 +322,22 @@ private fun ToolGridCard(
                     .align(Alignment.TopEnd)
                     .size(28.dp),
             )
-            Column(modifier = Modifier.align(Alignment.BottomStart)) {
+
+            Column(
+                modifier = Modifier.align(
+                    Alignment.BottomStart
+                )
+            ) {
+
                 Text(
                     item.title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = OnSurface,
                 )
+
                 Spacer(Modifier.height(4.dp))
+
                 Text(
                     item.description,
                     style = MaterialTheme.typography.labelMedium,
@@ -220,5 +348,3 @@ private fun ToolGridCard(
         }
     }
 }
-
-

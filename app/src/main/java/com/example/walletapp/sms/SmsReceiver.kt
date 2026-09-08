@@ -15,63 +15,44 @@ class SmsReceiver : BroadcastReceiver() {
         context: Context,
         intent: Intent
     ) {
-        Log.d(
-            TAG,
-            "onReceive fired, action=${intent.action}"
-        )
+        Log.d(TAG, "onReceive fired, action=${intent.action}")
 
-        if (
-            intent.action !=
-                Telephony.Sms.Intents.SMS_RECEIVED_ACTION
-        ) {
+        if (intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
             return
         }
 
         val messages =
-            Telephony.Sms.Intents.getMessagesFromIntent(
-                intent
-            )
+            Telephony.Sms.Intents.getMessagesFromIntent(intent)
 
-        if (
-            messages == null ||
-            messages.isEmpty()
-        ) {
-            Log.d(
-                TAG,
-                "no messages in intent"
-            )
+        if (messages == null || messages.isEmpty()) {
+            Log.d(TAG, "no messages in intent")
             return
         }
 
-        // Keep the receiver alive while processing the SMS.
         val pendingResult = goAsync()
 
-        // This receiver may run in a fresh process,
-        // so persistence must be attached first.
         TransactionStore.attachContext(context)
-
-        // SMS-specific metadata is stored separately
-        // from the Transaction model.
-        SmsTransactionMetadataStore.attachContext(
-            context
-        )
+        SmsTransactionMetadataStore.attachContext(context)
+        SmsProcessedStore.attachContext(context)
 
         try {
+
             val sender =
-                messages
-                    .first()
-                    .originatingAddress
+                messages.first().originatingAddress
 
             val fullBody =
-                messages.joinToString(
-                    separator = ""
-                ) {
+                messages.joinToString(separator = "") {
                     it.messageBody ?: ""
                 }
 
+            val smsDate =
+                messages.maxOfOrNull {
+                    it.timestampMillis
+                } ?: System.currentTimeMillis()
+
             Log.d(
                 TAG,
-                "sender=$sender bodyLength=${fullBody.length}"
+                "sender=$sender bodyLength=${fullBody.length} smsDate=$smsDate"
             )
 
             Log.d(
@@ -79,146 +60,190 @@ class SmsReceiver : BroadcastReceiver() {
                 "body=$fullBody"
             )
 
-            // Central decision:
-            // ignore rules + learned corrections + parser.
-            val decision =
-                SmsDecisionEngine.decide(
+            /*
+             * IMPORTANT:
+             * Claim the SMS BEFORE creating a transaction.
+             *
+             * If Android delivers the same SMS again, or another
+             * import path sees it, it will be rejected here.
+             */
+            val claimed =
+                SmsProcessedStore.tryClaim(
                     context = context,
                     sender = sender,
                     body = fullBody,
+                    smsDate = smsDate,
                 )
 
-            if (decision.ignored) {
-                Log.d(
+            if (!claimed) {
+                Log.w(
                     TAG,
-                    "SMS ignored. " +
-                        "sender=$sender " +
-                        "pattern=${decision.matchedPattern}"
+                    "Duplicate SMS ignored. sender=$sender smsDate=$smsDate"
                 )
                 return
             }
 
-            val parsed = decision.parsed
+            try {
 
-            if (parsed == null) {
+                val decision =
+                    SmsDecisionEngine.decide(
+                        context = context,
+                        sender = sender,
+                        body = fullBody,
+                    )
+
+                if (decision.ignored) {
+                    Log.d(
+                        TAG,
+                        "SMS ignored. sender=$sender pattern=${decision.matchedPattern}"
+                    )
+                    return
+                }
+
+                val parsed =
+                    decision.parsed
+
+                if (parsed == null) {
+                    Log.d(
+                        TAG,
+                        "SMS was not recognized as a bank transaction"
+                    )
+
+                    /*
+                     * Release the claim because this SMS was not imported.
+                     * This allows a later improved parser/inbox scan to retry it.
+                     */
+                    SmsProcessedStore.release(
+                        context = context,
+                        sender = sender,
+                        body = fullBody,
+                        smsDate = smsDate,
+                    )
+
+                    return
+                }
+
                 Log.d(
                     TAG,
-                    "SMS was not recognized " +
-                        "as a bank transaction"
+                    "decision bank=${parsed.bankName} " +
+                        "amount=${parsed.amount} " +
+                        "merchant=${parsed.merchant} " +
+                        "type=${parsed.type} " +
+                        "learnedPattern=${decision.matchedPattern}"
                 )
-                return
-            }
 
-            Log.d(
-                TAG,
-                "decision bank=${parsed.bankName} " +
-                    "amount=${parsed.amount} " +
-                    "merchant=${parsed.merchant} " +
-                    "type=${parsed.type} " +
-                    "learnedPattern=${decision.matchedPattern}"
-            )
+                val amount =
+                    parsed.amount
 
-            val amount = parsed.amount
+                if (amount == null) {
+                    SmsProcessedStore.release(
+                        context = context,
+                        sender = sender,
+                        body = fullBody,
+                        smsDate = smsDate,
+                    )
 
-            if (amount == null) {
+                    Log.d(
+                        TAG,
+                        "amount is null, skipping store/popup"
+                    )
+
+                    return
+                }
+
+                val transaction =
+                    TransactionStore.addFromBankSms(
+                        bankName = parsed.bankName,
+                        amount = amount,
+                        merchant = parsed.merchant,
+                        type = parsed.type,
+                    )
+
+                SmsTransactionMetadataStore.save(
+                    transactionId = transaction.id,
+                    sender = sender ?: "",
+                    rawBody = fullBody,
+                    smsDate = smsDate,
+                    originalBank = parsed.bankName,
+                )
+
                 Log.d(
                     TAG,
-                    "amount is null, " +
-                        "skipping store/popup"
-                )
-                return
-            }
-
-            /*
-             * Create the transaction and keep the exact
-             * generated transaction ID.
-             */
-            val transaction =
-                TransactionStore.addFromBankSms(
-                    bankName = parsed.bankName,
-                    amount = amount,
-                    merchant = parsed.merchant,
-                    type = parsed.type,
+                    "transaction added and metadata saved. " +
+                        "transactionId=${transaction.id} " +
+                        "total count=${TransactionStore.transactions.size}"
                 )
 
-            /*
-             * Store SMS-specific metadata separately.
-             *
-             * This gives the completion screen access to:
-             * - sender
-             * - raw SMS body
-             * - SMS timestamp
-             * - detected bank
-             *
-             * without changing Transaction.kt.
-             */
-            SmsTransactionMetadataStore.save(
-                transactionId = transaction.id,
-                sender = sender ?: "",
-                rawBody = fullBody,
-                smsDate =
-                    messages
-                        .maxOfOrNull {
-                            it.timestampMillis
-                        }
-                        ?: System.currentTimeMillis(),
-                originalBank = parsed.bankName,
-            )
+                /*
+                 * Queue owns the completion flow.
+                 * Only one completion activity should be visible at a time.
+                 */
+                val completionScreenOpened =
+                    SmsTransactionQueue.showNextIfNeeded(
+                        context = context
+                    )
 
-            Log.d(
-                TAG,
-                "transaction added and metadata saved. " +
-                    "transactionId=${transaction.id} " +
-                    "total count=" +
-                    TransactionStore.transactions.size
-            )
+                if (completionScreenOpened) {
+                    return
+                }
 
-            /*
-             * A newly received bank SMS needs mandatory user completion.
-             * The queue opens the same activity used by inbox imports and
-             * keeps pending SMS transactions in order.
-             */
-            val completionScreenOpened =
-                SmsTransactionQueue.showNextIfNeeded(
-                    context = context
-                )
+                if (
+                    OverlayPopupManager.canShowOverlay(
+                        context
+                    )
+                ) {
 
-            if (completionScreenOpened) {
-                return
-            }
+                    Log.d(
+                        TAG,
+                        "showing overlay popup"
+                    )
 
-            if (
-                OverlayPopupManager.canShowOverlay(
-                    context
-                )
-            ) {
-                Log.d(
-                    TAG,
-                    "showing overlay popup"
-                )
+                    OverlayPopupManager.showTransactionPopup(
+                        context = context,
+                        bankName = parsed.bankName,
+                        amount = amount,
+                        merchant = parsed.merchant,
+                        type = parsed.type,
+                    )
 
-                OverlayPopupManager.showTransactionPopup(
+                } else {
+
+                    Log.d(
+                        TAG,
+                        "overlay permission not granted, " +
+                            "falling back to notification"
+                    )
+
+                    BankSmsNotifier.notify(
+                        context,
+                        parsed.bankName,
+                        amount,
+                        parsed.merchant,
+                        parsed.type,
+                    )
+                }
+
+            } catch (error: Throwable) {
+
+                /*
+                 * If importing failed after claiming, allow retry.
+                 */
+                SmsProcessedStore.release(
                     context = context,
-                    bankName = parsed.bankName,
-                    amount = amount,
-                    merchant = parsed.merchant,
-                    type = parsed.type,
-                )
-            } else {
-                Log.d(
-                    TAG,
-                    "overlay permission not granted, " +
-                        "falling back to notification"
+                    sender = sender,
+                    body = fullBody,
+                    smsDate = smsDate,
                 )
 
-                BankSmsNotifier.notify(
-                    context,
-                    parsed.bankName,
-                    amount,
-                    parsed.merchant,
-                    parsed.type,
+                Log.e(
+                    TAG,
+                    "SMS processing failed",
+                    error
                 )
+
+                throw error
             }
+
         } finally {
             pendingResult.finish()
         }

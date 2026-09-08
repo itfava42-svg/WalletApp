@@ -35,7 +35,11 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsListScreen(onBack: () -> Unit) {
+fun SettingsListScreen(
+    onBack: () -> Unit,
+    onOpenSmsLearning: () -> Unit,
+    onOpenThemeBuilder: () -> Unit,
+) {
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -54,6 +58,10 @@ fun SettingsListScreen(onBack: () -> Unit) {
     fun handleClick(item: ToolItem) {
 
         when (item.action) {
+
+            ToolAction.SMS_LEARNING -> {
+                onOpenSmsLearning()
+            }
 
             ToolAction.TRANSACTION_SYNC -> {
                 showSmsRangeDialog = true
@@ -959,3 +967,6 @@ private fun SettingsRow(
         }
     }
 }
+
+
+
