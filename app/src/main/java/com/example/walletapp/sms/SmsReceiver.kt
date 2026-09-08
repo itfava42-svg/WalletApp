@@ -173,6 +173,20 @@ class SmsReceiver : BroadcastReceiver() {
                     TransactionStore.transactions.size
             )
 
+            /*
+             * A newly received bank SMS needs mandatory user completion.
+             * The queue opens the same activity used by inbox imports and
+             * keeps pending SMS transactions in order.
+             */
+            val completionScreenOpened =
+                SmsTransactionQueue.showNextIfNeeded(
+                    context = context
+                )
+
+            if (completionScreenOpened) {
+                return
+            }
+
             if (
                 OverlayPopupManager.canShowOverlay(
                     context
