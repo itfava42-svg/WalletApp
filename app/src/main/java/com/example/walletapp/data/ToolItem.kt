@@ -45,6 +45,7 @@ enum class ToolAction {
     BANK_LIST,
     TRANSACTION_SYNC,
     SMS_LEARNING,
+    THEME_BUILDER,
     EXPORT,
     TRANSPARENCY,
     TERMS,
@@ -181,6 +182,13 @@ object SettingsMenu {
                     Icons.Filled.Settings,
                     ToolAction.SMS_LEARNING
                 ),
+
+                ToolItem(
+                    "🎨 تم‌ساز",
+                    "انتخاب رنگ و حالت نمایش برنامه",
+                    Icons.Filled.Tune,
+                    ToolAction.THEME_BUILDER
+                ),
             )
         ),
 
@@ -233,3 +241,4 @@ object SettingsMenu {
         )
     )
 }
+

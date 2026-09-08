@@ -186,6 +186,12 @@ class MainActivity : ComponentActivity() {
                                 },
                             )
 
+                            is AppScreen.ThemeBuilder -> ThemeBuilderScreen(
+                                onBack = {
+                                    currentScreen = AppScreen.SettingsList
+                                },
+                            )
+
                             is AppScreen.LoanManagement -> LoanManagementScreen(
                                 onBack = { currentScreen = AppScreen.Tools },
                             )
@@ -230,6 +236,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 
 

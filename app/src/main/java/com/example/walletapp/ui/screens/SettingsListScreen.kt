@@ -63,6 +63,10 @@ fun SettingsListScreen(
                 onOpenSmsLearning()
             }
 
+            ToolAction.THEME_BUILDER -> {
+                onOpenThemeBuilder()
+            }
+
             ToolAction.TRANSACTION_SYNC -> {
                 showSmsRangeDialog = true
             }
@@ -967,6 +971,7 @@ private fun SettingsRow(
         }
     }
 }
+
 
 
 
