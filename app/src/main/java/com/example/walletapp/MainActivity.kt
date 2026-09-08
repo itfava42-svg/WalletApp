@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +37,6 @@ import com.example.walletapp.data.Reminder
 import com.example.walletapp.ui.screens.ToolsScreen
 import com.example.walletapp.ui.screens.OperationsScreen
 import com.example.walletapp.ui.screens.AccountsScreen
-import com.example.walletapp.ui.theme.Background
 import com.example.walletapp.ui.theme.WalletAppTheme
 
 private sealed class AppScreen {
@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
             // of device locale.
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 WalletAppTheme {
-                    Surface(modifier = Modifier.fillMaxSize(), color = Background) {
+                    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                         var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.Dashboard) }
                         var selectedReminder by remember { mutableStateOf<Reminder?>(null) }
                         var selectedNavIndex by remember { mutableStateOf(0) }
@@ -236,6 +236,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 
 
