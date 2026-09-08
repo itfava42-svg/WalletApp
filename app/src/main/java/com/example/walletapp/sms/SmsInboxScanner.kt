@@ -15,7 +15,8 @@ object SmsInboxScanner {
     private const val PREFS = "wallet_app_prefs"
     private const val KEY_PROCESSED_IDS = "processed_sms_ids"
 
-    private val INBOX_URI: Uri = Uri.parse("content://sms/inbox")
+    private val INBOX_URI: Uri =
+        Uri.parse("content://sms/inbox")
 
     /**
      * Imports bank transactions from SMS messages between
@@ -28,6 +29,7 @@ object SmsInboxScanner {
     ): Int {
 
         TransactionStore.attachContext(context)
+        SmsTransactionMetadataStore.attachContext(context)
 
         val prefs =
             context.getSharedPreferences(
@@ -67,10 +69,17 @@ object SmsInboxScanner {
 
         cursor.use {
 
-            val idIdx = it.getColumnIndex("_id")
-            val addressIdx = it.getColumnIndex("address")
-            val bodyIdx = it.getColumnIndex("body")
-            val dateIdx = it.getColumnIndex("date")
+            val idIdx =
+                it.getColumnIndex("_id")
+
+            val addressIdx =
+                it.getColumnIndex("address")
+
+            val bodyIdx =
+                it.getColumnIndex("body")
+
+            val dateIdx =
+                it.getColumnIndex("date")
 
             if (
                 idIdx < 0 ||
@@ -97,7 +106,10 @@ object SmsInboxScanner {
                     }.getOrNull()
                         ?: continue
 
-                if (smsDate < fromMillis || smsDate >= toMillis) {
+                if (
+                    smsDate < fromMillis ||
+                    smsDate >= toMillis
+                ) {
                     continue
                 }
 
@@ -109,32 +121,64 @@ object SmsInboxScanner {
                     it.getString(bodyIdx)
                         ?: continue
 
-                val parsed =
-                    BankSmsParser.parse(
-                        address,
-                        body
+                val decision =
+                    SmsDecisionEngine.decide(
+                        context = context,
+                        sender = address,
+                        body = body,
                     )
 
-                val amount = parsed?.amount
+                if (decision.ignored) {
+                    processed.add(id)
+                    continue
+                }
+
+                val parsed =
+                    decision.parsed
+
+                val amount =
+                    parsed?.amount
 
                 if (
                     parsed != null &&
                     amount != null
                 ) {
-                    TransactionStore.addFromBankSms(
-                        bankName = parsed.bankName,
-                        amount = amount,
-                        merchant = parsed.merchant,
-                        type = parsed.type,
+
+                    /*
+                     * Create the transaction and keep
+                     * the exact generated transaction ID.
+                     */
+                    val transaction =
+                        TransactionStore.addFromBankSms(
+                            bankName = parsed.bankName,
+                            amount = amount,
+                            merchant = parsed.merchant,
+                            type = parsed.type,
+                        )
+
+                    /*
+                     * Store SMS-specific metadata separately
+                     * from the Transaction model.
+                     */
+                    SmsTransactionMetadataStore.save(
+                        transactionId =
+                            transaction.id,
+                        sender = address,
+                        rawBody = body,
+                        smsDate = smsDate,
+                        originalBank =
+                            parsed.bankName,
                     )
 
                     addedCount++
                 }
 
                 /*
-                 * Mark the SMS as processed even when it isn't
-                 * a bank transaction. This preserves the original
-                 * duplicate-prevention behavior.
+                 * Mark the SMS as processed even when it
+                 * isn't a bank transaction or has been ignored.
+                 *
+                 * This preserves the original duplicate-prevention
+                 * behavior.
                  */
                 processed.add(id)
             }
@@ -148,7 +192,9 @@ object SmsInboxScanner {
             .apply()
 
         if (addedCount > 0) {
-            SmsTransactionQueue.showNextIfNeeded(context)
+            SmsTransactionQueue.showNextIfNeeded(
+                context
+            )
         }
 
         return addedCount
@@ -159,12 +205,22 @@ object SmsInboxScanner {
      *
      * Scans the last 30 days.
      */
-    fun scanAndImport(context: Context): Int {
+    fun scanAndImport(
+        context: Context
+    ): Int {
 
-        val now = System.currentTimeMillis()
+        val now =
+            System.currentTimeMillis()
 
         val thirtyDaysAgo =
-            now - (30L * 24L * 60L * 60L * 1000L)
+            now -
+                (
+                    30L *
+                        24L *
+                        60L *
+                        60L *
+                        1000L
+                )
 
         return scanAndImport(
             context = context,
@@ -173,4 +229,3 @@ object SmsInboxScanner {
         )
     }
 }
-

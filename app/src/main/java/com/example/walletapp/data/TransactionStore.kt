@@ -9,25 +9,32 @@ import java.util.UUID
  * SMS BroadcastReceiver, the SMS inbox re-scan, and the Compose dashboard.
  *
  * Also persists to disk (via [TransactionPersistence]) so transactions
- * survive the app process being killed â€” call [attachContext] as early as
+ * survive the app process being killed - call [attachContext] as early as
  * possible from every entry point (MainActivity, SmsReceiver,
  * SmsInboxScanner) since each may run in its own fresh process.
  */
 object TransactionStore {
+
     val transactions = mutableStateListOf<Transaction>()
 
     private var appContext: Context? = null
     private var loadedFromDisk = false
 
-    /** Call this from every entry point (Activity, BroadcastReceiver, etc.) before mutating the store. */
+    /**
+     * Call this from every entry point (Activity, BroadcastReceiver, etc.)
+     * before mutating the store.
+     */
     fun attachContext(context: Context) {
         if (appContext == null) {
             appContext = context.applicationContext
         }
+
         if (!loadedFromDisk) {
             loadedFromDisk = true
+
             appContext?.let { ctx ->
                 val loaded = TransactionPersistence.load(ctx)
+
                 if (loaded.isNotEmpty()) {
                     transactions.clear()
                     transactions.addAll(loaded)
@@ -37,16 +44,29 @@ object TransactionStore {
     }
 
     private fun persist() {
-        appContext?.let { TransactionPersistence.save(it, transactions) }
+        appContext?.let {
+            TransactionPersistence.save(
+                it,
+                transactions
+            )
+        }
     }
 
     fun addManual(transaction: Transaction) {
-        transactions.add(0, transaction)
+        transactions.add(
+            0,
+            transaction
+        )
+
         persist()
     }
 
     fun update(transaction: Transaction) {
-        val index = transactions.indexOfFirst { it.id == transaction.id }
+        val index =
+            transactions.indexOfFirst {
+                it.id == transaction.id
+            }
+
         if (index >= 0) {
             transactions[index] = transaction
             persist()
@@ -54,24 +74,54 @@ object TransactionStore {
     }
 
     fun remove(id: String) {
-        transactions.removeAll { it.id == id }
+        transactions.removeAll {
+            it.id == id
+        }
+
         persist()
     }
 
-    fun addFromBankSms(bankName: String, amount: Long, merchant: String?, type: TransactionType) {
-        transactions.add(
-            0,
+    /**
+     * Creates a transaction from a bank SMS and returns the exact
+     * transaction that was created.
+     *
+     * Returning the transaction allows SMS-specific metadata to be
+     * linked to the generated transaction ID without changing the
+     * Transaction model itself.
+     */
+    fun addFromBankSms(
+        bankName: String,
+        amount: Long,
+        merchant: String?,
+        type: TransactionType,
+    ): Transaction {
+
+        val transaction =
             Transaction(
                 id = UUID.randomUUID().toString(),
-                title = merchant?.takeIf { it.isNotBlank() } ?: bankName,
-                subtitle = if (merchant != null) bankName else "طھط±ط§ع©ظ†ط´ ط¨ط§ظ†ع©غŒ",
+                title =
+                    merchant
+                        ?.takeIf { it.isNotBlank() }
+                        ?: bankName,
+                subtitle =
+                    if (merchant != null) {
+                        bankName
+                    } else {
+                        "تراکنش بانکی"
+                    },
                 amount = amount,
                 type = type,
                 requiresCompletion = true,
-                iconKey = "ط¨ط§ظ†ع©",
-            ),
+                iconKey = "بانک",
+            )
+
+        transactions.add(
+            0,
+            transaction
         )
+
         persist()
+
+        return transaction
     }
 }
-

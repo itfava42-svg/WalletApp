@@ -1,4 +1,4 @@
-package com.example.walletapp
+﻿package com.example.walletapp
 
 import android.Manifest
 import android.content.Intent
@@ -33,11 +33,13 @@ import com.example.walletapp.ui.screens.CheckManagementScreen
 import com.example.walletapp.data.Reminder
 import com.example.walletapp.ui.screens.ToolsScreen
 import com.example.walletapp.ui.screens.OperationsScreen
+import com.example.walletapp.ui.screens.AccountsScreen
 import com.example.walletapp.ui.theme.Background
 import com.example.walletapp.ui.theme.WalletAppTheme
 
 private sealed class AppScreen {
     data object Dashboard : AppScreen()
+    data object Accounts : AppScreen()
     data object AddTransaction : AppScreen()
     data object Tools : AppScreen()
         data object Operations : AppScreen()
@@ -58,7 +60,7 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { _ ->
         // Regardless of the SMS permission result, also ask for the overlay
-        // ("display over other apps") permission â€” it can't be requested
+        // ("display over other apps") permission أ¢â‚¬â€‌ it can't be requested
         // through a normal runtime dialog, only via a Settings screen.
         maybeRequestOverlayPermission()
     }
@@ -82,18 +84,22 @@ class MainActivity : ComponentActivity() {
 
                         fun onNavSelect(index: Int) {
                             selectedNavIndex = index
-                            // Only "ط¯ط§ط´ط¨ظˆط±ط¯" (0), "ط§ط¨ط²ط§ط±ظ‡ط§" (4), and "ط¨ظˆط¯ط¬ظ‡" (5)
-                            // have a real destination so far; other tabs just
-                            // update the selected indicator and land back on
-                            // the dashboard.
+
                             currentScreen = when (index) {
-        3 -> AppScreen.Tools
-        4 -> AppScreen.Budget
+                                0 -> AppScreen.Dashboard
+                                1 -> AppScreen.Accounts
+                                3 -> AppScreen.Tools
+                                4 -> AppScreen.Budget
                                 else -> AppScreen.Dashboard
                             }
                         }
 
                         when (currentScreen) {
+                            is AppScreen.Accounts -> AccountsScreen(
+                                selectedNavIndex = selectedNavIndex,
+                                onNavSelect = ::onNavSelect,
+                            )
+
                             is AppScreen.Dashboard -> DashboardScreen(
                                 onAddTransactionClick = { currentScreen = AppScreen.AddTransaction },
                                 onOpenBudgetClick = {
@@ -210,5 +216,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
+
 
 
