@@ -9,6 +9,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
@@ -16,18 +17,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 private const val PREFS_NAME = "wallet_theme_preferences"
-private const val KEY_THEME = "selected_theme"
-private const val KEY_MODE = "selected_mode"
 
 object WalletThemePreferences {
 
     private var initialized = false
 
-    var selectedTheme by mutableStateOf("default")
-        private set
-
     var selectedMode by mutableStateOf("system")
         private set
+
+    private val colorMap = mutableStateMapOf<String, Color>()
+
+    private val defaults = mapOf(
+        "pageBackground" to Color(0xFFF8F9FA),
+        "cardBackground" to Color(0xFFFFFFFF),
+        "primary" to Color(0xFF2E7D32),
+        "accent" to Color(0xFF66BB6A),
+        "primaryText" to Color(0xFF1A1A1A),
+        "secondaryText" to Color(0xFF666666),
+        "button" to Color(0xFF2E7D32),
+        "border" to Color(0xFFDDDDDD),
+    )
 
     fun initialize(context: Context) {
         if (initialized) return
@@ -37,25 +46,47 @@ object WalletThemePreferences {
             Context.MODE_PRIVATE
         )
 
-        selectedTheme = prefs.getString(KEY_THEME, "default") ?: "default"
-        selectedMode = prefs.getString(KEY_MODE, "system") ?: "system"
+        selectedMode =
+            prefs.getString("selected_mode", "system") ?: "system"
+
+        defaults.forEach { (key, defaultColor) ->
+            val saved = prefs.getString(key, null)
+
+            colorMap[key] =
+                if (saved != null) {
+                    parseColor(saved) ?: defaultColor
+                } else {
+                    defaultColor
+                }
+        }
 
         initialized = true
     }
 
-    fun setTheme(context: Context, theme: String) {
-        selectedTheme = theme
+    fun getColor(key: String): Color {
+        return colorMap[key] ?: defaults[key] ?: Color.White
+    }
+
+    fun setColor(
+        context: Context,
+        key: String,
+        color: Color,
+    ) {
+        colorMap[key] = color
 
         context.getSharedPreferences(
             PREFS_NAME,
             Context.MODE_PRIVATE
         )
             .edit()
-            .putString(KEY_THEME, theme)
+            .putString(key, color.toHex())
             .apply()
     }
 
-    fun setMode(context: Context, mode: String) {
+    fun setMode(
+        context: Context,
+        mode: String,
+    ) {
         selectedMode = mode
 
         context.getSharedPreferences(
@@ -63,126 +94,152 @@ object WalletThemePreferences {
             Context.MODE_PRIVATE
         )
             .edit()
-            .putString(KEY_MODE, mode)
+            .putString("selected_mode", mode)
             .apply()
+    }
+
+    fun resetColors(context: Context) {
+        defaults.forEach { (key, color) ->
+            colorMap[key] = color
+        }
+
+        val editor = context.getSharedPreferences(
+            PREFS_NAME,
+            Context.MODE_PRIVATE
+        ).edit()
+
+        defaults.forEach { (key, color) ->
+            editor.putString(key, color.toHex())
+        }
+
+        editor.apply()
+    }
+
+    private fun parseColor(value: String): Color? {
+        return try {
+            val hex = value.removePrefix("#")
+            val argb =
+                when (hex.length) {
+                    6 -> "FF$hex"
+                    8 -> hex
+                    else -> return null
+                }
+
+            Color(
+                android.graphics.Color.parseColor("#$argb")
+            )
+        } catch (_: Exception) {
+            null
+        }
     }
 }
 
-private val AppColorScheme = lightColorScheme(
-    primary = Primary,
-    onPrimary = OnPrimary,
-    primaryContainer = PrimaryContainer,
-    onPrimaryContainer = OnPrimaryContainer,
-    inversePrimary = InversePrimary,
+private fun Color.toHex(): String {
+    val r = (red * 255).toInt().coerceIn(0, 255)
+    val g = (green * 255).toInt().coerceIn(0, 255)
+    val b = (blue * 255).toInt().coerceIn(0, 255)
 
-    secondary = Secondary,
-    onSecondary = OnSecondary,
-    secondaryContainer = SecondaryContainer,
-    onSecondaryContainer = OnSecondaryContainer,
+    return "#%02X%02X%02X".format(r, g, b)
+}
 
-    tertiary = Tertiary,
-    onTertiary = OnTertiary,
-    tertiaryContainer = TertiaryContainer,
-    onTertiaryContainer = OnTertiaryContainer,
-
-    error = AppError,
-    onError = OnError,
-    errorContainer = ErrorContainer,
-    onErrorContainer = OnErrorContainer,
-
-    background = Background,
-    onBackground = OnBackground,
-
-    surface = Surface,
-    onSurface = OnSurface,
-    surfaceVariant = SurfaceVariant,
-    onSurfaceVariant = OnSurfaceVariant,
-
-    outline = Outline,
-    outlineVariant = OutlineVariant,
-
-    inverseSurface = InverseSurface,
-    inverseOnSurface = InverseOnSurface,
-
-    surfaceContainerLowest = SurfaceContainerLowest,
-    surfaceContainerLow = SurfaceContainerLow,
-    surfaceContainer = SurfaceContainer,
-    surfaceContainerHigh = SurfaceContainerHigh,
-    surfaceContainerHighest = SurfaceContainerHighest,
-)
-
-private fun themeColors(
-    theme: String,
+private fun createColorScheme(
     dark: Boolean,
 ): ColorScheme {
 
-    val base = if (dark) {
-        darkColorScheme(
-            error = AppError,
-            onError = OnError,
-            errorContainer = ErrorContainer,
-            onErrorContainer = OnErrorContainer,
-        )
-    } else {
-        AppColorScheme
-    }
+    val pageBackground =
+        WalletThemePreferences.getColor("pageBackground")
 
-    val colors = when (theme) {
+    val cardBackground =
+        WalletThemePreferences.getColor("cardBackground")
 
-        "blue" -> Triple(
-            Color(0xFF1565C0),
-            Color(0xFF42A5F5),
-            Color(0xFF0D47A1)
-        )
+    val primary =
+        WalletThemePreferences.getColor("primary")
 
-        "purple" -> Triple(
-            Color(0xFF6A1B9A),
-            Color(0xFFAB47BC),
-            Color(0xFF4A148C)
-        )
+    val accent =
+        WalletThemePreferences.getColor("accent")
 
-        "orange" -> Triple(
-            Color(0xFFEF6C00),
-            Color(0xFFFFA726),
-            Color(0xFFE65100)
-        )
+    val primaryText =
+        WalletThemePreferences.getColor("primaryText")
 
-        else -> Triple(
-            Color(0xFF2E7D32),
-            Color(0xFF66BB6A),
-            Color(0xFF1B5E20)
-        )
-    }
+    val secondaryText =
+        WalletThemePreferences.getColor("secondaryText")
 
-    val primary = colors.first
-    val secondary = colors.second
-    val tertiary = colors.third
+    val button =
+        WalletThemePreferences.getColor("button")
+
+    val border =
+        WalletThemePreferences.getColor("border")
 
     return if (dark) {
-        base.copy(
-            primary = primary,
-            secondary = secondary,
-            tertiary = tertiary,
-            primaryContainer = tertiary,
-            secondaryContainer = primary.copy(alpha = 0.55f),
-            tertiaryContainer = secondary.copy(alpha = 0.45f),
+
+        darkColorScheme(
+            primary = button,
+            onPrimary = Color.White,
+
+            primaryContainer = primary,
+            onPrimaryContainer = Color.White,
+
+            secondary = accent,
+            onSecondary = Color.White,
+
+            secondaryContainer = accent.copy(alpha = 0.25f),
+            onSecondaryContainer = Color.White,
+
+            tertiary = accent,
+            onTertiary = Color.White,
+
+            background = pageBackground,
+            onBackground = primaryText,
+
+            surface = cardBackground,
+            onSurface = primaryText,
+
+            surfaceVariant = cardBackground,
+            onSurfaceVariant = secondaryText,
+
+            outline = border,
+            outlineVariant = border,
+
+            error = Color(0xFFE53935),
+            onError = Color.White,
         )
+
     } else {
-        base.copy(
-            primary = primary,
-            secondary = secondary,
-            tertiary = tertiary,
+
+        lightColorScheme(
+            primary = button,
+            onPrimary = Color.White,
+
             primaryContainer = primary.copy(alpha = 0.14f),
-            onPrimaryContainer = tertiary,
-            secondaryContainer = secondary.copy(alpha = 0.14f),
-            onSecondaryContainer = tertiary,
-            tertiaryContainer = tertiary.copy(alpha = 0.12f),
-            onTertiaryContainer = tertiary,
+            onPrimaryContainer = primary,
+
+            secondary = accent,
+            onSecondary = Color.White,
+
+            secondaryContainer = accent.copy(alpha = 0.14f),
+            onSecondaryContainer = primary,
+
+            tertiary = accent,
+            onTertiary = Color.White,
+
+            background = pageBackground,
+            onBackground = primaryText,
+
+            surface = cardBackground,
+            onSurface = primaryText,
+
+            surfaceVariant = cardBackground,
+            onSurfaceVariant = secondaryText,
+
+            outline = border,
+            outlineVariant = border,
+
+            error = Color(0xFFD32F2F),
+            onError = Color.White,
         )
     }
 }
 
-// Corner radii from DESIGN.md ("rounded" tokens)
 val AppShapes = Shapes(
     extraSmall = RoundedCornerShape(4.dp),
     small = RoundedCornerShape(8.dp),
@@ -192,22 +249,22 @@ val AppShapes = Shapes(
 )
 
 @Composable
-fun WalletAppTheme(content: @Composable () -> Unit) {
-
+fun WalletAppTheme(
+    content: @Composable () -> Unit,
+) {
     val context = LocalContext.current
 
     WalletThemePreferences.initialize(context)
 
-    val darkTheme = when (WalletThemePreferences.selectedMode) {
-        "dark" -> true
-        "light" -> false
-        else -> androidx.compose.foundation.isSystemInDarkTheme()
-    }
+    val darkTheme =
+        when (WalletThemePreferences.selectedMode) {
+            "dark" -> true
+            "light" -> false
+            else -> androidx.compose.foundation.isSystemInDarkTheme()
+        }
 
-    val colorScheme = themeColors(
-        theme = WalletThemePreferences.selectedTheme,
-        dark = darkTheme,
-    )
+    val colorScheme =
+        createColorScheme(darkTheme)
 
     MaterialTheme(
         colorScheme = colorScheme,
