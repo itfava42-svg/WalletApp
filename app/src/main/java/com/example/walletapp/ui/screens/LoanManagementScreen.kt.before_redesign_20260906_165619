@@ -1,0 +1,744 @@
+﻿package com.example.walletapp.ui.screens
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import com.example.walletapp.data.JalaliCalendar
+import com.example.walletapp.data.LoanEntry
+import com.example.walletapp.data.LoanStore
+import com.example.walletapp.data.LoanType
+import com.example.walletapp.data.toPersianCurrency
+import com.example.walletapp.ui.theme.*
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoanManagementScreen(
+    onBack: () -> Unit,
+) {
+    var editingLoan by remember { mutableStateOf<LoanEntry?>(null) }
+    var showAddDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf<LoanEntry?>(null) }
+
+    val loans = LoanStore.loans
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "\u0645\u062f\u06cc\u0631\u06cc\u062a \u0648\u0627\u0645",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = "\u0628\u0627\u0632\u06af\u0634\u062a"
+                        )
+                    }
+                },
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    editingLoan = null
+                    showAddDialog = true
+                },
+                containerColor = Primary,
+                contentColor = OnPrimary,
+            ) {
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "\u0627\u0641\u0632\u0648\u062f\u0646 \u0648\u0627\u0645"
+                )
+            }
+        },
+    ) { innerPadding ->
+
+        if (loans.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    Icons.Filled.AccountBalance,
+                    contentDescription = null,
+                    tint = Primary,
+                    modifier = Modifier.size(56.dp),
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    "\u0647\u0646\u0648\u0632 \u0648\u0627\u0645\u06cc \u062b\u0628\u062a \u0646\u0634\u062f\u0647 \u0627\u0633\u062a",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    "\u0628\u0631\u0627\u06cc \u0634\u0631\u0648\u0639\u060c \u0627\u0632 \u062f\u06a9\u0645\u0647 \u067e\u0644\u0648\u0633 \u067e\u0627\u06cc\u06cc\u0646 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f.",
+                    color = OnSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+
+                Spacer(Modifier.height(20.dp))
+
+                Button(
+                    onClick = {
+                        editingLoan = null
+                        showAddDialog = true
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Primary
+                    ),
+                ) {
+                    Text("\u062b\u0628\u062a \u0627\u0648\u0644\u06cc\u0646 \u0648\u0627\u0645")
+                }
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 20.dp),
+                contentPadding = PaddingValues(
+                    top = 16.dp,
+                    bottom = 100.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(
+                    loans,
+                    key = { it.id }
+                ) { loan ->
+
+                    LoanCard(
+                        loan = loan,
+                        onEdit = {
+                            editingLoan = loan
+                            showAddDialog = true
+                        },
+                        onDelete = {
+                            showDeleteDialog = loan
+                        },
+                    )
+                }
+            }
+        }
+    }
+
+    if (showAddDialog) {
+        LoanEditorDialog(
+            existingLoan = editingLoan,
+            onDismiss = {
+                showAddDialog = false
+                editingLoan = null
+            },
+            onSave = { loan ->
+                if (editingLoan == null) {
+                    LoanStore.add(loan)
+                } else {
+                    LoanStore.update(loan)
+                }
+
+                showAddDialog = false
+                editingLoan = null
+            },
+        )
+    }
+
+    showDeleteDialog?.let { loan ->
+        AlertDialog(
+            onDismissRequest = {
+                showDeleteDialog = null
+            },
+            title = {
+                Text(
+                    "\u062d\u0630\u0641 \u0648\u0627\u0645",
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    "\u0622\u06cc\u0627 \u0627\u0632 \u062d\u0630\u0641 \u0648\u0627\u0645 \u00ab${loan.title}\u00bb \u0645\u0637\u0645\u0626\u0646 \u0647\u0633\u062a\u06cc\u062f\u061f"
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        LoanStore.remove(loan.id)
+                        showDeleteDialog = null
+                    }
+                ) {
+                    Text(
+                        "\u062d\u0630\u0641",
+                        color = AppError
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = null
+                    }
+                ) {
+                    Text("\u0627\u0646\u0635\u0631\u0627\u0641")
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun LoanCard(
+    loan: LoanEntry,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    val paidAmount = loan.payments.sumOf { it.amount }
+    val remainingAmount =
+        (loan.totalAmount - paidAmount).coerceAtLeast(0)
+
+    val paidInstallments = loan.payments.size
+    val remainingInstallments =
+        (loan.totalInstallments - paidInstallments).coerceAtLeast(0)
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = SurfaceContainerLowest,
+        tonalElevation = 1.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    Icons.Filled.AccountBalance,
+                    contentDescription = null,
+                    tint = Primary,
+                    modifier = Modifier.size(32.dp),
+                )
+
+                Spacer(Modifier.width(12.dp))
+
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        loan.title,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+
+                    Text(
+                        loan.type.label,
+                        color = OnSurfaceVariant,
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+
+                IconButton(onClick = onEdit) {
+                    Icon(
+                        Icons.Filled.Edit,
+                        contentDescription = "\u0648\u06cc\u0631\u0627\u06cc\u0634"
+                    )
+                }
+
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        Icons.Filled.Delete,
+                        contentDescription = "\u062d\u0630\u0641",
+                        tint = AppError,
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(14.dp))
+
+            HorizontalDivider()
+
+            Spacer(Modifier.height(12.dp))
+
+            LoanInfoRow(
+                "\u0645\u0628\u0644\u063a \u06a9\u0644 \u0648\u0627\u0645",
+                "${loan.totalAmount.toPersianCurrency()} \u062a\u0648\u0645\u0627\u0646"
+            )
+
+            LoanInfoRow(
+                "\u0645\u0628\u0644\u063a \u0647\u0631 \u0642\u0633\u0637",
+                "${loan.installmentAmount.toPersianCurrency()} \u062a\u0648\u0645\u0627\u0646"
+            )
+
+            LoanInfoRow(
+                "\u062a\u0639\u062f\u0627\u062f \u0642\u0633\u0637\u200c\u0647\u0627",
+                "${loan.totalInstallments}"
+            )
+
+            LoanInfoRow(
+                "\u0642\u0633\u0637 \u067e\u0631\u062f\u0627\u062e\u062a \u0634\u062f\u0647",
+                "$paidInstallments"
+            )
+
+            LoanInfoRow(
+                "\u0642\u0633\u0637 \u0628\u0627\u0642\u06cc\u200c\u0645\u0627\u0646\u062f\u0647",
+                "$remainingInstallments"
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                color = SurfaceContainerHigh,
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Text(
+                        "\u0645\u0628\u0644\u063a \u0628\u0627\u0642\u06cc\u200c\u0645\u0627\u0646\u062f\u0647",
+                        color = OnSurfaceVariant,
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+
+                    Text(
+                        "${remainingAmount.toPersianCurrency()} \u062a\u0648\u0645\u0627\u0646",
+                        fontWeight = FontWeight.Bold,
+                        color = Primary,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoanInfoRow(
+    label: String,
+    value: String,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 3.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            label,
+            color = OnSurfaceVariant,
+            style = MaterialTheme.typography.bodySmall,
+        )
+
+        Text(
+            value,
+            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.bodySmall,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LoanEditorDialog(
+    existingLoan: LoanEntry?,
+    onDismiss: () -> Unit,
+    onSave: (LoanEntry) -> Unit,
+) {
+    var title by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.title ?: "")
+    }
+
+    var selectedType by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.type ?: LoanType.PERSONAL)
+    }
+
+    var totalAmount by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.totalAmount?.toString() ?: "")
+    }
+
+    var interestRate by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.interestRatePercent?.toString() ?: "")
+    }
+
+    var installmentAmount by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.installmentAmount?.toString() ?: "")
+    }
+
+    var totalInstallments by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.totalInstallments?.toString() ?: "")
+    }
+
+    var intervalMonths by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.intervalMonths?.toString() ?: "1")
+    }
+
+    var startDate by remember(existingLoan?.id) {
+        mutableStateOf(
+            if (existingLoan != null) {
+                "${existingLoan.startYear}/${existingLoan.startMonth.toString().padStart(2, '0')}/${existingLoan.startDay.toString().padStart(2, '0')}"
+            } else {
+                JalaliCalendar.todaySlashed()
+            }
+        )
+    }
+
+    var guaranteeNote by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.guaranteeNote ?: "")
+    }
+
+    var reminderEnabled by remember(existingLoan?.id) {
+        mutableStateOf(existingLoan?.reminderEnabled ?: false)
+    }
+
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                if (existingLoan == null)
+                    "\u062b\u0628\u062a \u0648\u0627\u0645 \u062c\u062f\u06cc\u062f"
+                else
+                    "\u0648\u06cc\u0631\u0627\u06cc\u0634 \u0648\u0627\u0645",
+                fontWeight = FontWeight.Bold,
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 520.dp)
+            ) {
+                LazyColumn {
+                    item {
+                        OutlinedTextField(
+                            value = title,
+                            onValueChange = {
+                                title = it.take(80)
+                            },
+                            label = {
+                                Text("\u0639\u0646\u0648\u0627\u0646 \u0648\u0627\u0645")
+                            },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+
+                        Text(
+                            "\u0646\u0648\u0639 \u0648\u0627\u0645",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = OnSurfaceVariant,
+                        )
+
+                        Spacer(Modifier.height(6.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            LoanType.entries.take(3).forEach { type ->
+                                FilterChip(
+                                    selected = selectedType == type,
+                                    onClick = {
+                                        selectedType = type
+                                    },
+                                    label = {
+                                        Text(type.label)
+                                    },
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(6.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            LoanType.entries.drop(3).forEach { type ->
+                                FilterChip(
+                                    selected = selectedType == type,
+                                    onClick = {
+                                        selectedType = type
+                                    },
+                                    label = {
+                                        Text(type.label)
+                                    },
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = totalAmount,
+                            onValueChange = {
+                                totalAmount = it.filter(Char::isDigit).take(15)
+                            },
+                            label = {
+                                Text("\u0645\u0628\u0644\u063a \u06a9\u0644 \u0648\u0627\u0645")
+                            },
+                            suffix = {
+                                Text("\u062a\u0648\u0645\u0627\u0646")
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = installmentAmount,
+                            onValueChange = {
+                                installmentAmount =
+                                    it.filter(Char::isDigit).take(15)
+                            },
+                            label = {
+                                Text("\u0645\u0628\u0644\u063a \u0647\u0631 \u0642\u0633\u0637")
+                            },
+                            suffix = {
+                                Text("\u062a\u0648\u0645\u0627\u0646")
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            OutlinedTextField(
+                                value = totalInstallments,
+                                onValueChange = {
+                                    totalInstallments =
+                                        it.filter(Char::isDigit).take(4)
+                                },
+                                label = {
+                                    Text("\u062a\u0639\u062f\u0627\u062f \u0642\u0633\u0637")
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number
+                                ),
+                                singleLine = true,
+                                modifier = Modifier.weight(1f),
+                            )
+
+                            OutlinedTextField(
+                                value = intervalMonths,
+                                onValueChange = {
+                                    intervalMonths =
+                                        it.filter(Char::isDigit).take(2)
+                                },
+                                label = {
+                                    Text("\u0641\u0627\u0635\u0644\u0647 \u0645\u0627\u0647")
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number
+                                ),
+                                singleLine = true,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+
+                        Spacer(Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = interestRate,
+                            onValueChange = {
+                                interestRate =
+                                    it.filter {
+                                        it.isDigit() || it == '.'
+                                    }.take(6)
+                            },
+                            label = {
+                                Text("\u0646\u0631\u062e \u0633\u0648\u062f")
+                            },
+                            suffix = {
+                                Text("%")
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Decimal
+                            ),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = startDate,
+                            onValueChange = {
+                                startDate = it.take(10)
+                            },
+                            label = {
+                                Text("\u062a\u0627\u0631\u06cc\u062e \u0634\u0631\u0648\u0639")
+                            },
+                            placeholder = {
+                                Text("1405/01/01")
+                            },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = guaranteeNote,
+                            onValueChange = {
+                                guaranteeNote = it.take(300)
+                            },
+                            label = {
+                                Text("\u0636\u0645\u0627\u0646\u062a / \u062a\u0648\u0636\u06cc\u062d\u0627\u062a")
+                            },
+                            minLines = 2,
+                            maxLines = 3,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        Spacer(Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Checkbox(
+                                checked = reminderEnabled,
+                                onCheckedChange = {
+                                    reminderEnabled = it
+                                },
+                            )
+
+                            Text(
+                                "\u0641\u0639\u0627\u0644 \u06a9\u0631\u062f\u0646 \u06cc\u0627\u062f\u0622\u0648\u0631 \u0642\u0633\u0637",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+
+                        errorMessage?.let {
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                it,
+                                color = AppError,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val parsedTotal = totalAmount.toLongOrNull()
+                    val parsedInstallment = installmentAmount.toLongOrNull()
+                    val parsedCount = totalInstallments.toIntOrNull()
+                    val parsedInterval = intervalMonths.toIntOrNull()
+                    val parsedInterest = interestRate.toDoubleOrNull() ?: 0.0
+
+                    val dateParts = startDate
+                        .replace('-', '/')
+                        .split('/')
+
+                    val year = dateParts.getOrNull(0)?.toIntOrNull()
+                    val month = dateParts.getOrNull(1)?.toIntOrNull()
+                    val day = dateParts.getOrNull(2)?.toIntOrNull()
+
+                    when {
+                        title.isBlank() ->
+                            errorMessage =
+                                "\u0644\u0637\u0641\u0627\u064b \u0639\u0646\u0648\u0627\u0646 \u0648\u0627\u0645 \u0631\u0627 \u0648\u0627\u0631\u062f \u06a9\u0646\u06cc\u062f."
+
+                        parsedTotal == null || parsedTotal <= 0 ->
+                            errorMessage =
+                                "\u0645\u0628\u0644\u063a \u06a9\u0644 \u0648\u0627\u0645 \u0645\u0639\u062a\u0628\u0631 \u0646\u06cc\u0633\u062a."
+
+                        parsedInstallment == null || parsedInstallment <= 0 ->
+                            errorMessage =
+                                "\u0645\u0628\u0644\u063a \u0642\u0633\u0637 \u0645\u0639\u062a\u0628\u0631 \u0646\u06cc\u0633\u062a."
+
+                        parsedCount == null || parsedCount <= 0 ->
+                            errorMessage =
+                                "\u062a\u0639\u062f\u0627\u062f \u0642\u0633\u0637 \u0645\u0639\u062a\u0628\u0631 \u0646\u06cc\u0633\u062a."
+
+                        parsedInterval == null || parsedInterval <= 0 ->
+                            errorMessage =
+                                "\u0641\u0627\u0635\u0644\u0647 \u0642\u0633\u0637 \u0645\u0639\u062a\u0628\u0631 \u0646\u06cc\u0633\u062a."
+
+                        year == null || month == null || day == null ->
+                            errorMessage =
+                                "\u062a\u0627\u0631\u06cc\u062e \u0634\u0631\u0648\u0639 \u0631\u0627 \u0628\u0647 \u0635\u0648\u0631\u062a 1405/01/01 \u0648\u0627\u0631\u062f \u06a9\u0646\u06cc\u062f."
+
+                        else -> {
+                            onSave(
+                                LoanEntry(
+                                    id = existingLoan?.id
+                                        ?: java.util.UUID.randomUUID().toString(),
+                                    title = title.trim(),
+                                    type = selectedType,
+                                    totalAmount = parsedTotal,
+                                    interestRatePercent = parsedInterest,
+                                    installmentAmount = parsedInstallment,
+                                    totalInstallments = parsedCount,
+                                    intervalMonths = parsedInterval,
+                                    startYear = year,
+                                    startMonth = month,
+                                    startDay = day,
+                                    firstInstallmentYear =
+                                        existingLoan?.firstInstallmentYear,
+                                    firstInstallmentMonth =
+                                        existingLoan?.firstInstallmentMonth,
+                                    firstInstallmentDay =
+                                        existingLoan?.firstInstallmentDay,
+                                    guaranteeNote = guaranteeNote.trim(),
+                                    reminderEnabled = reminderEnabled,
+                                    payments = existingLoan?.payments ?: emptyList(),
+                                )
+                            )
+                        }
+                    }
+                }
+            ) {
+                Text("\u0630\u062e\u06cc\u0631\u0647")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("\u0627\u0646\u0635\u0631\u0627\u0641")
+            }
+        },
+    )
+}
