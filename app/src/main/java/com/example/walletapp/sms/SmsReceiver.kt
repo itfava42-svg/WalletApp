@@ -151,12 +151,20 @@ class SmsReceiver : BroadcastReceiver() {
                     return
                 }
 
+                val sourceId = SmsProcessedStore.sourceId(
+                    sender = sender ?: "",
+                    smsDate = smsDate,
+                    body = fullBody,
+                )
+
                 val transaction =
                     TransactionStore.addFromBankSms(
                         bankName = parsed.bankName,
                         amount = amount,
                         merchant = parsed.merchant,
                         type = parsed.type,
+                        smsDate = smsDate,
+                        sourceId = sourceId,
                     )
 
                 SmsTransactionMetadataStore.save(

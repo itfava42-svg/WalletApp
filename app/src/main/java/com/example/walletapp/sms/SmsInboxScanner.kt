@@ -154,12 +154,20 @@ object SmsInboxScanner {
 
                     try {
 
+                        val sourceId = SmsProcessedStore.sourceId(
+                            sender = address,
+                            smsDate = smsDate,
+                            body = body,
+                        )
+
                         val transaction =
                             TransactionStore.addFromBankSms(
                                 bankName = parsed.bankName,
                                 amount = amount,
                                 merchant = parsed.merchant,
                                 type = parsed.type,
+                                smsDate = smsDate,
+                                sourceId = sourceId,
                             )
 
                         SmsTransactionMetadataStore.save(

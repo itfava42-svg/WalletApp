@@ -170,24 +170,55 @@ object AccountStore {
         persist()
     }
 
-    fun delete(id: String) {
+    /**
+     * Deletes an account only when it has no transaction history.
+     *
+     * Historical transactions must never become orphaned silently.
+     *
+     * Returns true when the account was physically deleted.
+     * Returns false when the account does not exist or has linked transactions.
+     */
+    fun delete(id: String): Boolean {
 
-        val wasDefault = accounts
+        val account = accounts
             .firstOrNull { it.id == id }
-            ?.isDefault == true
+            ?: return false
+
+        val hasLinkedTransactions =
+            TransactionStore.transactions.any { transaction ->
+
+                transaction.accountId == id ||
+                    transaction.sourceAccountId == id ||
+                    transaction.destinationAccountId == id
+            }
+
+        if (hasLinkedTransactions) {
+            return false
+        }
+
+        val wasDefault = account.isDefault
 
         accounts.removeAll {
             it.id == id
         }
 
         if (wasDefault && accounts.isNotEmpty()) {
-            accounts[0] = accounts[0].copy(isDefault = true)
+            accounts[0] = accounts[0].copy(
+                isDefault = true
+            )
         }
 
         persist()
+
+        return true
     }
 
     fun setDefault(id: String) {
+
+        // Never remove the default state because of an invalid ID.
+        if (accounts.none { it.id == id }) {
+            return
+        }
 
         for (i in accounts.indices) {
             accounts[i] = accounts[i].copy(
@@ -198,4 +229,6 @@ object AccountStore {
         persist()
     }
 }
+
+
 

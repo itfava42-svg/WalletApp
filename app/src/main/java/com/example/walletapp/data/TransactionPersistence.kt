@@ -7,7 +7,7 @@ import org.json.JSONObject
 /**
  * Persists transactions to SharedPreferences as a JSON array, so they
  * survive the app process being killed (by the user, by Android's
- * low-memory killer, etc.) أ¢â‚¬â€‌ which happens routinely, especially for the
+ * low-memory killer, etc.) ط£آ¢أ¢â€ڑآ¬أ¢â‚¬â€Œ which happens routinely, especially for the
  * short-lived process Android spins up just to deliver an SMS broadcast.
  * Uses org.json (built into Android) rather than adding a new dependency.
  */
@@ -73,6 +73,17 @@ object TransactionPersistence {
                 obj.put("receiptUri", JSONObject.NULL)
             }
             obj.put("requiresCompletion", t.requiresCompletion)
+
+            // Sync metadata.
+            obj.put("createdAt", t.createdAt)
+            obj.put("updatedAt", t.updatedAt)
+            obj.put("source", t.source.name)
+            obj.put("syncStatus", t.syncStatus.name)
+        if (t.sourceId != null) {
+            obj.put("sourceId", t.sourceId)
+        } else {
+            obj.put("sourceId", JSONObject.NULL)
+        }
             array.put(obj)
         }
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -82,95 +93,206 @@ object TransactionPersistence {
     }
 
     fun load(context: Context): List<Transaction> {
-        val json = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getString(KEY_TRANSACTIONS, null) ?: return emptyList()
+        val json =
+            context
+                .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .getString(KEY_TRANSACTIONS, null)
+                ?: return emptyList()
 
         return runCatching {
+
             val array = JSONArray(json)
-            (0 until array.length()).map { i ->
-                val obj = array.getJSONObject(i)
-                Transaction(
-                    id = obj.getString("id"),
-                    title = obj.getString("title"),
-                    subtitle = obj.getString("subtitle"),
-                    amount = obj.getLong("amount"),
-                    type = TransactionType.valueOf(obj.getString("type")),
-                    iconKey = obj.getString("iconKey"),
-                    tags = obj.optJSONArray("tags")?.let { arr ->
-                        (0 until arr.length()).map { arr.getString(it) }
-                    } ?: emptyList(),
+            val result = mutableListOf<Transaction>()
 
-                    // Backward-compatible loading:
-                    // old transactions do not contain these fields.
-                    accountId =
-                        if (obj.has("accountId") && !obj.isNull("accountId")) {
-                            obj.optString("accountId").takeIf { it.isNotBlank() }
-                        } else {
-                            null
-                        },
+            for (i in 0 until array.length()) {
 
-                    category =
-                        if (obj.has("category") && !obj.isNull("category")) {
-                            obj.optString("category").takeIf { it.isNotBlank() }
-                        } else {
-                            null
-                        },
+                val transaction =
+                    runCatching {
 
-                    dateEpochMillis =
-                        if (obj.has("dateEpochMillis") && !obj.isNull("dateEpochMillis")) {
-                            obj.optLong("dateEpochMillis")
-                        } else {
-                            null
-                        },
+                        val obj = array.getJSONObject(i)
 
-                    note = obj.optString("note", ""),
-                    isRecurring = obj.optBoolean("isRecurring", false),
+                        Transaction(
+                            id = obj.getString("id"),
+                            title = obj.getString("title"),
+                            subtitle = obj.getString("subtitle"),
+                            amount = obj.getLong("amount"),
+                            type =
+                                TransactionType.valueOf(
+                                    obj.getString("type")
+                                ),
+                            iconKey = obj.getString("iconKey"),
 
-                    // Old transactions do not contain transfer fields.
-                    // Missing/invalid values safely fall back to NORMAL.
-                    kind =
-                        runCatching {
-                            TransactionKind.valueOf(
+                            tags =
+                                obj.optJSONArray("tags")
+                                    ?.let { arr ->
+                                        (0 until arr.length())
+                                            .map { index ->
+                                                arr.getString(index)
+                                            }
+                                    }
+                                    ?: emptyList(),
+
+                            accountId =
+                                if (
+                                    obj.has("accountId") &&
+                                    !obj.isNull("accountId")
+                                ) {
+                                    obj.optString("accountId")
+                                        .takeIf { it.isNotBlank() }
+                                } else {
+                                    null
+                                },
+
+                            category =
+                                if (
+                                    obj.has("category") &&
+                                    !obj.isNull("category")
+                                ) {
+                                    obj.optString("category")
+                                        .takeIf { it.isNotBlank() }
+                                } else {
+                                    null
+                                },
+
+                            dateEpochMillis =
+                                if (
+                                    obj.has("dateEpochMillis") &&
+                                    !obj.isNull("dateEpochMillis")
+                                ) {
+                                    obj.optLong("dateEpochMillis")
+                                } else {
+                                    null
+                                },
+
+                            note = obj.optString("note", ""),
+                            isRecurring =
+                                obj.optBoolean(
+                                    "isRecurring",
+                                    false
+                                ),
+
+                            kind =
+                                runCatching {
+                                    TransactionKind.valueOf(
+                                        obj.optString(
+                                            "kind",
+                                            TransactionKind.NORMAL.name
+                                        )
+                                    )
+                                }.getOrDefault(
+                                    TransactionKind.NORMAL
+                                ),
+
+                            sourceAccountId =
+                                if (
+                                    obj.has("sourceAccountId") &&
+                                    !obj.isNull("sourceAccountId")
+                                ) {
+                                    obj.optString("sourceAccountId")
+                                        .takeIf { it.isNotBlank() }
+                                } else {
+                                    null
+                                },
+
+                            destinationAccountId =
+                                if (
+                                    obj.has("destinationAccountId") &&
+                                    !obj.isNull("destinationAccountId")
+                                ) {
+                                    obj.optString("destinationAccountId")
+                                        .takeIf { it.isNotBlank() }
+                                } else {
+                                    null
+                                },
+
+                            description =
                                 obj.optString(
-                                    "kind",
-                                    TransactionKind.NORMAL.name
-                                )
-                            )
-                        }.getOrDefault(TransactionKind.NORMAL),
+                                    "description",
+                                    ""
+                                ),
 
-                    sourceAccountId =
-                        if (
-                            obj.has("sourceAccountId") &&
-                            !obj.isNull("sourceAccountId")
-                        ) {
-                            obj.optString("sourceAccountId")
-                                .takeIf { it.isNotBlank() }
-                        } else {
-                            null
-                        },
+                            receiptUri =
+                                if (
+                                    obj.has("receiptUri") &&
+                                    !obj.isNull("receiptUri")
+                                ) {
+                                    obj.getString("receiptUri")
+                                } else {
+                                    null
+                                },
 
-                    destinationAccountId =
-                        if (
-                            obj.has("destinationAccountId") &&
-                            !obj.isNull("destinationAccountId")
-                        ) {
-                            obj.optString("destinationAccountId")
-                                .takeIf { it.isNotBlank() }
-                        } else {
-                            null
-                        },
+                            requiresCompletion =
+                                obj.optBoolean(
+                                    "requiresCompletion",
+                                    false
+                                ),
 
-                    description = obj.optString("description", ""),
-                    receiptUri =
-                        if (obj.has("receiptUri") && !obj.isNull("receiptUri")) {
-                            obj.getString("receiptUri")
-                        } else {
-                            null
-                        },
-                    requiresCompletion = obj.optBoolean("requiresCompletion", false),
-                )
+                            // Sync metadata.
+                            // Backward-compatible migration for old transactions.
+                            createdAt =
+                                obj.optLong(
+                                    "createdAt",
+                                    obj.optLong(
+                                        "dateEpochMillis",
+                                        System.currentTimeMillis()
+                                    )
+                                ),
+
+                            updatedAt =
+                                obj.optLong(
+                                    "updatedAt",
+                                    obj.optLong(
+                                        "createdAt",
+                                        obj.optLong(
+                                            "dateEpochMillis",
+                                            System.currentTimeMillis()
+                                        )
+                                    )
+                                ),
+
+                            source =
+                                runCatching {
+                                    TransactionSource.valueOf(
+                                        obj.optString(
+                                            "source",
+                                            TransactionSource.LEGACY.name
+                                        )
+                                    )
+                                }.getOrDefault(
+                                    TransactionSource.LEGACY
+                                ),
+
+                            syncStatus =
+                                runCatching {
+                                    SyncStatus.valueOf(
+                                        obj.optString(
+                                            "syncStatus",
+                                            SyncStatus.LOCAL_ONLY.name
+                                        )
+                                    )
+                                }.getOrDefault(
+                                    SyncStatus.LOCAL_ONLY
+                                ),
+            sourceId =
+                obj.optString(
+                    "sourceId",
+                    ""
+                ).takeIf {
+                    it.isNotBlank()
+                },
+                        )
+                    }.getOrNull()
+
+                if (transaction != null) {
+                    result.add(transaction)
+                }
             }
+
+            result
+
         }.getOrDefault(emptyList())
     }
 }
+
+
 

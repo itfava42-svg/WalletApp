@@ -3,9 +3,9 @@
 enum class TransactionType { INCOME, EXPENSE }
 
 /**
- * iconKey is a stable string (a category label like "ط·آ®ط¸ث†ط·آ±ط·آ§ط¹آ©", or "ط·آ¨ط·آ§ط¸â€ ط¹آ©" for
+ * iconKey is a stable string (a category label like "ط·آ·ط¢آ®ط·آ¸ط«â€ ط·آ·ط¢آ±ط·آ·ط¢آ§ط·آ¹ط¢آ©", or "ط·آ·ط¢آ¨ط·آ·ط¢آ§ط·آ¸أ¢â‚¬آ ط·آ¹ط¢آ©" for
  * SMS-sourced transactions without a category) rather than an ImageVector
- * directly أ¢â‚¬â€‌ ImageVector isn't serializable, and Transaction needs to be
+ * directly ط£آ¢أ¢â€ڑآ¬أ¢â‚¬â€Œ ImageVector isn't serializable, and Transaction needs to be
  * persisted to disk. Resolve the actual icon at render time with
  * [resolveTransactionIcon].
  */
@@ -38,5 +38,18 @@ data class Transaction(
     val description: String = "",
     val receiptUri: String? = null,
     val requiresCompletion: Boolean = false,
+
+    // Sync metadata.
+    // Defaults preserve compatibility with existing constructors.
+    val createdAt: Long = 0L,
+    val updatedAt: Long = 0L,
+    val source: TransactionSource = TransactionSource.LEGACY,
+    val syncStatus: SyncStatus = SyncStatus.LOCAL_ONLY,
+
+    // Deterministic identity of the original source event.
+    // For SMS this will be the shared SMS fingerprint.
+    // Nullable for legacy/manual transactions.
+    val sourceId: String? = null,
 )
+
 

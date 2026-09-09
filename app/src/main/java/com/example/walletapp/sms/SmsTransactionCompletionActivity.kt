@@ -391,11 +391,32 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
 
         val resolvedAccountId =
             when {
+                selectedAccountId != null -> {
+
+                    val selectedAccount =
+                        AccountStore.accounts.firstOrNull {
+                            it.id == selectedAccountId &&
+                                it.isActive
+                        }
+
+                    if (
+                        selectedAccount == null ||
+                        selectedAccount.bankName.trim() != selectedBank.trim()
+                    ) {
+                        return
+                    }
+
+                    selectedAccount.id
+                }
+
                 matchingAccounts.size == 1 ->
                     matchingAccounts.first().id
 
-                else ->
-                    transaction.accountId
+                else -> {
+                    // Never finalize a bank SMS without a valid account.
+                    // When multiple accounts exist, the user must choose one.
+                    return
+                }
             }
 
         val updatedTransaction =
@@ -1856,6 +1877,7 @@ private fun SectionTitle(
         }
     }
 }
+
 
 
 

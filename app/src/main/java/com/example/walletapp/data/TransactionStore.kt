@@ -52,10 +52,61 @@ object TransactionStore {
         }
     }
 
+    /**
+     * Adds a manually created financial transaction.
+     *
+     * Normal transactions must belong to an active account.
+     *
+     * Internal transfers use addTransfer() and are validated
+     * separately through source/destination accounts.
+     *
+     * Pending bank SMS transactions remain outside this method.
+     */
     fun addManual(transaction: Transaction) {
+
+        if (transaction.kind == TransactionKind.NORMAL) {
+
+            val accountId =
+                transaction.accountId?.takeIf {
+                    it.isNotBlank()
+                }
+                    ?: throw IllegalArgumentException(
+                        "A normal transaction must have an account."
+                    )
+
+            AccountStore.accounts.firstOrNull {
+                it.id == accountId &&
+                    it.isActive
+            }
+                ?: throw IllegalArgumentException(
+                    "Transaction account does not exist or is inactive."
+                )
+        }
+
+        val now = System.currentTimeMillis()
+
+        val storedTransaction =
+            transaction.copy(
+                createdAt =
+                    transaction.createdAt.takeIf { it > 0L }
+                        ?: transaction.dateEpochMillis
+                        ?: now,
+                updatedAt =
+                    transaction.updatedAt.takeIf { it > 0L }
+                        ?: transaction.dateEpochMillis
+                        ?: now,
+                source = TransactionSource.MANUAL,
+                syncStatus =
+                    if (transaction.syncStatus == SyncStatus.SYNCED) {
+                        SyncStatus.SYNCED
+                    } else {
+                        SyncStatus.LOCAL_ONLY
+                    },
+            )
+
         transactions.add(
             0,
-            transaction
+            storedTransaction
         )
 
         persist()
@@ -143,31 +194,49 @@ object TransactionStore {
                     "Destination account does not exist or is inactive."
                 )
 
+        val now = System.currentTimeMillis()
+
         val transaction =
             Transaction(
                 id = UUID.randomUUID().toString(),
-                title = "انتقال بین حساب‌ها",
+                title = "ط·آ§ط¸â€ ط·ع¾ط¸â€ڑط·آ§ط¸â€‍ ط·آ¨ط؛إ’ط¸â€  ط·آ­ط·آ³ط·آ§ط·آ¨أ¢â‚¬إ’ط¸â€،ط·آ§",
                 subtitle =
-                    "${sourceAccount.name} → ${destinationAccount.name}",
+                    "${sourceAccount.name} أ¢â€ â€™ ${destinationAccount.name}",
                 amount = amount,
                 type = TransactionType.EXPENSE,
-                iconKey = "انتقال",
-                category = "انتقال داخلی",
-                dateEpochMillis = dateEpochMillis,
+                iconKey = "ط·آ§ط¸â€ ط·ع¾ط¸â€ڑط·آ§ط¸â€‍",
+                category = "ط·آ§ط¸â€ ط·ع¾ط¸â€ڑط·آ§ط¸â€‍ ط·آ¯ط·آ§ط·آ®ط¸â€‍ط؛إ’",
+                dateEpochMillis = dateEpochMillis ?: now,
                 note = note.trim(),
                 kind = TransactionKind.TRANSFER,
                 sourceAccountId = sourceAccountId,
                 destinationAccountId = destinationAccountId,
+                source = TransactionSource.TRANSFER,
+                syncStatus = SyncStatus.LOCAL_ONLY,
+            )
+
+
+        val storedTransaction =
+            transaction.copy(
+                createdAt = now,
+                updatedAt = now,
+                source = TransactionSource.TRANSFER,
+                syncStatus =
+                    if (transaction.syncStatus == SyncStatus.SYNCED) {
+                        SyncStatus.SYNCED
+                    } else {
+                        SyncStatus.LOCAL_ONLY
+                    },
             )
 
         transactions.add(
             0,
-            transaction
+            storedTransaction
         )
 
         persist()
 
-        return transaction
+        return storedTransaction
     }
     /**
      * Creates a transaction from a bank SMS and returns the exact
@@ -182,8 +251,11 @@ object TransactionStore {
         amount: Long,
         merchant: String?,
         type: TransactionType,
+    smsDate: Long? = null,
+    sourceId: String? = null,
     ): Transaction {
 
+        val now = System.currentTimeMillis()
         val transaction =
             Transaction(
                 id = UUID.randomUUID().toString(),
@@ -195,22 +267,42 @@ object TransactionStore {
                     if (merchant != null) {
                         bankName
                     } else {
-                        "تراکنش بانکی"
+                        "ط·ع¾ط·آ±ط·آ§ط¹آ©ط¸â€ ط·آ´ ط·آ¨ط·آ§ط¸â€ ط¹آ©ط؛إ’"
                     },
                 amount = amount,
                 type = type,
-                requiresCompletion = true,
-                iconKey = "بانک",
+                dateEpochMillis = smsDate ?: now,
+            requiresCompletion = true,
+                iconKey = "ط·آ¨ط·آ§ط¸â€ ط¹آ©",
+                sourceId = sourceId,
+                source = TransactionSource.SMS,
+                syncStatus = SyncStatus.LOCAL_ONLY,
+            )
+
+
+        val storedTransaction =
+            transaction.copy(
+                createdAt = now,
+                updatedAt = now,
+                source = TransactionSource.SMS,
+                syncStatus =
+                    if (transaction.syncStatus == SyncStatus.SYNCED) {
+                        SyncStatus.SYNCED
+                    } else {
+                        SyncStatus.LOCAL_ONLY
+                    },
             )
 
         transactions.add(
             0,
-            transaction
+            storedTransaction
         )
 
         persist()
 
-        return transaction
+        return storedTransaction
     }
 }
+
+
 

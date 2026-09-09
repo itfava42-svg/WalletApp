@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.AlertDialog
+import android.widget.Toast
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -82,6 +83,7 @@ fun AccountsScreen(
 
     var showAddDialog by remember { mutableStateOf(false) }
     var editingAccount by remember { mutableStateOf<Account?>(null) }
+    var accountPendingDelete by remember { mutableStateOf<Account?>(null) }
 
     val totalBalance = AccountLedger.totalBalance(
         accounts = accounts,
@@ -292,7 +294,7 @@ fun AccountsScreen(
                             editingAccount = account
                         },
                         onDelete = {
-                            AccountStore.delete(account.id)
+                            accountPendingDelete = account
                         },
                         onSetDefault = {
                             AccountStore.setDefault(account.id)
@@ -303,6 +305,56 @@ fun AccountsScreen(
         }
     }
 
+    accountPendingDelete?.let { account ->
+
+        AlertDialog(
+            onDismissRequest = {
+                accountPendingDelete = null
+            },
+            title = {
+                Text(
+                    "حذف حساب",
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    "آیا از حذف حساب «${account.name}» مطمئن هستید؟"
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+
+                        val deleted =
+                            AccountStore.delete(account.id)
+
+                        accountPendingDelete = null
+
+                        if (!deleted) {
+
+                            Toast.makeText(
+                                context,
+                                "این حساب دارای تراکنش است و برای حفظ تاریخچه مالی حذف نمی‌شود.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                ) {
+                    Text("حذف")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        accountPendingDelete = null
+                    }
+                ) {
+                    Text("انصراف")
+                }
+            }
+        )
+    }
     if (showAddDialog) {
 
         AccountDialog(
@@ -828,6 +880,7 @@ private fun formatAmount(
 
     return "%,d".format(amount)
 }
+
 
 
 

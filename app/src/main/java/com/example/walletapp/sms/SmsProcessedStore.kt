@@ -98,6 +98,28 @@ object SmsProcessedStore {
         persist()
     }
 
+    /**
+     * Returns the deterministic source identifier for an SMS.
+     *
+     * This intentionally reuses the exact same fingerprint algorithm
+     * already used by tryClaim()/release() for SMS duplicate protection.
+     *
+     * IMPORTANT:
+     * - Android SMS provider _id is NOT used.
+     * - Transaction.id is NOT used.
+     * - Existing duplicate protection is NOT changed.
+     */
+    fun sourceId(
+        sender: String,
+        smsDate: Long,
+        body: String,
+    ): String {
+        return fingerprint(
+            sender = sender,
+            smsDate = smsDate,
+            body = body,
+        )
+    }
     private fun fingerprint(
         sender: String?,
         body: String,
@@ -154,3 +176,4 @@ object SmsProcessedStore {
         persist()
     }
 }
+
