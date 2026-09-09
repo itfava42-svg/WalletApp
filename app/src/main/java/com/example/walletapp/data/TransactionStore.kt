@@ -82,6 +82,94 @@ object TransactionStore {
     }
 
     /**
+     * Registers one internal transfer between two active accounts.
+     *
+     * IMPORTANT:
+     * The transfer is stored as ONE Transaction.
+     *
+     * sourceAccountId:
+     *     Account from which money leaves.
+     *
+     * destinationAccountId:
+     *     Account that receives the money.
+     *
+     * TransactionKind.TRANSFER is the authoritative classification.
+     *
+     * AccountLedger calculates:
+     *
+     * source      -> -amount
+     * destination -> +amount
+     *
+     * This prevents an internal transfer from becoming two
+     * independent expense transactions.
+     */
+    fun addTransfer(
+        sourceAccountId: String,
+        destinationAccountId: String,
+        amount: Long,
+        dateEpochMillis: Long? = null,
+        note: String = "",
+    ): Transaction {
+
+        require(sourceAccountId.isNotBlank()) {
+            "Source account is required."
+        }
+
+        require(destinationAccountId.isNotBlank()) {
+            "Destination account is required."
+        }
+
+        require(sourceAccountId != destinationAccountId) {
+            "Source and destination accounts must be different."
+        }
+
+        require(amount > 0L) {
+            "Transfer amount must be greater than zero."
+        }
+
+        val sourceAccount =
+            AccountStore.accounts.firstOrNull {
+                it.id == sourceAccountId && it.isActive
+            }
+                ?: throw IllegalArgumentException(
+                    "Source account does not exist or is inactive."
+                )
+
+        val destinationAccount =
+            AccountStore.accounts.firstOrNull {
+                it.id == destinationAccountId && it.isActive
+            }
+                ?: throw IllegalArgumentException(
+                    "Destination account does not exist or is inactive."
+                )
+
+        val transaction =
+            Transaction(
+                id = UUID.randomUUID().toString(),
+                title = "انتقال بین حساب‌ها",
+                subtitle =
+                    "${sourceAccount.name} → ${destinationAccount.name}",
+                amount = amount,
+                type = TransactionType.EXPENSE,
+                iconKey = "انتقال",
+                category = "انتقال داخلی",
+                dateEpochMillis = dateEpochMillis,
+                note = note.trim(),
+                kind = TransactionKind.TRANSFER,
+                sourceAccountId = sourceAccountId,
+                destinationAccountId = destinationAccountId,
+            )
+
+        transactions.add(
+            0,
+            transaction
+        )
+
+        persist()
+
+        return transaction
+    }
+    /**
      * Creates a transaction from a bank SMS and returns the exact
      * transaction that was created.
      *
@@ -125,3 +213,4 @@ object TransactionStore {
         return transaction
     }
 }
+

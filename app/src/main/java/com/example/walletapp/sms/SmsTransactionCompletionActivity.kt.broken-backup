@@ -1,0 +1,598 @@
+﻿package com.example.walletapp.sms
+
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri`r`nimport androidx.compose.runtime.saveable.rememberSaveable`r`nimport android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Label
+import androidx.compose.material.icons.filled.ReceiptLong
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.walletapp.data.Transaction
+import com.example.walletapp.data.TransactionStore
+import com.example.walletapp.data.TransactionType
+import com.example.walletapp.data.toPersianCurrency
+import com.example.walletapp.ui.theme.AppTextStyles
+import com.example.walletapp.ui.theme.WalletAppTheme
+
+class SmsTransactionCompletionActivity : ComponentActivity() {
+
+    private val receiptPicker =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                runCatching {
+                    contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION,
+                    )
+                }
+                selectedReceiptUri = uri
+            }
+        }
+
+    private var selectedReceiptUri: Uri? = null
+
+    private var transactionId: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        transactionId = intent.getStringExtra(EXTRA_TRANSACTION_ID)
+
+        val id = transactionId
+        if (id.isNullOrBlank()) {
+            finish()
+            return
+        }
+
+        TransactionStore.attachContext(applicationContext)
+
+        val transaction = TransactionStore.transactions
+            .firstOrNull { it.id == id }
+
+        if (transaction == null || !transaction.requiresCompletion) {
+            finish()
+            return
+        }
+
+        setContent {
+            WalletAppTheme {
+                SmsCompletionContent(
+                    transaction = transaction,
+                    initialReceiptUri = transaction.receiptUri?.let(Uri::parse),
+                    onPickReceipt = { uri -> selectedReceiptUri = uri; receiptPicker.launch(arrayOf("image/*")) },
+                    onComplete = { category, tags, description, receiptUri ->
+                        completeTransaction(
+                            transaction = transaction,
+                            category = category,
+                            tags = tags,
+                            description = description,
+                            receiptUri = receiptUri?.let(Uri::parse),`r`n                   )
+                    },
+                )
+            }
+        }
+    }
+
+    private fun completeTransaction(
+        transaction: Transaction,
+        category: String?,
+        tags: List<String>,
+        description: String,
+        receiptUri: Uri?,
+    ) {
+        val hasCompletionData =
+            category != null ||
+                tags.isNotEmpty() ||
+                description.isNotBlank() ||
+                receiptUri != null
+
+        if (!hasCompletionData) return
+
+        TransactionStore.update(
+            transaction.copy(
+                iconKey = category ?: transaction.iconKey,
+                tags = tags,
+                description = description.trim(),
+                receiptUri = receiptUri?.toString(),
+                requiresCompletion = false,
+            ),
+        )
+
+        SmsTransactionQueue.onCompletionFinished(this)
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
+
+    override fun onBackPressed() {
+        // Intentionally blocked: this activity is mandatory.
+    }
+
+    companion object {
+        private const val EXTRA_TRANSACTION_ID =
+            "com.example.walletapp.sms.TRANSACTION_ID"
+
+        fun start(context: Context, transactionId: String) {
+            val intent = Intent(context, SmsTransactionCompletionActivity::class.java).apply {
+                putExtra(EXTRA_TRANSACTION_ID, transactionId)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+        }
+    }
+}
+
+@Composable
+private fun SmsCompletionContent(
+    transaction: Transaction,
+    initialReceiptUri: Uri?,
+    onPickReceipt: () -> Unit,
+    onComplete: (
+        category: String?,
+        tags: List<String>,
+        description: String,
+        receiptUri: Uri?,
+    ) -> Unit,
+) {
+    BackHandler(enabled = true) {}
+
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var tags by remember { mutableStateOf(transaction.tags) }
+    var tagInput by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf(transaction.description) }
+    var receiptUri by rememberSaveable { mutableStateOf(initialReceiptUri?.toString()) }
+
+    val categories = when (transaction.type) {
+        TransactionType.EXPENSE -> listOf(
+            "غذا", "حمل‌ونقل", "قبض", "قسط",
+            "خرید", "سلامت", "تفریح", "سایر",
+        )
+
+        TransactionType.INCOME -> listOf(
+            "حقوق", "هدیه", "سرمایه‌گذاری",
+            "بازگشت وجه", "سایر",
+        )
+    }
+
+    val hasCompletionData =
+        selectedCategory != null ||
+            tags.isNotEmpty() ||
+            description.isNotBlank() ||
+            receiptUri != null
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 18.dp)
+                .navigationBarsPadding(),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "تکمیل تراکنش",
+                        style = AppTextStyles.headlineSm,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        text = "برای ادامه، حداقل یک مورد را تکمیل کنید",
+                        style = AppTextStyles.bodyMd,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ReceiptLong,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(18.dp))
+
+            TransactionSummaryCard(transaction)
+
+            Spacer(Modifier.height(18.dp))
+
+            SectionTitle(
+                icon = Icons.Default.Label,
+                title = "دسته‌بندی",
+                subtitle = "یک دسته برای این تراکنش انتخاب کنید",
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                categories.chunked(2).forEach { rowCategories ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        rowCategories.forEach { category ->
+                            FilterChip(
+                                selected = selectedCategory == category,
+                                onClick = {
+                                    selectedCategory =
+                                        if (selectedCategory == category) null else category
+                                },
+                                label = {
+                                    Text(
+                                        text = category,
+                                        style = AppTextStyles.bodyMd,
+                                    )
+                                },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                        if (rowCategories.size == 1) {
+                            Spacer(Modifier.weight(1f))
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            SectionTitle(
+                icon = Icons.Default.Label,
+                title = "برچسب",
+                subtitle = "برای جست‌وجوی سریع‌تر، برچسب اضافه کنید",
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = tagInput,
+                onValueChange = { tagInput = it },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                label = { Text("برچسب جدید") },
+                trailingIcon = {
+                    TextButton(
+                        enabled = tagInput.trim().isNotEmpty(),
+                        onClick = {
+                            val value = tagInput.trim()
+                            if (value.isNotEmpty() && value !in tags) {
+                                tags = tags + value
+                                tagInput = ""
+                            }
+                        },
+                    ) {
+                        Text("افزودن")
+                    }
+                },
+            )
+
+            if (tags.isNotEmpty()) {
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    tags.forEach { tag ->
+                        FilterChip(
+                            selected = true,
+                            onClick = { tags = tags - tag },
+                            label = { Text(tag) },
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            SectionTitle(
+                icon = Icons.Default.Description,
+                title = "توضیحات",
+                subtitle = "جزئیات دلخواه خود را درباره این تراکنش بنویسید",
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3,
+                maxLines = 5,
+                label = { Text("توضیحات تراکنش") },
+                placeholder = { Text("مثلاً خرید ماهانه منزل") },
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            SectionTitle(
+                icon = Icons.Default.AddPhotoAlternate,
+                title = "رسید",
+                subtitle = "تصویر رسید را به این تراکنش پیوست کنید",
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onPickReceipt()
+                    },
+                shape = MaterialTheme.shapes.large,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                ),
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AddPhotoAlternate,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
+
+                    Spacer(Modifier.width(12.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = if (receiptUri == null) "افزودن تصویر رسید" else "رسید انتخاب شد",
+                            style = AppTextStyles.bodyLg.copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            text = "انتخاب تصویر از گالری یا فایل‌ها",
+                            style = AppTextStyles.bodyMd,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                colors = CardDefaults.cardColors(
+                    containerColor = if (hasCompletionData) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainer
+                    },
+                ),
+            ) {
+                Row(
+                    modifier = Modifier.padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = if (hasCompletionData) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                        text = if (hasCompletionData) {
+                            "اطلاعات تکمیل شد؛ تراکنش آماده ثبت است."
+                        } else {
+                            "حداقل یکی از دسته‌بندی، برچسب، توضیحات یا رسید را اضافه کنید."
+                        },
+                        style = AppTextStyles.bodyMd,
+                        color = if (hasCompletionData) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(14.dp))
+
+            Button(
+                onClick = {
+                    onComplete(
+                        selectedCategory,
+                        tags,
+                        description,
+                        receiptUri?.let(Uri::parse),`r`n                   )
+                },
+                enabled = hasCompletionData,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp),
+                shape = MaterialTheme.shapes.large,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ),
+            ) {
+                Text(
+                    text = "تکمیل و ثبت تراکنش",
+                    style = AppTextStyles.bodyLg.copy(fontWeight = FontWeight.SemiBold),
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+private fun TransactionSummaryCard(transaction: Transaction) {
+    val isExpense = transaction.type == TransactionType.EXPENSE
+    val accent = if (isExpense) {
+        MaterialTheme.colorScheme.error
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
+    ) {
+        Column(modifier = Modifier.padding(18.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccountBalance,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+
+                Spacer(Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = transaction.title,
+                        style = AppTextStyles.bodyLg.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = transaction.subtitle,
+                        style = AppTextStyles.bodyMd,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = "${if (isExpense) "-" else "+"}${transaction.amount.toPersianCurrency()} تومان",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = accent,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SectionTitle(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    subtitle: String,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(22.dp),
+        )
+
+        Spacer(Modifier.width(8.dp))
+
+        Column {
+            Text(
+                text = title,
+                style = AppTextStyles.bodyLg.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = subtitle,
+                style = AppTextStyles.labelMd,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+
+
+
+
+
+

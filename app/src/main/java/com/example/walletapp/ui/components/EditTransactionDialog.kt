@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.components
+﻿package com.example.walletapp.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -30,7 +30,7 @@ fun EditTransactionDialog(
     onDelete: (Transaction) -> Unit,
 ) {
     var title by remember { mutableStateOf(transaction.title) }
-    var selectedCategory by remember { mutableStateOf(transaction.iconKey) }
+    var selectedCategory by remember { mutableStateOf(transaction.category ?: transaction.iconKey) }
     var categoryManuallySet by remember { mutableStateOf(true) } // don't overwrite an existing category on open
     var tagInput by remember { mutableStateOf("") }
     var tags by remember { mutableStateOf(transaction.tags) }
@@ -48,10 +48,10 @@ fun EditTransactionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("ویرایش تراکنش", fontWeight = FontWeight.Bold) },
+        title = { Text("ظˆغŒط±ط§غŒط´ طھط±ط§ع©ظ†ط´", fontWeight = FontWeight.Bold) },
         text = {
             Column {
-                Text("عنوان", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+                Text("ط¹ظ†ظˆط§ظ†", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = title,
@@ -66,7 +66,7 @@ fun EditTransactionDialog(
                 )
 
                 Spacer(Modifier.height(16.dp))
-                Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+                Text("ط¯ط³طھظ‡â€Œط¨ظ†ط¯غŒ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
                 Row(
                     modifier = Modifier
@@ -87,12 +87,12 @@ fun EditTransactionDialog(
                 }
 
                 Spacer(Modifier.height(16.dp))
-                Text("هشتگ‌ها", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+                Text("ظ‡ط´طھع¯â€Œظ‡ط§", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = tagInput,
                     onValueChange = { tagInput = it },
-                    placeholder = { Text("مثلاً سفر — اینتر بزنید تا اضافه شود") },
+                    placeholder = { Text("ظ…ط«ظ„ط§ظ‹ ط³ظپط± â€” ط§غŒظ†طھط± ط¨ط²ظ†غŒط¯ طھط§ ط§ط¶ط§ظپظ‡ ط´ظˆط¯") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { addTagFromInput() }),
@@ -113,7 +113,7 @@ fun EditTransactionDialog(
                                 trailingIcon = {
                                     Icon(
                                         Icons.Filled.Close,
-                                        contentDescription = "حذف",
+                                        contentDescription = "ط­ط°ظپ",
                                         modifier = Modifier.size(16.dp),
                                     )
                                 },
@@ -127,7 +127,7 @@ fun EditTransactionDialog(
                 TextButton(onClick = { showDeleteConfirm = true }) {
                     Icon(Icons.Filled.Delete, contentDescription = null, tint = AppError, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("حذف تراکنش", color = AppError)
+                    Text("ط­ط°ظپ طھط±ط§ع©ظ†ط´", color = AppError)
                 }
             }
         },
@@ -138,39 +138,40 @@ fun EditTransactionDialog(
                     transaction.copy(
                         title = title.trim().ifBlank { transaction.title },
                         iconKey = selectedCategory,
+                        category = selectedCategory,
                         tags = tags,
                         subtitle = rebuildSubtitle(transaction.subtitle, selectedCategory),
                     ),
                 )
-            }) { Text("ذخیره") }
+            }) { Text("ط°ط®غŒط±ظ‡") }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("انصراف") }
+            TextButton(onClick = onDismiss) { Text("ط§ظ†طµط±ط§ظپ") }
         },
     )
 
     if (showDeleteConfirm) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
-            title = { Text("حذف تراکنش؟") },
-            text = { Text("این عمل قابل بازگشت نیست.") },
+            title = { Text("ط­ط°ظپ طھط±ط§ع©ظ†ط´طں") },
+            text = { Text("ط§غŒظ† ط¹ظ…ظ„ ظ‚ط§ط¨ظ„ ط¨ط§ط²ع¯ط´طھ ظ†غŒط³طھ.") },
             confirmButton = {
                 TextButton(onClick = {
                     showDeleteConfirm = false
                     onDelete(transaction)
-                }) { Text("حذف", color = AppError) }
+                }) { Text("ط­ط°ظپ", color = AppError) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteConfirm = false }) { Text("انصراف") }
+                TextButton(onClick = { showDeleteConfirm = false }) { Text("ط§ظ†طµط±ط§ظپ") }
             },
         )
     }
 }
 
-/** Replaces the leading "<category> • ..." part of a subtitle with the newly selected category, keeping the rest. */
+/** Replaces the leading "<category> â€¢ ..." part of a subtitle with the newly selected category, keeping the rest. */
 private fun rebuildSubtitle(oldSubtitle: String, newCategory: String): String {
-    val parts = oldSubtitle.split(" • ").toMutableList()
+    val parts = oldSubtitle.split(" â€¢ ").toMutableList()
     if (parts.isEmpty()) return newCategory
     parts[0] = newCategory
-    return parts.joinToString(" • ")
+    return parts.joinToString(" â€¢ ")
 }

@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.walletapp.data.AccountStore
+import com.example.walletapp.data.AccountLedger
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.resolveTransactionIcon
@@ -36,30 +38,53 @@ fun DashboardScreen(
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
+        AccountStore.attachContext(context)
         TransactionStore.attachContext(context)
     }
     val transactions = TransactionStore.transactions
     var editingTransaction by remember { mutableStateOf<com.example.walletapp.data.Transaction?>(null) }
 
-    // Totals computed live from the real transaction list, not hardcoded —
+    // Totals computed live from the real transaction list, not hardcoded â€”
     // updates automatically as SMS-detected or manually-added transactions
     // come in.
-    val totalIncome = transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
-    val totalExpense = transactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }
-    val totalBalance = totalIncome - totalExpense
+    // Financial totals use the real ledger model.
+    // Internal transfers are deliberately excluded from income/expense.
+    val totalIncome =
+        transactions
+            .asSequence()
+            .filter {
+                it.kind == com.example.walletapp.data.TransactionKind.NORMAL &&
+                    it.type == TransactionType.INCOME
+            }
+            .sumOf { it.amount }
+
+    val totalExpense =
+        transactions
+            .asSequence()
+            .filter {
+                it.kind == com.example.walletapp.data.TransactionKind.NORMAL &&
+                    it.type == TransactionType.EXPENSE
+            }
+            .sumOf { it.amount }
+
+    val totalBalance =
+        AccountLedger.totalBalance(
+            accounts = AccountStore.accounts,
+            transactions = transactions,
+        )
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("داشبورد", fontWeight = FontWeight.Bold) },
+                title = { Text("ط¯ط§ط´ط¨ظˆط±ط¯", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { /* TODO: open menu */ }) {
-                        Icon(Icons.Filled.Menu, contentDescription = "منو")
+                        Icon(Icons.Filled.Menu, contentDescription = "ظ…ظ†ظˆ")
                     }
                 },
                 actions = {
                     IconButton(onClick = { /* TODO: open filters */ }) {
-                        Icon(Icons.Filled.Tune, contentDescription = "فیلترها")
+                        Icon(Icons.Filled.Tune, contentDescription = "ظپغŒظ„طھط±ظ‡ط§")
                     }
                 },
             )
@@ -96,10 +121,10 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    QuickAction("ثبت", Icons.Filled.Add, SecondaryContainer, OnSecondaryContainer, onClick = onAddTransactionClick)
-                    QuickAction("پرداخت", Icons.Filled.Payments, SurfaceContainerHigh, Tertiary, onClick = {})
-                    QuickAction("بودجه", Icons.Filled.Analytics, SurfaceContainerHigh, Primary, onClick = onOpenBudgetClick)
-                    QuickAction("بیشتر", Icons.Filled.MoreHoriz, SurfaceContainerHigh, Outline, onClick = {})
+                    QuickAction("ط«ط¨طھ", Icons.Filled.Add, SecondaryContainer, OnSecondaryContainer, onClick = onAddTransactionClick)
+                    QuickAction("ظ¾ط±ط¯ط§ط®طھ", Icons.Filled.Payments, SurfaceContainerHigh, Tertiary, onClick = {})
+                    QuickAction("ط¨ظˆط¯ط¬ظ‡", Icons.Filled.Analytics, SurfaceContainerHigh, Primary, onClick = onOpenBudgetClick)
+                    QuickAction("ط¨غŒط´طھط±", Icons.Filled.MoreHoriz, SurfaceContainerHigh, Outline, onClick = {})
                 }
                 Spacer(Modifier.height(32.dp))
             }
@@ -110,9 +135,9 @@ fun DashboardScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("آخرین تراکنش‌ها", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
+                    Text("ط¢ط®ط±غŒظ† طھط±ط§ع©ظ†ط´â€Œظ‡ط§", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
                     TextButton(onClick = { /* TODO: view all */ }) {
-                        Text("مشاهده همه", color = Primary, fontWeight = FontWeight.Bold)
+                        Text("ظ…ط´ط§ظ‡ط¯ظ‡ ظ‡ظ…ظ‡", color = Primary, fontWeight = FontWeight.Bold)
                     }
                 }
                 Spacer(Modifier.height(16.dp))
@@ -139,7 +164,7 @@ fun DashboardScreen(
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "هنوز تراکنشی ثبت نشده",
+                            "ظ‡ظ†ظˆط² طھط±ط§ع©ظ†ط´غŒ ط«ط¨طھ ظ†ط´ط¯ظ‡",
                             color = OnSurfaceVariant,
                             style = MaterialTheme.typography.bodyMedium,
                         )

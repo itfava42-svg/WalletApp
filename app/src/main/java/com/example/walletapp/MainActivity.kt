@@ -36,6 +36,7 @@ import com.example.walletapp.ui.screens.CheckManagementScreen
 import com.example.walletapp.data.Reminder
 import com.example.walletapp.ui.screens.ToolsScreen
 import com.example.walletapp.ui.screens.OperationsScreen
+import com.example.walletapp.ui.screens.TransferScreen
 import com.example.walletapp.ui.screens.AccountsScreen
 import com.example.walletapp.ui.theme.WalletAppTheme
 
@@ -44,7 +45,8 @@ private sealed class AppScreen {
     data object Accounts : AppScreen()
     data object AddTransaction : AppScreen()
     data object Tools : AppScreen()
-        data object Operations : AppScreen()
+        data object Operations : AppScreen()
+    data object Transfer : AppScreen()
 data object Budget : AppScreen()
     data object SettingsList : AppScreen()
     data object SmsLearning : AppScreen()
@@ -163,6 +165,22 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
 
+        is AppScreen.Transfer -> TransferScreen(
+
+            onBack = {
+
+                currentScreen = AppScreen.Operations
+
+            },
+
+            onTransferCompleted = {
+
+                currentScreen = AppScreen.Dashboard
+
+            },
+
+        )
+
         is AppScreen.Operations -> OperationsScreen(
             onBack = { currentScreen = AppScreen.Tools },
             onOpenCheckManagement = {
@@ -171,6 +189,9 @@ class MainActivity : ComponentActivity() {
             onOpenLoanManagement = {
                 currentScreen = AppScreen.LoanManagement
             },
+        onOpenTransfer = {
+            currentScreen = AppScreen.Transfer
+        },    
         )
                             is AppScreen.SettingsList -> SettingsListScreen(
                                 onBack = { currentScreen = AppScreen.Tools },
@@ -236,6 +257,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 
 

@@ -1,4 +1,4 @@
-package com.example.walletapp.data
+﻿package com.example.walletapp.data
 
 import android.content.Context
 import org.json.JSONArray
@@ -7,7 +7,7 @@ import org.json.JSONObject
 /**
  * Persists transactions to SharedPreferences as a JSON array, so they
  * survive the app process being killed (by the user, by Android's
- * low-memory killer, etc.) â€” which happens routinely, especially for the
+ * low-memory killer, etc.) أ¢â‚¬â€‌ which happens routinely, especially for the
  * short-lived process Android spins up just to deliver an SMS broadcast.
  * Uses org.json (built into Android) rather than adding a new dependency.
  */
@@ -26,6 +26,46 @@ object TransactionPersistence {
             obj.put("type", t.type.name)
             obj.put("iconKey", t.iconKey)
             obj.put("tags", JSONArray(t.tags))
+
+            // Core financial metadata.
+            // These fields were added after the original transaction model.
+            // Keeping them in the same JSON object preserves backward compatibility.
+            if (t.accountId != null) {
+                obj.put("accountId", t.accountId)
+            } else {
+                obj.put("accountId", JSONObject.NULL)
+            }
+
+            if (t.category != null) {
+                obj.put("category", t.category)
+            } else {
+                obj.put("category", JSONObject.NULL)
+            }
+
+            if (t.dateEpochMillis != null) {
+                obj.put("dateEpochMillis", t.dateEpochMillis)
+            } else {
+                obj.put("dateEpochMillis", JSONObject.NULL)
+            }
+
+            obj.put("note", t.note)
+            obj.put("isRecurring", t.isRecurring)
+
+            // Transfer metadata.
+            obj.put("kind", t.kind.name)
+
+            if (t.sourceAccountId != null) {
+                obj.put("sourceAccountId", t.sourceAccountId)
+            } else {
+                obj.put("sourceAccountId", JSONObject.NULL)
+            }
+
+            if (t.destinationAccountId != null) {
+                obj.put("destinationAccountId", t.destinationAccountId)
+            } else {
+                obj.put("destinationAccountId", JSONObject.NULL)
+            }
+
             obj.put("description", t.description)
             if (t.receiptUri != null) {
                 obj.put("receiptUri", t.receiptUri)
@@ -59,6 +99,67 @@ object TransactionPersistence {
                     tags = obj.optJSONArray("tags")?.let { arr ->
                         (0 until arr.length()).map { arr.getString(it) }
                     } ?: emptyList(),
+
+                    // Backward-compatible loading:
+                    // old transactions do not contain these fields.
+                    accountId =
+                        if (obj.has("accountId") && !obj.isNull("accountId")) {
+                            obj.optString("accountId").takeIf { it.isNotBlank() }
+                        } else {
+                            null
+                        },
+
+                    category =
+                        if (obj.has("category") && !obj.isNull("category")) {
+                            obj.optString("category").takeIf { it.isNotBlank() }
+                        } else {
+                            null
+                        },
+
+                    dateEpochMillis =
+                        if (obj.has("dateEpochMillis") && !obj.isNull("dateEpochMillis")) {
+                            obj.optLong("dateEpochMillis")
+                        } else {
+                            null
+                        },
+
+                    note = obj.optString("note", ""),
+                    isRecurring = obj.optBoolean("isRecurring", false),
+
+                    // Old transactions do not contain transfer fields.
+                    // Missing/invalid values safely fall back to NORMAL.
+                    kind =
+                        runCatching {
+                            TransactionKind.valueOf(
+                                obj.optString(
+                                    "kind",
+                                    TransactionKind.NORMAL.name
+                                )
+                            )
+                        }.getOrDefault(TransactionKind.NORMAL),
+
+                    sourceAccountId =
+                        if (
+                            obj.has("sourceAccountId") &&
+                            !obj.isNull("sourceAccountId")
+                        ) {
+                            obj.optString("sourceAccountId")
+                                .takeIf { it.isNotBlank() }
+                        } else {
+                            null
+                        },
+
+                    destinationAccountId =
+                        if (
+                            obj.has("destinationAccountId") &&
+                            !obj.isNull("destinationAccountId")
+                        ) {
+                            obj.optString("destinationAccountId")
+                                .takeIf { it.isNotBlank() }
+                        } else {
+                            null
+                        },
+
                     description = obj.optString("description", ""),
                     receiptUri =
                         if (obj.has("receiptUri") && !obj.isNull("receiptUri")) {
@@ -72,3 +173,4 @@ object TransactionPersistence {
         }.getOrDefault(emptyList())
     }
 }
+
