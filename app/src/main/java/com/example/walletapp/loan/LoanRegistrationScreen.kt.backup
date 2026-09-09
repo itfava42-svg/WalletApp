@@ -1,0 +1,302 @@
+﻿package com.example.walletapp.loan
+
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.*
+
+import androidx.compose.runtime.*
+
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+import androidx.compose.ui.text.font.FontWeight
+
+
+
+@Composable
+fun LoanRegistrationScreen(){
+
+
+    var name by remember { mutableStateOf("") }
+
+    var amount by remember { mutableStateOf("") }
+
+    var interest by remember { mutableStateOf("") }
+
+    var count by remember { mutableStateOf("") }
+
+
+
+    Column(
+
+        modifier =
+        Modifier
+            .fillMaxSize()
+            .background(MatureColors.Surface)
+            .verticalScroll(rememberScrollState())
+            .padding(20.dp)
+
+    ){
+
+
+
+        Card(
+
+            modifier = Modifier.fillMaxWidth(),
+
+            colors =
+            CardDefaults.cardColors(
+                containerColor = MatureColors.Primary
+            ),
+
+            shape =
+            RoundedCornerShape(18.dp)
+
+        ){
+
+            Column(
+                modifier =
+                Modifier.padding(24.dp)
+            ){
+
+                Text(
+                    text="📋 ثبت وام جدید",
+                    color=Color.White,
+                    fontSize=24.sp,
+                    fontWeight=FontWeight.Bold
+                )
+
+
+                Text(
+                    text="اطلاعات وام را وارد کنید",
+                    color=Color.White.copy(alpha=.8f)
+                )
+
+            }
+
+        }
+
+
+
+        Spacer(
+            Modifier.height(20.dp)
+        )
+
+
+
+        Card(
+
+            modifier=Modifier.fillMaxWidth(),
+
+            colors =
+            CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+
+            shape =
+            RoundedCornerShape(18.dp)
+
+        ){
+
+
+            Column(
+                modifier=
+                Modifier.padding(20.dp)
+            ){
+
+
+                Text(
+                    text="اطلاعات وام",
+                    color=MatureColors.Primary,
+                    fontWeight=FontWeight.Bold
+                )
+
+
+
+                Spacer(
+                    Modifier.height(12.dp)
+                )
+
+
+
+                OutlinedTextField(
+
+                    value=name,
+
+                    onValueChange={
+                        name=it
+                    },
+
+                    modifier=Modifier.fillMaxWidth(),
+
+                    label={
+                        Text("نام وام")
+                    },
+
+                    leadingIcon={
+
+                        Icon(
+                            Icons.Default.AccountBalance,
+                            null,
+                            tint=MatureColors.Secondary
+                        )
+
+                    }
+
+                )
+
+
+
+                Spacer(
+                    Modifier.height(12.dp)
+                )
+
+
+
+                OutlinedTextField(
+
+                    value=amount,
+
+                    onValueChange={
+                        amount=it
+                    },
+
+                    modifier=Modifier.fillMaxWidth(),
+
+                    label={
+                        Text("مبلغ وام")
+                    }
+
+                )
+
+
+
+                Spacer(
+                    Modifier.height(12.dp)
+                )
+
+
+
+                OutlinedTextField(
+
+                    value=interest,
+
+                    onValueChange={
+                        interest=it
+                    },
+
+                    modifier=Modifier.fillMaxWidth(),
+
+                    label={
+                        Text("درصد سود")
+                    }
+
+                )
+
+
+
+                Spacer(
+                    Modifier.height(12.dp)
+                )
+
+
+
+                OutlinedTextField(
+
+                    value=count,
+
+                    onValueChange={
+                        count=it
+                    },
+
+                    modifier=Modifier.fillMaxWidth(),
+
+                    label={
+                        Text("تعداد اقساط")
+                    }
+
+                )
+
+
+
+                Spacer(
+                    Modifier.height(20.dp)
+                )
+
+
+
+                Button(
+
+                    modifier=
+                    Modifier.fillMaxWidth(),
+
+                    onClick={
+
+
+                        LoanStore.addLoan(
+
+                            Loan(
+
+                                name=name,
+
+                                amount =
+                                amount.toLongOrNull() ?: 0,
+
+                                interestRate =
+                                interest.toDoubleOrNull() ?: 0.0,
+
+                                installmentCount =
+                                count.toIntOrNull() ?: 0,
+
+                                monthlyPayment = 0,
+
+                                receiveDate="",
+
+                                firstInstallmentDate=""
+
+                            )
+
+                        )
+
+
+                    }
+
+                ){
+
+                    Icon(
+                        Icons.Default.CheckCircle,
+                        null
+                    )
+
+                    Spacer(
+                        Modifier.width(8.dp)
+                    )
+
+
+                    Text(
+                        "ثبت وام"
+                    )
+
+
+                }
+
+
+            }
+
+        }
+
+
+    }
+
+
+}
