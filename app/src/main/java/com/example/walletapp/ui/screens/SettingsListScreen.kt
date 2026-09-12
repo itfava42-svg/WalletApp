@@ -1,7 +1,5 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
-import android.app.DatePickerDialog
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,22 +14,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.SettingsMenu
 import com.example.walletapp.data.ToolAction
 import com.example.walletapp.data.ToolItem
 import com.example.walletapp.data.ToolSection
-import com.example.walletapp.sms.SmsInboxScanner
 import com.example.walletapp.ui.theme.OnSurface
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.Primary
 import com.example.walletapp.ui.theme.SurfaceContainer
 import com.example.walletapp.ui.theme.SurfaceContainerLowest
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,15 +35,13 @@ fun SettingsListScreen(
     onBack: () -> Unit,
     onOpenSmsLearning: () -> Unit,
     onOpenThemeBuilder: () -> Unit,
+    onOpenTransactionSync: () -> Unit,
 ) {
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var showSmsRangeDialog by remember {
-        mutableStateOf(false)
-    }
 
     fun showMessage(text: String) {
         scope.launch {
@@ -66,10 +60,10 @@ fun SettingsListScreen(
             ToolAction.THEME_BUILDER -> {
                 onOpenThemeBuilder()
             }
-
             ToolAction.TRANSACTION_SYNC -> {
-                showSmsRangeDialog = true
+                onOpenTransactionSync()
             }
+
 
             ToolAction.SHARE -> {
 
@@ -80,7 +74,7 @@ fun SettingsListScreen(
 
                         putExtra(
                             android.content.Intent.EXTRA_TEXT,
-                            "کیف پول — بهترین برنامه مدیریت مالی"
+                            "ط¹آ©ط؛إ’ط¸ظ¾ ط¸آ¾ط¸ث†ط¸â€‍ أ¢â‚¬â€‌ ط·آ¨ط¸â€،ط·ع¾ط·آ±ط؛إ’ط¸â€  ط·آ¨ط·آ±ط¸â€ ط·آ§ط¸â€¦ط¸â€، ط¸â€¦ط·آ¯ط؛إ’ط·آ±ط؛إ’ط·ع¾ ط¸â€¦ط·آ§ط¸â€‍ط؛إ’"
                         )
 
                         type = "text/plain"
@@ -89,48 +83,17 @@ fun SettingsListScreen(
                 context.startActivity(
                     android.content.Intent.createChooser(
                         shareIntent,
-                        "معرفی به دوستان"
+                        "ط¸â€¦ط·آ¹ط·آ±ط¸ظ¾ط؛إ’ ط·آ¨ط¸â€، ط·آ¯ط¸ث†ط·آ³ط·ع¾ط·آ§ط¸â€ "
                     )
                 )
             }
 
             else -> {
                 showMessage(
-                    "${item.title} — به‌زودی"
+                    "${item.title} أ¢â‚¬â€‌ ط·آ¨ط¸â€،أ¢â‚¬إ’ط·آ²ط¸ث†ط·آ¯ط؛إ’"
                 )
             }
         }
-    }
-
-    if (showSmsRangeDialog) {
-
-        SmsRangeDialog(
-            onDismiss = {
-                showSmsRangeDialog = false
-            },
-            onScan = { fromMillis, toMillis, rangeTitle ->
-
-                showSmsRangeDialog = false
-
-                scope.launch {
-
-                    val added =
-                        SmsInboxScanner.scanAndImport(
-                            context = context,
-                            fromMillis = fromMillis,
-                            toMillis = toMillis,
-                        )
-
-                    showMessage(
-                        if (added > 0) {
-                            "$added تراکنش جدید از پیامک‌های $rangeTitle پیدا و ثبت شد."
-                        } else {
-                            "تراکنش جدیدی در پیامک‌های $rangeTitle پیدا نشد."
-                        }
-                    )
-                }
-            }
-        )
     }
 
     Scaffold(
@@ -143,7 +106,7 @@ fun SettingsListScreen(
 
                 title = {
                     Text(
-                        "تنظیمات",
+                        "ط·ع¾ط¸â€ ط·آ¸ط؛إ’ط¸â€¦ط·آ§ط·ع¾",
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -155,7 +118,7 @@ fun SettingsListScreen(
                     ) {
                         Icon(
                             Icons.Filled.ArrowForward,
-                            contentDescription = "بازگشت"
+                            contentDescription = "ط·آ¨ط·آ§ط·آ²ط¹آ¯ط·آ´ط·ع¾"
                         )
                     }
                 },
@@ -202,658 +165,6 @@ fun SettingsListScreen(
             }
         }
     }
-}
-
-
-/* ============================================================
-   SMS RANGE DIALOG
-   ============================================================ */
-
-@Composable
-private fun SmsRangeDialog(
-    onDismiss: () -> Unit,
-    onScan: (
-        fromMillis: Long,
-        toMillis: Long,
-        rangeTitle: String
-    ) -> Unit,
-) {
-
-    val context = LocalContext.current
-
-    var selectedRange by remember {
-        mutableStateOf(
-            SmsRange.LAST_7_DAYS
-        )
-    }
-
-    var customFrom by remember {
-        mutableStateOf<Long?>(null)
-    }
-
-    var customTo by remember {
-        mutableStateOf<Long?>(null)
-    }
-
-    AlertDialog(
-
-        onDismissRequest = onDismiss,
-
-        title = {
-            Row(
-                verticalAlignment =
-                    Alignment.CenterVertically
-            ) {
-
-                Icon(
-                    Icons.Filled.Refresh,
-                    contentDescription = null,
-                    tint = Primary
-                )
-
-                Spacer(
-                    Modifier.width(8.dp)
-                )
-
-                Text(
-                    "بازخوانی تراکنش‌های بانکی",
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        },
-
-        text = {
-
-            Column {
-
-                Text(
-                    "بازه زمانی پیامک‌هایی که باید بررسی شوند را انتخاب کنید.",
-                    style =
-                        MaterialTheme.typography.bodyMedium,
-                    color = OnSurfaceVariant
-                )
-
-                Spacer(
-                    Modifier.height(16.dp)
-                )
-
-                SmsRange.values().forEach { range ->
-
-                    SmsRangeTile(
-                        range = range,
-                        selected =
-                            selectedRange == range,
-                        onClick = {
-                            selectedRange = range
-                        }
-                    )
-
-                    Spacer(
-                        Modifier.height(8.dp)
-                    )
-                }
-
-                if (
-                    selectedRange ==
-                    SmsRange.CUSTOM
-                ) {
-
-                    Spacer(
-                        Modifier.height(8.dp)
-                    )
-
-                    CustomDateTile(
-                        title = "تاریخ شروع",
-                        millis = customFrom,
-                        onClick = {
-
-                            showDatePicker(
-                                context = context,
-                                initialMillis =
-                                    customFrom
-                                        ?: System.currentTimeMillis(),
-                            ) { selectedMillis ->
-
-                                customFrom =
-                                    startOfDay(
-                                        selectedMillis
-                                    )
-                            }
-                        }
-                    )
-
-                    Spacer(
-                        Modifier.height(8.dp)
-                    )
-
-                    CustomDateTile(
-                        title = "تاریخ پایان",
-                        millis = customTo,
-                        onClick = {
-
-                            showDatePicker(
-                                context = context,
-                                initialMillis =
-                                    customTo
-                                        ?: System.currentTimeMillis(),
-                            ) { selectedMillis ->
-
-                                customTo =
-                                    endOfDay(
-                                        selectedMillis
-                                    )
-                            }
-                        }
-                    )
-                }
-            }
-        },
-
-        confirmButton = {
-
-            Button(
-
-                onClick = {
-
-                    val now =
-                        System.currentTimeMillis()
-
-                    when (selectedRange) {
-
-                        SmsRange.TODAY -> {
-
-                            onScan(
-                                startOfDay(now),
-                                now + 1L,
-                                selectedRange.title
-                            )
-                        }
-
-                        SmsRange.LAST_1_DAY -> {
-
-                            onScan(
-                                now -
-                                    DAY_MILLIS,
-                                now + 1L,
-                                selectedRange.title
-                            )
-                        }
-
-                        SmsRange.LAST_3_DAYS -> {
-
-                            onScan(
-                                now -
-                                    (3L * DAY_MILLIS),
-                                now + 1L,
-                                selectedRange.title
-                            )
-                        }
-
-                        SmsRange.LAST_7_DAYS -> {
-
-                            onScan(
-                                now -
-                                    (7L * DAY_MILLIS),
-                                now + 1L,
-                                selectedRange.title
-                            )
-                        }
-
-                        SmsRange.LAST_14_DAYS -> {
-
-                            onScan(
-                                now -
-                                    (14L * DAY_MILLIS),
-                                now + 1L,
-                                selectedRange.title
-                            )
-                        }
-
-                        SmsRange.LAST_30_DAYS -> {
-
-                            onScan(
-                                now -
-                                    (30L * DAY_MILLIS),
-                                now + 1L,
-                                selectedRange.title
-                            )
-                        }
-
-                        SmsRange.CUSTOM -> {
-
-                            val from =
-                                customFrom
-
-                            val to =
-                                customTo
-
-                            if (
-                                from != null &&
-                                to != null &&
-                                from < to
-                            ) {
-
-                                onScan(
-                                    from,
-                                    to + 1L,
-                                    selectedRange.title
-                                )
-                            }
-                        }
-                    }
-                },
-
-                enabled =
-                    selectedRange !=
-                        SmsRange.CUSTOM ||
-                        (
-                            customFrom != null &&
-                            customTo != null &&
-                            customFrom!! < customTo!!
-                        ),
-            ) {
-
-                Icon(
-                    Icons.Filled.Refresh,
-                    contentDescription = null
-                )
-
-                Spacer(
-                    Modifier.width(8.dp)
-                )
-
-                Text("شروع بازخوانی")
-            }
-        },
-
-        dismissButton = {
-
-            TextButton(
-                onClick = onDismiss
-            ) {
-                Text("انصراف")
-            }
-        }
-    )
-}
-
-
-/* ============================================================
-   RANGE TYPES
-   ============================================================ */
-
-private enum class SmsRange(
-    val title: String
-) {
-
-    TODAY(
-        "امروز"
-    ),
-
-    LAST_1_DAY(
-        "۱ روز گذشته"
-    ),
-
-    LAST_3_DAYS(
-        "۳ روز گذشته"
-    ),
-
-    LAST_7_DAYS(
-        "۱ هفته گذشته"
-    ),
-
-    LAST_14_DAYS(
-        "۲ هفته گذشته"
-    ),
-
-    LAST_30_DAYS(
-        "۱ ماه گذشته"
-    ),
-
-    CUSTOM(
-        "بازه دلخواه"
-    )
-}
-
-
-/* ============================================================
-   RANGE TILE
-   ============================================================ */
-
-@Composable
-private fun SmsRangeTile(
-    range: SmsRange,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-
-    Surface(
-
-        onClick = onClick,
-
-        modifier =
-            Modifier.fillMaxWidth(),
-
-        shape =
-            RoundedCornerShape(14.dp),
-
-        color =
-            if (selected) {
-                Primary.copy(alpha = 0.10f)
-            } else {
-                SurfaceContainerLowest
-            },
-
-        tonalElevation =
-            if (selected) {
-                2.dp
-            } else {
-                0.dp
-            },
-    ) {
-
-        Row(
-
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(14.dp),
-
-            verticalAlignment =
-                Alignment.CenterVertically,
-        ) {
-
-            Box(
-
-                modifier =
-                    Modifier
-                        .size(38.dp)
-                        .clip(
-                            RoundedCornerShape(10.dp)
-                        )
-                        .background(
-                            if (selected) {
-                                Primary.copy(
-                                    alpha = 0.16f
-                                )
-                            } else {
-                                SurfaceContainer
-                            }
-                        ),
-
-                contentAlignment =
-                    Alignment.Center,
-            ) {
-
-                Icon(
-                    if (
-                        range ==
-                        SmsRange.CUSTOM
-                    ) {
-                        Icons.Filled.CalendarMonth
-                    } else {
-                        Icons.Filled.Refresh
-                    },
-
-                    contentDescription = null,
-
-                    tint =
-                        Primary
-                )
-            }
-
-            Spacer(
-                Modifier.width(12.dp)
-            )
-
-            Text(
-                range.title,
-                modifier =
-                    Modifier.weight(1f),
-                fontWeight =
-                    if (selected) {
-                        FontWeight.Bold
-                    } else {
-                        FontWeight.Medium
-                    },
-                color = OnSurface
-            )
-
-            RadioButton(
-                selected = selected,
-                onClick = onClick
-            )
-        }
-    }
-}
-
-
-/* ============================================================
-   CUSTOM DATE TILE
-   ============================================================ */
-
-@Composable
-private fun CustomDateTile(
-    title: String,
-    millis: Long?,
-    onClick: () -> Unit,
-) {
-
-    Surface(
-
-        onClick = onClick,
-
-        modifier =
-            Modifier.fillMaxWidth(),
-
-        shape =
-            RoundedCornerShape(12.dp),
-
-        color =
-            SurfaceContainerLowest,
-    ) {
-
-        Row(
-
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-
-            verticalAlignment =
-                Alignment.CenterVertically,
-        ) {
-
-            Icon(
-                Icons.Filled.CalendarMonth,
-                contentDescription = null,
-                tint = Primary
-            )
-
-            Spacer(
-                Modifier.width(10.dp)
-            )
-
-            Column(
-                modifier =
-                    Modifier.weight(1f)
-            ) {
-
-                Text(
-                    title,
-                    style =
-                        MaterialTheme.typography.labelMedium,
-                    color = OnSurfaceVariant
-                )
-
-                Text(
-                    millis?.let {
-                        JalaliCalendar
-                            .fromEpochMillisSlashed(it)
-                    } ?: "انتخاب تاریخ",
-                    fontWeight =
-                        FontWeight.Bold,
-                    color = OnSurface
-                )
-            }
-
-            Text(
-                "انتخاب",
-                color = Primary,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-
-/* ============================================================
-   DATE PICKER
-   ============================================================ */
-
-private fun showDatePicker(
-    context: Context,
-    initialMillis: Long,
-    onSelected: (Long) -> Unit,
-) {
-
-    val calendar =
-        Calendar.getInstance().apply {
-            timeInMillis = initialMillis
-        }
-
-    DatePickerDialog(
-
-        context,
-
-        { _, year, month, dayOfMonth ->
-
-            val selected =
-                Calendar.getInstance().apply {
-
-                    set(
-                        Calendar.YEAR,
-                        year
-                    )
-
-                    set(
-                        Calendar.MONTH,
-                        month
-                    )
-
-                    set(
-                        Calendar.DAY_OF_MONTH,
-                        dayOfMonth
-                    )
-
-                    set(
-                        Calendar.HOUR_OF_DAY,
-                        12
-                    )
-
-                    set(
-                        Calendar.MINUTE,
-                        0
-                    )
-
-                    set(
-                        Calendar.SECOND,
-                        0
-                    )
-
-                    set(
-                        Calendar.MILLISECOND,
-                        0
-                    )
-                }
-
-            onSelected(
-                selected.timeInMillis
-            )
-        },
-
-        calendar.get(
-            Calendar.YEAR
-        ),
-
-        calendar.get(
-            Calendar.MONTH
-        ),
-
-        calendar.get(
-            Calendar.DAY_OF_MONTH
-        )
-    ).show()
-}
-
-
-/* ============================================================
-   DATE HELPERS
-   ============================================================ */
-
-private const val DAY_MILLIS =
-    24L * 60L * 60L * 1000L
-
-private fun startOfDay(
-    millis: Long
-): Long {
-
-    return Calendar.getInstance().apply {
-
-        timeInMillis = millis
-
-        set(
-            Calendar.HOUR_OF_DAY,
-            0
-        )
-
-        set(
-            Calendar.MINUTE,
-            0
-        )
-
-        set(
-            Calendar.SECOND,
-            0
-        )
-
-        set(
-            Calendar.MILLISECOND,
-            0
-        )
-
-    }.timeInMillis
-}
-
-private fun endOfDay(
-    millis: Long
-): Long {
-
-    return Calendar.getInstance().apply {
-
-        timeInMillis = millis
-
-        set(
-            Calendar.HOUR_OF_DAY,
-            23
-        )
-
-        set(
-            Calendar.MINUTE,
-            59
-        )
-
-        set(
-            Calendar.SECOND,
-            59
-        )
-
-        set(
-            Calendar.MILLISECOND,
-            999
-        )
-
-    }.timeInMillis
 }
 
 
@@ -971,6 +282,8 @@ private fun SettingsRow(
         }
     }
 }
+
+
 
 
 

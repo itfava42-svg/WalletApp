@@ -21,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import com.example.walletapp.data.TransactionStore
+import com.example.walletapp.data.TransactionSyncViewModel
 import com.example.walletapp.data.LoanStore
 import com.example.walletapp.data.CheckStore
 import com.example.walletapp.ui.screens.AddTransactionScreen
+import com.example.walletapp.ui.screens.TransactionSyncScreen
 import com.example.walletapp.ui.screens.BudgetScreen
 import com.example.walletapp.ui.screens.DashboardScreen
 import com.example.walletapp.ui.screens.SettingsListScreen
@@ -54,6 +56,7 @@ data object Budget : AppScreen()
     data object Reminder : AppScreen()
     data object AddReminder : AppScreen()
     data object LoanManagement : AppScreen()
+    data object TransactionSync : AppScreen()
     data object CheckManagement : AppScreen()
 }
 
@@ -199,7 +202,21 @@ class MainActivity : ComponentActivity() {
         onOpenSmsLearning = {
                                     currentScreen = AppScreen.SmsLearning
                                 },
+                                onOpenTransactionSync = {
+                                    currentScreen = AppScreen.TransactionSync
+                                },
                             )
+        is AppScreen.TransactionSync -> TransactionSyncScreen(
+            viewModel =
+                remember {
+                    TransactionSyncViewModel(
+                        applicationContext
+                    )
+                },
+            onBack = {
+                currentScreen = AppScreen.SettingsList
+            }
+        )
 
                             is AppScreen.SmsLearning -> SmsLearningScreen(
                                 onBack = {
@@ -257,6 +274,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
+
 
 
 

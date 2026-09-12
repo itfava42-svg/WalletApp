@@ -300,30 +300,6 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
         loan: LoanEntry?,
         installment: LoanInstallmentChoice?,
     ) {
-        if (category == "قسط") {
-            if (
-                loan == null ||
-                installment == null ||
-                installment.number !in 1..loan.totalInstallments ||
-                loan.payments.any {
-                    it.installmentNumber == installment.number
-                }
-            ) {
-                return
-            }
-
-            val linkedInstallment =
-                LoanPaymentManager.linkExistingTransactionToInstallment(
-                    context = applicationContext,
-                    loan = loan,
-                    installmentNumber = installment.number,
-                    transactionId = transaction.id,
-                )
-
-            if (linkedInstallment == null) {
-                return
-            }
-        }
 
         val hasCompletionData =
             category != null ||
@@ -419,6 +395,36 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                 }
             }
 
+        // -------------------------------------------------------------
+        // Installment linking MUST happen only after account validation.
+        // This prevents a loan installment from being marked as paid
+        // when the SMS transaction itself cannot be finalized.
+        // -------------------------------------------------------------
+        if (category == "قسط") {
+            if (
+                loan == null ||
+                installment == null ||
+                installment.number !in 1..loan.totalInstallments ||
+                loan.payments.any {
+                    it.installmentNumber == installment.number
+                }
+            ) {
+                return
+            }
+
+            val linkedInstallment =
+                LoanPaymentManager.linkExistingTransactionToInstallment(
+                    context = applicationContext,
+                    loan = loan,
+                    installmentNumber = installment.number,
+                    transactionId = transaction.id,
+                )
+
+            if (linkedInstallment == null) {
+                return
+            }
+        }
+
         val updatedTransaction =
             if (
                 transaction.subtitle == "تراکنش بانکی"
@@ -430,6 +436,7 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                     iconKey =
                         category
                             ?: transaction.iconKey,
+                    category = category ?: transaction.category,
                     tags = tags,
                     description = description.trim(),
                     receiptUri = receiptUri?.toString(),
@@ -442,6 +449,7 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                     iconKey =
                         category
                             ?: transaction.iconKey,
+                    category = category ?: transaction.category,
                     tags = tags,
                     description = description.trim(),
                     receiptUri = receiptUri?.toString(),
@@ -461,8 +469,16 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
         transaction: Transaction,
         sender: String?,
     ) {
-        if (!sender.isNullOrBlank()) {
-            SmsIgnoreStore.ignoreSender(sender)
+        val metadata = SmsTransactionMetadataStore.get(transaction.id)
+
+        if (
+            !sender.isNullOrBlank() &&
+            !metadata?.rawBody.isNullOrBlank()
+        ) {
+            SmsIgnoreStore.ignorePattern(
+                sender = sender,
+                pattern = metadata!!.rawBody,
+            )
         }
 
         TransactionStore.update(
@@ -659,7 +675,8 @@ private fun SmsCompletionContent(
         selectedLoan?.let(::unpaidInstallmentsFor).orEmpty()
     val canComplete =
         hasCompletionData &&
-            (matchingAccounts.size <= 1 || selectedAccountId != null) &&
+            matchingAccounts.isNotEmpty() &&
+            (matchingAccounts.size == 1 || selectedAccountId != null) &&
             (!isInstallmentCategory ||
                 (selectedLoan != null && selectedInstallment != null))
 
@@ -1583,11 +1600,11 @@ private fun SmsCompletionContent(
                 showIgnoreDialog = false
             },
             title = {
-                Text("نادیده گرفتن فرستنده")
+                Text("این تراکنش بانکی نیست")
             },
             text = {
                 Text(
-                    "پیامک‌های بعدی از این فرستنده دیگر به‌عنوان پیامک بانکی پردازش نمی‌شوند."
+                    "پیامک‌های مشابه این تراکنش از این فرستنده در آینده نادیده گرفته می‌شوند."
                 )
             },
             confirmButton = {
@@ -1597,7 +1614,7 @@ private fun SmsCompletionContent(
                         onIgnoreSender()
                     }
                 ) {
-                    Text("تأیید")
+                    Text("نادیده گرفتن")
                 }
             },
             dismissButton = {
@@ -1877,6 +1894,9 @@ private fun SectionTitle(
         }
     }
 }
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.AccountStore
@@ -27,6 +29,8 @@ import com.example.walletapp.ui.theme.SecondaryContainer
 import com.example.walletapp.ui.theme.OnSecondaryContainer
 import com.example.walletapp.ui.theme.SurfaceContainerHigh
 import com.example.walletapp.ui.theme.Tertiary
+import com.example.walletapp.data.TransactionSyncViewModel
+import com.example.walletapp.ui.components.TransactionSyncCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +41,7 @@ fun DashboardScreen(
     onNavSelect: (Int) -> Unit = {},
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(Unit) {
         AccountStore.attachContext(context)
         TransactionStore.attachContext(context)
@@ -44,7 +49,43 @@ fun DashboardScreen(
     val transactions = TransactionStore.transactions
     var editingTransaction by remember { mutableStateOf<com.example.walletapp.data.Transaction?>(null) }
 
-    // Totals computed live from the real transaction list, not hardcoded â€”
+    val syncViewModel =
+        remember {
+            TransactionSyncViewModel(
+                    context = context.applicationContext
+                )
+        }
+
+    val syncState by
+        syncViewModel.state.collectAsState()
+
+    val syncPendingCount by
+        syncViewModel.pendingCount.collectAsState()
+
+    DisposableEffect(
+        lifecycleOwner,
+        syncViewModel
+    ) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (
+                    event ==
+                        androidx.lifecycle.Lifecycle.Event.ON_RESUME
+                ) {
+                    syncViewModel.refreshPendingCount()
+                }
+            }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        syncViewModel.refreshPendingCount()
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    // Totals computed live from the real transaction list, not hardcoded —
     // updates automatically as SMS-detected or manually-added transactions
     // come in.
     // Financial totals use the real ledger model.
@@ -76,15 +117,15 @@ fun DashboardScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("ط¯ط§ط´ط¨ظˆط±ط¯", fontWeight = FontWeight.Bold) },
+                title = { Text("داشبورد", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { /* TODO: open menu */ }) {
-                        Icon(Icons.Filled.Menu, contentDescription = "ظ…ظ†ظˆ")
+                        Icon(Icons.Filled.Menu, contentDescription = "منو")
                     }
                 },
                 actions = {
                     IconButton(onClick = { /* TODO: open filters */ }) {
-                        Icon(Icons.Filled.Tune, contentDescription = "ظپغŒظ„طھط±ظ‡ط§")
+                        Icon(Icons.Filled.Tune, contentDescription = "فیلترها")
                     }
                 },
             )
@@ -113,7 +154,18 @@ fun DashboardScreen(
                     income = totalIncome,
                     expense = totalExpense,
                 )
-                Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(24.dp))
+            }
+
+            item {
+                TransactionSyncCard(
+                    state = syncState,
+                    pendingCount = syncPendingCount,
+                    onSyncClick = {
+                        syncViewModel.sync()
+                    },
+                )
+                Spacer(Modifier.height(24.dp))
             }
 
             item {
@@ -121,10 +173,10 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    QuickAction("ط«ط¨طھ", Icons.Filled.Add, SecondaryContainer, OnSecondaryContainer, onClick = onAddTransactionClick)
-                    QuickAction("ظ¾ط±ط¯ط§ط®طھ", Icons.Filled.Payments, SurfaceContainerHigh, Tertiary, onClick = {})
-                    QuickAction("ط¨ظˆط¯ط¬ظ‡", Icons.Filled.Analytics, SurfaceContainerHigh, Primary, onClick = onOpenBudgetClick)
-                    QuickAction("ط¨غŒط´طھط±", Icons.Filled.MoreHoriz, SurfaceContainerHigh, Outline, onClick = {})
+                    QuickAction("ثبت", Icons.Filled.Add, SecondaryContainer, OnSecondaryContainer, onClick = onAddTransactionClick)
+                    QuickAction("پرداخت", Icons.Filled.Payments, SurfaceContainerHigh, Tertiary, onClick = {})
+                    QuickAction("بودجه", Icons.Filled.Analytics, SurfaceContainerHigh, Primary, onClick = onOpenBudgetClick)
+                    QuickAction("بیشتر", Icons.Filled.MoreHoriz, SurfaceContainerHigh, Outline, onClick = {})
                 }
                 Spacer(Modifier.height(32.dp))
             }
@@ -135,9 +187,9 @@ fun DashboardScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("ط¢ط®ط±غŒظ† طھط±ط§ع©ظ†ط´â€Œظ‡ط§", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
+                    Text("آخرین تراکنش‌ها", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
                     TextButton(onClick = { /* TODO: view all */ }) {
-                        Text("ظ…ط´ط§ظ‡ط¯ظ‡ ظ‡ظ…ظ‡", color = Primary, fontWeight = FontWeight.Bold)
+                        Text("مشاهده همه", color = Primary, fontWeight = FontWeight.Bold)
                     }
                 }
                 Spacer(Modifier.height(16.dp))
@@ -164,7 +216,7 @@ fun DashboardScreen(
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "ظ‡ظ†ظˆط² طھط±ط§ع©ظ†ط´غŒ ط«ط¨طھ ظ†ط´ط¯ظ‡",
+                            "هنوز تراکنشی ثبت نشده",
                             color = OnSurfaceVariant,
                             style = MaterialTheme.typography.bodyMedium,
                         )
@@ -191,3 +243,6 @@ fun DashboardScreen(
         )
     }
 }
+
+
+

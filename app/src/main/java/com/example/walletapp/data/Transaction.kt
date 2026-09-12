@@ -1,11 +1,11 @@
-﻿package com.example.walletapp.data
+package com.example.walletapp.data
 
 enum class TransactionType { INCOME, EXPENSE }
 
 /**
- * iconKey is a stable string (a category label like "ط·آ·ط¢آ®ط·آ¸ط«â€ ط·آ·ط¢آ±ط·آ·ط¢آ§ط·آ¹ط¢آ©", or "ط·آ·ط¢آ¨ط·آ·ط¢آ§ط·آ¸أ¢â‚¬آ ط·آ¹ط¢آ©" for
+ * iconKey is a stable string (a category label like "ط·آ®ط¸ث†ط·آ±ط·آ§ط¹آ©", or "ط·آ¨ط·آ§ط¸â€ ط¹آ©" for
  * SMS-sourced transactions without a category) rather than an ImageVector
- * directly ط£آ¢أ¢â€ڑآ¬أ¢â‚¬â€Œ ImageVector isn't serializable, and Transaction needs to be
+ * directly أ¢â‚¬â€‌ ImageVector isn't serializable, and Transaction needs to be
  * persisted to disk. Resolve the actual icon at render time with
  * [resolveTransactionIcon].
  */

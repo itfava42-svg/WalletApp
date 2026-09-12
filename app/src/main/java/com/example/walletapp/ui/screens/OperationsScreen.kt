@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,18 +49,18 @@ fun OperationsScreen(
     onOpenTransfer: () -> Unit,
 ) {
     val operations = listOf(        OperationItem(
-            title = "انتقال بین حساب‌ها",
-            description = "انتقال وجه بین حساب‌های خودتان",
+            title = "������ ��� ���ȝ��",
+            description = "������ ��� ��� ���ȝ��� ������",
             icon = Icons.Filled.AccountBalance,
         ),
         OperationItem(
-            title = "ط·ظ„ط¨ ظˆ ط¨ط¯ظ‡غŒ",
-            description = "ظ…ط¯غŒط±غŒطھ ط·ظ„ط¨â€Œظ‡ط§ ظˆ ط¨ط¯ظ‡غŒâ€Œظ‡ط§غŒ ط®ظˆط¯ ط±ط§ ط¨ظ‡ ط±ط§ط­طھغŒ",
+            title = "طلب و بدهی",
+            description = "مدیریت طلب‌ها و بدهی‌های خود را به راحتی",
             icon = Icons.Filled.AttachMoney,
         ),
         OperationItem(
-            title = "ط¯ظڈظ†ع¯",
-            description = "طھظ‚ط³غŒظ… ظ‡ط²غŒظ†ظ‡â€Œظ‡ط§غŒ ع¯ط±ظˆظ‡غŒ ظˆ ظ…ط­ط§ط³ط¨ظ‡ ط³ظ‡ظ… ظ‡ط± ظ†ظپط±",
+            title = "دُنگ",
+            description = "تقسیم هزینه‌های گروهی و محاسبه سهم هر نفر",
             icon = Icons.Filled.Groups,
         ),
     )
@@ -69,13 +69,13 @@ fun OperationsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("ط¹ظ…ظ„غŒط§طھ")
+                    Text("عملیات")
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "ط¨ط§ط²ع¯ط´طھ",
+                            contentDescription = "بازگشت",
                         )
                     }
                 },
@@ -93,7 +93,7 @@ fun OperationsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "ط¹ظ…ظ„غŒط§طھ ظ…ط§ظ„غŒ",
+                text = "عملیات مالی",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -101,7 +101,7 @@ fun OperationsScreen(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "ظ…ط¯غŒط±غŒطھ ط¹ظ…ظ„غŒط§طھ ظˆ ط®ط¯ظ…ط§طھ ظ…ط§ظ„غŒ ط¨ط±ظ†ط§ظ…ظ‡",
+                text = "مدیریت عملیات و خدمات مالی برنامه",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -122,14 +122,14 @@ fun OperationsScreen(
                             .fillMaxWidth()
                             .height(150.dp)
                             .clickable {
-                                when (operation.title) {                                    "انتقال بین حساب‌ها" -> {
+                                when (operation.title) {                                    "������ ��� ���ȝ��" -> {
                                         onOpenTransfer()
                                     }
 
-                                    "ط·ظ„ط¨ ظˆ ط¨ط¯ظ‡غŒ" -> {
+                                    "طلب و بدهی" -> {
                                         // Existing debt/credit action will be wired here.
                                     }
-                                    "ط¯ظڈظ†ع¯" -> {
+                                    "دُنگ" -> {
                                         // Existing bill-split action will be wired here.
                                     }
                                 }

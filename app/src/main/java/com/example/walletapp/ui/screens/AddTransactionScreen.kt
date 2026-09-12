@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -75,7 +75,7 @@ fun AddTransactionScreen(
             ?: activeAccounts
                 .firstOrNull()
                 ?.name
-            ?: "بدون حساب"
+            ?: "���� ����"
     var isRecurring by remember { mutableStateOf(false) }
     var dateLabel by remember { mutableStateOf(JalaliCalendar.todaySlashed()) }
     var dateEpochMillis by remember { mutableStateOf<Long?>(null) }
@@ -95,10 +95,10 @@ fun AddTransactionScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("ط«ط¨طھ طھط±ط§ع©ظ†ط´ ط¬ط¯غŒط¯", fontWeight = FontWeight.Bold) },
+                title = { Text("ثبت تراکنش جدید", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowForward, contentDescription = "ط¨ط§ط²ع¯ط´طھ")
+                        Icon(Icons.Filled.ArrowForward, contentDescription = "بازگشت")
                     }
                 },
             )
@@ -114,10 +114,10 @@ fun AddTransactionScreen(
                         }
                         val category = selectedCategory
                         val subtitle = buildString {
-                            append(category?.label ?: "ط³ط§غŒط±")
-                            append(" â€¢ ")
+                            append(category?.label ?: "سایر")
+                            append(" • ")
                             append(dateLabel)
-                            if (isRecurring) append(" â€¢ طھع©ط±ط§ط±ط´ظˆظ†ط¯ظ‡")
+                            if (isRecurring) append(" • تکرارشونده")
                         }
                         onSave(
                             Transaction(
@@ -126,7 +126,7 @@ fun AddTransactionScreen(
                                 subtitle = subtitle,
                                 amount = amountLong,
                                 type = type,
-                                iconKey = category?.label ?: "ط³ط§غŒط±",
+                                iconKey = category?.label ?: "سایر",
                                 accountId = selectedAccountId,
                                 category = category?.label,
                                 dateEpochMillis = dateEpochMillis,
@@ -143,7 +143,7 @@ fun AddTransactionScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = accentColor, contentColor = OnPrimary),
                 ) {
                     Text(
-                        if (type == TransactionType.EXPENSE) "ط«ط¨طھ ظ‡ط²غŒظ†ظ‡" else "ط«ط¨طھ ط¯ط±ط¢ظ…ط¯",
+                        if (type == TransactionType.EXPENSE) "ثبت هزینه" else "ثبت درآمد",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                     )
@@ -169,14 +169,14 @@ fun AddTransactionScreen(
                     .padding(4.dp),
             ) {
                 SegmentButton(
-                    label = "ظ‡ط²غŒظ†ظ‡",
+                    label = "هزینه",
                     selected = type == TransactionType.EXPENSE,
                     selectedColor = AppError,
                     onClick = { type = TransactionType.EXPENSE },
                     modifier = Modifier.weight(1f),
                 )
                 SegmentButton(
-                    label = "ط¯ط±ط¢ظ…ط¯",
+                    label = "درآمد",
                     selected = type == TransactionType.INCOME,
                     selectedColor = Primary,
                     onClick = { type = TransactionType.INCOME },
@@ -187,14 +187,14 @@ fun AddTransactionScreen(
             Spacer(Modifier.height(24.dp))
 
             // Amount
-            Text("ظ…ط¨ظ„ط؛", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+            Text("مبلغ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = amountDigits,
                 onValueChange = { input -> amountDigits = input.filter { it.isDigit() }.take(12) },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("غ°") },
-                suffix = { Text("طھظˆظ…ط§ظ†") },
+                placeholder = { Text("۰") },
+                suffix = { Text("تومان") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 textStyle = MaterialTheme.typography.headlineSmall,
                 singleLine = true,
@@ -202,7 +202,7 @@ fun AddTransactionScreen(
             )
             if (amountDigits.isNotEmpty()) {
                 Text(
-                    (amountDigits.toLongOrNull() ?: 0L).toPersianCurrency() + " طھظˆظ…ط§ظ†",
+                    (amountDigits.toLongOrNull() ?: 0L).toPersianCurrency() + " تومان",
                     style = MaterialTheme.typography.labelMedium,
                     color = accentColor,
                     modifier = Modifier.padding(top = 4.dp),
@@ -212,13 +212,13 @@ fun AddTransactionScreen(
             Spacer(Modifier.height(20.dp))
 
             // Title
-            Text("ط¹ظ†ظˆط§ظ†", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+            Text("عنوان", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("ظ…ط«ظ„ط§ظ‹ ط®ط±غŒط¯ ط³ظˆظ¾ط±ظ…ط§ط±ع©طھ") },
+                placeholder = { Text("مثلاً خرید سوپرمارکت") },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
             )
@@ -226,7 +226,7 @@ fun AddTransactionScreen(
             Spacer(Modifier.height(20.dp))
 
             // Category grid
-            Text("ط¯ط³طھظ‡â€Œط¨ظ†ط¯غŒ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+            Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
@@ -248,7 +248,7 @@ fun AddTransactionScreen(
             Spacer(Modifier.height(20.dp))
 
             // Date
-            Text("طھط§ط±غŒط®", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+            Text("تاریخ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AssistChip(
@@ -256,7 +256,7 @@ fun AddTransactionScreen(
                         dateLabel = JalaliCalendar.todaySlashed()
                         dateEpochMillis = null
                     },
-                    label = { Text("ط§ظ…ط±ظˆط²") },
+                    label = { Text("امروز") },
                 )
                 Spacer(Modifier.width(8.dp))
                 AssistChip(
@@ -264,7 +264,7 @@ fun AddTransactionScreen(
                         dateLabel = JalaliCalendar.daysAgoSlashed(1)
                         dateEpochMillis = null
                     },
-                    label = { Text("ط¯غŒط±ظˆط²") },
+                    label = { Text("دیروز") },
                 )
                 Spacer(Modifier.width(8.dp))
                 OutlinedButton(
@@ -280,7 +280,7 @@ fun AddTransactionScreen(
             Spacer(Modifier.height(20.dp))
 
             // Account
-            Text("ط­ط³ط§ط¨", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+            Text("حساب", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
             ExposedDropdownMenuBox(
                 expanded = accountMenuExpanded,
@@ -307,7 +307,7 @@ fun AddTransactionScreen(
                 ) {
                     if (activeAccounts.isEmpty()) {
                         DropdownMenuItem(
-                            text = { Text("حسابی ثبت نشده است") },
+                            text = { Text("����� ��� ���� ���") },
                             onClick = {
                                 accountMenuExpanded = false
                             },
@@ -329,7 +329,7 @@ fun AddTransactionScreen(
             Spacer(Modifier.height(20.dp))
 
             // Note
-            Text("غŒط§ط¯ط¯ط§ط´طھ (ط§ط®طھغŒط§ط±غŒ)", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+            Text("یادداشت (اختیاری)", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = note,
@@ -337,7 +337,7 @@ fun AddTransactionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(90.dp),
-                placeholder = { Text("طھظˆط¶غŒط­ ط¨غŒط´طھط±...") },
+                placeholder = { Text("توضیح بیشتر...") },
                 shape = RoundedCornerShape(12.dp),
             )
 
@@ -352,19 +352,19 @@ fun AddTransactionScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Switch(checked = isRecurring, onCheckedChange = { isRecurring = it })
                     Spacer(Modifier.width(8.dp))
-                    Text("طھط±ط§ع©ظ†ط´ طھع©ط±ط§ط±ط´ظˆظ†ط¯ظ‡", style = MaterialTheme.typography.bodyMedium)
+                    Text("تراکنش تکرارشونده", style = MaterialTheme.typography.bodyMedium)
                 }
                 TextButton(onClick = { /* TODO: hook up an image picker for the receipt photo */ }) {
                     Icon(Icons.Filled.PhotoCamera, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("ط§ظپط²ظˆط¯ظ† ط±ط³غŒط¯")
+                    Text("افزودن رسید")
                 }
             }
 
             if (showValidationError) {
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    "ظ„ط·ظپط§ظ‹ ظ…ط¨ظ„ط؛ ظˆ ط¹ظ†ظˆط§ظ† ط±ط§ ظˆط§ط±ط¯ ع©ظ†غŒط¯.",
+                    "لطفاً مبلغ و عنوان را وارد کنید.",
                     color = AppError,
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -385,10 +385,10 @@ fun AddTransactionScreen(
                         dateLabel = JalaliCalendar.fromEpochMillisSlashed(millis)
                     }
                     showDatePicker = false
-                }) { Text("طھط£غŒغŒط¯") }
+                }) { Text("تأیید") }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("ط§ظ†طµط±ط§ظپ") }
+                TextButton(onClick = { showDatePicker = false }) { Text("انصراف") }
             },
         ) {
             DatePicker(state = pickerState)

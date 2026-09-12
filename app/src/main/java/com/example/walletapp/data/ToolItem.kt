@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.data
+package com.example.walletapp.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
@@ -162,13 +162,13 @@ object SettingsMenu {
                     ToolAction.BANK_LIST
                 ),
 
-                ToolItem(
-                    "بازخوانی تراکنش‌های بانکی",
-                    "بررسی پیامک‌های قدیمی و ثبت تراکنش‌های جامانده",
-                    Icons.Filled.Sync,
-                    ToolAction.TRANSACTION_SYNC
-                ),
 
+            ToolItem(
+                "همگام‌سازی داده‌ها",
+                "همگام‌سازی تراکنش‌ها و اطلاعات مالی با سرور",
+                Icons.Filled.Sync,
+                ToolAction.TRANSACTION_SYNC
+            ),
                 ToolItem(
                     "خروجی اکسل/PDF",
                     "دانلود گزارش‌های مالی",
@@ -241,4 +241,5 @@ object SettingsMenu {
         )
     )
 }
+
 

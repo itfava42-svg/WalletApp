@@ -112,17 +112,230 @@ object TransactionStore {
         persist()
     }
 
+    /**
+     * Updates a transaction as a LOCAL user change.
+     *
+     * Sync rules:
+     * - createdAt is preserved.
+     * - updatedAt is refreshed.
+     * - a previously SYNCED transaction becomes PENDING.
+     * - a previously FAILED transaction becomes PENDING again.
+     * - LOCAL_ONLY remains LOCAL_ONLY.
+     *
+     * Remote synchronization must NOT use this method because
+     * remote timestamps must be preserved during remote apply.
+     */
     fun update(transaction: Transaction) {
+
         val index =
             transactions.indexOfFirst {
                 it.id == transaction.id
             }
 
         if (index >= 0) {
-            transactions[index] = transaction
+
+            val now = System.currentTimeMillis()
+
+            val storedTransaction =
+                transaction.copy(
+                    createdAt =
+                        transaction.createdAt.takeIf {
+                            it > 0L
+                        }
+                            ?: transactions[index].createdAt.takeIf {
+                                it > 0L
+                            }
+                            ?: transaction.dateEpochMillis
+                            ?: now,
+
+                    updatedAt = now,
+
+                    syncStatus =
+                        when (transaction.syncStatus) {
+                            SyncStatus.SYNCED ->
+                                SyncStatus.PENDING
+
+                            SyncStatus.FAILED ->
+                                SyncStatus.PENDING
+
+                            else ->
+                                transaction.syncStatus
+                        }
+                )
+
+            transactions[index] = storedTransaction
+
             persist()
         }
     }
+
+    /**
+     * Applies a transaction received from a remote sync source.
+     *
+     * IMPORTANT:
+     * - This method intentionally does NOT call update().
+     * - Remote createdAt / updatedAt values are preserved.
+     * - Remote source / sourceId / account / transfer metadata are preserved.
+     * - Existing transaction with the same id is replaced.
+     * - Missing transaction is inserted.
+     *
+     * Conflict resolution belongs to the sync/merge layer.
+     */
+    fun applyRemote(transaction: Transaction) {
+
+        require(transaction.id.isNotBlank()) {
+            "Remote transaction id is required."
+        }
+
+        val index =
+            transactions.indexOfFirst {
+                it.id == transaction.id
+            }
+
+        if (index >= 0) {
+
+            transactions[index] = transaction
+
+        } else {
+
+            transactions.add(
+                0,
+                transaction
+            )
+        }
+
+        persist()
+    }
+    /**
+     * Deduplicates and merges a transaction before remote apply.
+     *
+     * Identity priority:
+     * 1. Transaction id
+     * 2. sourceId for transactions originating from the same source event
+     *
+     * This method does not modify SMS parsing or ingestion.
+     */
+    fun mergeOrApply(transaction: Transaction): Transaction {
+
+        require(transaction.id.isNotBlank()) {
+            "Transaction id is required."
+        }
+
+        /*
+         * Identity priority:
+         * 1. Exact transaction id.
+         * 2. sourceId for the original source event.
+         *
+         * This prevents duplicate transactions when the same
+         * source event arrives with a different local id.
+         */
+
+        val sourceId =
+            transaction.sourceId
+                ?.takeIf {
+                    it.isNotBlank()
+                }
+
+        val existingIndex =
+            transactions.indexOfFirst { existing ->
+
+                existing.id == transaction.id ||
+
+                    (
+                        sourceId != null &&
+                            !existing.sourceId.isNullOrBlank() &&
+                            existing.sourceId == sourceId
+                    )
+            }
+
+        if (existingIndex >= 0) {
+
+            val existing =
+                transactions[existingIndex]
+
+            val resolved =
+                resolveConflict(
+                    local = existing,
+                    remote = transaction
+                )
+
+            transactions[existingIndex] = resolved
+
+            persist()
+
+            return resolved
+        }
+
+        transactions.add(
+            0,
+            transaction
+        )
+
+        persist()
+
+        return transaction
+    }
+    /**
+     * Resolves a local/remote transaction conflict.
+     *
+     * Resolution order:
+     * 1. Same transaction id -> compare updatedAt.
+     * 2. Same sourceId -> compare updatedAt.
+     * 3. No matching identity -> remote transaction is accepted.
+     *
+     * The method is deterministic and does not invoke local update().
+     */
+    fun resolveConflict(
+        local: Transaction?,
+        remote: Transaction,
+    ): Transaction {
+
+        require(remote.id.isNotBlank()) {
+            "Remote transaction id is required."
+        }
+
+        if (local == null) {
+            return remote
+        }
+
+        val sameIdentity =
+            local.id == remote.id ||
+                (
+                    !local.sourceId.isNullOrBlank() &&
+                        !remote.sourceId.isNullOrBlank() &&
+                        local.sourceId == remote.sourceId
+                )
+
+        if (!sameIdentity) {
+            return remote
+        }
+
+        val localUpdated =
+            local.updatedAt.takeIf {
+                it > 0L
+            } ?: local.createdAt
+
+        val remoteUpdated =
+            remote.updatedAt.takeIf {
+                it > 0L
+            } ?: remote.createdAt
+
+        return when {
+            remoteUpdated > localUpdated -> remote
+
+            remoteUpdated < localUpdated -> local
+
+            else -> {
+                /*
+                 * Deterministic tie-breaker.
+                 * If timestamps are identical, keep the local
+                 * version to avoid unnecessary remote churn.
+                 */
+                local
+            }
+        }
+    }
+
 
     fun remove(id: String) {
         transactions.removeAll {
@@ -303,6 +516,10 @@ object TransactionStore {
         return storedTransaction
     }
 }
+
+
+
+
 
 
 
