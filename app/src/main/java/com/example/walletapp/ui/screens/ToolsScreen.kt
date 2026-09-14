@@ -62,6 +62,7 @@ fun ToolsScreen(
     onOpenLoanManagement: () -> Unit,
     onOpenCheckManagement: () -> Unit,
     onOpenOperations: () -> Unit,
+    onOpenReports: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -90,20 +91,19 @@ fun ToolsScreen(
             ToolAction.OPERATIONS ->
                 onOpenOperations()
 
+            ToolAction.REPORTS ->
+                onOpenReports()
+
             ToolAction.PROFILE ->
                 showMessage("صفحه پروفایل هنوز فعال نشده است.")
 
             ToolAction.PERSONALIZATION ->
                 showMessage("شخصی‌سازی هنوز فعال نشده است.")
 
-            ToolAction.SUBSCRIPTION ->
-                showMessage("مدیریت اشتراک هنوز فعال نشده است.")
 
             ToolAction.SAVINGS ->
                 showMessage("بخش پس‌انداز هنوز فعال نشده است.")
 
-            ToolAction.FINANCIAL_GOALS ->
-                showMessage("اهداف مالی هنوز فعال نشده است.")
 
             ToolAction.PRICES ->
                 showMessage("بخش قیمت‌ها هنوز فعال نشده است.")
@@ -236,10 +236,14 @@ fun ToolsScreen(
                                 index % toolIconPalette.size
                             ],
                             onClick = {
-                                handleClick(
-                                    item.action,
-                                    item.title
-                                )
+                                if (item.action == ToolAction.REPORTS) {
+                                    onOpenReports()
+                                } else {
+                                    handleClick(
+                                        item.action,
+                                        item.title
+                                    )
+                                }
                             },
                         )
                     }
@@ -348,3 +352,6 @@ private fun ToolGridCard(
         }
     }
 }
+
+
+

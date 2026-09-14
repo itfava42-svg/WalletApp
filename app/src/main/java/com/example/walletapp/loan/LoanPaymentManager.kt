@@ -46,7 +46,16 @@ object LoanPaymentManager {
                 transactionId = transaction.id,
             )
 
-        LoanStore.addPayment(loan.id, payment)
+        val added =
+            LoanStore.addPayment(
+                loan.id,
+                payment
+            )
+
+        if (!added) {
+            return null
+        }
+
         return payment
     }
 
@@ -71,3 +80,4 @@ object LoanPaymentManager {
      * remains unchanged.
      */
 }
+

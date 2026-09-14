@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.data.toPersianCurrency
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -298,6 +300,12 @@ fun AccountsScreen(
                         },
                         onSetDefault = {
                             AccountStore.setDefault(account.id)
+                        },
+                        onToggleActive = {
+                            AccountStore.setActive(
+                                id = account.id,
+                                active = !account.isActive
+                            )
                         }
                     )
                 }
@@ -414,6 +422,7 @@ private fun AccountCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onSetDefault: () -> Unit,
+    onToggleActive: () -> Unit,
 ) {
 
     var menuExpanded by remember {
@@ -424,7 +433,12 @@ private fun AccountCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor =
+                if (account.isActive) {
+                    MaterialTheme.colorScheme.surface
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                }
         )
     ) {
 
@@ -468,6 +482,19 @@ private fun AccountCard(
                         account.name,
                         fontWeight = FontWeight.Bold
                     )
+
+                    if (!account.isActive) {
+
+                        Spacer(
+                            Modifier.width(6.dp)
+                        )
+
+                        Text(
+                            "غیرفعال",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
 
                     if (account.isDefault) {
 
@@ -588,6 +615,28 @@ private fun AccountCard(
                             }
                         )
                     }
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                if (account.isActive) {
+                                    "غیرفعال کردن حساب"
+                                } else {
+                                    "فعال کردن حساب"
+                                }
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Filled.AccountBalance,
+                                contentDescription = null
+                            )
+                        },
+                        onClick = {
+                            menuExpanded = false
+                            onToggleActive()
+                        }
+                    )
 
                     DropdownMenuItem(
                         text = {
@@ -878,8 +927,10 @@ private fun formatAmount(
     amount: Long
 ): String {
 
-    return "%,d".format(amount)
+    return amount.toPersianCurrency()
 }
+
+
 
 
 

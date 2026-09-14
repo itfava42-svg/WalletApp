@@ -1,5 +1,14 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
+import android.graphics.BitmapFactory
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.FileProvider
+import java.io.File
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -16,6 +25,7 @@ import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -75,12 +85,89 @@ fun AddTransactionScreen(
             ?: activeAccounts
                 .firstOrNull()
                 ?.name
-            ?: "���� ����"
+            ?: "حساب اصلی"
     var isRecurring by remember { mutableStateOf(false) }
     var dateLabel by remember { mutableStateOf(JalaliCalendar.todaySlashed()) }
     var dateEpochMillis by remember { mutableStateOf<Long?>(null) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showValidationError by remember { mutableStateOf(false) }
+
+    var selectedReceiptUri by remember { mutableStateOf<Uri?>(null) }
+    var receiptPreviewBitmap by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
+    var cameraUri by remember { mutableStateOf<Uri?>(null) }
+
+    fun loadReceiptPreview(uri: Uri?) {
+        if (uri == null) {
+            receiptPreviewBitmap = null
+            return
+        }
+
+        receiptPreviewBitmap =
+            runCatching {
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    BitmapFactory.decodeStream(input)
+                }
+            }.getOrNull()
+    }
+
+    fun createCameraUri(): Uri {
+        val directory =
+            File(context.filesDir, "receipts").apply {
+                mkdirs()
+            }
+
+        val file =
+            File.createTempFile(
+                "receipt_camera_",
+                ".jpg",
+                directory,
+            )
+
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file,
+        )
+    }
+
+    val galleryLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.OpenDocument(),
+        ) { uri ->
+            if (uri != null) {
+                runCatching {
+                    context.contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION,
+                    )
+                }
+
+                selectedReceiptUri = uri
+                    loadReceiptPreview(uri)
+            }
+        }
+
+    val cameraLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.TakePicture(),
+        ) { success ->
+            val uri = cameraUri
+
+            if (success && uri != null) {
+                selectedReceiptUri = uri
+            }
+        }
+
+    val cameraPermissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { granted ->
+            if (granted) {
+                val uri = createCameraUri()
+                cameraUri = uri
+                cameraLauncher.launch(uri)
+            }
+        }
 
     val categories = if (type == TransactionType.EXPENSE) TransactionCategories.expense else TransactionCategories.income
     // Reset category if it doesn't belong to the newly selected type's list.
@@ -132,6 +219,7 @@ fun AddTransactionScreen(
                                 dateEpochMillis = dateEpochMillis,
                                 note = note.trim(),
                                 isRecurring = isRecurring,
+                                receiptUri = selectedReceiptUri?.toString(),
                             )
                         )
                     },
@@ -307,7 +395,7 @@ fun AddTransactionScreen(
                 ) {
                     if (activeAccounts.isEmpty()) {
                         DropdownMenuItem(
-                            text = { Text("����� ��� ���� ���") },
+                            text = { Text("هیچ حسابی وجود ندارد") },
                             onClick = {
                                 accountMenuExpanded = false
                             },
@@ -344,20 +432,75 @@ fun AddTransactionScreen(
             Spacer(Modifier.height(20.dp))
 
             // Recurring + attach receipt row
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Switch(checked = isRecurring, onCheckedChange = { isRecurring = it })
-                    Spacer(Modifier.width(8.dp))
-                    Text("تراکنش تکرارشونده", style = MaterialTheme.typography.bodyMedium)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    TextButton(
+                        onClick = {
+                            galleryLauncher.launch(
+                                arrayOf(
+                                    "image/jpeg",
+                                    "image/png",
+                                    "image/webp",
+                                ),
+                            )
+                        },
+                    ) {
+                        Icon(
+                            Icons.Filled.PhotoCamera,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+
+                        Spacer(Modifier.width(4.dp))
+
+                        Text(
+                            if (selectedReceiptUri == null) {
+                                "افزودن رسید"
+                            } else {
+                                "تعویض رسید"
+                            },
+                        )
+                    }
+
+                    TextButton(
+                        onClick = {
+                            cameraPermissionLauncher.launch(
+                                Manifest.permission.CAMERA,
+                            )
+                        },
+                    ) {
+                        Text("دوربین")
+                    }
+
+                    if (selectedReceiptUri != null) {
+                        TextButton(
+                            onClick = {
+                                selectedReceiptUri = null
+                                cameraUri = null
+                                receiptPreviewBitmap = null
+                            },
+                        ) {
+                            Text("حذف رسید")
+                        }
+                    }
                 }
-                TextButton(onClick = { /* TODO: hook up an image picker for the receipt photo */ }) {
-                    Icon(Icons.Filled.PhotoCamera, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("افزودن رسید")
+
+                receiptPreviewBitmap?.let { previewBitmap ->
+                    Spacer(Modifier.height(8.dp))
+
+                    Image(
+                        bitmap = previewBitmap.asImageBitmap(),
+                        contentDescription = "پیش‌نمایش رسید",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                    )
                 }
             }
 
@@ -457,4 +600,8 @@ private fun CategoryChip(
         )
     }
 }
+
+
+
+
 

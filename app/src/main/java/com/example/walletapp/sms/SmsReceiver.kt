@@ -173,6 +173,8 @@ class SmsReceiver : BroadcastReceiver() {
                     rawBody = fullBody,
                     smsDate = smsDate,
                     originalBank = parsed.bankName,
+                    accountNumber = parsed.accountNumber,
+                    cardLast4 = parsed.cardLast4,
                 )
 
                 Log.d(
@@ -257,3 +259,4 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 }
+

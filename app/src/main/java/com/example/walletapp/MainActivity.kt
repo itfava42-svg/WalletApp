@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp
 
+
+import android.util.Log
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionSyncViewModel
 import com.example.walletapp.data.LoanStore
+import com.example.walletapp.data.LoanLegacyMigration
 import com.example.walletapp.data.CheckStore
 import com.example.walletapp.ui.screens.AddTransactionScreen
 import com.example.walletapp.ui.screens.TransactionSyncScreen
@@ -36,18 +39,24 @@ import com.example.walletapp.ui.screens.AddReminderScreen
 import com.example.walletapp.ui.screens.LoanManagementScreen
 import com.example.walletapp.ui.screens.CheckManagementScreen
 import com.example.walletapp.data.Reminder
-import com.example.walletapp.ui.screens.ToolsScreen
+import com.example.walletapp.ui.screens.ToolsScreen
+import com.example.walletapp.ui.screens.ReportsScreen
+
 import com.example.walletapp.ui.screens.OperationsScreen
 import com.example.walletapp.ui.screens.TransferScreen
+import com.example.walletapp.ui.screens.TransactionsScreen
 import com.example.walletapp.ui.screens.AccountsScreen
 import com.example.walletapp.ui.theme.WalletAppTheme
 
 private sealed class AppScreen {
     data object Dashboard : AppScreen()
+    data object Transactions : AppScreen()
     data object Accounts : AppScreen()
     data object AddTransaction : AppScreen()
     data object Tools : AppScreen()
-        data object Operations : AppScreen()
+        data object Operations : AppScreen()
+    data object Reports : AppScreen()
+
     data object Transfer : AppScreen()
 data object Budget : AppScreen()
     data object SettingsList : AppScreen()
@@ -69,7 +78,7 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { _ ->
         // Regardless of the SMS permission result, also ask for the overlay
-        // ("display over other apps") permission أ¢â‚¬â€‌ it can't be requested
+            // ("display over other apps") permission — it can't be requested
         // through a normal runtime dialog, only via a Settings screen.
         maybeRequestOverlayPermission()
     }
@@ -79,6 +88,7 @@ class MainActivity : ComponentActivity() {
 
         TransactionStore.attachContext(applicationContext)
         LoanStore.attachContext(applicationContext)
+        LoanLegacyMigration.migrate(applicationContext)
         CheckStore.attachContext(applicationContext)
 
         setContent {
@@ -97,8 +107,9 @@ class MainActivity : ComponentActivity() {
                             currentScreen = when (index) {
                                 0 -> AppScreen.Dashboard
                                 1 -> AppScreen.Accounts
-                                3 -> AppScreen.Tools
-                                4 -> AppScreen.Budget
+                                2 -> AppScreen.Reports
+        3 -> AppScreen.Tools
+        4 -> AppScreen.Budget
                                 else -> AppScreen.Dashboard
                             }
                         }
@@ -109,11 +120,24 @@ class MainActivity : ComponentActivity() {
                                 onNavSelect = ::onNavSelect,
                             )
 
+                            is AppScreen.Transactions -> TransactionsScreen(
+
+                                selectedNavIndex = selectedNavIndex,
+
+                                onNavSelect = ::onNavSelect,
+
+                            )
+
+
                             is AppScreen.Dashboard -> DashboardScreen(
                                 onAddTransactionClick = { currentScreen = AppScreen.AddTransaction },
+                                onOpenTransactions = { currentScreen = AppScreen.Transactions },
                                 onOpenBudgetClick = {
                                     selectedNavIndex = 4
                                     currentScreen = AppScreen.Budget
+                                },
+                                onOpenMoreClick = {
+                                    currentScreen = AppScreen.Tools
                                 },
                                 selectedNavIndex = selectedNavIndex,
                                 onNavSelect = ::onNavSelect,
@@ -137,6 +161,10 @@ class MainActivity : ComponentActivity() {
                                     currentScreen = AppScreen.CheckManagement
                                 },
             onOpenOperations = { currentScreen = AppScreen.Operations },
+                                 onOpenReports = {
+    selectedNavIndex = 2
+    currentScreen = AppScreen.Reports
+},
                             )
                             is AppScreen.Budget -> BudgetScreen(
                                 selectedNavIndex = selectedNavIndex,
@@ -196,6 +224,12 @@ class MainActivity : ComponentActivity() {
             currentScreen = AppScreen.Transfer
         },    
         )
+
+                            is AppScreen.Reports -> ReportsScreen(
+    selectedNavIndex = selectedNavIndex,
+    onNavSelect = ::onNavSelect,
+)
+
                             is AppScreen.SettingsList -> SettingsListScreen(
                                 onBack = { currentScreen = AppScreen.Tools },
                                 onOpenThemeBuilder = { currentScreen = AppScreen.ThemeBuilder },
@@ -274,6 +308,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

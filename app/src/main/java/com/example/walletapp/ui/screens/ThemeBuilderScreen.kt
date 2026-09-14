@@ -620,19 +620,6 @@ private fun PreviewCard(
                     Modifier.height(10.dp)
                 )
 
-                Button(
-                    onClick = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = button
-                    )
-                ) {
-                    Text("ثبت تراکنش")
-                }
-
-                Spacer(
-                    Modifier.height(8.dp)
-                )
 
                 Text(
                     "رنگ اصلی: ${primary.toHex()}",
@@ -687,3 +674,4 @@ private fun Color.toHex(): String {
 
     return "#%02X%02X%02X".format(r, g, b)
 }
+

@@ -1,4 +1,4 @@
-package com.example.walletapp.data
+﻿package com.example.walletapp.data
 
 import android.content.Context
 import org.json.JSONArray
@@ -7,7 +7,7 @@ import org.json.JSONObject
 /**
  * Persists transactions to SharedPreferences as a JSON array, so they
  * survive the app process being killed (by the user, by Android's
- * low-memory killer, etc.) أ¢â‚¬â€‌ which happens routinely, especially for the
+     * low-memory killer, etc.) — which happens routinely, especially for the
  * short-lived process Android spins up just to deliver an SMS broadcast.
  * Uses org.json (built into Android) rather than adding a new dependency.
  */
@@ -293,6 +293,7 @@ object TransactionPersistence {
         }.getOrDefault(emptyList())
     }
 }
+
 
 
 

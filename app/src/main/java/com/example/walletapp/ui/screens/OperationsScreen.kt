@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,8 +49,8 @@ fun OperationsScreen(
     onOpenTransfer: () -> Unit,
 ) {
     val operations = listOf(        OperationItem(
-            title = "������ ��� ���ȝ��",
-            description = "������ ��� ��� ���ȝ��� ������",
+            title = "انتقال بین حساب‌ها",
+            description = "انتقال وجه بین حساب‌های خود",
             icon = Icons.Filled.AccountBalance,
         ),
         OperationItem(
@@ -122,7 +122,7 @@ fun OperationsScreen(
                             .fillMaxWidth()
                             .height(150.dp)
                             .clickable {
-                                when (operation.title) {                                    "������ ��� ���ȝ��" -> {
+                                when (operation.title) { "انتقال بین حساب‌ها" -> {
                                         onOpenTransfer()
                                     }
 

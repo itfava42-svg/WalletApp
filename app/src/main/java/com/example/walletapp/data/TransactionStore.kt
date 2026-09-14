@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.data
+package com.example.walletapp.data
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
@@ -126,6 +126,55 @@ object TransactionStore {
      * remote timestamps must be preserved during remote apply.
      */
     fun update(transaction: Transaction) {
+
+        if (transaction.kind == TransactionKind.NORMAL) {
+            val accountId = transaction.accountId?.takeIf {
+                it.isNotBlank()
+            }
+
+            if (accountId != null) {
+                AccountStore.accounts.firstOrNull {
+                    it.id == accountId &&
+                        it.isActive
+                } ?: throw IllegalArgumentException(
+                    "Transaction account does not exist or is inactive."
+                )
+            }
+        }
+
+        if (transaction.kind == TransactionKind.TRANSFER) {
+            val sourceAccountId =
+                transaction.sourceAccountId?.takeIf {
+                    it.isNotBlank()
+                } ?: throw IllegalArgumentException(
+                    "Transfer source account is required."
+                )
+
+            val destinationAccountId =
+                transaction.destinationAccountId?.takeIf {
+                    it.isNotBlank()
+                } ?: throw IllegalArgumentException(
+                    "Transfer destination account is required."
+                )
+
+            require(sourceAccountId != destinationAccountId) {
+                "Transfer source and destination accounts must differ."
+            }
+
+            AccountStore.accounts.firstOrNull {
+                it.id == sourceAccountId &&
+                    it.isActive
+            } ?: throw IllegalArgumentException(
+                "Transfer source account does not exist or is inactive."
+            )
+
+            AccountStore.accounts.firstOrNull {
+                it.id == destinationAccountId &&
+                    it.isActive
+            } ?: throw IllegalArgumentException(
+                "Transfer destination account does not exist or is inactive."
+            )
+        }
 
         val index =
             transactions.indexOfFirst {
@@ -412,13 +461,13 @@ object TransactionStore {
         val transaction =
             Transaction(
                 id = UUID.randomUUID().toString(),
-                title = "ط·آ§ط¸â€ ط·ع¾ط¸â€ڑط·آ§ط¸â€‍ ط·آ¨ط؛إ’ط¸â€  ط·آ­ط·آ³ط·آ§ط·آ¨أ¢â‚¬إ’ط¸â€،ط·آ§",
+                title = "انتقال بین حساب‌ها",
                 subtitle =
-                    "${sourceAccount.name} أ¢â€ â€™ ${destinationAccount.name}",
+                    "${sourceAccount.name} → ${destinationAccount.name}",
                 amount = amount,
                 type = TransactionType.EXPENSE,
-                iconKey = "ط·آ§ط¸â€ ط·ع¾ط¸â€ڑط·آ§ط¸â€‍",
-                category = "ط·آ§ط¸â€ ط·ع¾ط¸â€ڑط·آ§ط¸â€‍ ط·آ¯ط·آ§ط·آ®ط¸â€‍ط؛إ’",
+                    iconKey = "انتقال",
+                category = "ط§ظ†طھظ‚ط§ظ„ ط¯ط§ط®ظ„غŒ",
                 dateEpochMillis = dateEpochMillis ?: now,
                 note = note.trim(),
                 kind = TransactionKind.TRANSFER,
@@ -480,13 +529,13 @@ object TransactionStore {
                     if (merchant != null) {
                         bankName
                     } else {
-                        "ط·ع¾ط·آ±ط·آ§ط¹آ©ط¸â€ ط·آ´ ط·آ¨ط·آ§ط¸â€ ط¹آ©ط؛إ’"
+                        "طھط±ط§ع©ظ†ط´ ط¨ط§ظ†ع©غŒ"
                     },
                 amount = amount,
                 type = type,
                 dateEpochMillis = smsDate ?: now,
             requiresCompletion = true,
-                iconKey = "ط·آ¨ط·آ§ط¸â€ ط¹آ©",
+                iconKey = "ط¨ط§ظ†ع©",
                 sourceId = sourceId,
                 source = TransactionSource.SMS,
                 syncStatus = SyncStatus.LOCAL_ONLY,
@@ -516,6 +565,7 @@ object TransactionStore {
         return storedTransaction
     }
 }
+
 
 
 

@@ -1266,7 +1266,7 @@ private fun LoanInstallmentsDialog(
                                         ) {
                                             Text(
                                                 text = "ثبت پرداخت",
-                                                fontSize = 10.sp
+                                                fontSize = 13.sp
                                             )
                                         }
                                     }
@@ -1467,7 +1467,7 @@ private fun LoanInstallmentsDialog(
                 ) {
                     Text(
                         text = "ثبت پرداخت",
-                        fontSize = 11.sp
+                        fontSize = 13.sp
                     )
                 }
             },
@@ -2045,7 +2045,7 @@ private fun LoanInputTile(
 
                 Text(
                     text = title,
-                    fontSize = 12.sp,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
                     color = MatureColors.TextPrimary
                 )

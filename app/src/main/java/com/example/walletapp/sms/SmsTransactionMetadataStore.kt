@@ -22,6 +22,8 @@ object SmsTransactionMetadataStore {
         val rawBody: String,
         val smsDate: Long,
         val originalBank: String,
+        val accountNumber: String? = null,
+        val cardLast4: String? = null,
     )
 
     private var appContext: Context? = null
@@ -47,6 +49,8 @@ object SmsTransactionMetadataStore {
         rawBody: String,
         smsDate: Long,
         originalBank: String,
+        accountNumber: String? = null,
+        cardLast4: String? = null,
     ) {
         val metadata =
             Metadata(
@@ -55,6 +59,8 @@ object SmsTransactionMetadataStore {
                 rawBody = rawBody,
                 smsDate = smsDate,
                 originalBank = originalBank,
+                accountNumber = accountNumber,
+                cardLast4 = cardLast4,
             )
 
         metadataMap[transactionId] = metadata
@@ -105,6 +111,14 @@ object SmsTransactionMetadataStore {
             json.put(
                 "originalBank",
                 item.originalBank
+            )
+            json.put(
+                "accountNumber",
+                item.accountNumber ?: ""
+            )
+            json.put(
+                "cardLast4",
+                item.cardLast4 ?: ""
             )
 
             array.put(json)
@@ -160,6 +174,12 @@ object SmsTransactionMetadataStore {
                         rawBody = json.optString("rawBody"),
                         smsDate = json.optLong("smsDate"),
                         originalBank = json.optString("originalBank"),
+                        accountNumber =
+                            json.optString("accountNumber")
+                                .takeIf { it.isNotBlank() },
+                        cardLast4 =
+                            json.optString("cardLast4")
+                                .takeIf { it.isNotBlank() },
                     )
 
                 metadataMap[transactionId] = metadata
@@ -172,3 +192,4 @@ object SmsTransactionMetadataStore {
         persist()
     }
 }
+

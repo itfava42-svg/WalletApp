@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -74,7 +74,7 @@ fun SettingsListScreen(
 
                         putExtra(
                             android.content.Intent.EXTRA_TEXT,
-                            "ط¹آ©ط؛إ’ط¸ظ¾ ط¸آ¾ط¸ث†ط¸â€‍ أ¢â‚¬â€‌ ط·آ¨ط¸â€،ط·ع¾ط·آ±ط؛إ’ط¸â€  ط·آ¨ط·آ±ط¸â€ ط·آ§ط¸â€¦ط¸â€، ط¸â€¦ط·آ¯ط؛إ’ط·آ±ط؛إ’ط·ع¾ ط¸â€¦ط·آ§ط¸â€‍ط؛إ’"
+                            "کیف پول — بهترین برنامه مدیریت مالی"
                         )
 
                         type = "text/plain"
@@ -83,14 +83,14 @@ fun SettingsListScreen(
                 context.startActivity(
                     android.content.Intent.createChooser(
                         shareIntent,
-                        "ط¸â€¦ط·آ¹ط·آ±ط¸ظ¾ط؛إ’ ط·آ¨ط¸â€، ط·آ¯ط¸ث†ط·آ³ط·ع¾ط·آ§ط¸â€ "
+                        "ظ…ط¹ط±ظپغŒ ط¨ظ‡ ط¯ظˆط³طھط§ظ†"
                     )
                 )
             }
 
             else -> {
                 showMessage(
-                    "${item.title} أ¢â‚¬â€‌ ط·آ¨ط¸â€،أ¢â‚¬إ’ط·آ²ط¸ث†ط·آ¯ط؛إ’"
+                        "${item.title} — به‌زودی"
                 )
             }
         }
@@ -106,7 +106,7 @@ fun SettingsListScreen(
 
                 title = {
                     Text(
-                        "ط·ع¾ط¸â€ ط·آ¸ط؛إ’ط¸â€¦ط·آ§ط·ع¾",
+                        "طھظ†ط¸غŒظ…ط§طھ",
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -118,7 +118,7 @@ fun SettingsListScreen(
                     ) {
                         Icon(
                             Icons.Filled.ArrowForward,
-                            contentDescription = "ط·آ¨ط·آ§ط·آ²ط¹آ¯ط·آ´ط·ع¾"
+                            contentDescription = "ط¨ط§ط²ع¯ط´طھ"
                         )
                     }
                 },
@@ -282,6 +282,7 @@ private fun SettingsRow(
         }
     }
 }
+
 
 
 

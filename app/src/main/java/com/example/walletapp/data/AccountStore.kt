@@ -73,7 +73,7 @@ object AccountStore {
         // Backward-compatible migration from the old balance field.
         item.optLong("balance", 0L)
     },
-                        isDefault = item.optBoolean("isDefault", false),
+                        isDefault = item.optBoolean("isDefault", false) && item.optBoolean("isActive", true),
                         isActive = item.optBoolean("isActive", true),
                     )
                 )
@@ -215,20 +215,80 @@ object AccountStore {
 
     fun setDefault(id: String) {
 
-        // Never remove the default state because of an invalid ID.
-        if (accounts.none { it.id == id }) {
-            return
-        }
+        // Only an existing active account can become default.
+        val target = accounts.firstOrNull {
+            it.id == id && it.isActive
+        } ?: return
 
         for (i in accounts.indices) {
             accounts[i] = accounts[i].copy(
-                isDefault = accounts[i].id == id
+                isDefault = accounts[i].id == target.id
             )
         }
 
         persist()
     }
+
+    /**
+     * Enables or disables an account without deleting it.
+     *
+     * Historical transactions remain untouched.
+     *
+     * A disabled account can never remain the default account.
+     * When disabling the current default, the first active account
+     * becomes the new default when one exists.
+     */
+    fun setActive(
+        id: String,
+        active: Boolean
+    ): Boolean {
+
+        val index = accounts.indexOfFirst {
+            it.id == id
+        }
+
+        if (index < 0) {
+            return false
+        }
+
+        val current = accounts[index]
+
+        if (current.isActive == active) {
+            return true
+        }
+
+        if (!active && current.isDefault) {
+
+            accounts[index] = current.copy(
+                isActive = false,
+                isDefault = false
+            )
+
+            val replacementIndex = accounts.indexOfFirst {
+                it.id != id && it.isActive
+            }
+
+            if (replacementIndex >= 0) {
+                accounts[replacementIndex] =
+                    accounts[replacementIndex].copy(
+                        isDefault = true
+                    )
+            }
+
+        } else {
+
+            accounts[index] = current.copy(
+                isActive = active
+            )
+        }
+
+        persist()
+
+        return true
+    }
 }
+
+
 
 
 

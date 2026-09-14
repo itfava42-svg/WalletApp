@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,17 +36,41 @@ import com.example.walletapp.ui.components.TransactionSyncCard
 @Composable
 fun DashboardScreen(
     onAddTransactionClick: () -> Unit = {},
+    onOpenTransactions: () -> Unit = {},
     onOpenBudgetClick: () -> Unit = {},
+    onOpenMoreClick: () -> Unit = {},
     selectedNavIndex: Int = 0,
     onNavSelect: (Int) -> Unit = {},
 ) {
     val context = LocalContext.current
+
+    var showDashboardMenu by remember { mutableStateOf(false) }
+    var showDashboardFilter by remember { mutableStateOf(false) }
+    var dashboardFilter by remember { mutableStateOf("ALL") }
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(Unit) {
         AccountStore.attachContext(context)
         TransactionStore.attachContext(context)
     }
     val transactions = TransactionStore.transactions
+
+    val filteredTransactions =
+        when (dashboardFilter) {
+            "INCOME" ->
+                transactions.filter {
+                    it.kind == com.example.walletapp.data.TransactionKind.NORMAL &&
+                        it.type == TransactionType.INCOME
+                }
+
+            "EXPENSE" ->
+                transactions.filter {
+                    it.kind == com.example.walletapp.data.TransactionKind.NORMAL &&
+                        it.type == TransactionType.EXPENSE
+                }
+
+            else ->
+                transactions
+        }
     var editingTransaction by remember { mutableStateOf<com.example.walletapp.data.Transaction?>(null) }
 
     val syncViewModel =
@@ -119,13 +143,109 @@ fun DashboardScreen(
             CenterAlignedTopAppBar(
                 title = { Text("داشبورد", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = { /* TODO: open menu */ }) {
-                        Icon(Icons.Filled.Menu, contentDescription = "منو")
-                    }
+                    Box {
+    IconButton(
+        onClick = {
+            showDashboardMenu = true
+        }
+    ) {
+        Icon(
+            Icons.Filled.Menu,
+            contentDescription = "منو"
+        )
+    }
+
+    DropdownMenu(
+        expanded = showDashboardMenu,
+        onDismissRequest = {
+            showDashboardMenu = false
+        }
+    ) {
+        DropdownMenuItem(
+            text = {
+                Text("حساب‌ها")
+            },
+            onClick = {
+                showDashboardMenu = false
+                onNavSelect(1)
+            }
+        )
+
+        DropdownMenuItem(
+            text = {
+                Text("گزارشات")
+            },
+            onClick = {
+                showDashboardMenu = false
+                onNavSelect(2)
+            }
+        )
+
+        DropdownMenuItem(
+            text = {
+                Text("ابزارها")
+            },
+            onClick = {
+                showDashboardMenu = false
+                onNavSelect(3)
+            }
+        )
+
+        DropdownMenuItem(
+            text = {
+                Text("بودجه")
+            },
+            onClick = {
+                showDashboardMenu = false
+                onNavSelect(4)
+            }
+        )
+    }
+}
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: open filters */ }) {
-                        Icon(Icons.Filled.Tune, contentDescription = "فیلترها")
+                    Box {
+                        IconButton(
+                            onClick = {
+                                showDashboardFilter = true
+                            }
+                        ) {
+                            Icon(
+                                Icons.Filled.Tune,
+                                contentDescription = "فیلترها"
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showDashboardFilter,
+                            onDismissRequest = {
+                                showDashboardFilter = false
+                            }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("همه تراکنش‌ها") },
+                                onClick = {
+                                    dashboardFilter = "ALL"
+                                    showDashboardFilter = false
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text("درآمدها") },
+                                onClick = {
+                                    dashboardFilter = "INCOME"
+                                    showDashboardFilter = false
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text("هزینه‌ها") },
+                                onClick = {
+                                    dashboardFilter = "EXPENSE"
+                                    showDashboardFilter = false
+                                }
+                            )
+                        }
                     }
                 },
             )
@@ -174,9 +294,9 @@ fun DashboardScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     QuickAction("ثبت", Icons.Filled.Add, SecondaryContainer, OnSecondaryContainer, onClick = onAddTransactionClick)
-                    QuickAction("پرداخت", Icons.Filled.Payments, SurfaceContainerHigh, Tertiary, onClick = {})
+                    QuickAction("پرداخت", Icons.Filled.Payments, SurfaceContainerHigh, Tertiary, onClick = onAddTransactionClick)
                     QuickAction("بودجه", Icons.Filled.Analytics, SurfaceContainerHigh, Primary, onClick = onOpenBudgetClick)
-                    QuickAction("بیشتر", Icons.Filled.MoreHoriz, SurfaceContainerHigh, Outline, onClick = {})
+                    QuickAction("بیشتر", Icons.Filled.MoreHoriz, SurfaceContainerHigh, Outline, onClick = onOpenMoreClick)
                 }
                 Spacer(Modifier.height(32.dp))
             }
@@ -188,14 +308,14 @@ fun DashboardScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text("آخرین تراکنش‌ها", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
-                    TextButton(onClick = { /* TODO: view all */ }) {
+                    TextButton(onClick = onOpenTransactions) {
                         Text("مشاهده همه", color = Primary, fontWeight = FontWeight.Bold)
                     }
                 }
                 Spacer(Modifier.height(16.dp))
             }
 
-            items(transactions, key = { it.id }) { tx ->
+            items(filteredTransactions, key = { it.id }) { tx ->
                 TransactionRow(tx, onClick = { editingTransaction = tx })
                 Spacer(Modifier.height(12.dp))
             }
@@ -243,6 +363,12 @@ fun DashboardScreen(
         )
     }
 }
+
+
+
+
+
+
 
 
 

@@ -313,24 +313,26 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
         val metadata =
             SmsTransactionMetadataStore.get(transaction.id)
 
-        if (
-            learnBank &&
-            !metadata?.sender.isNullOrBlank()
-        ) {
-            SmsLearningStore.saveSenderBank(
-                sender = metadata!!.sender,
-                bankName = selectedBank,
-            )
-        }
+        metadata?.let { meta ->
+            if (
+                learnBank &&
+                !meta.sender.isNullOrBlank()
+            ) {
+                SmsLearningStore.saveSenderBank(
+                    sender = meta.sender,
+                    bankName = selectedBank,
+                )
+            }
 
-        if (
-            category != null &&
-            !metadata?.sender.isNullOrBlank()
-        ) {
-            SmsLearningStore.saveSenderCategory(
-                sender = metadata!!.sender,
-                category = category,
-            )
+            if (
+                category != null &&
+                !meta.sender.isNullOrBlank()
+            ) {
+                SmsLearningStore.saveSenderCategory(
+                    sender = meta.sender,
+                    category = category,
+                )
+            }
         }
 
         // -------------------------------------------------------------
@@ -338,32 +340,69 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
         // اعداد متغیر مانند مبلغ، تاریخ و شماره حساب
         // در SmsLearningStore هنگام ذخیره الگو نرمال می‌شوند.
         // -------------------------------------------------------------
-        if (!metadata?.sender.isNullOrBlank()) {
-            SmsLearningStore.savePatternRule(
-                sender = metadata!!.sender,
-                pattern = metadata.rawBody,
-                bankName = selectedBank,
-                category = category,
-                transactionType = transaction.type.name,
-            )
+        metadata?.let { meta ->
+            if (
+                learnBank &&
+                !meta.sender.isNullOrBlank() &&
+                !meta.rawBody.isNullOrBlank()
+            ) {
+                SmsLearningStore.savePatternRule(
+                    sender = meta.sender,
+                    pattern = meta.rawBody,
+                    bankName = selectedBank,
+                    category = category,
+                    transactionType = transaction.type.name,
+                )
+            }
         }
 
         /*
-         * Account linking is intentionally conservative.
+         * Account linking priority:
          *
-         * Exactly one active account for the selected bank:
-         *     -> link automatically.
-         *
-         * Zero or multiple matching accounts:
-         *     -> do not guess.
-         *
-         * Multiple-account selection will be added in the next step.
+         * 1. Explicit user selection.
+         * 2. Exact SMS account number.
+         * 3. Exact SMS card last-4.
+         * 4. Exactly one active account for the selected bank.
+         * 5. Otherwise do not guess.
          */
+        val accountMetadata =
+            SmsTransactionMetadataStore.get(transaction.id)
+
+        val smsAccountNumber =
+            accountMetadata
+                ?.accountNumber
+                ?.trim()
+                ?.takeIf { it.isNotBlank() }
+
+        val smsCardLast4 =
+            accountMetadata
+                ?.cardLast4
+                ?.trim()
+                ?.takeIf { it.isNotBlank() }
+
         val matchingAccounts =
             AccountStore.accounts.filter { account ->
                 account.isActive &&
                     account.bankName.trim() == selectedBank.trim()
             }
+
+        val accountNumberMatches =
+            smsAccountNumber
+                ?.let { smsNumber ->
+                    matchingAccounts.filter { account ->
+                        account.accountNumber.trim() == smsNumber
+                    }
+                }
+                ?: emptyList()
+
+        val cardLast4Matches =
+            smsCardLast4
+                ?.let { smsCard ->
+                    matchingAccounts.filter { account ->
+                        account.cardLast4.trim() == smsCard
+                    }
+                }
+                ?: emptyList()
 
         val resolvedAccountId =
             when {
@@ -385,12 +424,18 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                     selectedAccount.id
                 }
 
+                accountNumberMatches.size == 1 ->
+                    accountNumberMatches.first().id
+
+                cardLast4Matches.size == 1 ->
+                    cardLast4Matches.first().id
+
                 matchingAccounts.size == 1 ->
                     matchingAccounts.first().id
 
                 else -> {
-                    // Never finalize a bank SMS without a valid account.
-                    // When multiple accounts exist, the user must choose one.
+                    // Never guess when the SMS cannot uniquely identify
+                    // an active account.
                     return
                 }
             }
@@ -471,14 +516,16 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
     ) {
         val metadata = SmsTransactionMetadataStore.get(transaction.id)
 
-        if (
-            !sender.isNullOrBlank() &&
-            !metadata?.rawBody.isNullOrBlank()
-        ) {
-            SmsIgnoreStore.ignorePattern(
-                sender = sender,
-                pattern = metadata!!.rawBody,
-            )
+        metadata?.let { meta ->
+            if (
+                !sender.isNullOrBlank() &&
+                !meta.rawBody.isNullOrBlank()
+            ) {
+                SmsIgnoreStore.ignorePattern(
+                    sender = sender,
+                    pattern = meta.rawBody,
+                )
+            }
         }
 
         TransactionStore.update(
@@ -568,11 +615,50 @@ private fun SmsCompletionContent(
         mutableStateOf(detectedBank)
     }
 
+    val metadata =
+        remember(transaction.id) {
+            SmsTransactionMetadataStore.get(transaction.id)
+        }
+
+    val smsAccountNumber =
+        metadata
+            ?.accountNumber
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
+
+    val smsCardLast4 =
+        metadata
+            ?.cardLast4
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
+
     val matchingAccounts =
         remember(selectedBank) {
             AccountStore.accounts.filter { account ->
                 account.isActive &&
                     account.bankName.trim() == selectedBank.trim()
+            }
+        }
+
+    val accountNumberMatches =
+        remember(selectedBank, smsAccountNumber) {
+            if (smsAccountNumber == null) {
+                emptyList()
+            } else {
+                matchingAccounts.filter { account ->
+                    account.accountNumber.trim() == smsAccountNumber
+                }
+            }
+        }
+
+    val cardLast4Matches =
+        remember(selectedBank, smsCardLast4) {
+            if (smsCardLast4 == null) {
+                emptyList()
+            } else {
+                matchingAccounts.filter { account ->
+                    account.cardLast4.trim() == smsCardLast4
+                }
             }
         }
 
@@ -582,6 +668,8 @@ private fun SmsCompletionContent(
                 ?.takeIf { id ->
                     matchingAccounts.any { it.id == id }
                 }
+                ?: accountNumberMatches.singleOrNull()?.id
+                ?: cardLast4Matches.singleOrNull()?.id
                 ?: matchingAccounts.singleOrNull()?.id
         )
     }
@@ -1894,6 +1982,11 @@ private fun SectionTitle(
         }
     }
 }
+
+
+
+
+
 
 
 

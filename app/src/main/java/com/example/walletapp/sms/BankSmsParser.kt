@@ -8,6 +8,8 @@ data class ParsedBankSms(
     val merchant: String?,
     val type: TransactionType,
     val rawBody: String,
+    val accountNumber: String? = null,
+    val cardLast4: String? = null,
 )
 
 /**
@@ -94,6 +96,30 @@ object BankSmsParser {
     private val currencyAmountRegex =
         Regex(
             """([+-]?)\s*([0-9\u06F0-\u06F9\u0660-\u0669]{1,3}(?:[,\u060C\u066C][0-9\u06F0-\u06F9\u0660-\u0669]{3})+|[0-9\u06F0-\u06F9\u0660-\u0669]+)\s*(?:\u0631\u06cc\u0627\u0644|\u062a\u0648\u0645\u0627\u0646)\s*([+-]?)"""
+        )
+
+    /*
+     * Account/card extraction is intentionally conservative.
+     *
+     * Account numbers are extracted only when an explicit
+     * account cue exists, such as:
+     *   حساب226284257
+     *   حساب 226284257
+     *   شماره حساب: 226284257
+     *
+     * Card numbers are extracted only when an explicit card cue
+     * exists. We keep only the last four digits for matching.
+     *
+     * We do NOT interpret arbitrary SMS numbers as accounts/cards.
+     */
+    private val accountNumberRegex =
+        Regex(
+            """(?:\u0634\u0645\u0627\u0631\u0647\s*)?\u062d\u0633\u0627\u0628\s*[:\-]?\s*([0-9\u06F0-\u06F9\u0660-\u0669]{6,20})"""
+        )
+
+    private val cardNumberRegex =
+        Regex(
+            """(?:\u0634\u0645\u0627\u0631\u0647\s*)?\u06a9\u0627\u0631\u062a\s*[:\-]?\s*((?:[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4}[\s\-_]*){3,4}[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4})"""
         )
 
     private val merchantCueRegex =
@@ -258,13 +284,63 @@ object BankSmsParser {
             return null
         }
 
+        val accountNumber =
+            accountNumberRegex
+                .find(normalizedBody)
+                ?.groupValues
+                ?.getOrNull(1)
+                ?.let(::normalizeDigits)
+                ?.takeIf { it.length in 6..20 }
+
+        val cardLast4 =
+            cardNumberRegex
+                .find(normalizedBody)
+                ?.groupValues
+                ?.getOrNull(1)
+                ?.let(::normalizeDigits)
+                ?.filter { it.isDigit() }
+                ?.takeLast(4)
+                ?.takeIf { it.length == 4 }
+
         return ParsedBankSms(
             bankName = bankName,
             amount = amount,
             merchant = merchant,
             type = type,
             rawBody = body,
+            accountNumber = accountNumber,
+            cardLast4 = cardLast4,
         )
+    }
+
+    private fun normalizeDigits(
+        raw: String,
+    ): String {
+
+        return buildString {
+            raw.forEach { char ->
+
+                when (char) {
+
+                    in '\u06F0'..'\u06F9' ->
+                        append(
+                            ('0'.code +
+                                (char.code - '\u06F0'.code))
+                                .toChar()
+                        )
+
+                    in '\u0660'..'\u0669' ->
+                        append(
+                            ('0'.code +
+                                (char.code - '\u0660'.code))
+                                .toChar()
+                        )
+
+                    else ->
+                        append(char)
+                }
+            }
+        }
     }
 
     private fun normalizeAmountToLong(
@@ -303,4 +379,5 @@ object BankSmsParser {
         return normalized.toLongOrNull()
     }
 }
+
 

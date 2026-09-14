@@ -90,12 +90,25 @@ object SmsDecisionEngine {
                     ?.takeIf { it.isNotBlank() }
                     ?: parsed.bankName
 
+            /*
+             * Transaction type safety:
+             *
+             * Strong evidence already parsed from the SMS must beat
+             * stale learned type rules.
+             *
+             * Explicit +/- signs and clear income/expense keywords
+             * are considered strong evidence.
+             */
             val correctedType =
-                learnedPattern.transactionType
-                    ?.let { value ->
-                        parseTransactionType(value)
-                    }
-                    ?: parsed.type
+                if (hasStrongTransactionTypeEvidence(body)) {
+                    parsed.type
+                } else {
+                    learnedPattern.transactionType
+                        ?.let { value ->
+                            parseTransactionType(value)
+                        }
+                        ?: parsed.type
+                }
 
             return Decision(
                 ignored = false,
@@ -120,11 +133,19 @@ object SmsDecisionEngine {
                 }
 
         if (learnedBank != null || learnedType != null) {
+
+            val correctedType =
+                if (hasStrongTransactionTypeEvidence(body)) {
+                    parsed.type
+                } else {
+                    learnedType ?: parsed.type
+                }
+
             return Decision(
                 ignored = false,
                 parsed = parsed.copy(
                     bankName = learnedBank ?: parsed.bankName,
-                    type = learnedType ?: parsed.type,
+                    type = correctedType,
                 ),
             )
         }
@@ -136,6 +157,58 @@ object SmsDecisionEngine {
             ignored = false,
             parsed = parsed,
         )
+    }
+
+    private fun hasStrongTransactionTypeEvidence(
+        body: String,
+    ): Boolean {
+
+        val normalized =
+            body
+                .replace('\u064A', '\u06CC')
+                .replace('\u0643', '\u06A9')
+                .replace('\u200C', ' ')
+                .replace(Regex("\\s+"), " ")
+                .trim()
+
+        /*
+         * Explicit signed amount:
+         *   +200,000
+         *   -200,000
+         *   200,000+
+         *   200,000-
+         */
+        val explicitSignRegex =
+            Regex(
+                """(?:^|[^\d۰-۹٠-٩])([+-])\s*[0-9۰-۹٠-٩]{1,3}(?:[,،٬][0-9۰-۹٠-٩]{3})*(?:[+-])?(?=\D|$)|[0-9۰-۹٠-٩]{1,3}(?:[,،٬][0-9۰-۹٠-٩]{3})*\s*([+-])"""
+            )
+
+        if (explicitSignRegex.containsMatchIn(normalized)) {
+            return true
+        }
+
+        val strongIncomeKeywords =
+            listOf(
+                "\u0648\u0627\u0631\u06cc\u0632",
+                "\u0627\u0641\u0632\u0627\u06cc\u0634 \u0645\u0648\u062c\u0648\u062f\u06cc",
+                "\u0628\u0627\u0632\u06af\u0634\u062a \u0648\u062c\u0647",
+                "\u0648\u0627\u0631\u06cc\u0632 \u0628\u0647 \u062d\u0633\u0627\u0628",
+                "\u062f\u0631\u06cc\u0627\u0641\u062a \u067e\u0644",
+                "\u0628\u0647 \u062d\u0633\u0627\u0628 \u0634\u0645\u0627 \u0646\u0634\u0633\u062a",
+            )
+
+        val strongExpenseKeywords =
+            listOf(
+                "\u0628\u0631\u062f\u0627\u0634\u062a",
+                "\u062e\u0631\u06cc\u062f",
+                "\u06a9\u0633\u0631",
+                "\u067e\u0631\u062f\u0627\u062e\u062a",
+                "\u0627\u0646\u062a\u0642\u0627\u0644 \u0627\u0632",
+                "\u062d\u0648\u0627\u0644\u0647",
+            )
+
+        return strongIncomeKeywords.any { normalized.contains(it) } ||
+            strongExpenseKeywords.any { normalized.contains(it) }
     }
 
     private fun parseTransactionType(
@@ -152,3 +225,4 @@ object SmsDecisionEngine {
         }
     }
 }
+

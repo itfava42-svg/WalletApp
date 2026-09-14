@@ -1,4 +1,4 @@
-package com.example.walletapp.data
+﻿package com.example.walletapp.data
 
 import androidx.compose.runtime.mutableStateListOf
 import java.util.UUID
@@ -36,7 +36,13 @@ object BudgetStore {
      */
     fun spentFor(budget: Budget): Long {
         return TransactionStore.transactions
-            .filter { it.type == TransactionType.EXPENSE && it.subtitle.startsWith(budget.category) }
+            .filter {
+                it.kind == TransactionKind.NORMAL &&
+                    it.type == TransactionType.EXPENSE &&
+                    it.subtitle.startsWith(budget.category)
+            }
             .sumOf { it.amount }
     }
 }
+
+

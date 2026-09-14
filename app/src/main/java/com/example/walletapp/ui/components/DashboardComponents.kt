@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.components
+﻿package com.example.walletapp.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -38,17 +38,18 @@ fun BalanceHeroCard(
             .padding(24.dp)
     ) {
         Column {
-            Text("مانده کل", color = OnPrimary.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyMedium)
+            Text("مانده کل", color = OnPrimary.copy(alpha = 0.8f), style = AppTextStyles.bodyMd)
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
                     totalBalance.toPersianCurrency(),
                     color = OnPrimary,
+                    fontFamily = AppFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 32.sp,
                 )
                 Spacer(Modifier.width(8.dp))
-                Text("تومان", color = OnPrimary.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyLarge)
+                Text("تومان", color = OnPrimary.copy(alpha = 0.8f), style = AppTextStyles.bodyLg)
             }
             Spacer(Modifier.height(24.dp))
             HorizontalDivider(color = Color.White.copy(alpha = 0.2f))
@@ -77,10 +78,18 @@ private fun SummaryStat(label: String, amount: Long, icon: androidx.compose.ui.g
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(icon, contentDescription = null, tint = iconColor, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(4.dp))
-            Text(label, color = OnPrimary.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyMedium)
+            Text(label, color = OnPrimary.copy(alpha = 0.8f), style = AppTextStyles.bodyMd)
         }
         Spacer(Modifier.height(4.dp))
-        Text(amount.toPersianCurrency(), color = OnPrimary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text(
+            amount.toPersianCurrency(),
+            color = OnPrimary,
+            style = AppTextStyles.headlineSm.copy(
+                fontFamily = AppFontFamily,
+                fontSize = 20.sp,
+                lineHeight = 30.sp,
+            ),
+        )
     }
 }
 
@@ -146,7 +155,7 @@ fun TransactionRow(transaction: Transaction, modifier: Modifier = Modifier, onCl
                 }
                 Spacer(Modifier.width(16.dp))
                 Column {
-                    Text(transaction.title, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge, color = OnSurface)
+                    Text(transaction.title, fontWeight = FontWeight.Bold, style = AppTextStyles.bodyLg, color = OnSurface)
                     Text(transaction.subtitle, style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
                     if (transaction.tags.isNotEmpty()) {
                         Text(
@@ -162,7 +171,7 @@ fun TransactionRow(transaction: Transaction, modifier: Modifier = Modifier, onCl
                     "$sign${transaction.amount.toPersianCurrency()}",
                     fontWeight = FontWeight.Bold,
                     color = amountColor,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = AppTextStyles.bodyLg,
                 )
                 Text("تومان", style = MaterialTheme.typography.labelMedium, color = Outline)
             }
@@ -213,3 +222,4 @@ fun DashboardFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
         Icon(Icons.Filled.Add, contentDescription = "تراکنش جدید")
     }
 }
+

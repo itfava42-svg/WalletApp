@@ -257,14 +257,37 @@ object LoanStore {
     fun addPayment(
         loanId: String,
         payment: LoanPayment
-    ) {
-        val loan = getById(loanId) ?: return
+    ): Boolean {
+        val loan = getById(loanId) ?: return false
+
+        if (
+            loan.payments.any {
+                it.installmentNumber == payment.installmentNumber
+            }
+        ) {
+            return false
+        }
+
+        if (
+            !payment.transactionId.isNullOrBlank() &&
+            loan.payments.any {
+                it.transactionId == payment.transactionId
+            }
+        ) {
+            return false
+        }
 
         update(
             loan.copy(
                 payments = loan.payments + payment
             )
         )
+
+        val updatedLoan = getById(loanId) ?: return false
+
+        return updatedLoan.payments.any {
+            it.id == payment.id
+        }
     }
 
     fun removePayment(
@@ -282,6 +305,7 @@ object LoanStore {
         )
     }
 }
+
 
 
 
