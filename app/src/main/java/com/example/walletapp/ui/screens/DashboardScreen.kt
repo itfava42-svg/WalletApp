@@ -426,7 +426,7 @@ val dashboardMonthCategories =
                 DropdownMenuItem(text = { Text("حساب‌ها") }, onClick = { showDashboardMenu = false; onNavSelect(3) })
                 DropdownMenuItem(text = { Text("گزارشات") }, onClick = { showDashboardMenu = false; onOpenMoreClick() })
                 DropdownMenuItem(text = { Text("ابزارها") }, onClick = { showDashboardMenu = false; onNavSelect(4) })
-                DropdownMenuItem(text = { Text("ط¨ظˆط¯ط¬ظ‡") }, onClick = { showDashboardMenu = false; onOpenBudgetClick() })
+                DropdownMenuItem(text = { Text("بودجه") }, onClick = { showDashboardMenu = false; onOpenBudgetClick() })
             }
         },
     )
@@ -590,6 +590,7 @@ bottomBar = {
         )
     }
 }
+
 
 
 

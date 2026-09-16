@@ -3,7 +3,7 @@
 enum class TransactionType { INCOME, EXPENSE }
 
 /**
- * iconKey is a stable string (a category label like "ط®ظˆط±ط§ع©", or "ط¨ط§ظ†ع©" for
+ * iconKey is a stable string (a category label like "خوراک", or "بانک" for
  * SMS-sourced transactions without a category) rather than an ImageVector
      * directly — ImageVector isn't serializable, and Transaction needs to be
  * persisted to disk. Resolve the actual icon at render time with
@@ -51,6 +51,7 @@ data class Transaction(
     // Nullable for legacy/manual transactions.
     val sourceId: String? = null,
 )
+
 
 
 

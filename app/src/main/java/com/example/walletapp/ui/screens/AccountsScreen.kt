@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import com.example.walletapp.data.toPersianCurrency
 
@@ -101,10 +101,10 @@ fun AccountsScreen(
     Scaffold(
         topBar = {
     CenterAlignedTopAppBar(
-        title = { Text("ط­ط³ط§ط¨â€Œظ‡ط§", fontWeight = FontWeight.Bold) },
+        title = { Text("حساب‌ها", fontWeight = FontWeight.Bold) },
         actions = {
             IconButton(onClick = { showAddDialog = true }) {
-                Icon(Icons.Filled.Add, contentDescription = "ط§ظپط²ظˆط¯ظ† ط­ط³ط§ط¨", tint = MaterialTheme.colorScheme.primary)
+                Icon(Icons.Filled.Add, contentDescription = "افزودن حساب", tint = MaterialTheme.colorScheme.primary)
             }
         },
     )
@@ -1107,6 +1107,7 @@ private fun formatAmount(
 
     return amount.toPersianCurrency()
 }
+
 
 
 

@@ -254,6 +254,7 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                         }
                     },
                     onComplete = {
+                            selectedType,
                             category,
                             tags,
                             description,
@@ -266,6 +267,7 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                         ->
                         completeTransaction(
                             transaction = transaction,
+                            selectedType = selectedType,
                             category = category,
                             tags = tags,
                             description = description,
@@ -290,6 +292,7 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
 
     private fun completeTransaction(
         transaction: Transaction,
+        selectedType: TransactionType,
         category: String?,
         tags: List<String>,
         description: String,
@@ -351,7 +354,7 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                     pattern = meta.rawBody,
                     bankName = selectedBank,
                     category = category,
-                    transactionType = transaction.type.name,
+                    transactionType = selectedType.name,
                 )
             }
         }
@@ -475,6 +478,7 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                 transaction.subtitle == "تراکنش بانکی"
             ) {
                 transaction.copy(
+                    type = selectedType,
                     title = selectedBank,
                     subtitle = "تراکنش بانکی",
                     accountId = selectedAccountId ?: resolvedAccountId,
@@ -489,6 +493,7 @@ class SmsTransactionCompletionActivity : ComponentActivity() {
                 )
             } else {
                 transaction.copy(
+                    type = selectedType,
                     subtitle = selectedBank,
                     accountId = selectedAccountId ?: resolvedAccountId,
                     iconKey =
@@ -580,6 +585,7 @@ private fun SmsCompletionContent(
     onPickReceipt: () -> Unit,
     onTakePhoto: () -> Unit,
     onComplete: (
+        selectedType: TransactionType,
         category: String?,
         tags: List<String>,
         description: String,
@@ -598,6 +604,10 @@ private fun SmsCompletionContent(
         remember(initialCategory) {
             mutableStateOf(initialCategory)
         }
+
+    var selectedType by remember(transaction.id) {
+        mutableStateOf(transaction.type)
+    }
 
     var tags by remember {
         mutableStateOf(transaction.tags)
@@ -1444,6 +1454,7 @@ private fun SmsCompletionContent(
             Button(
                 onClick = {
                     onComplete(
+                        selectedType,
                         selectedCategory,
                         tags,
                         description,
@@ -1982,6 +1993,11 @@ private fun SectionTitle(
         }
     }
 }
+
+
+
+
+
 
 
 

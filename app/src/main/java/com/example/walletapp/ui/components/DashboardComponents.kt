@@ -67,7 +67,7 @@ fun BalanceHeroCard(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            "ظ…ظˆط¬ظˆط¯غŒ",
+                            "موجودی",
                             color = Color.White.copy(alpha = .78f),
                             fontSize = 13.sp,
                         )
@@ -81,7 +81,12 @@ fun BalanceHeroCard(
                                 fontSize = 28.sp,
                             )
                             Spacer(Modifier.width(6.dp))
-                            Text("تومان", color = Color.White.copy(alpha = .75f), fontSize = 12.sp)
+                            Text(
+                                 "تومان",
+                                 color = Color.White.copy(alpha = .75f),
+                                 fontFamily = AppFontFamily,
+                                 fontSize = 12.sp,
+                             )
                         }
                     }
                     Box(
@@ -103,8 +108,8 @@ fun BalanceHeroCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    SummaryStat("ط¯ط±ط¢ظ…ط¯", income, Icons.Filled.ArrowDownward, Color(0xFFB8F2D5), Modifier.weight(1f))
-                    SummaryStat("ظ‡ط²غŒظ†ظ‡", expense, Icons.Filled.ArrowUpward, Color(0xFFFFB7C0), Modifier.weight(1f))
+                    SummaryStat("درآمد", income, Icons.Filled.ArrowDownward, Color(0xFFB8F2D5), Modifier.weight(1f))
+                    SummaryStat("هزینه", expense, Icons.Filled.ArrowUpward, Color(0xFFFFB7C0), Modifier.weight(1f))
                     SummaryStat("انتقال", transfer, Icons.Filled.SwapHoriz, Color(0xFFB9D9FF), Modifier.weight(1f))
                 }
             }
@@ -403,7 +408,9 @@ private fun SummaryStat(
             Text(
                 text = label,
                 color = OnPrimary.copy(alpha = 0.78f),
-                style = AppTextStyles.bodyMd,
+                style = AppTextStyles.bodyMd.copy(
+                    fontFamily = AppFontFamily,
+                ),
             )
         }
 
@@ -924,6 +931,8 @@ fun DashboardFab(
         )
     }
 }
+
+
 
 
 
