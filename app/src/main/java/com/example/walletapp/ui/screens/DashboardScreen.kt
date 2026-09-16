@@ -34,6 +34,217 @@ import com.example.walletapp.ui.theme.Tertiary
 import com.example.walletapp.data.TransactionSyncViewModel
 import com.example.walletapp.ui.components.TransactionSyncCard
 
+enum class DashboardPeriod(
+    val title: String,
+) {
+    TODAY("امروز"),
+    THIS_WEEK("این هفته"),
+    THIS_MONTH("این ماه"),
+    LAST_MONTH("ماه قبل"),
+}
+
+private fun calculateDashboardPreviousRange(
+    period: DashboardPeriod,
+): Pair<Long, Long> {
+    return when (period) {
+        DashboardPeriod.TODAY -> {
+            val current = Calendar.getInstance()
+            current.add(Calendar.DAY_OF_MONTH, -1)
+
+            val from = current.clone() as Calendar
+            val to = current.clone() as Calendar
+
+            from.set(Calendar.HOUR_OF_DAY, 0)
+            from.set(Calendar.MINUTE, 0)
+            from.set(Calendar.SECOND, 0)
+            from.set(Calendar.MILLISECOND, 0)
+
+            to.set(Calendar.HOUR_OF_DAY, 23)
+            to.set(Calendar.MINUTE, 59)
+            to.set(Calendar.SECOND, 59)
+            to.set(Calendar.MILLISECOND, 999)
+
+            from.timeInMillis to to.timeInMillis
+        }
+
+        DashboardPeriod.THIS_WEEK -> {
+            val current = Calendar.getInstance()
+
+            val dayOfWeek = current.get(Calendar.DAY_OF_WEEK)
+            val firstDay = current.firstDayOfWeek
+            val daysFromFirst = (dayOfWeek - firstDay + 7) % 7
+
+            val from = current.clone() as Calendar
+            val to = current.clone() as Calendar
+
+            from.add(Calendar.DAY_OF_MONTH, -daysFromFirst - 7)
+            to.add(Calendar.DAY_OF_MONTH, -daysFromFirst - 1)
+
+            from.set(Calendar.HOUR_OF_DAY, 0)
+            from.set(Calendar.MINUTE, 0)
+            from.set(Calendar.SECOND, 0)
+            from.set(Calendar.MILLISECOND, 0)
+
+            to.set(Calendar.HOUR_OF_DAY, 23)
+            to.set(Calendar.MINUTE, 59)
+            to.set(Calendar.SECOND, 59)
+            to.set(Calendar.MILLISECOND, 999)
+
+            from.timeInMillis to to.timeInMillis
+        }
+
+        DashboardPeriod.THIS_MONTH -> {
+            val current = Calendar.getInstance()
+
+            val from = current.clone() as Calendar
+            val to = current.clone() as Calendar
+
+            from.set(Calendar.DAY_OF_MONTH, 1)
+            from.add(Calendar.MONTH, -1)
+
+            to.set(Calendar.DAY_OF_MONTH, 1)
+            to.add(Calendar.MONTH, -1)
+            to.set(
+                Calendar.DAY_OF_MONTH,
+                to.getActualMaximum(Calendar.DAY_OF_MONTH)
+            )
+
+            from.set(Calendar.HOUR_OF_DAY, 0)
+            from.set(Calendar.MINUTE, 0)
+            from.set(Calendar.SECOND, 0)
+            from.set(Calendar.MILLISECOND, 0)
+
+            to.set(Calendar.HOUR_OF_DAY, 23)
+            to.set(Calendar.MINUTE, 59)
+            to.set(Calendar.SECOND, 59)
+            to.set(Calendar.MILLISECOND, 999)
+
+            from.timeInMillis to to.timeInMillis
+        }
+
+        DashboardPeriod.LAST_MONTH -> {
+            val current = Calendar.getInstance()
+
+            val from = current.clone() as Calendar
+            val to = current.clone() as Calendar
+
+            from.set(Calendar.DAY_OF_MONTH, 1)
+            from.add(Calendar.MONTH, -2)
+
+            to.set(Calendar.DAY_OF_MONTH, 1)
+            to.add(Calendar.MONTH, -2)
+            to.set(
+                Calendar.DAY_OF_MONTH,
+                to.getActualMaximum(Calendar.DAY_OF_MONTH)
+            )
+
+            from.set(Calendar.HOUR_OF_DAY, 0)
+            from.set(Calendar.MINUTE, 0)
+            from.set(Calendar.SECOND, 0)
+            from.set(Calendar.MILLISECOND, 0)
+
+            to.set(Calendar.HOUR_OF_DAY, 23)
+            to.set(Calendar.MINUTE, 59)
+            to.set(Calendar.SECOND, 59)
+            to.set(Calendar.MILLISECOND, 999)
+
+            from.timeInMillis to to.timeInMillis
+        }
+    }
+}
+private fun calculateDashboardRange(
+    period: DashboardPeriod,
+): Pair<Long, Long> {
+
+    val now = Calendar.getInstance()
+
+    fun startOfDay(calendar: Calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+    }
+
+    fun endOfDay(calendar: Calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        calendar.set(Calendar.MILLISECOND, 999)
+    }
+
+    val from = now.clone() as Calendar
+    val to = now.clone() as Calendar
+
+    when (period) {
+
+        DashboardPeriod.TODAY -> {
+            startOfDay(from)
+            endOfDay(to)
+        }
+
+        DashboardPeriod.THIS_WEEK -> {
+            startOfDay(from)
+
+            val dayOfWeek = from.get(Calendar.DAY_OF_WEEK)
+            val firstDay = from.firstDayOfWeek
+            val daysFromFirst =
+                (dayOfWeek - firstDay + 7) % 7
+
+            from.add(
+                Calendar.DAY_OF_MONTH,
+                -daysFromFirst,
+            )
+
+            startOfDay(from)
+            endOfDay(to)
+        }
+
+        DashboardPeriod.THIS_MONTH -> {
+            from.set(
+                Calendar.DAY_OF_MONTH,
+                1,
+            )
+
+            startOfDay(from)
+            endOfDay(to)
+        }
+
+        DashboardPeriod.LAST_MONTH -> {
+            from.set(
+                Calendar.DAY_OF_MONTH,
+                1,
+            )
+
+            from.add(
+                Calendar.MONTH,
+                -1,
+            )
+
+            startOfDay(from)
+
+            to.set(
+                Calendar.DAY_OF_MONTH,
+                1,
+            )
+
+            to.add(
+                Calendar.MONTH,
+                -1,
+            )
+
+            to.set(
+                Calendar.DAY_OF_MONTH,
+                to.getActualMaximum(
+                    Calendar.DAY_OF_MONTH,
+                ),
+            )
+
+            endOfDay(to)
+        }
+    }
+
+    return from.timeInMillis to to.timeInMillis
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
@@ -44,6 +255,10 @@ fun DashboardScreen(
     selectedNavIndex: Int = 0,
     onNavSelect: (Int) -> Unit = {},
 ) {
+    var dashboardPeriod by remember {
+        mutableStateOf(DashboardPeriod.THIS_MONTH)
+    }
+
     val context = LocalContext.current
 
     var showDashboardMenu by remember { mutableStateOf(false) }
@@ -134,36 +349,34 @@ fun DashboardScreen(
             }
             .sumOf { it.amount }
 
-    val dashboardCurrentMonthRange = run {
-        val now = Calendar.getInstance()
+    val dashboardRange =
+        calculateDashboardRange(dashboardPeriod)
 
-        val from = now.clone() as Calendar
-        val to = now.clone() as Calendar
-
-        from.set(Calendar.DAY_OF_MONTH, 1)
-        from.set(Calendar.HOUR_OF_DAY, 0)
-        from.set(Calendar.MINUTE, 0)
-        from.set(Calendar.SECOND, 0)
-        from.set(Calendar.MILLISECOND, 0)
-
-        to.set(Calendar.HOUR_OF_DAY, 23)
-        to.set(Calendar.MINUTE, 59)
-        to.set(Calendar.SECOND, 59)
-        to.set(Calendar.MILLISECOND, 999)
-
-        from.timeInMillis to to.timeInMillis
-    }
-
-    val dashboardMonthSummary =
+    val dashboardPreviousRange =
+        calculateDashboardPreviousRange(dashboardPeriod)
+    val dashboardAccountSummaries =
+    ReportCalculator.accountSummaries()
+val dashboardMonthSummary =
         ReportCalculator.periodSummary(
-            fromMillis = dashboardCurrentMonthRange.first,
-            toMillis = dashboardCurrentMonthRange.second,
+            fromMillis = dashboardRange.first,
+            toMillis = dashboardRange.second,
         )
 
-    val dashboardMonthCategories =
+    val dashboardPreviousSummary =
+        ReportCalculator.periodSummary(
+            fromMillis = dashboardPreviousRange.first,
+            toMillis = dashboardPreviousRange.second,
+        )
+
+    val dashboardTrendPoints =
+    ReportCalculator.dailyTrend(
+        fromMillis = dashboardRange.first,
+        toMillis = dashboardRange.second,
+    )
+val dashboardMonthCategories =
         ReportCalculator.categorySummary(
-            fromMillis = dashboardCurrentMonthRange.first,
-            toMillis = dashboardCurrentMonthRange.second,
+            fromMillis = dashboardRange.first,
+            toMillis = dashboardRange.second,
         )
 
     val dashboardExpenseCategories =
@@ -246,14 +459,51 @@ bottomBar = {
             }
 
             item {
+                DashboardPeriodSelector(
+                    selectedPeriod = dashboardPeriod,
+                    onPeriodSelected = {
+                        dashboardPeriod = it
+                    },
+                )
+                DashboardAccountsCard(
+                    accounts = dashboardAccountSummaries,
+                )
+
                 DashboardMonthlySummaryCard(
-            income = dashboardMonthSummary.income,
-            expense = dashboardMonthSummary.expense,
-            cashFlow = dashboardMonthSummary.cashFlow,
+                    title = dashboardPeriod.title,
+                    income = dashboardMonthSummary.income,
+                    expense = dashboardMonthSummary.expense,
+                    cashFlow = dashboardMonthSummary.net,
+                )
+
+        DashboardTrendChart(
+            points = dashboardTrendPoints,
+        )
+        DashboardPeriodComparisonCard(
+
+
+            currentIncome = dashboardMonthSummary.income,
+
+
+            previousIncome = dashboardPreviousSummary.income,
+
+
+            currentExpense = dashboardMonthSummary.expense,
+
+
+            previousExpense = dashboardPreviousSummary.expense,
+
+
         )
 
+
+
         DashboardCategorySummaryCard(
+
+
             categories = dashboardExpenseCategories,
+
+
         )
         TransactionSyncCard(
                     state = syncState,
@@ -340,6 +590,17 @@ bottomBar = {
         )
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

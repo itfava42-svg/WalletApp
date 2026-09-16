@@ -2,6 +2,8 @@
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,6 +26,10 @@ import com.example.walletapp.data.ReportCalculator
 import com.example.walletapp.data.resolveTransactionIcon
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.ui.theme.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 
 @Composable
 fun BalanceHeroCard(
@@ -107,7 +113,44 @@ fun BalanceHeroCard(
 }
 
 @Composable
+fun DashboardPeriodSelector(
+    selectedPeriod: com.example.walletapp.ui.screens.DashboardPeriod,
+    onPeriodSelected: (
+        com.example.walletapp.ui.screens.DashboardPeriod
+    ) -> Unit,
+) {
+    val periods =
+        com.example.walletapp.ui.screens.DashboardPeriod.entries
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(
+                rememberScrollState()
+            )
+            .padding(
+                horizontal = 16.dp,
+                vertical = 4.dp,
+            ),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        periods.forEach { period ->
+
+            FilterChip(
+                selected = selectedPeriod == period,
+                onClick = {
+                    onPeriodSelected(period)
+                },
+                label = {
+                    Text(period.title)
+                },
+            )
+        }
+    }
+}
+@Composable
 fun DashboardMonthlySummaryCard(
+    title: String = "این ماه",
     income: Long,
     expense: Long,
     cashFlow: Long,
@@ -122,7 +165,7 @@ fun DashboardMonthlySummaryCard(
             modifier = Modifier.padding(16.dp),
         ) {
             Text(
-                text = "این ماه",
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
             )
@@ -163,6 +206,98 @@ fun DashboardMonthlySummaryCard(
     }
 }
 
+@Composable
+fun DashboardPeriodComparisonCard(
+    currentIncome: Long,
+    previousIncome: Long,
+    currentExpense: Long,
+    previousExpense: Long,
+) {
+    fun changePercent(
+        current: Long,
+        previous: Long,
+    ): Int? {
+        if (previous == 0L) {
+            return null
+        }
+
+        return (
+            ((current - previous).toDouble() / previous.toDouble()) * 100.0
+        ).toInt()
+    }
+
+    val incomeChange =
+        changePercent(
+            current = currentIncome,
+            previous = previousIncome,
+        )
+
+    val expenseChange =
+        changePercent(
+            current = currentExpense,
+            previous = previousExpense,
+        )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(20.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+        ) {
+            Text(
+                text = "مقایسه با دوره قبل",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            ComparisonRow(
+                title = "درآمد",
+                changePercent = incomeChange,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            ComparisonRow(
+                title = "هزینه",
+                changePercent = expenseChange,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ComparisonRow(
+    title: String,
+    changePercent: Int?,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+
+        Text(
+            text =
+                changePercent?.let {
+                    if (it > 0) {
+                        "+$it٪"
+                    } else {
+                        "$it٪"
+                    }
+                } ?: "—",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
 @Composable
 fun DashboardCategorySummaryCard(
     categories: List<ReportCalculator.CategorySummary>,
@@ -532,6 +667,245 @@ fun DashboardBottomBar(
 }
 
 @Composable
+fun DashboardTrendChart(
+    points: List<ReportCalculator.DailyTrendPoint>,
+) {
+    if (points.isEmpty()) {
+        return
+    }
+
+    val maxValue =
+        points
+            .flatMap { listOf(it.income, it.expense) }
+            .maxOrNull()
+            ?.coerceAtLeast(1L)
+            ?: 1L
+
+    val incomeColor = MaterialTheme.colorScheme.primary
+    val expenseColor = MaterialTheme.colorScheme.error
+
+    Card(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+        ) {
+            Text(
+                text = "روند درآمد و هزینه",
+                style = MaterialTheme.typography.titleMedium,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Canvas(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+            ) {
+                if (points.size < 2) {
+                    return@Canvas
+                }
+
+                val horizontalStep =
+                    size.width / (points.size - 1).toFloat()
+
+                fun yFor(value: Long): Float {
+                    val ratio =
+                        value.toFloat() / maxValue.toFloat()
+
+                    return size.height -
+                        (ratio * size.height)
+                }
+
+                val incomePath = Path()
+                val expensePath = Path()
+
+                points.forEachIndexed { index, point ->
+                    val x =
+                        index * horizontalStep
+
+                    val incomeY = yFor(point.income)
+                    val expenseY = yFor(point.expense)
+
+                    if (index == 0) {
+                        incomePath.moveTo(x, incomeY)
+                        expensePath.moveTo(x, expenseY)
+                    } else {
+                        incomePath.lineTo(x, incomeY)
+                        expensePath.lineTo(x, expenseY)
+                    }
+                }
+
+                drawPath(
+                    path = incomePath,
+                    color = incomeColor,
+                    style = Stroke(width = 5f),
+                )
+
+                drawPath(
+                    path = expensePath,
+                    color = expenseColor,
+                    style = Stroke(width = 5f),
+                )
+
+                points.forEachIndexed { index, point ->
+                    val x =
+                        index * horizontalStep
+
+                    drawCircle(
+                        color = incomeColor,
+                        radius = 5f,
+                        center =
+                            Offset(
+                                x = x,
+                                y = yFor(point.income),
+                            ),
+                    )
+
+                    drawCircle(
+                        color = expenseColor,
+                        radius = 5f,
+                        center =
+                            Offset(
+                                x = x,
+                                y = yFor(point.expense),
+                            ),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = "● درآمد",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = incomeColor,
+                )
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Text(
+                    text = "● هزینه",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = expenseColor,
+                )
+            }
+        }
+    }
+}
+@Composable
+fun DashboardAccountsCard(
+    accounts: List<ReportCalculator.AccountSummary>,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(20.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+        ) {
+            Text(
+                text = "حساب‌های من",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            if (accounts.isEmpty()) {
+                Text(
+                    text = "هنوز حساب فعالی ثبت نشده است",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                accounts.forEachIndexed { index, summary ->
+
+                    val account = summary.account
+
+                    val accountType =
+                        when (account.type) {
+                            com.example.walletapp.data.AccountType.BANK -> "بانکی"
+                            com.example.walletapp.data.AccountType.CASH -> "نقدی"
+                            com.example.walletapp.data.AccountType.CARD -> "کارت"
+                            com.example.walletapp.data.AccountType.SAVINGS -> "پس‌انداز"
+                            com.example.walletapp.data.AccountType.WALLET -> "کیف پول"
+                        }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            imageVector =
+                                when (account.type) {
+                                    com.example.walletapp.data.AccountType.BANK ->
+                                        Icons.Filled.AccountBalance
+                                    com.example.walletapp.data.AccountType.CASH ->
+                                        Icons.Filled.Payments
+                                    com.example.walletapp.data.AccountType.CARD ->
+                                        Icons.Filled.CreditCard
+                                    com.example.walletapp.data.AccountType.SAVINGS ->
+                                        Icons.Filled.Savings
+                                    com.example.walletapp.data.AccountType.WALLET ->
+                                        Icons.Filled.AccountBalanceWallet
+                                },
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(28.dp),
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Column(
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Text(
+                                text = account.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold,
+                            )
+
+                            Text(
+                                text = listOfNotNull(
+                                    account.bankName
+                                        .trim()
+                                        .takeIf { it.isNotBlank() },
+                                    accountType,
+                                ).joinToString(" • "),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+
+                        Text(
+                            text = summary.balance.toPersianCurrency(),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+
+                    if (index < accounts.lastIndex) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 12.dp),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
 fun DashboardFab(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -550,4 +924,11 @@ fun DashboardFab(
         )
     }
 }
+
+
+
+
+
+
+
 
