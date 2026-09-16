@@ -83,7 +83,7 @@ fun SettingsListScreen(
                 context.startActivity(
                     android.content.Intent.createChooser(
                         shareIntent,
-                        "ظ…ط¹ط±ظپغŒ ط¨ظ‡ ط¯ظˆط³طھط§ظ†"
+                        "معرفی به دوستان"
                     )
                 )
             }
@@ -106,7 +106,7 @@ fun SettingsListScreen(
 
                 title = {
                     Text(
-                        "طھظ†ط¸غŒظ…ط§طھ",
+                        "تنظیمات",
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -118,7 +118,7 @@ fun SettingsListScreen(
                     ) {
                         Icon(
                             Icons.Filled.ArrowForward,
-                            contentDescription = "ط¨ط§ط²ع¯ط´طھ"
+                            contentDescription = "بازگشت"
                         )
                     }
                 },
@@ -212,7 +212,7 @@ private fun SettingsRow(
             Modifier.fillMaxWidth(),
 
         shape =
-            RoundedCornerShape(14.dp),
+            RoundedCornerShape(18.dp),
 
         color =
             SurfaceContainerLowest,
@@ -223,7 +223,7 @@ private fun SettingsRow(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(14.dp),
+                    .padding(16.dp),
 
             verticalAlignment =
                 Alignment.CenterVertically,
@@ -233,7 +233,7 @@ private fun SettingsRow(
 
                 modifier =
                     Modifier
-                        .size(40.dp)
+                        .size(42.dp)
                         .clip(
                             RoundedCornerShape(10.dp)
                         )
@@ -282,6 +282,14 @@ private fun SettingsRow(
         }
     }
 }
+
+
+
+
+
+
+
+
 
 
 

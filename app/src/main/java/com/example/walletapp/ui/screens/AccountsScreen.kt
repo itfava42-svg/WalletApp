@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import com.example.walletapp.data.toPersianCurrency
 
@@ -21,13 +21,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.AlertDialog
 import android.widget.Toast
@@ -55,6 +58,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
@@ -73,7 +77,6 @@ fun AccountsScreen(
     selectedNavIndex: Int = 1,
     onNavSelect: (Int) -> Unit = {},
 ) {
-
     val context = androidx.compose.ui.platform.LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -92,29 +95,22 @@ fun AccountsScreen(
         transactions = TransactionStore.transactions,
     )
 
+    val activeAccounts = accounts.count { it.isActive }
+    val defaultAccount = accounts.firstOrNull { it.isDefault }
+
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            "حساب‌ها",
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Text(
-                            "مدیریت موجودی و حساب‌های مالی",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            )
+    CenterAlignedTopAppBar(
+        title = { Text("ط­ط³ط§ط¨â€Œظ‡ط§", fontWeight = FontWeight.Bold) },
+        actions = {
+            IconButton(onClick = { showAddDialog = true }) {
+                Icon(Icons.Filled.Add, contentDescription = "ط§ظپط²ظˆط¯ظ† ط­ط³ط§ط¨", tint = MaterialTheme.colorScheme.primary)
+            }
         },
+    )
+},
 
-        bottomBar = {
+bottomBar = {
             DashboardBottomBar(
                 items = appNavItems,
                 selectedIndex = selectedNavIndex,
@@ -126,11 +122,12 @@ fun AccountsScreen(
             FloatingActionButton(
                 onClick = {
                     showAddDialog = true
-                }
+                },
+                shape = RoundedCornerShape(18.dp),
             ) {
                 Icon(
-                    Icons.Filled.Add,
-                    contentDescription = "افزودن حساب"
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "افزودن حساب",
                 )
             }
         }
@@ -140,80 +137,146 @@ fun AccountsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 18.dp),
 
             contentPadding = PaddingValues(
-                top = 16.dp,
-                bottom = 100.dp
+                top = 14.dp,
+                bottom = 100.dp,
             ),
 
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
 
             item {
-
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = RoundedCornerShape(26.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    )
+                        containerColor = Color(0xFF005663),
+                    ),
                 ) {
-
                     Column(
-                        modifier = Modifier.padding(22.dp)
+                        modifier = Modifier.padding(22.dp),
                     ) {
 
-                        Text(
-                            "موجودی کل",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Top,
+                        ) {
+
+                            Column(
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text(
+                                    text = "موجودی کل",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = Color.White,
+                                )
+
+                                Spacer(
+                                    Modifier.height(7.dp)
+                                )
+
+                                Text(
+                                    text = formatAmount(totalBalance),
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color.White,
+                                )
+
+                                Spacer(
+                                    Modifier.height(2.dp)
+                                )
+
+                                Text(
+                                    text = "ریال",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color.White,
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.surface.copy(
+                                            alpha = 0.55f
+                                        ),
+                                        shape = RoundedCornerShape(16.dp),
+                                    ),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.AccountBalance,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
 
                         Spacer(
-                            Modifier.height(8.dp)
+                            Modifier.height(18.dp)
                         )
 
-                        Text(
-                            formatAmount(totalBalance),
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
 
-                        Spacer(
-                            Modifier.height(4.dp)
-                        )
+                            AccountSummaryStat(
+                                modifier = Modifier.weight(1f),
+                                value = accounts.size.toString(),
+                                label = "کل حساب‌ها",
+                            )
 
-                        Text(
-                            "ریال",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                            AccountSummaryStat(
+                                modifier = Modifier.weight(1f),
+                                value = activeAccounts.toString(),
+                                label = "حساب فعال",
+                            )
+
+                            AccountSummaryStat(
+                                modifier = Modifier.weight(1f),
+                                value = if (defaultAccount != null) "✓" else "—",
+                                label = "پیش‌فرض",
+                            )
+                        }
                     }
                 }
             }
 
             item {
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(top = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    Column {
+                        Text(
+                            text = "حساب‌های من",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                        )
+
+                        Spacer(
+                            Modifier.height(2.dp)
+                        )
+
+                        Text(
+                            text = "حساب‌های بانکی و مالی شما",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
 
                     Text(
-                        "حساب‌های من",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        "${accounts.size} حساب",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = "${accounts.size} حساب",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }
             }
@@ -221,33 +284,45 @@ fun AccountsScreen(
             if (accounts.isEmpty()) {
 
                 item {
-
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp)
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        ),
                     ) {
-
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(28.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .padding(30.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
 
-                            Icon(
-                                Icons.Filled.AccountBalance,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(68.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+                                        shape = RoundedCornerShape(22.dp),
+                                    ),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.AccountBalance,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
 
                             Spacer(
-                                Modifier.height(12.dp)
+                                Modifier.height(16.dp)
                             )
 
                             Text(
-                                "هنوز حسابی ثبت نشده است",
-                                fontWeight = FontWeight.Bold
+                                text = "هنوز حسابی ثبت نشده است",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
                             )
 
                             Spacer(
@@ -255,26 +330,28 @@ fun AccountsScreen(
                             )
 
                             Text(
-                                "اولین حساب مالی خود را اضافه کنید.",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                text = "اولین حساب مالی خود را اضافه کنید.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
 
                             Spacer(
-                                Modifier.height(16.dp)
+                                Modifier.height(18.dp)
                             )
 
                             Button(
                                 onClick = {
                                     showAddDialog = true
-                                }
+                                },
+                                shape = RoundedCornerShape(14.dp),
                             ) {
                                 Icon(
-                                    Icons.Filled.Add,
-                                    contentDescription = null
+                                    imageVector = Icons.Filled.Add,
+                                    contentDescription = null,
                                 )
 
                                 Spacer(
-                                    Modifier.width(6.dp)
+                                    Modifier.width(7.dp)
                                 )
 
                                 Text("افزودن حساب")
@@ -286,8 +363,8 @@ fun AccountsScreen(
             } else {
 
                 items(
-                    accounts,
-                    key = { it.id }
+                    items = accounts,
+                    key = { it.id },
                 ) { account ->
 
                     AccountCard(
@@ -304,7 +381,7 @@ fun AccountsScreen(
                         onToggleActive = {
                             AccountStore.setActive(
                                 id = account.id,
-                                active = !account.isActive
+                                active = !account.isActive,
                             )
                         }
                     )
@@ -322,7 +399,7 @@ fun AccountsScreen(
             title = {
                 Text(
                     "حذف حساب",
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             },
             text = {
@@ -344,7 +421,7 @@ fun AccountsScreen(
                             Toast.makeText(
                                 context,
                                 "این حساب دارای تراکنش است و برای حفظ تاریخچه مالی حذف نمی‌شود.",
-                                Toast.LENGTH_LONG
+                                Toast.LENGTH_LONG,
                             ).show()
                         }
                     }
@@ -363,6 +440,7 @@ fun AccountsScreen(
             }
         )
     }
+
     if (showAddDialog) {
 
         AccountDialog(
@@ -380,7 +458,7 @@ fun AccountsScreen(
                     accountNumber = number,
                     cardLast4 = cardLast4,
                     openingBalance = openingBalance,
-                    isDefault = isDefault
+                    isDefault = isDefault,
                 )
 
                 showAddDialog = false
@@ -406,7 +484,7 @@ fun AccountsScreen(
                         accountNumber = number,
                         cardLast4 = cardLast4,
                         openingBalance = openingBalance,
-                        isDefault = isDefault
+                        isDefault = isDefault,
                     )
                 )
 
@@ -417,6 +495,42 @@ fun AccountsScreen(
 }
 
 @Composable
+private fun AccountSummaryStat(
+    modifier: Modifier = Modifier,
+    value: String,
+    label: String,
+) {
+    Column(
+        modifier = modifier
+            .background(
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.45f),
+                shape = RoundedCornerShape(14.dp),
+            )
+            .padding(
+                horizontal = 10.dp,
+                vertical = 9.dp,
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+        )
+
+        Spacer(
+            Modifier.height(2.dp)
+        )
+
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.White,
+        )
+    }
+}
+@Composable
 private fun AccountCard(
     account: Account,
     onEdit: () -> Unit,
@@ -424,14 +538,18 @@ private fun AccountCard(
     onSetDefault: () -> Unit,
     onToggleActive: () -> Unit,
 ) {
-
     var menuExpanded by remember {
         mutableStateOf(false)
     }
 
+    val balance = AccountLedger.balanceOf(
+        accountId = account.id,
+        transactions = TransactionStore.transactions,
+    )
+
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(
             containerColor =
                 if (account.isActive) {
@@ -439,219 +557,243 @@ private fun AccountCard(
                 } else {
                     MaterialTheme.colorScheme.surfaceVariant
                 }
-        )
+        ),
     ) {
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(18.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(16.dp),
         ) {
 
-            Box(
-                modifier = Modifier
-                    .size(52.dp)
-                    .background(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        RoundedCornerShape(16.dp)
-                    ),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
 
-                Icon(
-                    accountIcon(account.type),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                Box(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = RoundedCornerShape(17.dp),
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = accountIcon(account.type),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+
+                Spacer(
+                    Modifier.width(12.dp)
                 )
-            }
 
-            Spacer(
-                Modifier.width(14.dp)
-            )
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.weight(1f),
                 ) {
 
                     Text(
-                        account.name,
-                        fontWeight = FontWeight.Bold
+                        text = account.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
                     )
-
-                    if (!account.isActive) {
-
-                        Spacer(
-                            Modifier.width(6.dp)
-                        )
-
-                        Text(
-                            "غیرفعال",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-
-                    if (account.isDefault) {
-
-                        Spacer(
-                            Modifier.width(6.dp)
-                        )
-
-                        Icon(
-                            Icons.Filled.Star,
-                            contentDescription = "حساب پیش‌فرض",
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-
-                if (account.bankName.isNotBlank()) {
 
                     Spacer(
                         Modifier.height(3.dp)
                     )
 
-                    Text(
-                        account.bankName,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
 
-                if (account.cardLast4.isNotBlank()) {
-
-                    Spacer(
-                        Modifier.height(2.dp)
-                    )
-
-                    Text(
-                        "•••• ${account.cardLast4}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-
-                Text(
-                    formatAmount(
-                        AccountLedger.balanceOf(
-                            accountId = account.id,
-                            transactions = TransactionStore.transactions,
-                        )
-                    ),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Text(
-                    "ریال",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Box {
-
-                IconButton(
-                    onClick = {
-                        menuExpanded = true
-                    }
-                ) {
-
-                    Icon(
-                        Icons.Filled.MoreVert,
-                        contentDescription = "گزینه‌ها"
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = {
-                        menuExpanded = false
-                    }
-                ) {
-
-                    DropdownMenuItem(
-                        text = {
-                            Text("ویرایش")
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Filled.Edit,
-                                contentDescription = null
+                        if (account.bankName.isNotBlank()) {
+                            Text(
+                                text = account.bankName,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
-                        },
-                        onClick = {
-                            menuExpanded = false
-                            onEdit()
                         }
-                    )
 
-                    if (!account.isDefault) {
+                        if (account.cardLast4.isNotBlank()) {
+
+                            if (account.bankName.isNotBlank()) {
+                                Text(
+                                    text = "  •  ",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+
+                            Text(
+                                text = "•••• ${account.cardLast4}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+
+                Box {
+
+                    IconButton(
+                        onClick = {
+                            menuExpanded = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "گزینه‌ها",
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = {
+                            menuExpanded = false
+                        }
+                    ) {
 
                         DropdownMenuItem(
                             text = {
-                                Text("تعیین به عنوان پیش‌فرض")
+                                Text("ویرایش")
                             },
                             leadingIcon = {
                                 Icon(
-                                    Icons.Filled.Star,
-                                    contentDescription = null
+                                    Icons.Filled.Edit,
+                                    contentDescription = null,
                                 )
                             },
                             onClick = {
                                 menuExpanded = false
-                                onSetDefault()
+                                onEdit()
+                            }
+                        )
+
+                        if (!account.isDefault) {
+
+                            DropdownMenuItem(
+                                text = {
+                                    Text("تعیین به عنوان پیش‌فرض")
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Filled.Star,
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = {
+                                    menuExpanded = false
+                                    onSetDefault()
+                                }
+                            )
+                        }
+
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    if (account.isActive) {
+                                        "غیرفعال کردن حساب"
+                                    } else {
+                                        "فعال کردن حساب"
+                                    }
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.AccountBalance,
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                menuExpanded = false
+                                onToggleActive()
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = {
+                                Text("حذف")
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.Delete,
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                menuExpanded = false
+                                onDelete()
                             }
                         )
                     }
+                }
+            }
 
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                if (account.isActive) {
-                                    "غیرفعال کردن حساب"
-                                } else {
-                                    "فعال کردن حساب"
-                                }
+            Spacer(
+                Modifier.height(14.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom,
+            ) {
+
+                Column {
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+
+                        if (account.isDefault) {
+                            AccountBadge(
+                                text = "پیش‌فرض",
+                                icon = Icons.Filled.Star,
                             )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Filled.AccountBalance,
-                                contentDescription = null
-                            )
-                        },
-                        onClick = {
-                            menuExpanded = false
-                            onToggleActive()
                         }
+
+                        if (!account.isActive) {
+                            AccountBadge(
+                                text = "غیرفعال",
+                                icon = Icons.Filled.AccountBalance,
+                            )
+                        }
+                    }
+
+                    if (account.accountNumber.isNotBlank()) {
+                        Spacer(
+                            Modifier.height(7.dp)
+                        )
+
+                        Text(
+                            text = "شماره حساب: ${account.accountNumber}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.End,
+                ) {
+
+                    Text(
+                        text = formatAmount(balance),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.ExtraBold,
+                        color =
+                            if (account.isActive) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
                     )
 
-                    DropdownMenuItem(
-                        text = {
-                            Text("حذف")
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Filled.Delete,
-                                contentDescription = null
-                            )
-                        },
-                        onClick = {
-                            menuExpanded = false
-                            onDelete()
-                        }
+                    Text(
+                        text = "ریال",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -659,6 +801,42 @@ private fun AccountCard(
     }
 }
 
+@Composable
+private fun AccountBadge(
+    text: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+) {
+    Row(
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(10.dp),
+            )
+            .padding(
+                horizontal = 8.dp,
+                vertical = 5.dp,
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(13.dp),
+            tint = MaterialTheme.colorScheme.primary,
+        )
+
+        Spacer(
+            Modifier.width(4.dp)
+        )
+
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.White,
+        )
+    }
+}
 @Composable
 private fun AccountDialog(
     title: String,
@@ -929,6 +1107,8 @@ private fun formatAmount(
 
     return amount.toPersianCurrency()
 }
+
+
 
 
 

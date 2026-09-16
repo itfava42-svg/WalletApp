@@ -47,6 +47,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -72,6 +73,9 @@ import com.example.walletapp.loan.MatureColors
 import java.util.Calendar
 import java.util.UUID
 import kotlin.math.pow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.filled.MoreVert
 
 private val LoanOrange = MatureColors.Secondary
 private val LoanOrangeLight = MatureColors.SecondaryLight
@@ -82,32 +86,30 @@ private val LoanRed = MatureColors.PrimaryDark
 
 @Composable
 fun LoanManagementScreen(
-    onBack: () -> Unit
+    onNavigate: (String) -> Unit = {}
 ) {
-    var showEditor by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     var editingLoan by remember { mutableStateOf<LoanEntry?>(null) }
     var deleteLoan by remember { mutableStateOf<LoanEntry?>(null) }
     var installmentsLoan by remember { mutableStateOf<LoanEntry?>(null) }
+    var showAddDialog by remember { mutableStateOf(false) }
 
     val totalLoans = LoanStore.loans.size
 
-    val totalLoanAmount =
+    val totalPrincipal =
         LoanStore.loans.sumOf { it.totalAmount }
 
-    val totalPaidAmount =
+    val totalPaid =
         LoanStore.loans.sumOf { loan ->
             loan.payments.sumOf { it.amount }
         }
 
-    val totalScheduledAmount =
+    val totalPlanned =
         LoanStore.loans.sumOf { loan ->
             loan.installmentAmount *
                 loan.totalInstallments.toLong()
         }
-
-    val totalRemainingAmount =
-        (totalScheduledAmount - totalPaidAmount)
-            .coerceAtLeast(0L)
 
     val totalPaidInstallments =
         LoanStore.loans.sumOf { loan ->
@@ -120,134 +122,215 @@ fun LoanManagementScreen(
             it.totalInstallments
         }
 
+    val totalRemainingAmount =
+        (totalPlanned - totalPaid).coerceAtLeast(0L)
+
     Scaffold(
-        containerColor = MatureColors.Surface,
+        topBar = {
+            LoanHeader(
+                totalLoans = totalLoans,
+                totalRemainingAmount = totalRemainingAmount,
+                onBack = {
+                    onNavigate("dashboard")
+                }
+            )
+        },
+
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    editingLoan = null
-                    showEditor = true
+                    showAddDialog = true
                 },
-                containerColor = LoanOrange,
-                contentColor = MatureColors.PrimaryDark,
-                shape = RoundedCornerShape(18.dp)
+                shape = RoundedCornerShape(20.dp),
+                containerColor = MatureColors.Primary
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "افزودن وام",
-                    modifier = Modifier.size(27.dp)
+                    contentDescription = "افزودن وام"
                 )
             }
         }
-    ) { padding ->
+    ) { paddingValues ->
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                start = 18.dp,
-                end = 18.dp,
+                .padding(paddingValues),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
                 top = 16.dp,
-                bottom = 100.dp
+                bottom = 96.dp
             ),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
 
             item {
-                LoanHeader(
-                    totalLoans = totalLoans,
-                    totalRemainingAmount = totalRemainingAmount,
-                    onBack = onBack
-                )
-            }
-
-            if (LoanStore.loans.isNotEmpty()) {
-
-                item {
-                    LoanSectionTitle(
-                        title = "خلاصه وضعیت",
-                        subtitle = "نمای کلی تعهدات مالی"
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(26.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MatureColors.Surface
                     )
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp)
                     ) {
-                        LoanSummaryTile(
-                            modifier = Modifier.weight(1f),
-                            title = "مجموع وام",
-                            value = totalLoanAmount.toPersianCurrency(),
-                            icon = Icons.Filled.Payments,
-                            background = MatureColors.SecondaryLight,
-                            iconTint = MatureColors.Primary
+
+                        Text(
+                            text = "وضعیت وام‌ها",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MatureColors.TextPrimary
                         )
 
-                        LoanSummaryTile(
-                            modifier = Modifier.weight(1f),
-                            title = "مانده بدهی",
-                            value = totalRemainingAmount.toPersianCurrency(),
-                            icon = Icons.Filled.AccountBalance,
-                            background = MatureColors.Surface,
-                            iconTint = MatureColors.PrimaryDark
-                        )
-                    }
-                }
+                        Spacer(modifier = Modifier.height(6.dp))
 
-                item {
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp),
-                        color = MatureColors.CardBackground
-                    ) {
+                        Text(
+                            text = "نمای کلی تعهدات و پرداخت‌های شما",
+                            fontSize = 12.sp,
+                            color = MatureColors.TextPrimary.copy(alpha = 0.62f)
+                        )
+
+                        Spacer(modifier = Modifier.height(18.dp))
+
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(13.dp),
-                            horizontalArrangement = Arrangement.spacedBy(9.dp)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            LoanMiniSummary(
+
+                            LoanSummaryTile(
                                 modifier = Modifier.weight(1f),
-                                title = "کل اقساط",
-                                value = totalInstallments.toString()
+                                title = "تعداد وام",
+                                value = totalLoans.toString(),
+                                icon = Icons.Filled.AccountBalance,
+                                background = MatureColors.SecondaryLight,
+                                iconTint = MatureColors.Secondary
                             )
 
-                            LoanMiniSummary(
+                            LoanSummaryTile(
                                 modifier = Modifier.weight(1f),
-                                title = "پرداخت‌شده",
-                                value = totalPaidInstallments.toString()
+                                title = "پرداخت شده",
+                                value = totalPaid.toPersianCurrency(),
+                                icon = Icons.Filled.Payments,
+                                background = MatureColors.Success.copy(alpha = 0.10f),
+                                iconTint = MatureColors.Success
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+
+                            LoanSummaryTile(
+                                modifier = Modifier.weight(1f),
+                                title = "کل تعهد",
+                                value = totalPlanned.toPersianCurrency(),
+                                icon = Icons.Filled.Schedule,
+                                background = MatureColors.CardBackground,
+                                iconTint = MatureColors.Primary
                             )
 
-                            LoanMiniSummary(
+                            LoanSummaryTile(
                                 modifier = Modifier.weight(1f),
-                                title = "باقی‌مانده",
-                                value = (
-                                    totalInstallments -
-                                        totalPaidInstallments
-                                    ).coerceAtLeast(0).toString()
+                                title = "اقساط",
+                                value = "$totalPaidInstallments / $totalInstallments",
+                                icon = Icons.Filled.CalendarMonth,
+                                background = MatureColors.SecondaryLight,
+                                iconTint = MatureColors.Secondary
+                            )
+                        }
+
+                        if (totalInstallments > 0) {
+
+                            Spacer(modifier = Modifier.height(18.dp))
+
+                            val progress =
+                                (
+                                    totalPaidInstallments.toFloat() /
+                                        totalInstallments.toFloat()
+                                ).coerceIn(0f, 1f)
+
+                            LinearProgressIndicator(
+                                progress = { progress },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(8.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                color = MatureColors.Primary,
+                                trackColor = MatureColors.CardBackground
+                            )
+
+                            Spacer(modifier = Modifier.height(7.dp))
+
+                            Text(
+                                text =
+                                    "${(progress * 100).toInt()}٪ از اقساط کل پرداخت شده",
+                                fontSize = 11.sp,
+                                color = MatureColors.TextPrimary.copy(alpha = 0.60f)
                             )
                         }
                     }
                 }
+            }
 
-                item {
-                    LoanSectionTitle(
-                        title = "فهرست وام‌ها",
-                        subtitle = "برای مشاهده جزئیات هر وام انتخاب کنید"
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "وام‌های من",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MatureColors.TextPrimary
+                        )
+
+                        Text(
+                            text = "برای مشاهده جزئیات و اقساط انتخاب کنید",
+                            fontSize = 12.sp,
+                            color = MatureColors.TextPrimary.copy(alpha = 0.58f)
+                        )
+                    }
+
+                    Text(
+                        text = "$totalLoans مورد",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MatureColors.Primary
                     )
                 }
+            }
+
+            if (LoanStore.loans.isEmpty()) {
+
+                item {
+                    EmptyLoanState(
+                        onAdd = {
+                            showAddDialog = true
+                        }
+                    )
+                }
+
+            } else {
 
                 items(
                     items = LoanStore.loans,
                     key = { it.id }
                 ) { loan ->
+
                     LoanCard(
                         loan = loan,
                         onEdit = {
                             editingLoan = loan
-                            showEditor = true
                         },
                         onDelete = {
                             deleteLoan = loan
@@ -257,36 +340,31 @@ fun LoanManagementScreen(
                         }
                     )
                 }
-
-            } else {
-
-                item {
-                    EmptyLoanState(
-                        onAdd = {
-                            editingLoan = null
-                            showEditor = true
-                        }
-                    )
-                }
             }
         }
     }
 
-    if (showEditor) {
+    if (showAddDialog) {
         LoanEditorDialog(
-            existingLoan = editingLoan,
+            existingLoan = null,
             onDismiss = {
-                showEditor = false
-                editingLoan = null
+                showAddDialog = false
             },
             onSave = { loan ->
-                if (editingLoan == null) {
-                    LoanStore.add(loan)
-                } else {
-                    LoanStore.update(loan)
-                }
+                LoanStore.add(loan)
+                showAddDialog = false
+            }
+        )
+    }
 
-                showEditor = false
+    editingLoan?.let { loan ->
+        LoanEditorDialog(
+            existingLoan = loan,
+            onDismiss = {
+                editingLoan = null
+            },
+            onSave = { updatedLoan ->
+                LoanStore.update(updatedLoan)
                 editingLoan = null
             }
         )
@@ -307,16 +385,11 @@ fun LoanManagementScreen(
                 deleteLoan = null
             },
             title = {
-                Text(
-                    text = "حذف وام",
-                    fontWeight = FontWeight.Bold,
-                    color = MatureColors.TextPrimary
-                )
+                Text("حذف وام")
             },
             text = {
                 Text(
-                    text = "آیا از حذف وام «${loan.title}» مطمئن هستید؟",
-                    color = MatureColors.TextSecondary
+                    "آیا از حذف وام «${loan.title}» مطمئن هستید؟"
                 )
             },
             confirmButton = {
@@ -324,21 +397,16 @@ fun LoanManagementScreen(
                     onClick = {
                         LoanStore.remove(loan.id)
                         deleteLoan = null
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MatureColors.PrimaryDark
-                    ),
-                    shape = RoundedCornerShape(12.dp)
+                    }
                 ) {
                     Text("حذف")
                 }
             },
             dismissButton = {
-                OutlinedButton(
+                TextButton(
                     onClick = {
                         deleteLoan = null
-                    },
-                    shape = RoundedCornerShape(12.dp)
+                    }
                 ) {
                     Text("انصراف")
                 }
@@ -346,6 +414,7 @@ fun LoanManagementScreen(
         )
     }
 }
+
 
 @Composable
 private fun LoanHeader(
@@ -577,7 +646,8 @@ private fun LoanCard(
     onInstallments: () -> Unit
 ) {
     val paidCount =
-        loan.payments.size.coerceAtMost(loan.totalInstallments)
+        loan.payments.size
+            .coerceAtMost(loan.totalInstallments)
 
     val remainingCount =
         (loan.totalInstallments - paidCount)
@@ -586,246 +656,230 @@ private fun LoanCard(
     val paidAmount =
         loan.payments.sumOf { it.amount }
 
-    val totalScheduledAmount =
+    val totalPlanned =
         loan.installmentAmount *
             loan.totalInstallments.toLong()
 
-    val remainingAmount =
-        (totalScheduledAmount - paidAmount)
-            .coerceAtLeast(0L)
-
     val progress =
         if (loan.totalInstallments > 0) {
-            paidCount.toFloat() /
-                loan.totalInstallments.toFloat()
+            (
+                paidCount.toFloat() /
+                    loan.totalInstallments.toFloat()
+            ).coerceIn(0f, 1f)
         } else {
             0f
         }
+
+    var menuExpanded by remember {
+        mutableStateOf(false)
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MatureColors.CardBackground
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 3.dp
+            containerColor = MatureColors.Surface
         )
     ) {
+
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(13.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(18.dp)
         ) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Surface(
-                    modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(15.dp),
-                    color = MatureColors.SecondaryLight
+
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            MatureColors.Primary.copy(alpha = 0.10f)
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountBalance,
-                            contentDescription = null,
-                            tint = MatureColors.Primary,
-                            modifier = Modifier.size(25.dp)
-                        )
-                    }
-                }
-
-                Spacer(Modifier.size(11.dp))
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(3.dp)
-                ) {
-                    Text(
-                        text = loan.title,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MatureColors.TextPrimary
-                    )
-
-                    Text(
-                        text = loan.type.label,
-                        fontSize = 12.sp,
-                        color = MatureColors.TextSecondary
-                    )
-                }
-
-                IconButton(onClick = onEdit) {
                     Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = "ویرایش",
+                        imageVector = Icons.Filled.AccountBalance,
+                        contentDescription = null,
                         tint = MatureColors.Primary
                     )
                 }
 
-                IconButton(onClick = onDelete) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "حذف",
-                        tint = MatureColors.PrimaryDark
-                    )
-                }
-            }
+                Spacer(modifier = Modifier.width(12.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(9.dp)
-            ) {
-                LoanInfoTile(
-                    modifier = Modifier.weight(1f),
-                    title = "مبلغ وام",
-                    value = loan.totalAmount.toPersianCurrency(),
-                    background = MatureColors.SecondaryLight,
-                    icon = Icons.Filled.Payments,
-                    iconTint = MatureColors.Primary
-                )
-
-                LoanInfoTile(
-                    modifier = Modifier.weight(1f),
-                    title = "مبلغ هر قسط",
-                    value = loan.installmentAmount.toPersianCurrency(),
-                    background = MatureColors.Surface,
-                    icon = Icons.Filled.Schedule,
-                    iconTint = MatureColors.Success
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                LoanDetailChip(
-                    modifier = Modifier.weight(1f),
-                    title = "نرخ سود",
-                    value = "${loan.interestRatePercent}٪",
-                    icon = Icons.Filled.Percent
-                )
-
-                LoanDetailChip(
-                    modifier = Modifier.weight(1f),
-                    title = "کل اقساط",
-                    value = loan.totalInstallments.toString(),
-                    icon = Icons.Filled.Schedule
-                )
-
-                LoanDetailChip(
-                    modifier = Modifier.weight(1f),
-                    title = "باقی",
-                    value = remainingCount.toString(),
-                    icon = Icons.Filled.CalendarMonth
-                )
-            }
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(7.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        text = "پیشرفت بازپرداخت",
-                        fontSize = 12.sp,
-                        color = MatureColors.TextSecondary
-                    )
-
-                    Spacer(Modifier.weight(1f))
 
                     Text(
-                        text = "$paidCount از ${loan.totalInstallments} قسط",
-                        fontSize = 12.sp,
+                        text = loan.title,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MatureColors.Primary
+                        color = MatureColors.TextPrimary
+                    )
+
+                    Spacer(modifier = Modifier.height(3.dp))
+
+                    Text(
+                        text = loan.type.label,
+                        fontSize = 12.sp,
+                        color = MatureColors.TextPrimary.copy(alpha = 0.58f)
                     )
                 }
 
-                LinearProgressIndicator(
-                    progress = { progress.coerceIn(0f, 1f) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                    color = MatureColors.Success,
-                    trackColor = MatureColors.SecondaryLight
-                )
-            }
-
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(17.dp),
-                color = if (remainingCount == 0) {
-                    MatureColors.Surface
-                } else {
-                    MatureColors.SecondaryLight.copy(alpha = 0.70f)
-                }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = 13.dp,
-                            vertical = 11.dp
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
+                Box {
+                    IconButton(
+                        onClick = {
+                            menuExpanded = true
+                        }
                     ) {
-                        Text(
-                            text = if (remainingCount == 0) {
-                                "وضعیت وام"
-                            } else {
-                                "مانده بدهی"
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "گزینه‌ها"
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = {
+                            menuExpanded = false
+                        }
+                    ) {
+
+                        DropdownMenuItem(
+                            text = {
+                                Text("ویرایش")
                             },
-                            fontSize = 11.sp,
-                            color = MatureColors.TextSecondary
+                            onClick = {
+                                menuExpanded = false
+                                onEdit()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.Edit,
+                                    contentDescription = null
+                                )
+                            }
                         )
 
-                        Spacer(Modifier.height(3.dp))
-
-                        Text(
-                            text = if (remainingCount == 0) {
-                                "تسویه شده"
-                            } else {
-                                remainingAmount.toPersianCurrency()
+                        DropdownMenuItem(
+                            text = {
+                                Text("اقساط")
                             },
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (remainingCount == 0) {
-                                MatureColors.Success
-                            } else {
-                                MatureColors.Primary
+                            onClick = {
+                                menuExpanded = false
+                                onInstallments()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.Payments,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = {
+                                Text("حذف")
+                            },
+                            onClick = {
+                                menuExpanded = false
+                                onDelete()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.Delete,
+                                    contentDescription = null
+                                )
                             }
                         )
                     }
-
-                    if (remainingCount == 0) {
-                        Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = MatureColors.Success
-                        ) {
-                            Text(
-                                text = "✓ تسویه",
-                                modifier = Modifier.padding(
-                                    horizontal = 10.dp,
-                                    vertical = 6.dp
-                                ),
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        }
-                    }
                 }
             }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Text(
+                text = "مبلغ وام",
+                fontSize = 11.sp,
+                color = MatureColors.TextPrimary.copy(alpha = 0.55f)
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = loan.totalAmount.toPersianCurrency(),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = MatureColors.TextPrimary
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+
+                LoanMiniSummary(
+                    modifier = Modifier.weight(1f),
+                    title = "قسط ماهانه",
+                    value = loan.installmentAmount.toPersianCurrency()
+                )
+
+                LoanMiniSummary(
+                    modifier = Modifier.weight(1f),
+                    title = "پرداخت شده",
+                    value = paidAmount.toPersianCurrency()
+                )
+
+                LoanMiniSummary(
+                    modifier = Modifier.weight(1f),
+                    title = "باقی‌مانده",
+                    value = remainingCount.toString()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    text = "$paidCount از ${loan.totalInstallments} قسط",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MatureColors.TextPrimary.copy(alpha = 0.68f),
+                    modifier = Modifier.weight(1f)
+                )
+
+                Text(
+                    text = "${(progress * 100).toInt()}٪",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MatureColors.Primary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                color = MatureColors.Primary,
+                trackColor = MatureColors.CardBackground
+            )
+
+            Spacer(modifier = Modifier.height(14.dp))
 
             OutlinedButton(
                 onClick = onInstallments,
@@ -833,21 +887,18 @@ private fun LoanCard(
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Schedule,
-                    contentDescription = null,
-                    modifier = Modifier.size(19.dp)
+                    imageVector = Icons.Filled.Payments,
+                    contentDescription = null
                 )
 
-                Spacer(Modifier.size(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-                Text(
-                    text = "مشاهده و مدیریت اقساط",
-                    fontWeight = FontWeight.Bold
-                )
+                Text("مشاهده و مدیریت اقساط")
             }
         }
     }
 }
+
 
 @Composable
 private fun LoanInfoTile(
@@ -1113,7 +1164,7 @@ private fun LoanInstallmentsDialog(
                 ) {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(20.dp),
                         color = MatureColors.SecondaryLight
                     ) {
                         Text(
@@ -1153,7 +1204,7 @@ private fun LoanInstallmentsDialog(
 
                             Surface(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(16.dp),
+                                shape = RoundedCornerShape(20.dp),
                                 color = if (isPaid) {
                                     MatureColors.Surface
                                 } else {
@@ -1169,7 +1220,7 @@ private fun LoanInstallmentsDialog(
                                 ) {
                                     Surface(
                                         modifier = Modifier.size(40.dp),
-                                        shape = RoundedCornerShape(12.dp),
+                                        shape = RoundedCornerShape(14.dp),
                                         color = if (isPaid) {
                                             MatureColors.Success
                                         } else {
@@ -1280,7 +1331,7 @@ private fun LoanInstallmentsDialog(
         confirmButton = {
             OutlinedButton(
                 onClick = onDismiss,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(14.dp)
             ) {
                 Text("بستن")
             }
@@ -1323,7 +1374,7 @@ private fun LoanInstallmentsDialog(
                                     Modifier
                                         .fillMaxWidth()
                                         .clip(
-                                            RoundedCornerShape(12.dp)
+                                            RoundedCornerShape(14.dp)
                                         )
                                         .clickable {
                                             selectedAccountId =
@@ -2245,6 +2296,21 @@ private fun calculateMonthlyInstallment(
 
     return payment.toLong()
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

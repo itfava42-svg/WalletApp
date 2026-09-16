@@ -55,10 +55,6 @@ class SmsReceiver : BroadcastReceiver() {
                 "sender=$sender bodyLength=${fullBody.length} smsDate=$smsDate"
             )
 
-            Log.d(
-                TAG,
-                "body=$fullBody"
-            )
 
             /*
              * IMPORTANT:
@@ -259,4 +255,5 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 }
+
 

@@ -467,7 +467,7 @@ object TransactionStore {
                 amount = amount,
                 type = TransactionType.EXPENSE,
                     iconKey = "انتقال",
-                category = "ط§ظ†طھظ‚ط§ظ„ ط¯ط§ط®ظ„غŒ",
+                category = "انتقال داخلی",
                 dateEpochMillis = dateEpochMillis ?: now,
                 note = note.trim(),
                 kind = TransactionKind.TRANSFER,
@@ -529,13 +529,13 @@ object TransactionStore {
                     if (merchant != null) {
                         bankName
                     } else {
-                        "طھط±ط§ع©ظ†ط´ ط¨ط§ظ†ع©غŒ"
+                        "تراکنش بانکی"
                     },
                 amount = amount,
                 type = type,
                 dateEpochMillis = smsDate ?: now,
             requiresCompletion = true,
-                iconKey = "ط¨ط§ظ†ع©",
+                iconKey = "بانک",
                 sourceId = sourceId,
                 source = TransactionSource.SMS,
                 syncStatus = SyncStatus.LOCAL_ONLY,

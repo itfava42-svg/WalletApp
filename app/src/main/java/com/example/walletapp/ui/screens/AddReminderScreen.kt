@@ -421,7 +421,7 @@ fun AddReminderScreen(
                     Text("مثلاً پرداخت قبض برق")
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(20.dp)
             )
 
             OutlinedTextField(
@@ -445,7 +445,7 @@ fun AddReminderScreen(
                     Text("ریال")
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(20.dp)
             )
 
             OutlinedTextField(
@@ -462,7 +462,7 @@ fun AddReminderScreen(
                 },
                 minLines = 3,
                 maxLines = 5,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(20.dp)
             )
 
             SectionTitle(
@@ -851,4 +851,5 @@ private fun RepeatTile(
         }
     }
 }
+
 

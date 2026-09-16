@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.sms
+package com.example.walletapp.sms
 
 import android.content.Context
 import com.example.walletapp.data.TransactionStore
@@ -28,6 +28,14 @@ object SmsTransactionQueue {
 
         isShowing = true
 
+        // Prefer the real Compose ModalBottomSheet when the host is active.
+        if (SmsCompletionCoordinator.isHostRegistered()) {
+            if (SmsCompletionCoordinator.deliver(next.id)) {
+                return true
+            }
+        }
+
+        // Preserve the existing Activity fallback when no Compose host exists.
         return runCatching {
             SmsTransactionCompletionActivity.start(
                 context = context,

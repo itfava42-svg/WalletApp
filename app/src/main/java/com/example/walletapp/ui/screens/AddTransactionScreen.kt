@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -226,8 +226,8 @@ fun AddTransactionScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(20.dp)
-                        .height(52.dp),
-                    shape = RoundedCornerShape(16.dp),
+                        .height(54.dp),
+                    shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = accentColor, contentColor = OnPrimary),
                 ) {
                     Text(
@@ -243,7 +243,7 @@ fun AddTransactionScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
             Spacer(Modifier.height(8.dp))
@@ -252,7 +252,7 @@ fun AddTransactionScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(20.dp))
                     .background(SurfaceContainer)
                     .padding(4.dp),
             ) {
@@ -286,7 +286,7 @@ fun AddTransactionScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 textStyle = MaterialTheme.typography.headlineSmall,
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
             )
             if (amountDigits.isNotEmpty()) {
                 Text(
@@ -308,7 +308,7 @@ fun AddTransactionScreen(
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("مثلاً خرید سوپرمارکت") },
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
             )
 
             Spacer(Modifier.height(20.dp))
@@ -357,7 +357,7 @@ fun AddTransactionScreen(
                 Spacer(Modifier.width(8.dp))
                 OutlinedButton(
                     onClick = { showDatePicker = true },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                 ) {
                     Icon(Icons.Filled.CalendarToday, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(6.dp))
@@ -386,7 +386,7 @@ fun AddTransactionScreen(
                             expanded = accountMenuExpanded
                         )
                     },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                 )
 
                 ExposedDropdownMenu(
@@ -426,7 +426,7 @@ fun AddTransactionScreen(
                     .fillMaxWidth()
                     .height(90.dp),
                 placeholder = { Text("توضیح بیشتر...") },
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
             )
 
             Spacer(Modifier.height(20.dp))
@@ -498,7 +498,7 @@ fun AddTransactionScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(180.dp)
-                            .clip(RoundedCornerShape(12.dp)),
+                            .clip(RoundedCornerShape(14.dp)),
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                     )
                 }
@@ -550,7 +550,7 @@ private fun SegmentButton(
     Surface(
         onClick = onClick,
         modifier = modifier.height(44.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(14.dp),
         color = if (selected) selectedColor else androidx.compose.ui.graphics.Color.Transparent,
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -581,7 +581,7 @@ private fun CategoryChip(
             border = if (selected) androidx.compose.foundation.BorderStroke(1.5.dp, accentColor) else null,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp),
+                .height(54.dp),
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
@@ -600,6 +600,7 @@ private fun CategoryChip(
         )
     }
 }
+
 
 
 

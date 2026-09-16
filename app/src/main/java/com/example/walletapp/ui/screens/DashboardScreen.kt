@@ -13,10 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.LifecycleEventObserver
+import java.util.Calendar
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.AccountLedger
+import com.example.walletapp.data.ReportCalculator
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.resolveTransactionIcon
@@ -132,6 +134,42 @@ fun DashboardScreen(
             }
             .sumOf { it.amount }
 
+    val dashboardCurrentMonthRange = run {
+        val now = Calendar.getInstance()
+
+        val from = now.clone() as Calendar
+        val to = now.clone() as Calendar
+
+        from.set(Calendar.DAY_OF_MONTH, 1)
+        from.set(Calendar.HOUR_OF_DAY, 0)
+        from.set(Calendar.MINUTE, 0)
+        from.set(Calendar.SECOND, 0)
+        from.set(Calendar.MILLISECOND, 0)
+
+        to.set(Calendar.HOUR_OF_DAY, 23)
+        to.set(Calendar.MINUTE, 59)
+        to.set(Calendar.SECOND, 59)
+        to.set(Calendar.MILLISECOND, 999)
+
+        from.timeInMillis to to.timeInMillis
+    }
+
+    val dashboardMonthSummary =
+        ReportCalculator.periodSummary(
+            fromMillis = dashboardCurrentMonthRange.first,
+            toMillis = dashboardCurrentMonthRange.second,
+        )
+
+    val dashboardMonthCategories =
+        ReportCalculator.categorySummary(
+            fromMillis = dashboardCurrentMonthRange.first,
+            toMillis = dashboardCurrentMonthRange.second,
+        )
+
+    val dashboardExpenseCategories =
+        dashboardMonthCategories
+            .filter { it.expense > 0L }
+            .sortedByDescending { it.expense }
     val totalBalance =
         AccountLedger.totalBalance(
             accounts = AccountStore.accounts,
@@ -140,117 +178,47 @@ fun DashboardScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("داشبورد", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    Box {
-    IconButton(
-        onClick = {
-            showDashboardMenu = true
-        }
-    ) {
-        Icon(
-            Icons.Filled.Menu,
-            contentDescription = "منو"
-        )
-    }
-
-    DropdownMenu(
-        expanded = showDashboardMenu,
-        onDismissRequest = {
-            showDashboardMenu = false
-        }
-    ) {
-        DropdownMenuItem(
-            text = {
-                Text("حساب‌ها")
-            },
-            onClick = {
-                showDashboardMenu = false
-                onNavSelect(1)
+    CenterAlignedTopAppBar(
+        title = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("سلام، مطلب 👋", fontWeight = FontWeight.Bold)
+                Text(
+                    "مدیریت مالی شما",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
-        )
-
-        DropdownMenuItem(
-            text = {
-                Text("گزارشات")
-            },
-            onClick = {
-                showDashboardMenu = false
-                onNavSelect(2)
-            }
-        )
-
-        DropdownMenuItem(
-            text = {
-                Text("ابزارها")
-            },
-            onClick = {
-                showDashboardMenu = false
-                onNavSelect(3)
-            }
-        )
-
-        DropdownMenuItem(
-            text = {
-                Text("بودجه")
-            },
-            onClick = {
-                showDashboardMenu = false
-                onNavSelect(4)
-            }
-        )
-    }
-}
-                },
-                actions = {
-                    Box {
-                        IconButton(
-                            onClick = {
-                                showDashboardFilter = true
-                            }
-                        ) {
-                            Icon(
-                                Icons.Filled.Tune,
-                                contentDescription = "فیلترها"
-                            )
-                        }
-
-                        DropdownMenu(
-                            expanded = showDashboardFilter,
-                            onDismissRequest = {
-                                showDashboardFilter = false
-                            }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("همه تراکنش‌ها") },
-                                onClick = {
-                                    dashboardFilter = "ALL"
-                                    showDashboardFilter = false
-                                }
-                            )
-
-                            DropdownMenuItem(
-                                text = { Text("درآمدها") },
-                                onClick = {
-                                    dashboardFilter = "INCOME"
-                                    showDashboardFilter = false
-                                }
-                            )
-
-                            DropdownMenuItem(
-                                text = { Text("هزینه‌ها") },
-                                onClick = {
-                                    dashboardFilter = "EXPENSE"
-                                    showDashboardFilter = false
-                                }
-                            )
-                        }
-                    }
-                },
-            )
         },
-        bottomBar = {
+        navigationIcon = {
+            IconButton(onClick = { showDashboardMenu = true }) {
+                Icon(Icons.Filled.AccountCircle, contentDescription = "پروفایل", tint = MaterialTheme.colorScheme.primary)
+            }
+        },
+        actions = {
+            IconButton(onClick = { showDashboardFilter = true }) {
+                Icon(Icons.Filled.NotificationsNone, contentDescription = "اعلان‌ها")
+            }
+            DropdownMenu(
+                expanded = showDashboardFilter,
+                onDismissRequest = { showDashboardFilter = false },
+            ) {
+                DropdownMenuItem(text = { Text("همه تراکنش‌ها") }, onClick = { dashboardFilter = "ALL"; showDashboardFilter = false })
+                DropdownMenuItem(text = { Text("درآمدها") }, onClick = { dashboardFilter = "INCOME"; showDashboardFilter = false })
+                DropdownMenuItem(text = { Text("هزینه‌ها") }, onClick = { dashboardFilter = "EXPENSE"; showDashboardFilter = false })
+            }
+            DropdownMenu(
+                expanded = showDashboardMenu,
+                onDismissRequest = { showDashboardMenu = false },
+            ) {
+                DropdownMenuItem(text = { Text("حساب‌ها") }, onClick = { showDashboardMenu = false; onNavSelect(3) })
+                DropdownMenuItem(text = { Text("گزارشات") }, onClick = { showDashboardMenu = false; onOpenMoreClick() })
+                DropdownMenuItem(text = { Text("ابزارها") }, onClick = { showDashboardMenu = false; onNavSelect(4) })
+                DropdownMenuItem(text = { Text("ط¨ظˆط¯ط¬ظ‡") }, onClick = { showDashboardMenu = false; onOpenBudgetClick() })
+            }
+        },
+    )
+},
+bottomBar = {
             DashboardBottomBar(
                 items = appNavItems,
                 selectedIndex = selectedNavIndex,
@@ -265,8 +233,8 @@ fun DashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
-            contentPadding = PaddingValues(vertical = 16.dp),
+                .padding(horizontal = 18.dp),
+            contentPadding = PaddingValues(vertical = 18.dp),
         ) {
             item {
                 BalanceHeroCard(
@@ -274,18 +242,27 @@ fun DashboardScreen(
                     income = totalIncome,
                     expense = totalExpense,
                 )
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(18.dp))
             }
 
             item {
-                TransactionSyncCard(
+                DashboardMonthlySummaryCard(
+            income = dashboardMonthSummary.income,
+            expense = dashboardMonthSummary.expense,
+            cashFlow = dashboardMonthSummary.cashFlow,
+        )
+
+        DashboardCategorySummaryCard(
+            categories = dashboardExpenseCategories,
+        )
+        TransactionSyncCard(
                     state = syncState,
                     pendingCount = syncPendingCount,
                     onSyncClick = {
                         syncViewModel.sync()
                     },
                 )
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(18.dp))
             }
 
             item {
@@ -298,7 +275,7 @@ fun DashboardScreen(
                     QuickAction("بودجه", Icons.Filled.Analytics, SurfaceContainerHigh, Primary, onClick = onOpenBudgetClick)
                     QuickAction("بیشتر", Icons.Filled.MoreHoriz, SurfaceContainerHigh, Outline, onClick = onOpenMoreClick)
                 }
-                Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(26.dp))
             }
 
             item {
@@ -317,7 +294,7 @@ fun DashboardScreen(
 
             items(filteredTransactions, key = { it.id }) { tx ->
                 TransactionRow(tx, onClick = { editingTransaction = tx })
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(8.dp))
             }
 
             if (transactions.isEmpty()) {
@@ -363,6 +340,9 @@ fun DashboardScreen(
         )
     }
 }
+
+
+
 
 
 

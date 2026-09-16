@@ -46,6 +46,21 @@ import com.example.walletapp.ui.screens.OperationsScreen
 import com.example.walletapp.ui.screens.TransferScreen
 import com.example.walletapp.ui.screens.TransactionsScreen
 import com.example.walletapp.ui.screens.AccountsScreen
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.runtime.DisposableEffect
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import java.io.File
+import com.example.walletapp.data.AccountStore
+import com.example.walletapp.sms.SmsCompletionCoordinator
+import com.example.walletapp.sms.SmsIgnoreStore
+import com.example.walletapp.sms.SmsLearningStore
+import com.example.walletapp.sms.SmsTransactionCompletionHandler
+import com.example.walletapp.sms.SmsTransactionCompletionSheetHost
+import com.example.walletapp.sms.SmsTransactionMetadataStore
+import com.example.walletapp.sms.SmsTransactionQueue
 import com.example.walletapp.ui.theme.WalletAppTheme
 
 private sealed class AppScreen {
@@ -90,6 +105,10 @@ class MainActivity : ComponentActivity() {
         LoanStore.attachContext(applicationContext)
         LoanLegacyMigration.migrate(applicationContext)
         CheckStore.attachContext(applicationContext)
+        AccountStore.attachContext(applicationContext)
+        SmsTransactionMetadataStore.attachContext(applicationContext)
+        SmsLearningStore.attachContext(applicationContext)
+        SmsIgnoreStore.attachContext(applicationContext)
 
         setContent {
             // App content is Persian, so force RTL layout direction regardless
@@ -101,182 +120,339 @@ class MainActivity : ComponentActivity() {
                         var selectedReminder by remember { mutableStateOf<Reminder?>(null) }
                         var selectedNavIndex by remember { mutableStateOf(0) }
 
-                        fun onNavSelect(index: Int) {
-                            selectedNavIndex = index
+                        var smsSheetTransaction by remember {
+                            mutableStateOf<com.example.walletapp.data.Transaction?>(null)
+                        }
 
-                            currentScreen = when (index) {
-                                0 -> AppScreen.Dashboard
-                                1 -> AppScreen.Accounts
-                                2 -> AppScreen.Reports
-        3 -> AppScreen.Tools
-        4 -> AppScreen.Budget
-                                else -> AppScreen.Dashboard
+                        var selectedReceiptUri by remember {
+                            mutableStateOf<Uri?>(null)
+                        }
+
+                        var pendingCameraUri by remember {
+                            mutableStateOf<Uri?>(null)
+                        }
+
+                        val context =
+                            androidx.compose.ui.platform.LocalContext.current
+
+                        val receiptPicker =
+                            rememberLauncherForActivityResult(
+                                contract = ActivityResultContracts.OpenDocument()
+                            ) { uri ->
+                                if (uri != null) {
+                                    runCatching {
+                                        context.contentResolver.takePersistableUriPermission(
+                                            uri,
+                                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                        )
+                                    }
+
+                                    selectedReceiptUri = uri
+                                }
+                            }
+
+                        val cameraLauncher =
+                            rememberLauncherForActivityResult(
+                                ActivityResultContracts.TakePicture()
+                            ) { success ->
+
+                                val uri = pendingCameraUri
+
+                                if (success && uri != null) {
+                                    selectedReceiptUri = uri
+                                }
+                            }
+
+                        val cameraPermissionLauncher =
+                            rememberLauncherForActivityResult(
+                                ActivityResultContracts.RequestPermission()
+                            ) { granted ->
+
+                                if (granted) {
+
+                                    val directory =
+                                        File(
+                                            context.filesDir,
+                                            "receipts"
+                                        ).apply {
+                                            mkdirs()
+                                        }
+
+                                    val file =
+                                        File.createTempFile(
+                                            "receipt_camera_",
+                                            ".jpg",
+                                            directory
+                                        )
+
+                                    val uri =
+                                        FileProvider.getUriForFile(
+                                            context,
+                                            "${context.packageName}.fileprovider",
+                                            file
+                                        )
+
+                                    pendingCameraUri = uri
+                                    cameraLauncher.launch(uri)
+                                }
+                            }
+
+                        DisposableEffect(Unit) {
+
+                            SmsCompletionCoordinator.registerHost { transactionId ->
+
+                                val transaction =
+                                    TransactionStore.transactions
+                                        .firstOrNull {
+                                            it.id == transactionId
+                                        }
+
+                                if (
+                                    transaction != null &&
+                                    transaction.requiresCompletion
+                                ) {
+                                    smsSheetTransaction = transaction
+
+                                    selectedReceiptUri =
+                                        transaction.receiptUri
+                                            ?.takeIf {
+                                                it.isNotBlank()
+                                            }
+                                            ?.let(Uri::parse)
+                                }
+                            }
+
+                            onDispose {
+                                SmsCompletionCoordinator.unregisterHost()
                             }
                         }
 
-                        when (currentScreen) {
-                            is AppScreen.Accounts -> AccountsScreen(
-                                selectedNavIndex = selectedNavIndex,
-                                onNavSelect = ::onNavSelect,
-                            )
+                        smsSheetTransaction?.let { transaction ->
 
-                            is AppScreen.Transactions -> TransactionsScreen(
-
-                                selectedNavIndex = selectedNavIndex,
-
-                                onNavSelect = ::onNavSelect,
-
-                            )
-
-
-                            is AppScreen.Dashboard -> DashboardScreen(
-                                onAddTransactionClick = { currentScreen = AppScreen.AddTransaction },
-                                onOpenTransactions = { currentScreen = AppScreen.Transactions },
-                                onOpenBudgetClick = {
-                                    selectedNavIndex = 4
-                                    currentScreen = AppScreen.Budget
-                                },
-                                onOpenMoreClick = {
-                                    currentScreen = AppScreen.Tools
-                                },
-                                selectedNavIndex = selectedNavIndex,
-                                onNavSelect = ::onNavSelect,
-                            )
-                            is AppScreen.AddTransaction -> AddTransactionScreen(
-                                onBack = { currentScreen = AppScreen.Dashboard },
-                                onSave = { transaction ->
-                                    TransactionStore.addManual(transaction)
-                                    currentScreen = AppScreen.Dashboard
-                                },
-                            )
-                            is AppScreen.Tools -> ToolsScreen(
-                                selectedNavIndex = selectedNavIndex,
-                                onNavSelect = ::onNavSelect,
-                                onOpenSettingsList = { currentScreen = AppScreen.SettingsList },
-                                onOpenReminder = { currentScreen = AppScreen.Reminder },
-                                onOpenLoanManagement = {
-                                    currentScreen = AppScreen.LoanManagement
-                                },
-                                onOpenCheckManagement = {
-                                    currentScreen = AppScreen.CheckManagement
-                                },
-            onOpenOperations = { currentScreen = AppScreen.Operations },
-                                 onOpenReports = {
-    selectedNavIndex = 2
-    currentScreen = AppScreen.Reports
-},
-                            )
-                            is AppScreen.Budget -> BudgetScreen(
-                                selectedNavIndex = selectedNavIndex,
-                                onNavSelect = ::onNavSelect,
-                            )
-                            is AppScreen.Reminder -> ReminderScreen(
-                                onBack = { currentScreen = AppScreen.Tools },
-                                onAddReminder = {
-                                    selectedReminder = null
-                                    currentScreen = AppScreen.AddReminder
-                                },
-                                onEditReminder = { reminder ->
-                                    selectedReminder = reminder
-                                    currentScreen = AppScreen.AddReminder
-                                },
-                            )
-
-                            is AppScreen.AddReminder -> {
-                                AddReminderScreen(
-                                    existingReminder = selectedReminder,
-                                    onBack = {
-                                        selectedReminder = null
-                                        currentScreen = AppScreen.Reminder
-                                    },
-                                    onSaved = {
-                                        selectedReminder = null
-                                        currentScreen = AppScreen.Reminder
-                                    },
+                            val metadata =
+                                SmsTransactionMetadataStore.get(
+                                    transaction.id
                                 )
-                            }
 
-        is AppScreen.Transfer -> TransferScreen(
+                            val detectedBank =
+                                metadata
+                                    ?.originalBank
+                                    ?.takeIf {
+                                        it.isNotBlank()
+                                    }
+                                    ?: transaction.subtitle
 
-            onBack = {
+                            val sender =
+                                metadata?.sender
 
-                currentScreen = AppScreen.Operations
+                            val learnedCategory =
+                                metadata?.let {
+                                    SmsLearningStore.findPatternRule(
+                                        sender = it.sender,
+                                        messageBody = it.rawBody,
+                                    )?.category
+                                        ?: SmsLearningStore.getSenderCategory(
+                                            it.sender
+                                        )
+                                }
 
-            },
+                            SmsTransactionCompletionSheetHost(
+                                transaction = transaction,
+                                detectedBank = detectedBank,
+                                sender = sender,
+                                initialCategory = learnedCategory,
+                                activeLoans = LoanStore.loans.toList(),
+                                receiptUri =
+                                    selectedReceiptUri
+                                        ?: transaction.receiptUri
+                                            ?.let(Uri::parse),
 
-            onTransferCompleted = {
-
-                currentScreen = AppScreen.Dashboard
-
-            },
-
-        )
-
-        is AppScreen.Operations -> OperationsScreen(
-            onBack = { currentScreen = AppScreen.Tools },
-            onOpenCheckManagement = {
-                currentScreen = AppScreen.CheckManagement
-            },
-            onOpenLoanManagement = {
-                currentScreen = AppScreen.LoanManagement
-            },
-        onOpenTransfer = {
-            currentScreen = AppScreen.Transfer
-        },    
-        )
-
-                            is AppScreen.Reports -> ReportsScreen(
-    selectedNavIndex = selectedNavIndex,
-    onNavSelect = ::onNavSelect,
-)
-
-                            is AppScreen.SettingsList -> SettingsListScreen(
-                                onBack = { currentScreen = AppScreen.Tools },
-                                onOpenThemeBuilder = { currentScreen = AppScreen.ThemeBuilder },
-        onOpenSmsLearning = {
-                                    currentScreen = AppScreen.SmsLearning
+                                onPickReceipt = {
+                                    receiptPicker.launch(
+                                        arrayOf("image/*")
+                                    )
                                 },
-                                onOpenTransactionSync = {
-                                    currentScreen = AppScreen.TransactionSync
+
+                                onTakePhoto = {
+
+                                    if (
+                                        androidx.core.content.ContextCompat
+                                            .checkSelfPermission(
+                                                context,
+                                                Manifest.permission.CAMERA
+                                            ) ==
+                                        android.content.pm.PackageManager
+                                            .PERMISSION_GRANTED
+                                    ) {
+
+                                        val directory =
+                                            File(
+                                                context.filesDir,
+                                                "receipts"
+                                            ).apply {
+                                                mkdirs()
+                                            }
+
+                                        val file =
+                                            File.createTempFile(
+                                                "receipt_camera_",
+                                                ".jpg",
+                                                directory
+                                            )
+
+                                        val uri =
+                                            FileProvider.getUriForFile(
+                                                context,
+                                                "${context.packageName}.fileprovider",
+                                                file
+                                            )
+
+                                        pendingCameraUri = uri
+                                        cameraLauncher.launch(uri)
+
+                                    } else {
+
+                                        cameraPermissionLauncher.launch(
+                                            Manifest.permission.CAMERA
+                                        )
+                                    }
                                 },
-                            )
-        is AppScreen.TransactionSync -> TransactionSyncScreen(
-            viewModel =
-                remember {
-                    TransactionSyncViewModel(
-                        applicationContext
-                    )
-                },
-            onBack = {
-                currentScreen = AppScreen.SettingsList
-            }
-        )
 
-                            is AppScreen.SmsLearning -> SmsLearningScreen(
-                                onBack = {
-                                    currentScreen = AppScreen.SettingsList
+                                onComplete = {
+                                    category,
+                                    tags,
+                                    description,
+                                    receiptUri,
+                                    selectedBank,
+                                    selectedAccountId,
+                                    learnBank,
+                                    loan,
+                                    installment ->
+
+                                    val request =
+                                        SmsTransactionCompletionHandler.CompletionRequest(
+                                            transaction = transaction,
+                                            sender =
+                                                metadata?.sender
+                                                    ?: "",
+                                            rawBody =
+                                                metadata?.rawBody,
+                                            selectedBank =
+                                                selectedBank,
+                                            selectedCategory =
+                                                category,
+                                            tags =
+                                                tags,
+                                            description =
+                                                description,
+                                            receiptUri =
+                                                receiptUri?.toString(),
+                                            selectedAccountId =
+                                                selectedAccountId,
+                                            smsAccountNumber =
+                                                metadata
+                                                    ?.accountNumber
+                                                    ?.trim()
+                                                    ?.takeIf {
+                                                        it.isNotBlank()
+                                                    },
+                                            smsCardLast4 =
+                                                metadata
+                                                    ?.cardLast4
+                                                    ?.trim()
+                                                    ?.takeIf {
+                                                        it.isNotBlank()
+                                                    },
+                                            learnBank =
+                                                learnBank,
+                                            selectedLoan =
+                                                loan,
+                                            selectedInstallmentNumber =
+                                                installment
+                                                    ?.number,
+                                        )
+
+                                    when (
+                                        val result =
+                                            SmsTransactionCompletionHandler
+                                                .complete(
+                                                    context,
+                                                    request
+                                                )
+                                    ) {
+
+                                        is SmsTransactionCompletionHandler
+                                            .CompletionResult.Success -> {
+
+                                            smsSheetTransaction = null
+                                            selectedReceiptUri = null
+                                            pendingCameraUri = null
+
+                                            SmsTransactionQueue
+                                                .onCompletionFinished(
+                                                    context
+                                                )
+                                        }
+
+                                        else -> {
+                                            // Keep the sheet open so the
+                                            // existing UI can correct the
+                                            // missing/invalid completion data.
+                                        }
+                                    }
                                 },
-                            )
 
-                            is AppScreen.ThemeBuilder -> ThemeBuilderScreen(
-                                onBack = {
-                                    currentScreen = AppScreen.SettingsList
+                                onIgnoreSender = {
+
+                                    val ignoreMetadata =
+                                        SmsTransactionMetadataStore.get(
+                                            transaction.id
+                                        )
+
+                                    ignoreMetadata?.let { meta ->
+
+                                        if (
+                                            !sender.isNullOrBlank() &&
+                                            !meta.rawBody.isNullOrBlank()
+                                        ) {
+
+                                            SmsIgnoreStore.ignorePattern(
+                                                sender = sender,
+                                                pattern = meta.rawBody
+                                            )
+                                        }
+                                    }
+
+                                    TransactionStore.update(
+                                        transaction.copy(
+                                            requiresCompletion = false
+                                        )
+                                    )
+
+                                    smsSheetTransaction = null
+                                    selectedReceiptUri = null
+
+                                    SmsTransactionQueue.onCompletionFinished(context)
+                                    pendingCameraUri = null
+
+                                    SmsTransactionQueue
+                                        .onCompletionFinished(
+                                            context
+                                        )
                                 },
-                            )
 
-                            is AppScreen.LoanManagement -> LoanManagementScreen(
-                                onBack = { currentScreen = AppScreen.Tools },
-                            )
+                                onDismiss = {
 
-                            is AppScreen.CheckManagement -> CheckManagementScreen(
-                                onBack = { currentScreen = AppScreen.Tools },
+                                    smsSheetTransaction = null
+                                    selectedReceiptUri = null
+                                    pendingCameraUri = null
+                                }
                             )
+                        }
                         }
                     }
                 }
             }
-        }
-
         requestFirstRunPermissionsIfNeeded()
     }
 
@@ -308,6 +484,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
+
+
+
 
 
 

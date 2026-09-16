@@ -133,7 +133,7 @@ fun ToolsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 16.dp),
         ) {
 
             Spacer(Modifier.height(16.dp))
@@ -266,7 +266,7 @@ private fun TopIconButton(
 
         Surface(
             onClick = onClick,
-            shape = RoundedCornerShape(18.dp),
+            shape = RoundedCornerShape(22.dp),
             color = background,
             modifier = Modifier.size(64.dp),
         ) {
@@ -305,7 +305,7 @@ private fun ToolGridCard(
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(22.dp),
         color = background,
         modifier = modifier
             .fillMaxWidth()
@@ -352,6 +352,9 @@ private fun ToolGridCard(
         }
     }
 }
+
+
+
 
 
 
