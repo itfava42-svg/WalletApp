@@ -77,6 +77,7 @@ object SmsTransactionCompletionHandler {
      * - advance Queue
      * - show UI
      */
+    @Synchronized
     fun complete(
         context: Context,
         request: CompletionRequest,
@@ -94,7 +95,8 @@ object SmsTransactionCompletionHandler {
                 request.tags.isNotEmpty() ||
                 request.description.isNotBlank() ||
                 request.receiptUri != null ||
-                request.selectedBank.trim() != transaction.subtitle.trim()
+                request.selectedBank.trim() != transaction.subtitle.trim() ||
+            request.selectedAccountId != null
 
         if (!hasCompletionData) {
             return CompletionResult.NoChanges
@@ -378,5 +380,8 @@ object SmsTransactionCompletionHandler {
         )
     }
 }
+
+
+
 
 

@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,6 +40,7 @@ import com.example.walletapp.data.TransactionCategory
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.data.toPersianDigits
+import com.example.walletapp.ui.components.JalaliDatePickerDialog
 import com.example.walletapp.ui.theme.*
 import java.util.UUID
 
@@ -518,24 +519,40 @@ fun AddTransactionScreen(
     }
 
     if (showDatePicker) {
-        val pickerState = rememberDatePickerState(initialSelectedDateMillis = dateEpochMillis)
-        DatePickerDialog(
-            onDismissRequest = { showDatePicker = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    pickerState.selectedDateMillis?.let { millis ->
-                        dateEpochMillis = millis
-                        dateLabel = JalaliCalendar.fromEpochMillisSlashed(millis)
+        JalaliDatePickerDialog(
+            initialDate = dateEpochMillis?.let {
+                JalaliCalendar.fromEpochMillisSlashed(it)
+            } ?: dateLabel,
+            onDismissRequest = {
+                showDatePicker = false
+            },
+            onDateSelected = { selectedDate ->
+                val asciiDate = selectedDate.map { ch ->
+                    when {
+                        ch.code in 0x06F0..0x06F9 ->
+                            ('0'.code + (ch.code - 0x06F0)).toChar()
+                        ch.code in 0x0660..0x0669 ->
+                            ('0'.code + (ch.code - 0x0660)).toChar()
+                        else -> ch
                     }
-                    showDatePicker = false
-                }) { Text("تأیید") }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("انصراف") }
-            },
-        ) {
-            DatePicker(state = pickerState)
-        }
+                }.joinToString("")
+
+                val parts = asciiDate.split("/")
+                val year = parts.getOrNull(0)?.toIntOrNull()
+                val month = parts.getOrNull(1)?.toIntOrNull()
+                val day = parts.getOrNull(2)?.toIntOrNull()
+
+                if (year != null && month != null && day != null) {
+                    val selectedMillis =
+                        JalaliCalendar.jalaliToEpochMillis(year, month, day)
+
+                    dateEpochMillis = selectedMillis
+                    dateLabel = JalaliCalendar.fromEpochMillisSlashed(selectedMillis)
+                }
+
+                showDatePicker = false
+            }
+        )
     }
 }
 
@@ -600,6 +617,7 @@ private fun CategoryChip(
         )
     }
 }
+
 
 
 

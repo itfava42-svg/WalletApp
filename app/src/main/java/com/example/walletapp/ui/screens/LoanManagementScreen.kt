@@ -6,7 +6,7 @@ import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
-import android.app.DatePickerDialog
+import com.example.walletapp.ui.components.JalaliDatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -67,6 +67,7 @@ import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.LoanEntry
 import com.example.walletapp.data.LoanPayment
 import com.example.walletapp.data.LoanStore
+import com.example.walletapp.data.LoanPaymentDateValidator
 import com.example.walletapp.data.LoanType
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.loan.MatureColors
@@ -1070,6 +1071,7 @@ private fun LoanInstallmentsDialog(
     var selectedAccountId by remember {
         mutableStateOf<String?>(null)
     }
+    var loanPaymentError by remember { mutableStateOf<String?>(null) }
 
     val activeAccounts =
         AccountStore.accounts.filter { it.isActive }
@@ -1338,6 +1340,31 @@ private fun LoanInstallmentsDialog(
         }
     )
 
+    loanPaymentError?.let { message ->
+        AlertDialog(
+            onDismissRequest = { loanPaymentError = null },
+            title = {
+                Text(
+                    text = "خطای ثبت پرداخت",
+                    fontWeight = FontWeight.Bold,
+                    color = MatureColors.TextPrimary
+                )
+            },
+            text = {
+                Text(
+                    text = message,
+                    color = MatureColors.TextSecondary
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { loanPaymentError = null }
+                ) {
+                    Text("متوجه شدم")
+                }
+            }
+        )
+    }
     selectedInstallmentNumber?.let { installmentNumber ->
 
         AlertDialog(
@@ -1447,6 +1474,11 @@ private fun LoanInstallmentsDialog(
 
                             val now =
                                 System.currentTimeMillis()
+
+                            if (!LoanPaymentDateValidator.isPaymentDateValid(currentLoan, now)) {
+                                loanPaymentError = LoanPaymentDateValidator.ERROR_MESSAGE
+                                return@Button
+                            }
 
                             val today =
                                 JalaliCalendar
@@ -1959,6 +1991,16 @@ private fun LoanEditorDialog(
                         return@Button
                     }
 
+                    val paidInstallmentCount =
+                        existingLoan?.payments?.size ?: 0
+
+                    if (
+                        existingLoan != null &&
+                        installments < paidInstallmentCount
+                    ) {
+                        return@Button
+                    }
+
                     val finalInstallment =
                         if (calculatedInstallment > 0) {
                             calculatedInstallment
@@ -2161,6 +2203,8 @@ private fun DateField(
     onDateSelected: (String) -> Unit,
     context: android.content.Context
 ) {
+    var showPicker by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         value = value,
         onValueChange = {},
@@ -2180,41 +2224,7 @@ private fun DateField(
         trailingIcon = {
             IconButton(
                 onClick = {
-                    val calendar =
-                        Calendar.getInstance()
-
-                    DatePickerDialog(
-                        context,
-                        { _, year, month, day ->
-                            val selected =
-                                Calendar.getInstance()
-                                    .apply {
-                                        set(
-                                            year,
-                                            month,
-                                            day,
-                                            12,
-                                            0,
-                                            0
-                                        )
-
-                                        set(
-                                            Calendar.MILLISECOND,
-                                            0
-                                        )
-                                    }
-
-                            onDateSelected(
-                                JalaliCalendar
-                                    .fromEpochMillisSlashed(
-                                        selected.timeInMillis
-                                    )
-                            )
-                        },
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)
-                    ).show()
+                    showPicker = true
                 }
             ) {
                 Icon(
@@ -2227,6 +2237,19 @@ private fun DateField(
             }
         }
     )
+
+    if (showPicker) {
+        JalaliDatePickerDialog(
+            initialDate = value,
+            onDismissRequest = {
+                showPicker = false
+            },
+            onDateSelected = { selectedDate ->
+                onDateSelected(selectedDate)
+                showPicker = false
+            }
+        )
+    }
 }
 
 private fun parseJalaliDate(
@@ -2296,6 +2319,9 @@ private fun calculateMonthlyInstallment(
 
     return payment.toLong()
 }
+
+
+
 
 
 

@@ -106,38 +106,6 @@ class MainActivity : ComponentActivity() {
         TransactionStore.attachContext(applicationContext)
 
 // ============================================================
-// TEMP SMS QUEUE TEST — REMOVE AFTER VERIFICATION
-// ============================================================
-
-android.util.Log.d(
-    "TEMP_SMS_QUEUE_TEST",
-    "Creating synthetic SMS transaction for Compose queue test"
-)
-
-val testTransaction =
-    TransactionStore.addFromBankSms(
-        bankName = "بانک تست",
-        amount = 125000L,
-        merchant = "تست تکمیل تراکنش",
-        type = com.example.walletapp.data.TransactionType.EXPENSE,
-        smsDate = System.currentTimeMillis(),
-        sourceId = "TEMP_SMS_QUEUE_TEST",
-    )
-
-android.util.Log.d(
-    "TEMP_SMS_QUEUE_TEST",
-    "Test transaction created: ${testTransaction.id}"
-)
-
-SmsTransactionQueue.showNextIfNeeded(applicationContext)
-
-android.util.Log.d(
-    "TEMP_SMS_QUEUE_TEST",
-    "showNextIfNeeded() invoked"
-)
-
-// ============================================================
-// END TEMP SMS QUEUE TEST
 // ============================================================
         LoanStore.attachContext(applicationContext)
         LoanLegacyMigration.migrate(applicationContext)

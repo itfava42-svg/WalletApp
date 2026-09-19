@@ -7,6 +7,7 @@ import com.example.walletapp.data.LoanStore
 import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
+import com.example.walletapp.data.JalaliCalendar
 import java.util.UUID
 
 object LoanPaymentManager {
@@ -42,7 +43,7 @@ object LoanPaymentManager {
                 id = UUID.randomUUID().toString(),
                 installmentNumber = installmentNumber,
                 amount = transaction.amount,
-                dateLabel = "امروز",
+                dateLabel = transaction.dateEpochMillis?.let { JalaliCalendar.fromEpochMillisSlashed(it) } ?: "امروز",
                 transactionId = transaction.id,
             )
 
@@ -80,4 +81,5 @@ object LoanPaymentManager {
      * remains unchanged.
      */
 }
+
 

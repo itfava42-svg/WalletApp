@@ -1,6 +1,6 @@
 ﻿package com.example.walletapp.ui.screens
 
-import android.app.DatePickerDialog
+import com.example.walletapp.ui.components.JalaliDatePickerDialog
 import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -114,6 +114,10 @@ fun AddReminderScreen(
         mutableStateOf(initialCalendar.timeInMillis)
     }
 
+    var showJalaliDatePicker by remember {
+        mutableStateOf(false)
+    }
+
     var selectedHour by remember {
         mutableIntStateOf(initialCalendar.get(Calendar.HOUR_OF_DAY))
     }
@@ -127,26 +131,7 @@ fun AddReminderScreen(
     }
 
     fun chooseDate() {
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = selectedDateMillis
-        }
-
-        DatePickerDialog(
-            context,
-            { _, year, month, dayOfMonth ->
-                val newCalendar = Calendar.getInstance().apply {
-                    timeInMillis = selectedDateMillis
-                    set(Calendar.YEAR, year)
-                    set(Calendar.MONTH, month)
-                    set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                }
-
-                selectedDateMillis = newCalendar.timeInMillis
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        showJalaliDatePicker = true
     }
 
     fun chooseTime() {
@@ -595,6 +580,38 @@ fun AddReminderScreen(
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
+
+    if (showJalaliDatePicker) {
+        JalaliDatePickerDialog(
+            initialDate = JalaliCalendar.fromEpochMillisSlashed(selectedDateMillis),
+            onDismissRequest = {
+                showJalaliDatePicker = false
+            },
+            onDateSelected = { selectedDate ->
+                val asciiDate = selectedDate.map { ch ->
+                    when {
+                        ch.code in 0x06F0..0x06F9 ->
+                            ('0'.code + (ch.code - 0x06F0)).toChar()
+                        ch.code in 0x0660..0x0669 ->
+                            ('0'.code + (ch.code - 0x0660)).toChar()
+                        else -> ch
+                    }
+                }.joinToString("")
+
+                val parts = asciiDate.split("/")
+                val year = parts.getOrNull(0)?.toIntOrNull()
+                val month = parts.getOrNull(1)?.toIntOrNull()
+                val day = parts.getOrNull(2)?.toIntOrNull()
+
+                if (year != null && month != null && day != null) {
+                    selectedDateMillis =
+                        JalaliCalendar.jalaliToEpochMillis(year, month, day)
+                }
+
+                showJalaliDatePicker = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -851,5 +868,12 @@ private fun RepeatTile(
         }
     }
 }
+
+
+
+
+
+
+
 
 

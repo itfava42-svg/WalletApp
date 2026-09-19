@@ -1,6 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
-import android.app.DatePickerDialog
+import com.example.walletapp.ui.components.JalaliDatePickerDialog
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -1125,16 +1126,14 @@ private fun DateField(
     onDateSelected: (String) -> Unit,
     context: android.content.Context
 ) {
+    var showPicker by remember { mutableStateOf(false) }
 
     OutlinedTextField(
         value = value,
         onValueChange = {},
         readOnly = true,
-        modifier =
-            Modifier.fillMaxWidth(),
-        label = {
-            Text(label)
-        },
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(label) },
         leadingIcon = {
             Icon(
                 Icons.Filled.CalendarMonth,
@@ -1142,65 +1141,27 @@ private fun DateField(
             )
         },
         trailingIcon = {
-
             IconButton(
-                onClick = {
-
-                    val calendar =
-                        Calendar.getInstance()
-
-                    DatePickerDialog(
-                        context,
-                        { _, year, month, day ->
-
-                            val selected =
-                                Calendar.getInstance()
-                                    .apply {
-
-                                        set(
-                                            year,
-                                            month,
-                                            day,
-                                            12,
-                                            0,
-                                            0
-                                        )
-
-                                        set(
-                                            Calendar.MILLISECOND,
-                                            0
-                                        )
-                                    }
-
-                            onDateSelected(
-                                JalaliCalendar
-                                    .fromEpochMillisSlashed(
-                                        selected
-                                            .timeInMillis
-                                    )
-                            )
-                        },
-                        calendar.get(
-                            Calendar.YEAR
-                        ),
-                        calendar.get(
-                            Calendar.MONTH
-                        ),
-                        calendar.get(
-                            Calendar.DAY_OF_MONTH
-                        )
-                    ).show()
-                }
+                onClick = { showPicker = true }
             ) {
-
                 Icon(
                     Icons.Filled.CalendarMonth,
-                    contentDescription =
-                        "\u0627\u0646\u062a\u062e\u0627\u0628 \u062a\u0627\u0631\u06cc\u062e"
+                    contentDescription = "انتخاب تاریخ"
                 )
             }
         }
     )
+
+    if (showPicker) {
+        JalaliDatePickerDialog(
+            initialDate = value,
+            onDismissRequest = { showPicker = false },
+            onDateSelected = { selectedDate ->
+                onDateSelected(selectedDate)
+                showPicker = false
+            }
+        )
+    }
 }
 
 private fun parseJalaliDate(
@@ -1239,3 +1200,6 @@ private fun parseJalaliDate(
         day
     )
 }
+
+
+
