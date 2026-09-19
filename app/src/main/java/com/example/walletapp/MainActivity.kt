@@ -46,6 +46,7 @@ import com.example.walletapp.ui.screens.OperationsScreen
 import com.example.walletapp.ui.screens.TransferScreen
 import com.example.walletapp.ui.screens.TransactionsScreen
 import com.example.walletapp.ui.screens.AccountsScreen
+import com.example.walletapp.ui.screens.AddBankAccountScreen
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -54,6 +55,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.io.File
 import com.example.walletapp.data.AccountStore
+import com.example.walletapp.data.AccountType
 import com.example.walletapp.sms.SmsCompletionCoordinator
 import com.example.walletapp.sms.SmsIgnoreStore
 import com.example.walletapp.sms.SmsLearningStore
@@ -152,6 +154,7 @@ android.util.Log.d(
                 WalletAppTheme {
                     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                         var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.Dashboard) }
+    var showAddBankAccountScreen by remember { mutableStateOf(false) }
                         var selectedReminder by remember { mutableStateOf<Reminder?>(null) }
                         var selectedNavIndex by remember { mutableStateOf(0) }
 
@@ -513,7 +516,25 @@ android.util.Log.d(
                 "Rendering SmsTransactionCompletionSheetHost id=${transaction.id}"
             )
 
-            SmsTransactionCompletionSheetHost(
+            if (showAddBankAccountScreen) {
+    AddBankAccountScreen(
+        onBack = {
+            showAddBankAccountScreen = false
+        },
+        onSave = { bankName, accountNumber, cardNumber, openingBalance ->
+            AccountStore.add(
+                name = bankName,
+                type = AccountType.BANK,
+                bankName = bankName,
+                accountNumber = accountNumber,
+                cardLast4 = cardNumber.takeLast(4),
+                openingBalance = openingBalance,
+            )
+            showAddBankAccountScreen = false
+        },
+    )
+} else {
+    SmsTransactionCompletionSheetHost(
 
                 transaction = transaction,
 
@@ -621,6 +642,8 @@ android.util.Log.d(
 
                 onComplete = {
 
+                    selectedType,
+
                     category,
 
                     tags,
@@ -662,6 +685,8 @@ android.util.Log.d(
                                 SmsTransactionCompletionHandler.CompletionRequest(
 
                                     transaction = transaction,
+
+                                    selectedType = selectedType,
 
                                     sender =
 
@@ -845,6 +870,10 @@ android.util.Log.d(
                 },
 
 
+                onAddBankAccount = {
+                    showAddBankAccountScreen = true
+                },
+
                 onDismiss = {
 
                     val dismissedTransactionId = smsSheetTransaction?.id
@@ -869,12 +898,13 @@ android.util.Log.d(
             )
 
         }
-
-        }
+    }
         }
 
                     }
         }
+
+    }
 
         requestFirstRunPermissionsIfNeeded()
     }
@@ -907,6 +937,14 @@ android.util.Log.d(
         }
     }
 }
+
+
+
+
+
+
+
+
 
 
 
