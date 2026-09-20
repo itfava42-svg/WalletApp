@@ -1,8 +1,11 @@
-﻿name: WalletApp Android Build
+name: WalletApp Android Build
 
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
