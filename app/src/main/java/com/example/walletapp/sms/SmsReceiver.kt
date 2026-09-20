@@ -170,6 +170,7 @@ class SmsReceiver : BroadcastReceiver() {
                     smsDate = smsDate,
                     originalBank = parsed.bankName,
                     accountNumber = parsed.accountNumber,
+                    cardNumber = parsed.cardNumber,
                     cardLast4 = parsed.cardLast4,
                 )
 
@@ -255,5 +256,6 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 }
+
 
 

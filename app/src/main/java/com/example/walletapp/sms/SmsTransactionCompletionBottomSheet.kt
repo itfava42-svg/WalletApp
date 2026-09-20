@@ -1,6 +1,7 @@
 ﻿package com.example.walletapp.sms
 
 import com.example.walletapp.data.AccountLedger
+import com.example.walletapp.data.JalaliCalendar
 import androidx.compose.ui.draw.shadow
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Block
@@ -155,7 +156,7 @@ import com.example.walletapp.data.LoanStore
 
 import com.example.walletapp.data.toPersianCurrency
 
-import com.example.walletapp.loan.LoanPaymentManager
+import com.example.walletapp.data.LoanPaymentManager
 
 import com.example.walletapp.ui.theme.AppTextStyles
 
@@ -267,11 +268,21 @@ fun SmsTransactionCompletionBottomSheetContent(
             ?.trim()
             ?.takeIf { it.isNotBlank() }
 
-    val smsCardLast4 =
+    val smsCardNumber =
         metadata
-            ?.cardLast4
+            ?.cardNumber
             ?.trim()
             ?.takeIf { it.isNotBlank() }
+
+    val smsCardLast4 =
+        smsCardNumber
+            ?.filter { it.isDigit() }
+            ?.takeLast(4)
+            ?.takeIf { it.length == 4 }
+            ?: metadata
+                ?.cardLast4
+                ?.trim()
+                ?.takeIf { it.isNotBlank() }
 
     val matchingAccounts =
         remember(selectedBank) {
@@ -404,7 +415,7 @@ fun SmsTransactionCompletionBottomSheetContent(
     val unpaidInstallments =
         selectedLoan?.let(::unpaidInstallmentsFor).orEmpty()
     val canComplete =
-        hasCompletionData &&
+        (hasCompletionData || transaction.requiresCompletion) &&
             matchingAccounts.isNotEmpty() &&
             (matchingAccounts.size == 1 || selectedAccountId != null) &&
             (!isInstallmentCategory ||
@@ -887,6 +898,57 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
 
             // =================================================
+            // RECEIPT ACTIONS
+            // =================================================
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement =
+                    Arrangement.spacedBy(10.dp),
+            ) {
+
+                Text(
+                    text = "رسید تراکنش",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color =
+                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement =
+                        Arrangement.spacedBy(10.dp),
+                ) {
+
+                    ReceiptActionCard(
+                        modifier = Modifier.weight(1f),
+                        icon =
+                            androidx.compose.material.icons.Icons.Default.CameraAlt,
+                        title = "دوربین",
+                        subtitle =
+                            if (receiptUri != null)
+                                "رسید انتخاب شده"
+                            else
+                                "گرفتن عکس",
+                        onClick = onTakePhoto,
+                    )
+
+                    ReceiptActionCard(
+                        modifier = Modifier.weight(1f),
+                        icon =
+                            androidx.compose.material.icons.Icons.Default.AddPhotoAlternate,
+                        title = "گالری",
+                        subtitle =
+                            if (receiptUri != null)
+                                "انتخاب تصویر"
+                            else
+                                "انتخاب از گالری",
+                        onClick = onPickReceipt,
+                    )
+                }
+            }
+            // =================================================
             // BANK
             // =================================================
 
@@ -934,13 +996,38 @@ fun SmsTransactionCompletionBottomSheetContent(
                     )
                 }
 
-                Text(
-                    text = selectedBank,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color =
-                        androidx.compose.ui.graphics.Color.White,
-                )
+                Column(
+                    verticalArrangement =
+                        Arrangement.spacedBy(2.dp),
+                ) {
+                    Text(
+                        text =
+                            if (selectedBank ==
+                                BankSmsParser.UNKNOWN_BANK
+                            ) {
+                                "بانک تشخیص داده نشد"
+                            } else {
+                                selectedBank
+                            },
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color =
+                            androidx.compose.ui.graphics.Color.White,
+                    )
+
+                    if (
+                        selectedBank ==
+                            BankSmsParser.UNKNOWN_BANK
+                    ) {
+                        Text(
+                            text =
+                                "لطفاً بانک تراکنش را انتخاب کنید",
+                            fontSize = 11.sp,
+                            color =
+                                androidx.compose.ui.graphics.Color.White,
+                        )
+                    }
+                }
             }
 
             // =================================================
@@ -1209,7 +1296,12 @@ fun SmsTransactionCompletionBottomSheetContent(
                 ) {
 
                     Text(
-                        text = "بانک: $selectedBank",
+                        text =
+    if (selectedBank == BankSmsParser.UNKNOWN_BANK) {
+        "بانک: تشخیص داده نشد"
+    } else {
+        "بانک: $selectedBank"
+    },
                         fontSize = 13.sp,
                         color =
                             androidx.compose.ui.graphics.Color(0xFF1A1A1A),
@@ -1218,7 +1310,9 @@ fun SmsTransactionCompletionBottomSheetContent(
                     Text(
                         text =
                             "کارت: ${
-                                smsCardLast4 ?: "—"
+                                smsCardNumber
+                                    ?: smsCardLast4
+                                    ?: "—"
                             }",
                         fontSize = 13.sp,
                         color =
@@ -1238,9 +1332,10 @@ fun SmsTransactionCompletionBottomSheetContent(
                     Text(
                         text =
                             "موجودی: ${
-                                matchingAccounts
-                                    .firstOrNull { it.id == selectedAccountId }
-                                    ?.openingBalance
+                                (
+                                    selectedAccountId
+                                        ?: matchingAccounts.singleOrNull()?.id
+                                )?.let { AccountLedger.balanceOf(it) }
                                     ?: "—"
                             }",
                         fontSize = 13.sp,
@@ -1249,14 +1344,31 @@ fun SmsTransactionCompletionBottomSheetContent(
                     )
 
                     Text(
-                        text = "تاریخ: ${transaction.dateEpochMillis ?: "—"}",
+                        text =
+    "تاریخ: ${
+        transaction.dateEpochMillis
+            ?.let { JalaliCalendar.fromEpochMillisSlashed(it) }
+            ?: "—"
+    }",
                         fontSize = 13.sp,
                         color =
                             androidx.compose.ui.graphics.Color(0xFF1A1A1A),
                     )
 
                     Text(
-                        text = "زمان: ${transaction.dateEpochMillis ?: "—"}",
+                        text =
+    "زمان: ${
+        transaction.dateEpochMillis
+            ?.let {
+                java.text.SimpleDateFormat(
+                    "HH:mm",
+                    java.util.Locale.US,
+                ).format(
+                    java.util.Date(it)
+                )
+            }
+            ?: "—"
+    }",
                         fontSize = 13.sp,
                         color =
                             androidx.compose.ui.graphics.Color(0xFF1A1A1A),
@@ -1854,6 +1966,12 @@ private fun SectionTitle(
         }
     }
 }
+
+
+
+
+
+
 
 
 

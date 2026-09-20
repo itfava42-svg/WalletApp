@@ -64,8 +64,12 @@ object AccountStore {
                         name = item.optString("name"),
                         type = type,
                         bankName = item.optString("bankName"),
-                        accountNumber = item.optString("accountNumber"),
-                        cardLast4 = item.optString("cardLast4"),
+                        accountNumber = normalizeDigits(
+                            item.optString("accountNumber")
+                        ),
+                        cardLast4 = normalizeDigits(
+                            item.optString("cardLast4")
+                        ),
                         openingBalance =
     if (item.has("openingBalance")) {
         item.optLong("openingBalance", 0L)
@@ -84,6 +88,35 @@ object AccountStore {
         }
     }
 
+    /**
+     * Converts Persian and Arabic-Indic digits to ASCII digits.
+     *
+     * Account/card identifiers are stored canonically so SMS matching
+     * remains independent of the digit system used by the user.
+     */
+    private fun normalizeDigits(raw: String): String {
+        return buildString {
+            raw.forEach { char ->
+                when (char) {
+                    in '\u06F0'..'\u06F9' ->
+                        append(
+                            ('0'.code +
+                                (char.code - '\u06F0'.code))
+                                .toChar()
+                        )
+
+                    in '\u0660'..'\u0669' ->
+                        append(
+                            ('0'.code +
+                                (char.code - '\u0660'.code))
+                                .toChar()
+                        )
+
+                    else -> append(char)
+                }
+            }
+        }
+    }
     private fun persist() {
 
         val context = appContext ?: return
@@ -138,8 +171,8 @@ object AccountStore {
                 name = name,
                 type = type,
                 bankName = bankName,
-                accountNumber = accountNumber,
-                cardLast4 = cardLast4,
+                accountNumber = normalizeDigits(accountNumber.trim()),
+                cardLast4 = normalizeDigits(cardLast4.trim()),
                 openingBalance = openingBalance,
                 isDefault = shouldBeDefault,
             )
@@ -165,7 +198,11 @@ object AccountStore {
             }
         }
 
-        accounts[index] = account
+        accounts[index] =
+            account.copy(
+                accountNumber = normalizeDigits(account.accountNumber.trim()),
+                cardLast4 = normalizeDigits(account.cardLast4.trim()),
+            )
 
         persist()
     }
@@ -287,6 +324,7 @@ object AccountStore {
         return true
     }
 }
+
 
 
 

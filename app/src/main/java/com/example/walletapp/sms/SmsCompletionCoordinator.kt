@@ -29,18 +29,8 @@ object SmsCompletionCoordinator {
      */
     @Synchronized
     fun registerHost(callback: (String) -> Unit): String? {
-
-        android.util.Log.d(
-            "TEMP_HOST_REGISTER",
-            "registerHost() CALLED"
-        )
-
         host = callback
-
-        android.util.Log.d(
-            "TEMP_HOST_REGISTER",
-            "Compose host REGISTERED successfully"
-        )
+        android.util.Log.d("TEMP_SMS_FLOW", "HOST_REGISTERED")
 
         val next = pendingTransactionIds.firstOrNull()
 
@@ -49,8 +39,23 @@ object SmsCompletionCoordinator {
             pendingTransactionIds.remove(next)
 
             mainHandler.post {
+                android.util.Log.d(
+                    "TEMP_SMS_FLOW",
+                    "REGISTER_DELIVERY_CALLBACK transactionId=$next"
+                )
+
                 runCatching {
                     callback(next)
+                    android.util.Log.d(
+                        "TEMP_SMS_FLOW",
+                        "REGISTER_CALLBACK_SUCCESS transactionId=$next"
+                    )
+                }.onFailure {
+                    android.util.Log.e(
+                        "TEMP_SMS_FLOW",
+                        "REGISTER_CALLBACK_FAILED transactionId=$next",
+                        it
+                    )
                 }
             }
         }
@@ -90,6 +95,11 @@ object SmsCompletionCoordinator {
 
         val callback = host
 
+        android.util.Log.d(
+            "TEMP_SMS_FLOW",
+            "DELIVER_CALLED transactionId=$transactionId hostPresent=${callback != null}"
+        )
+
         if (callback == null) {
 
             pendingTransactionIds.add(transactionId)
@@ -98,8 +108,24 @@ object SmsCompletionCoordinator {
         }
 
         mainHandler.post {
+            android.util.Log.d(
+                "TEMP_SMS_FLOW",
+                "DELIVERY_CALLBACK transactionId=$transactionId"
+            )
+
             runCatching {
                 callback(transactionId)
+
+                android.util.Log.d(
+                    "TEMP_SMS_FLOW",
+                    "CALLBACK_SUCCESS transactionId=$transactionId"
+                )
+            }.onFailure {
+                android.util.Log.e(
+                    "TEMP_SMS_FLOW",
+                    "CALLBACK_FAILED transactionId=$transactionId",
+                    it
+                )
             }
         }
 
@@ -145,4 +171,6 @@ object SmsCompletionCoordinator {
         pendingTransactionIds.clear()
     }
 }
+
+
 

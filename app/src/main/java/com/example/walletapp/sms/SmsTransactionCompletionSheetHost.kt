@@ -9,8 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
 
 import com.example.walletapp.data.LoanEntry
@@ -45,70 +43,31 @@ fun SmsTransactionCompletionSheetHost(
     onAddBankAccount: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
-    )
+    )
+    
 
-    LaunchedEffect(transaction.id) {
-
-        android.util.Log.d(
-            "TEMP_SHEET_STATE",
-            "LaunchedEffect START id=${transaction.id} state=${sheetState.currentValue}"
-        )
-
-        runCatching {
-            sheetState.show()
-
-            android.util.Log.d(
-                "TEMP_SHEET_STATE",
-                "sheetState.show() COMPLETED id=${transaction.id} state=${sheetState.currentValue}"
-            )
-        }.onFailure { error ->
-            android.util.Log.e(
-                "TEMP_SHEET_STATE",
-                "sheetState.show() FAILED id=${transaction.id}",
-                error
-            )
-        }
-    }
-
-    android.util.Log.d(
-        "TEMP_SHEET_STATE",
-        "Host COMPOSING id=${transaction.id} state=${sheetState.currentValue}"
-    )
-
-    BackHandler(enabled = true) {
+BackHandler(enabled = true) {
         onDismiss()
     }
 
-    DisposableEffect(transaction.id) {
 
-        android.util.Log.d(
-            "TEMP_SHEET_MODAL",
-            "Modal lifecycle ENTER id=${transaction.id}"
-        )
-
-        onDispose {
-            android.util.Log.d(
-                "TEMP_SHEET_MODAL",
-                "Modal lifecycle DISPOSE id=${transaction.id}"
-            )
-        }
-    }
+    android.util.Log.d(
+        "SMS_HOST_COMPOSE_DIAG",
+        "BEFORE_MODAL_BOTTOM_SHEET transactionId=${transaction.id}"
+    )
 
     ModalBottomSheet(
         onDismissRequest = {
-            android.util.Log.d(
-                "TEMP_SHEET_MODAL",
-                "onDismissRequest CALLED id=${transaction.id}"
-            )
             onDismiss()
         },
         sheetState = sheetState,
     ) {
         android.util.Log.d(
-            "TEMP_SHEET_MODAL",
-            "REAL CONTENT TEST composed id=${transaction.id} state=${sheetState.currentValue}"
+            "SMS_HOST_COMPOSE_DIAG",
+            "MODAL_CONTENT_ENTER transactionId=${transaction.id}"
         )
 
         SmsTransactionCompletionBottomSheetContent(
@@ -126,6 +85,18 @@ fun SmsTransactionCompletionSheetHost(
         )
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

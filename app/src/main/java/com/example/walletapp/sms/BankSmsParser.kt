@@ -9,6 +9,7 @@ data class ParsedBankSms(
     val type: TransactionType,
     val rawBody: String,
     val accountNumber: String? = null,
+    val cardNumber: String? = null,
     val cardLast4: String? = null,
 )
 
@@ -20,7 +21,13 @@ data class ParsedBankSms(
  */
 object BankSmsParser {
 
-    private val bankKeywords: List<Pair<String, String>> =
+    
+    /**
+     * Used when the SMS is clearly transactional but the bank
+     * cannot yet be identified from sender/body/learning.
+     */
+    const val UNKNOWN_BANK = "\u0628\u0627\u0646\u06a9 \u0646\u0627\u0645\u0634\u062e\u0635"
+private val bankKeywords: List<Pair<String, String>> =
         listOf(
             "\u0645\u0644\u062a" to "\u0628\u0627\u0646\u06a9 \u0645\u0644\u062a",
             "\u0645\u0644\u06cc" to "\u0628\u0627\u0646\u06a9 \u0645\u0644\u06cc",
@@ -119,7 +126,7 @@ object BankSmsParser {
 
     private val cardNumberRegex =
         Regex(
-            """(?:\u0634\u0645\u0627\u0631\u0647\s*)?\u06a9\u0627\u0631\u062a\s*[:\-]?\s*((?:[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4}[\s\-_]*){3,4}[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4})"""
+            """(?:\u0634\u0645\u0627\u0631\u0647\s*)?\u06a9\u0627\u0631\u062a\s*[:\-]?\s*((?:[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4}[\s\-_]*){3}[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4})"""
         )
 
     private val merchantCueRegex =
@@ -162,10 +169,18 @@ object BankSmsParser {
                 }
                 ?.second
 
-        val bankName =
+        val detectedBank =
             bankFromSender
                 ?: bankFromKeyword
-                ?: return null
+
+        /*
+         * Bank identification is independent from transaction
+         * detection. Unknown/new senders must not cause a valid
+         * transaction SMS to be discarded.
+         */
+        val bankName =
+            detectedBank
+                ?: UNKNOWN_BANK
 
         var signFromAmount: Char? = null
         var amount: Long? = null
@@ -283,6 +298,21 @@ object BankSmsParser {
         if (amount == null || type == null) {
             return null
         }
+
+        /*
+         * If the bank is unknown, require strong transaction
+         * evidence. This prevents ordinary numeric SMS messages
+         * from becoming transactions.
+         */
+        if (
+            detectedBank == null &&
+            !hasStrongTransactionEvidence(
+                normalizedBody = normalizedBody,
+                signFromAmount = signFromAmount,
+            )
+        ) {
+            return null
+        }
 
         val accountNumber =
             accountNumberRegex
@@ -292,13 +322,17 @@ object BankSmsParser {
                 ?.let(::normalizeDigits)
                 ?.takeIf { it.length in 6..20 }
 
-        val cardLast4 =
+        val cardNumber =
             cardNumberRegex
                 .find(normalizedBody)
                 ?.groupValues
                 ?.getOrNull(1)
                 ?.let(::normalizeDigits)
                 ?.filter { it.isDigit() }
+                ?.takeIf { it.length >= 4 }
+
+        val cardLast4 =
+            cardNumber
                 ?.takeLast(4)
                 ?.takeIf { it.length == 4 }
 
@@ -309,9 +343,54 @@ object BankSmsParser {
             type = type,
             rawBody = body,
             accountNumber = accountNumber,
+            cardNumber = cardNumber,
             cardLast4 = cardLast4,
         )
     }
+
+    private fun hasStrongTransactionEvidence(
+        normalizedBody: String,
+        signFromAmount: Char?,
+    ): Boolean {
+
+        /*
+         * Explicit +/- amount is strong transaction evidence.
+         */
+        if (signFromAmount == '+' || signFromAmount == '-') {
+            return true
+        }
+
+        /*
+         * Unsigned amounts require explicit transaction language.
+         */
+        val strongIncomeKeywords =
+            listOf(
+                "\u0648\u0627\u0631\u06cc\u0632",
+                "\u0627\u0641\u0632\u0627\u06cc\u0634 \u0645\u0648\u062c\u0648\u062f\u06cc",
+                "\u0628\u0627\u0632\u06af\u0634\u062a \u0648\u062c\u0647",
+                "\u0648\u0627\u0631\u06cc\u0632 \u0628\u0647 \u062d\u0633\u0627\u0628",
+                "\u062f\u0631\u06cc\u0627\u0641\u062a \u067e\u0644",
+                "\u0628\u0647 \u062d\u0633\u0627\u0628 \u0634\u0645\u0627 \u0646\u0634\u0633\u062a",
+            )
+
+        val strongExpenseKeywords =
+            listOf(
+                "\u0628\u0631\u062f\u0627\u0634\u062a",
+                "\u062e\u0631\u06cc\u062f",
+                "\u06a9\u0633\u0631",
+                "\u067e\u0631\u062f\u0627\u062e\u062a",
+                "\u0627\u0646\u062a\u0642\u0627\u0644 \u0627\u0632",
+                "\u062d\u0648\u0627\u0644\u0647",
+                "\u067e\u0631\u06cc\u062f",
+            )
+
+        return strongIncomeKeywords.any {
+            normalizedBody.contains(it)
+        } || strongExpenseKeywords.any {
+            normalizedBody.contains(it)
+        }
+    }
+
 
     private fun normalizeDigits(
         raw: String,
@@ -379,5 +458,8 @@ object BankSmsParser {
         return normalized.toLongOrNull()
     }
 }
+
+
+
 
 

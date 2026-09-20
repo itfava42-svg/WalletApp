@@ -6,7 +6,7 @@ import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.LoanEntry
-import com.example.walletapp.loan.LoanPaymentManager
+import com.example.walletapp.data.LoanPaymentManager
 
 /**
  * Business-layer handler for completing an SMS-created transaction.
@@ -97,8 +97,14 @@ object SmsTransactionCompletionHandler {
                 request.receiptUri != null ||
                 request.selectedBank.trim() != transaction.subtitle.trim() ||
             request.selectedAccountId != null
-
-        if (!hasCompletionData) {
+        /*
+         * A transaction marked requiresCompletion is already waiting
+         * for user confirmation. Confirmation itself is a valid
+         * completion even when the user does not change optional fields.
+         *
+         * Account validation below remains mandatory.
+         */
+        if (!hasCompletionData && !transaction.requiresCompletion) {
             return CompletionResult.NoChanges
         }
         val metadata =
@@ -119,46 +125,6 @@ object SmsTransactionCompletionHandler {
                 ?: request.rawBody
                     ?.trim()
                     ?.takeIf { it.isNotBlank() }
-
-        // Preserve the existing Activity behavior:
-        // learning happens before account validation.
-        //
-        // Persisted SMS metadata is preferred because it belongs
-        // to the exact transaction being completed.
-
-        if (
-            request.learnBank &&
-            effectiveSender.isNotBlank()
-        ) {
-            SmsLearningStore.saveSenderBank(
-                sender = effectiveSender,
-                bankName = request.selectedBank,
-            )
-        }
-
-        if (
-            request.selectedCategory != null &&
-            effectiveSender.isNotBlank()
-        ) {
-            SmsLearningStore.saveSenderCategory(
-                sender = effectiveSender,
-                category = request.selectedCategory,
-            )
-        }
-
-        if (
-            request.learnBank &&
-            effectiveSender.isNotBlank() &&
-            effectiveRawBody != null
-        ) {
-            SmsLearningStore.savePatternRule(
-                sender = effectiveSender,
-                pattern = effectiveRawBody,
-                bankName = request.selectedBank,
-                category = request.selectedCategory,
-                transactionType = request.selectedType.name,
-            )
-        }
 
         val resolvedAccountId =
             resolveAccountId(
@@ -240,7 +206,58 @@ object SmsTransactionCompletionHandler {
 
         TransactionStore.update(updatedTransaction)
 
+        /*
+         * Learning is committed only after the transaction has passed
+         * account/installment validation and TransactionStore.update()
+         * has completed successfully.
+         *
+         * UNKNOWN_BANK is intentionally never learned as a real bank.
+         */
+        val usableSelectedBank =
+            request.selectedBank
+                .trim()
+                .takeIf {
+                    it.isNotBlank() &&
+                        it != BankSmsParser.UNKNOWN_BANK
+                }
+
+        if (
+            request.learnBank &&
+            usableSelectedBank != null &&
+            effectiveSender.isNotBlank()
+        ) {
+            SmsLearningStore.saveSenderBank(
+                sender = effectiveSender,
+                bankName = usableSelectedBank,
+            )
+        }
+
+        if (
+            request.selectedCategory != null &&
+            effectiveSender.isNotBlank()
+        ) {
+            SmsLearningStore.saveSenderCategory(
+                sender = effectiveSender,
+                category = request.selectedCategory,
+            )
+        }
+
+        if (
+            request.learnBank &&
+            usableSelectedBank != null &&
+            effectiveSender.isNotBlank() &&
+            effectiveRawBody != null
+        ) {
+            SmsLearningStore.savePatternRule(
+                sender = effectiveSender,
+                pattern = effectiveRawBody,
+                bankName = usableSelectedBank,
+                category = request.selectedCategory,
+                transactionType = request.selectedType.name,
+            )
+        }
         return CompletionResult.Success(
+
             transaction = updatedTransaction,
         )
     }
@@ -380,6 +397,9 @@ object SmsTransactionCompletionHandler {
         )
     }
 }
+
+
+
 
 
 

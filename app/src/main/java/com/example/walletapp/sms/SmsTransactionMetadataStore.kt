@@ -23,6 +23,7 @@ object SmsTransactionMetadataStore {
         val smsDate: Long,
         val originalBank: String,
         val accountNumber: String? = null,
+        val cardNumber: String? = null,
         val cardLast4: String? = null,
     )
 
@@ -50,6 +51,7 @@ object SmsTransactionMetadataStore {
         smsDate: Long,
         originalBank: String,
         accountNumber: String? = null,
+        cardNumber: String? = null,
         cardLast4: String? = null,
     ) {
         val metadata =
@@ -60,6 +62,7 @@ object SmsTransactionMetadataStore {
                 smsDate = smsDate,
                 originalBank = originalBank,
                 accountNumber = accountNumber,
+                cardNumber = cardNumber,
                 cardLast4 = cardLast4,
             )
 
@@ -115,6 +118,10 @@ object SmsTransactionMetadataStore {
             json.put(
                 "accountNumber",
                 item.accountNumber ?: ""
+            )
+            json.put(
+                "cardNumber",
+                item.cardNumber ?: ""
             )
             json.put(
                 "cardLast4",
@@ -177,6 +184,9 @@ object SmsTransactionMetadataStore {
                         accountNumber =
                             json.optString("accountNumber")
                                 .takeIf { it.isNotBlank() },
+                        cardNumber =
+                            json.optString("cardNumber")
+                                .takeIf { it.isNotBlank() },
                         cardLast4 =
                             json.optString("cardLast4")
                                 .takeIf { it.isNotBlank() },
@@ -192,4 +202,5 @@ object SmsTransactionMetadataStore {
         persist()
     }
 }
+
 

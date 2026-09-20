@@ -69,7 +69,7 @@ import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.LoanEntry
 import com.example.walletapp.data.LoanStore
 import com.example.walletapp.data.toPersianCurrency
-import com.example.walletapp.loan.LoanPaymentManager
+import com.example.walletapp.data.LoanPaymentManager
 import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.ui.theme.WalletAppTheme
 import java.io.File
@@ -1993,6 +1993,7 @@ private fun SectionTitle(
         }
     }
 }
+
 
 
 

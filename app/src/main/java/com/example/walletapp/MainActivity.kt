@@ -197,53 +197,32 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         DisposableEffect(Unit) {
-
-                            android.util.Log.d(
-                                "TEMP_MAIN_COMPOSE",
-                                "SMS HOST DisposableEffect ENTERED"
-                            )
-
                             SmsCompletionCoordinator.registerHost { transactionId ->
-
                                 android.util.Log.d(
-                                    "TEMP_SMS_CALLBACK",
-                                    "Compose callback RECEIVED transactionId=$transactionId"
+                                    "SMS_SHEET_DIAG",
+                                    "HOST_CALLBACK transactionId=$transactionId"
                                 )
-
                                 val transaction =
                                     TransactionStore.transactions
                                         .firstOrNull {
                                             it.id == transactionId
                                         }
-
-                                android.util.Log.d(
-                                    "TEMP_SMS_CALLBACK",
-                                    "transaction lookup result: found=${transaction != null}"
-                                )
-
-                                android.util.Log.d(
-                                    "TEMP_SMS_CALLBACK",
-                                    "transaction requiresCompletion=${transaction?.requiresCompletion}"
-                                )
-
                                 if (
                                     transaction != null &&
                                     transaction.requiresCompletion
                                 ) {
                                     smsSheetTransaction = transaction
-
                                     android.util.Log.d(
-                                        "TEMP_SMS_CALLBACK",
-                                        "smsSheetTransaction ASSIGNED id=${transaction.id}"
+                                        "SMS_RECOMPOSE_DIAG",
+                                        "STATE_ASSIGNED transactionId=${transaction.id} thread=${Thread.currentThread().name}"
                                     )
-
                                     selectedReceiptUri =
                                         transaction.receiptUri
                                             ?.takeIf { it.isNotBlank() }
                                             ?.let(Uri::parse)
                                 }
                             }
-
+                            SmsTransactionQueue.showNextIfNeeded(context)
                             onDispose {
                                 SmsCompletionCoordinator.unregisterHost()
                             }
@@ -434,6 +413,11 @@ class MainActivity : ComponentActivity() {
         // SMS transaction completion sheet
 
         if (smsSheetTransaction != null) {
+            android.util.Log.d(
+                "SMS_RECOMPOSE_DIAG",
+                "SHEET_IF_ENTER transactionId=${smsSheetTransaction?.id} thread=${Thread.currentThread().name}"
+            )
+
             val transaction = smsSheetTransaction!!
 
 
@@ -477,13 +461,6 @@ class MainActivity : ComponentActivity() {
                         )
 
                 }
-
-
-            android.util.Log.d(
-                "TEMP_SMS_RENDER",
-                "Rendering SmsTransactionCompletionSheetHost id=${transaction.id}"
-            )
-
             if (showAddBankAccountScreen) {
     AddBankAccountScreen(
         onBack = {
@@ -798,12 +775,8 @@ class MainActivity : ComponentActivity() {
                         ) {
 
 
-                            SmsIgnoreStore.ignorePattern(
-
+                            SmsIgnoreStore.ignoreSender(
                                 sender = sender,
-
-                                pattern = meta.rawBody,
-
                             )
 
                         }
@@ -905,6 +878,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
+
+
+
+
+
+
 
 
 
