@@ -18,10 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.JalaliCalendar
-import com.example.walletapp.data.SettingsMenu
-import com.example.walletapp.data.ToolAction
-import com.example.walletapp.data.ToolItem
-import com.example.walletapp.data.ToolSection
+import com.example.walletapp.ui.models.SettingsMenu
+import com.example.walletapp.ui.models.ToolAction
+import com.example.walletapp.ui.models.ToolItem
+import com.example.walletapp.ui.models.ToolSection
 import com.example.walletapp.ui.theme.OnSurface
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.Primary
@@ -282,6 +282,8 @@ private fun SettingsRow(
         }
     }
 }
+
+
 
 
 

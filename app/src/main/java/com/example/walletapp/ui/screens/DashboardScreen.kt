@@ -21,7 +21,7 @@ import com.example.walletapp.data.AccountLedger
 import com.example.walletapp.data.ReportCalculator
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
-import com.example.walletapp.data.resolveTransactionIcon
+import com.example.walletapp.ui.components.resolveTransactionIcon
 import com.example.walletapp.ui.components.*
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.Outline
@@ -590,6 +590,7 @@ bottomBar = {
         )
     }
 }
+
 
 
 

@@ -1,6 +1,7 @@
-﻿package com.example.walletapp.data
+package com.example.walletapp.data
 
 import android.content.Context
+import java.io.FileNotFoundException
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -44,8 +45,10 @@ object LoanLegacyMigration {
         val legacyInstallments =
             try {
                 readLegacyInstallments(appContext)
-            } catch (_: Exception) {
+            } catch (_: FileNotFoundException) {
                 emptyList()
+            } catch (_: Exception) {
+                return false
             }
 
         return try {

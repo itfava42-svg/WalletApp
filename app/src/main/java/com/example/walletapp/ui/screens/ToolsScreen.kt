@@ -17,10 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.walletapp.data.ToolAction
-import com.example.walletapp.data.ToolItem
-import com.example.walletapp.data.toolsGrid
-import com.example.walletapp.data.toolsTopRow
+import com.example.walletapp.ui.models.ToolAction
+import com.example.walletapp.ui.models.ToolItem
+import com.example.walletapp.ui.models.toolsGrid
+import com.example.walletapp.ui.models.toolsTopRow
 import com.example.walletapp.ui.components.DashboardBottomBar
 import com.example.walletapp.ui.components.appNavItems
 import com.example.walletapp.ui.theme.OnSurface
@@ -352,6 +352,8 @@ private fun ToolGridCard(
         }
     }
 }
+
+
 
 
 

@@ -64,19 +64,38 @@ object SmsTransactionQueue {
                 "requiresCompletion=${next.requiresCompletion}"
         )
 
+        /*
+         * Compose completion requires a registered foreground host.
+         *
+         * If the host is unavailable, do not enqueue this transaction
+         * in SmsCompletionCoordinator. Returning false lets SmsReceiver
+         * use its existing overlay / notification fallback.
+         *
+         * The transaction remains requiresCompletion=true and can be
+         * presented by MainActivity when the user opens the app later.
+         */
+        if (!SmsCompletionCoordinator.isHostRegistered()) {
+            Log.d(
+                TAG,
+                "Compose host unavailable. Returning false for fallback"
+            )
+            return false
+        }
+
         isShowing = true
 
         /*
-         * Compose is the only completion UI path.
+         * Compose is the completion UI path when a foreground host exists.
          *
-         * If the foreground Compose host exists, the transaction is
-         * delivered immediately.
+         * Host availability was checked above. Therefore this delivery
+         * path is used only when MainActivity has registered the Compose
+         * host. If no host exists, this function has already returned false
+         * so SmsReceiver can use its overlay / notification fallback.
          *
-         * If the host does not exist, SmsCompletionCoordinator stores
-         * the transaction ID in its pending queue. MainActivity will
-         * consume it when the Compose host registers.
+         * The transaction remains requiresCompletion=true until the
+         * completion flow explicitly finalizes it.
          *
-         * The legacy SmsTransactionCompletionActivity is intentionally
+         * The legacy Activity path is intentionally
          * NOT launched from this queue anymore.
          */
         Log.d(
@@ -179,4 +198,7 @@ object SmsTransactionQueue {
         dismissedTransactionIds.clear()
     }
 }
+
+
+
 

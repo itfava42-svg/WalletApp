@@ -62,7 +62,7 @@ object SmsTransactionCompletionHandler {
      * Executes the complete business operation.
      *
      * Order intentionally follows the current
-     * SmsTransactionCompletionActivity behavior:
+     * Legacy SMS completion behavior:
      *
      * 1. Validate completion data
      * 2. Resolve account
@@ -263,6 +263,41 @@ object SmsTransactionCompletionHandler {
     }
 
     /**
+     * Ignores future SMS from the selected sender and
+     * finalizes the current pending transaction.
+     *
+     * UI lifecycle and Queue advancement remain outside
+     * this business operation.
+     */
+    fun ignoreSender(
+        context: Context,
+        transaction: Transaction,
+        sender: String?,
+    ) {
+        TransactionStore.attachContext(context)
+        SmsTransactionMetadataStore.attachContext(context)
+        SmsIgnoreStore.attachContext(context)
+
+        val metadata =
+            SmsTransactionMetadataStore.get(transaction.id)
+
+        if (
+            !sender.isNullOrBlank() &&
+            metadata != null &&
+            !metadata.rawBody.isNullOrBlank()
+        ) {
+            SmsIgnoreStore.ignoreSender(
+                sender = sender,
+            )
+        }
+
+        TransactionStore.update(
+            transaction.copy(
+                requiresCompletion = false,
+            )
+        )
+    }
+    /**
      * Resolves the account using the existing priority:
      *
      * 1. Explicit account
@@ -397,6 +432,8 @@ object SmsTransactionCompletionHandler {
         )
     }
 }
+
+
 
 
 

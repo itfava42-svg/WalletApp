@@ -37,6 +37,7 @@ import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionCategories
 import com.example.walletapp.data.TransactionCategory
+import com.example.walletapp.ui.components.resolveTransactionIcon
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.data.toPersianDigits
@@ -602,7 +603,7 @@ private fun CategoryChip(
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
-                    category.icon,
+                    resolveTransactionIcon(category.iconKey),
                     contentDescription = category.label,
                     tint = if (selected) accentColor else OnSurfaceVariant,
                 )
@@ -617,6 +618,8 @@ private fun CategoryChip(
         )
     }
 }
+
+
 
 
 

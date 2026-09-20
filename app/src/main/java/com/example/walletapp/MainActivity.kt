@@ -753,62 +753,20 @@ class MainActivity : ComponentActivity() {
 
                 onIgnoreSender = {
 
+    SmsTransactionCompletionHandler.ignoreSender(
+        context = context,
+        transaction = transaction,
+        sender = sender,
+    )
 
-                    val currentMetadata =
+    smsSheetTransaction = null
+    selectedReceiptUri = null
+    pendingCameraUri = null
 
-                        SmsTransactionMetadataStore.get(
-
-                            transaction.id
-
-                        )
-
-
-                    currentMetadata?.let { meta ->
-
-
-                        if (
-
-                            !sender.isNullOrBlank() &&
-
-                            !meta.rawBody.isNullOrBlank()
-
-                        ) {
-
-
-                            SmsIgnoreStore.ignoreSender(
-                                sender = sender,
-                            )
-
-                        }
-
-                    }
-
-
-                    TransactionStore.update(
-
-                        transaction.copy(
-
-                            requiresCompletion = false,
-
-                        )
-
-                    )
-
-
-                    smsSheetTransaction = null
-
-                    selectedReceiptUri = null
-
-                    pendingCameraUri = null
-
-
-                    SmsTransactionQueue.onCompletionFinished(
-
-                        context
-
-                    )
-
-                },
+    SmsTransactionQueue.onCompletionFinished(
+        context
+    )
+},
 
 
                 onAddBankAccount = {
@@ -878,6 +836,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 
 

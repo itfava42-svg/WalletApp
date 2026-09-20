@@ -1,51 +1,31 @@
-package com.example.walletapp.data
+﻿package com.example.walletapp.data
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.CardGiftcard
-import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.Fastfood
-import androidx.compose.material.icons.filled.LocalHospital
-import androidx.compose.material.icons.filled.Replay
-import androidx.compose.material.icons.filled.ShoppingBag
-import androidx.compose.material.icons.filled.SportsEsports
-import androidx.compose.material.icons.filled.TrendingUp
-import androidx.compose.ui.graphics.vector.ImageVector
 
-data class TransactionCategory(val label: String, val icon: ImageVector)
+data class TransactionCategory(val label: String, val iconKey: String = label)
 
 object TransactionCategories {
     val expense = listOf(
-        TransactionCategory("خوراک", Icons.Filled.Fastfood),
-        TransactionCategory("حمل‌ونقل", Icons.Filled.DirectionsCar),
-        TransactionCategory("قبض", Icons.Filled.CreditCard),
-        TransactionCategory("قسط", Icons.Filled.CreditCard),
-        TransactionCategory("خرید", Icons.Filled.ShoppingBag),
-        TransactionCategory("سلامت", Icons.Filled.LocalHospital),
-        TransactionCategory("تفریح", Icons.Filled.SportsEsports),
-        TransactionCategory("سایر", Icons.Filled.Category),
+        TransactionCategory("خوراک", "خوراک"),
+        TransactionCategory("حمل‌ونقل", "حمل‌ونقل"),
+        TransactionCategory("قبض", "قبض"),
+        TransactionCategory("قسط", "قسط"),
+        TransactionCategory("خرید", "خرید"),
+        TransactionCategory("سلامت", "سلامت"),
+        TransactionCategory("تفریح", "تفریح"),
+        TransactionCategory("سایر", "سایر"),
     )
 
     val income = listOf(
-        TransactionCategory("حقوق", Icons.Filled.AttachMoney),
-        TransactionCategory("هدیه", Icons.Filled.CardGiftcard),
-        TransactionCategory("سرمایه‌گذاری", Icons.Filled.TrendingUp),
-        TransactionCategory("بازگشت وجه", Icons.Filled.Replay),
-        TransactionCategory("سایر", Icons.Filled.Category),
+        TransactionCategory("حقوق", "حقوق"),
+        TransactionCategory("هدیه", "هدیه"),
+        TransactionCategory("سرمایه‌گذاری", "سرمایه‌گذاری"),
+        TransactionCategory("بازگشت وجه", "بازگشت وجه"),
+        TransactionCategory("سایر", "سایر"),
     )
 }
 
-/** Resolves a Transaction.iconKey (a category label, or "بانک" for SMS-sourced entries) to its icon. */
-fun resolveTransactionIcon(iconKey: String): ImageVector {
-    if (iconKey == "بانک") return Icons.Filled.AccountBalance
-    (TransactionCategories.expense + TransactionCategories.income)
-        .firstOrNull { it.label == iconKey }
-        ?.let { return it.icon }
-    return Icons.Filled.Category
-}
+/** Provides the standard transaction categories used by the domain model. */
+
 
 // Keyword -> category label, used to auto-suggest a category from a
 // transaction's title as the person types/edits it (e.g. typing
@@ -73,3 +53,4 @@ fun suggestCategoryFromTitle(title: String, type: TransactionType): String? {
     val keywords = if (type == TransactionType.EXPENSE) expenseTitleKeywords else incomeTitleKeywords
     return keywords.firstOrNull { (kw, _) -> title.contains(kw) }?.second
 }
+

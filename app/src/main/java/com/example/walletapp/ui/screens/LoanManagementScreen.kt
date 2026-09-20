@@ -68,6 +68,7 @@ import com.example.walletapp.data.LoanEntry
 import com.example.walletapp.data.LoanPayment
 import com.example.walletapp.data.LoanStore
 import com.example.walletapp.data.LoanPaymentDateValidator
+import com.example.walletapp.data.LoanPaymentManager
 import com.example.walletapp.data.LoanType
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.loan.MatureColors
@@ -1486,55 +1487,22 @@ private fun LoanInstallmentsDialog(
                                         now
                                     )
 
-                            val transaction =
-                                Transaction(
-                                    id =
-                                        UUID.randomUUID()
-                                            .toString(),
-                                    title =
-                                        "پرداخت قسط ${currentLoan.title}",
-                                    subtitle =
-                                        "قسط شماره $installmentNumber",
-                                    amount =
-                                        currentLoan.installmentAmount,
-                                    type =
-                                        TransactionType.EXPENSE,
-                                    iconKey = "وام",
-                                    category = "وام",
-                                    dateEpochMillis = now,
-                                    note = "",
-                                    description =
-                                        "پرداخت قسط ${currentLoan.title}",
-                                    accountId =
-                                        accountId
+                            val recorded =
+                                LoanPaymentManager.recordManualInstallmentPayment(
+                                    context = context,
+                                    loan = currentLoan,
+                                    installmentNumber = installmentNumber,
+                                    accountId = accountId,
+                                    paymentDateEpochMillis = now
                                 )
 
-                            TransactionStore.addManual(
-                                transaction
-                            )
-
-                            LoanStore.addPayment(
-                                loanId =
-                                    currentLoan.id,
-                                payment =
-                                    LoanPayment(
-                                        id =
-                                            UUID.randomUUID()
-                                                .toString(),
-                                        installmentNumber =
-                                            installmentNumber,
-                                        amount =
-                                            currentLoan
-                                                .installmentAmount,
-                                        dateLabel =
-                                            today,
-                                        transactionId =
-                                            transaction.id
-                                    )
-                            )
-
-                            selectedInstallmentNumber = null
-                            selectedAccountId = null
+                            if (recorded) {
+                                selectedInstallmentNumber = null
+                                selectedAccountId = null
+                            } else {
+                                loanPaymentError =
+                                    "ثبت پرداخت قسط انجام نشد."
+                            }
                         }
                     },
                     enabled =
@@ -2319,6 +2287,8 @@ private fun calculateMonthlyInstallment(
 
     return payment.toLong()
 }
+
+
 
 
 
