@@ -1,4 +1,4 @@
-name: WalletApp Android Build
+﻿name: WalletApp Android Build
 
 on:
   workflow_dispatch:
@@ -28,7 +28,9 @@ jobs:
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
 
       - name: Make Gradle executable
         run: chmod +x ./gradlew
@@ -38,3 +40,4 @@ jobs:
 
       - name: Run Unit Tests
         run: ./gradlew test --stacktrace
+
