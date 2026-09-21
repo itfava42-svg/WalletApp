@@ -782,6 +782,23 @@ class MainActivity : ComponentActivity() {
                 },
 
 
+                onDismissAsNotBankTransaction = {
+
+                    SmsTransactionCompletionHandler.dismissAsNotBankTransaction(
+                        context = context,
+                        transaction = transaction,
+                    )
+
+                    smsSheetTransaction = null
+                    selectedReceiptUri = null
+                    pendingCameraUri = null
+
+                    SmsTransactionQueue.onCompletionFinished(
+                        context
+                    )
+                },
+
+
                 onIgnoreSender = {
 
     SmsTransactionCompletionHandler.ignoreSender(
