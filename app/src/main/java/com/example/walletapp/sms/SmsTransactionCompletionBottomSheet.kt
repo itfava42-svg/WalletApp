@@ -174,6 +174,16 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Schedule
 
 
+private fun toPersianDigits(value: String): String =
+    buildString {
+        value.forEach { char ->
+            when (char) {
+                in '0'..'9' -> append(('۰'.code + char.code - '0'.code).toChar())
+                else -> append(char)
+            }
+        }
+    }
+
 private fun unpaidInstallmentsFor(
     loan: LoanEntry,
 ): List<SmsLoanInstallmentChoice> {
