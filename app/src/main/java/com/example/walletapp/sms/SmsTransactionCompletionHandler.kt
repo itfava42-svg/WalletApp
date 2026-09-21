@@ -249,7 +249,7 @@ object SmsTransactionCompletionHandler {
                 )
 
             if (payment == null) {
-                TransactionStore.update(transaction)
+                TransactionStore.restore(transaction)
                 return CompletionResult.InstallmentLinkFailed
             }
         }
