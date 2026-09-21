@@ -12,6 +12,7 @@ data class ParsedBankSms(
     val cardNumber: String? = null,
     val cardLast4: String? = null,
     val balance: Long? = null,
+    val isTransfer: Boolean = false,
 )
 
 /**
@@ -53,6 +54,13 @@ private val bankKeywords: List<Pair<String, String>> =
             "\u0628\u0644\u0648\u0628\u0627\u0646\u06a9" to "\u0628\u0644\u0648 (\u0628\u0627\u0646\u06a9 \u0622\u06cc\u0646\u062f\u0647)",
             "\u0628\u0644\u0648" to "\u0628\u0644\u0648 (\u0628\u0627\u0646\u06a9 \u0622\u06cc\u0646\u062f\u0647)",
             "\u0628\u0627\u0646\u06a9 \u0622\u06cc\u0646\u062f\u0647" to "\u0628\u0627\u0646\u06a9 \u0622\u06cc\u0646\u062f\u0647",
+        )
+
+    private val transferKeywords =
+        listOf(
+            "\u0627\u0646\u062a\0642\u0627\0644 \u0648\u062c\0647",
+            "\u0627\u0646\u062a\0642\u0627\0644 \u0627\u0632 \u06a9\u0627\u0631\u062a",
+            "\u06a9\u0627\u0631\u062a \u0628\u0647 \u06a9\u0627\u0631\u062a",
         )
 
     private val expenseKeywords =
@@ -272,6 +280,11 @@ private val bankKeywords: List<Pair<String, String>> =
                 ?.get(1)
                 ?.trim()
 
+        val isTransfer =
+            transferKeywords.any {
+                normalizedBody.contains(it)
+            }
+
         val type =
             when {
                 signFromAmount == '-' ->
@@ -359,6 +372,7 @@ private val bankKeywords: List<Pair<String, String>> =
             cardNumber = cardNumber,
             cardLast4 = cardLast4,
             balance = balance,
+            isTransfer = isTransfer,
         )
     }
 
