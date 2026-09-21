@@ -8,8 +8,6 @@ import android.content.Context
  */
 object SmsTransactionMetadataManager {
 
-    typealias Metadata = SmsTransactionMetadataStore.Metadata
-
     fun attachContext(context: Context) =
         SmsTransactionMetadataStore.attachContext(context)
 
@@ -39,7 +37,7 @@ object SmsTransactionMetadataManager {
     fun remove(transactionId: String) =
         SmsTransactionMetadataStore.remove(transactionId)
 
-    fun getAll(): List<Metadata> =
+    fun getAll(): List<SmsTransactionMetadataStore.Metadata> =
         SmsTransactionMetadataStore.getAll()
 
     fun clear() =
