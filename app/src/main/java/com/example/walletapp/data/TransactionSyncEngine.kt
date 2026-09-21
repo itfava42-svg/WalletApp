@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.data
+package com.example.walletapp.data
 
 /**
  * Central synchronization engine.
@@ -18,12 +18,19 @@ object TransactionSyncEngine {
 
     /**
      * Creates a deterministic batch of transactions waiting for sync.
+     *
+     * A bank-SMS transaction remains local while it is waiting for
+     * completion because it may not have an account yet. Uploading such
+     * an incomplete transaction would violate the sync validation rule
+     * for normal transactions.
      */
     fun createUploadBatch(): SyncBatch {
         return SyncBatch(
             transactions =
                 TransactionSyncRepository
                     .pendingTransactions()
+                    .asSequence()
+                    .filterNot { it.requiresCompletion }
                     .sortedWith(
                         compareBy<Transaction> {
                             it.updatedAt
@@ -31,66 +38,27 @@ object TransactionSyncEngine {
                             it.id
                         }
                     )
+                    .toList()
         )
     }
 
-    /**
-     * Applies one remote transaction through the repository layer.
-     *
-     * Conflict resolution and deduplication remain centralized.
-     */
-    fun applyRemote(
-        transaction: Transaction
-    ): Transaction {
-        return TransactionSyncRepository.applyRemote(
-            transaction
-        )
+    fun applyRemote(transaction: Transaction): Transaction {
+        return TransactionSyncRepository.applyRemote(transaction)
     }
 
-    /**
-     * Applies multiple remote transactions.
-     *
-     * Each transaction is independently resolved and merged.
-     */
-    fun applyRemoteBatch(
-        transactions: List<Transaction>
-    ): List<Transaction> {
-
-        return transactions.map {
-            applyRemote(it)
-        }
+    fun applyRemoteBatch(transactions: List<Transaction>): List<Transaction> {
+        return transactions.map { applyRemote(it) }
     }
 
-    /**
-     * Marks a successfully uploaded transaction as synced.
-     */
-    fun markUploadSuccess(
-        transactionId: String
-    ): Transaction? {
-        return TransactionSyncRepository.markSynced(
-            transactionId
-        )
+    fun markUploadSuccess(transactionId: String): Transaction? {
+        return TransactionSyncRepository.markSynced(transactionId)
     }
 
-    /**
-     * Marks a failed upload so it can be retried.
-     */
-    fun markUploadFailure(
-        transactionId: String
-    ): Transaction? {
-        return TransactionSyncRepository.markFailed(
-            transactionId
-        )
+    fun markUploadFailure(transactionId: String): Transaction? {
+        return TransactionSyncRepository.markFailed(transactionId)
     }
 
-    /**
-     * Returns whether this transaction already exists locally.
-     */
-    fun isDuplicate(
-        transaction: Transaction
-    ): Boolean {
-        return TransactionSyncRepository.containsEquivalent(
-            transaction
-        )
+    fun isDuplicate(transaction: Transaction): Boolean {
+        return TransactionSyncRepository.containsEquivalent(transaction)
     }
 }
