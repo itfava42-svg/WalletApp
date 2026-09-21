@@ -242,6 +242,7 @@ fun SmsTransactionCompletionBottomSheetContent(
         installment: SmsLoanInstallmentChoice?,
     ) -> Unit,
     onIgnoreSender: () -> Unit,
+    onDismissAsNotBankTransaction: () -> Unit,
     onAddBankAccount: () -> Unit,
 ) {
     BackHandler(enabled = true) {}
