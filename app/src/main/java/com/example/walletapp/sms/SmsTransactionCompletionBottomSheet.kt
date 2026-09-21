@@ -1678,7 +1678,7 @@ fun SmsTransactionCompletionBottomSheetContent(
             },
             text = {
                 Column {
-                    matchingAccounts.forEach { account ->
+                    availableAccounts.forEach { account ->
                         Row(
                             modifier =
                                 Modifier
