@@ -434,8 +434,8 @@ fun SmsTransactionCompletionBottomSheetContent(
         selectedLoan?.let(::unpaidInstallmentsFor).orEmpty()
     val canComplete =
         (hasCompletionData || transaction.requiresCompletion) &&
-            matchingAccounts.isNotEmpty() &&
-            (matchingAccounts.size == 1 || selectedAccountId != null) &&
+            availableAccounts.isNotEmpty() &&
+            (availableAccounts.size == 1 || selectedAccountId != null) &&
             (!isInstallmentCategory ||
                 (selectedLoan != null && selectedInstallment != null))
 
