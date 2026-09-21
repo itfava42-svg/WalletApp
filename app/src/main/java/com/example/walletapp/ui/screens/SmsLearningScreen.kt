@@ -42,7 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import com.example.walletapp.sms.SmsIgnoreStore
-import com.example.walletapp.sms.SmsLearningStore
+import com.example.walletapp.sms.SmsLearningManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,11 +55,11 @@ fun SmsLearningScreen(
     var showClearDialog by remember { mutableStateOf(false) }
     var showManualLearningDialog by remember { mutableStateOf(false) }
 
-    SmsLearningStore.attachContext(context)
+    SmsLearningManager.attachContext(context)
     SmsIgnoreStore.attachContext(context)
 
-    val learnedBanks = SmsLearningStore.getAllSenderBanks()
-    val learnedPatterns = SmsLearningStore.getAllPatternRules()
+    val learnedBanks = SmsLearningManager.getAllSenderBanks()
+    val learnedPatterns = SmsLearningManager.getAllPatternRules()
     val ignoredPatterns = SmsIgnoreStore.getIgnoredPatterns()
     val ignoredSenders = SmsIgnoreStore.getIgnoredSenders()
 
@@ -182,7 +182,7 @@ fun SmsLearningScreen(
                         category = rule.category,
                         transactionType = rule.transactionType,
                         onDelete = {
-                            SmsLearningStore.removePatternRule(
+                            SmsLearningManager.removePatternRule(
                                 sender = rule.sender,
                                 pattern = rule.pattern
                             )
@@ -295,7 +295,7 @@ fun SmsLearningScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        SmsLearningStore.clearAllLearning()
+                        SmsLearningManager.clearAllLearning()
                         SmsIgnoreStore.clearAllIgnored()
 
                         showClearDialog = false
@@ -799,7 +799,7 @@ private fun ManualLearningDialog(
 
                         else -> {
 
-                            SmsLearningStore.savePatternRule(
+                            SmsLearningManager.savePatternRule(
                                 sender = sender.trim(),
                                 pattern = messageText.trim(),
                                 bankName = bankName.trim(),
