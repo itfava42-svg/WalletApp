@@ -484,7 +484,7 @@ class MainActivity : ComponentActivity() {
 
                     )?.category
 
-                        ?: SmsLearningManager.getSenderTransactionType(
+                        ?: SmsLearningManager.getSenderCategory(
 
                             it.sender
 
