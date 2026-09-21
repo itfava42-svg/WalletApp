@@ -162,6 +162,11 @@ class SmsReceiver : BroadcastReceiver() {
                         type = parsed.type,
                         smsDate = smsDate,
                         sourceId = sourceId,
+                        kind = if (parsed.isTransfer) {
+                            com.example.walletapp.data.TransactionKind.TRANSFER
+                        } else {
+                            com.example.walletapp.data.TransactionKind.NORMAL
+                        },
                     )
 
                 SmsTransactionMetadataManager.save(
