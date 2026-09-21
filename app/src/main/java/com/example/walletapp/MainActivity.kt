@@ -51,6 +51,7 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.io.File
@@ -89,6 +90,12 @@ data object Budget : AppScreen()
 
 class MainActivity : ComponentActivity() {
 
+    companion object {
+        const val EXTRA_SMS_TRANSACTION_ID = "sms_transaction_id"
+    }
+
+    private val smsOpenTransactionId = mutableStateOf<String?>(null)
+
     private val prefsName = "wallet_app_prefs"
     private val keyPermissionsRequested = "sms_overlay_permissions_requested"
 
@@ -103,6 +110,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        smsOpenTransactionId.value =
+            intent.getStringExtra(EXTRA_SMS_TRANSACTION_ID)
 
         TransactionStore.attachContext(applicationContext)
 
@@ -141,6 +151,25 @@ class MainActivity : ComponentActivity() {
 
                         val context = androidx.compose.ui.platform.LocalContext.current
 
+                        LaunchedEffect(smsOpenTransactionId.value) {
+                            val transactionId = smsOpenTransactionId.value
+                                ?.takeIf { it.isNotBlank() }
+
+                            if (transactionId != null) {
+                                val transaction = TransactionStore.transactions.firstOrNull {
+                                    it.id == transactionId && it.requiresCompletion
+                                }
+
+                                if (transaction != null) {
+                                    smsSheetTransaction = transaction
+                                    selectedReceiptUri = transaction.receiptUri
+                                        ?.takeIf { it.isNotBlank() }
+                                        ?.let(Uri::parse)
+                                }
+
+                                smsOpenTransactionId.value = null
+                            }
+                        }
 
                         val receiptPicker =
                             rememberLauncherForActivityResult(
@@ -727,25 +756,26 @@ class MainActivity : ComponentActivity() {
                         }
 
 
-                        SmsTransactionCompletionHandler.CompletionResult.NoChanges -> Unit
+                        SmsTransactionCompletionHandler.CompletionResult.NoChanges ->
+                            Toast.makeText(context, "اطلاعات تکمیل تراکنش ناقص است.", Toast.LENGTH_SHORT).show()
 
+                        SmsTransactionCompletionHandler.CompletionResult.TransactionNotFound ->
+                            Toast.makeText(context, "تراکنش پیامکی پیدا نشد.", Toast.LENGTH_SHORT).show()
 
-                        SmsTransactionCompletionHandler.CompletionResult.TransactionNotFound -> Unit
+                        SmsTransactionCompletionHandler.CompletionResult.AccountRequired ->
+                            Toast.makeText(context, "ابتدا یک حساب فعال انتخاب یا اضافه کنید.", Toast.LENGTH_SHORT).show()
 
+                        SmsTransactionCompletionHandler.CompletionResult.InvalidAccount ->
+                            Toast.makeText(context, "حساب انتخاب‌شده معتبر نیست.", Toast.LENGTH_SHORT).show()
 
-                        SmsTransactionCompletionHandler.CompletionResult.AccountRequired -> Unit
+                        SmsTransactionCompletionHandler.CompletionResult.InvalidInstallment ->
+                            Toast.makeText(context, "قسط انتخاب‌شده معتبر نیست.", Toast.LENGTH_SHORT).show()
 
+                        SmsTransactionCompletionHandler.CompletionResult.InstallmentAlreadyPaid ->
+                            Toast.makeText(context, "این قسط قبلاً ثبت شده است.", Toast.LENGTH_SHORT).show()
 
-                        SmsTransactionCompletionHandler.CompletionResult.InvalidAccount -> Unit
-
-
-                        SmsTransactionCompletionHandler.CompletionResult.InvalidInstallment -> Unit
-
-
-                        SmsTransactionCompletionHandler.CompletionResult.InstallmentAlreadyPaid -> Unit
-
-
-                        SmsTransactionCompletionHandler.CompletionResult.InstallmentLinkFailed -> Unit
+                        SmsTransactionCompletionHandler.CompletionResult.InstallmentLinkFailed ->
+                            Toast.makeText(context, "اتصال تراکنش به قسط انجام نشد.", Toast.LENGTH_SHORT).show()
 
                     }
 
@@ -807,6 +837,11 @@ class MainActivity : ComponentActivity() {
     }
 
         requestFirstRunPermissionsIfNeeded()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        smsOpenTransactionId.value = intent.getStringExtra(EXTRA_SMS_TRANSACTION_ID)
     }
 
     private fun requestFirstRunPermissionsIfNeeded() {
