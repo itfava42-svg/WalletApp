@@ -1094,6 +1094,12 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     )
                                     .clickable {
                                         selectedAccountId = account.id
+                                        if (
+                                            selectedBank == BankSmsParser.UNKNOWN_BANK ||
+                                            matchingAccounts.none { it.id == account.id }
+                                        ) {
+                                            selectedBank = account.bankName
+                                        }
                                     }
                                     .padding(12.dp),
                             verticalArrangement =
