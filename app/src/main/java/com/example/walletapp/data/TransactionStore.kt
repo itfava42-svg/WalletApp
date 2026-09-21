@@ -219,6 +219,24 @@ object TransactionStore {
     }
 
     /**
+     * Restores an existing transaction to a previously captured local state.
+     *
+     * This is intentionally a low-level rollback primitive for domain
+     * operations that coordinate more than one persistence boundary.
+     * It does not re-run current transaction validation because the supplied
+     * value is the already-persisted state being restored.
+     */
+    fun restore(transaction: Transaction) {
+        val index =
+            transactions.indexOfFirst { it.id == transaction.id }
+
+        if (index >= 0) {
+            transactions[index] = transaction
+            persist()
+        }
+    }
+
+    /**
      * Applies a transaction received from a remote sync source.
      *
      * IMPORTANT:
