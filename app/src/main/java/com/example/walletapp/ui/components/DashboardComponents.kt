@@ -601,7 +601,7 @@ fun DashboardBottomBar(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 10.dp,
         tonalElevation = 0.dp,
     ) {
