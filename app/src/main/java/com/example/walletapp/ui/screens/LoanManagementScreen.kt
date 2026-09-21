@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.RadioButton
@@ -67,6 +67,7 @@ import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.LoanEntry
 import com.example.walletapp.data.LoanPayment
 import com.example.walletapp.data.LoanStore
+import com.example.walletapp.data.LoanManager
 import com.example.walletapp.data.LoanPaymentDateValidator
 import com.example.walletapp.data.LoanPaymentManager
 import com.example.walletapp.data.LoanType
@@ -353,7 +354,7 @@ fun LoanManagementScreen(
                 showAddDialog = false
             },
             onSave = { loan ->
-                LoanStore.add(loan)
+                LoanManager.add(loan)
                 showAddDialog = false
             }
         )
@@ -366,7 +367,7 @@ fun LoanManagementScreen(
                 editingLoan = null
             },
             onSave = { updatedLoan ->
-                LoanStore.update(updatedLoan)
+                LoanManager.update(updatedLoan)
                 editingLoan = null
             }
         )
@@ -397,7 +398,7 @@ fun LoanManagementScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        LoanStore.remove(loan.id)
+                        LoanManager.remove(loan.id)
                         deleteLoan = null
                     }
                 ) {
