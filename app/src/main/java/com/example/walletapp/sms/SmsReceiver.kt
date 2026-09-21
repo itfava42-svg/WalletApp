@@ -33,7 +33,7 @@ class SmsReceiver : BroadcastReceiver() {
 
         TransactionStore.attachContext(context)
         SmsTransactionMetadataStore.attachContext(context)
-        SmsProcessedStore.attachContext(context)
+        SmsProcessedManager.attachContext(context)
 
         try {
 
@@ -55,7 +55,6 @@ class SmsReceiver : BroadcastReceiver() {
                 "sender=$sender bodyLength=${fullBody.length} smsDate=$smsDate"
             )
 
-
             /*
              * IMPORTANT:
              * Claim the SMS BEFORE creating a transaction.
@@ -64,7 +63,7 @@ class SmsReceiver : BroadcastReceiver() {
              * import path sees it, it will be rejected here.
              */
             val claimed =
-                SmsProcessedStore.tryClaim(
+                SmsProcessedManager.tryClaim(
                     context = context,
                     sender = sender,
                     body = fullBody,
@@ -109,7 +108,7 @@ class SmsReceiver : BroadcastReceiver() {
                      * Release the claim because this SMS was not imported.
                      * This allows a later improved parser/inbox scan to retry it.
                      */
-                    SmsProcessedStore.release(
+                    SmsProcessedManager.release(
                         context = context,
                         sender = sender,
                         body = fullBody,
@@ -132,7 +131,7 @@ class SmsReceiver : BroadcastReceiver() {
                     parsed.amount
 
                 if (amount == null) {
-                    SmsProcessedStore.release(
+                    SmsProcessedManager.release(
                         context = context,
                         sender = sender,
                         body = fullBody,
@@ -147,7 +146,7 @@ class SmsReceiver : BroadcastReceiver() {
                     return
                 }
 
-                val sourceId = SmsProcessedStore.sourceId(
+                val sourceId = SmsProcessedManager.sourceId(
                     sender = sender ?: "",
                     smsDate = smsDate,
                     body = fullBody,
@@ -235,7 +234,7 @@ class SmsReceiver : BroadcastReceiver() {
                 /*
                  * If importing failed after claiming, allow retry.
                  */
-                SmsProcessedStore.release(
+                SmsProcessedManager.release(
                     context = context,
                     sender = sender,
                     body = fullBody,
@@ -256,6 +255,3 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 }
-
-
-
