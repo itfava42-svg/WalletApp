@@ -278,7 +278,7 @@ fun SmsTransactionCompletionBottomSheetContent(
 
     val metadata =
         remember(transaction.id) {
-            SmsTransactionMetadataStore.get(transaction.id)
+            SmsTransactionMetadataManager.get(transaction.id)
         }
 
     val smsAccountNumber =
@@ -317,6 +317,11 @@ fun SmsTransactionCompletionBottomSheetContent(
         } else {
             AccountStore.accounts.filter { it.isActive }
         }
+
+    // A transfer destination may be any active account, not only an
+    // account belonging to the detected source bank.
+    val transferDestinationAccounts =
+        AccountStore.accounts.filter { it.isActive }
 
     val accountNumberMatches =
         remember(selectedBank, smsAccountNumber) {
@@ -1804,7 +1809,7 @@ fun SmsTransactionCompletionBottomSheetContent(
             },
             text = {
                 Column {
-                    availableAccounts
+                    transferDestinationAccounts
                         .filter { it.id != selectedAccountId }
                         .forEach { account ->
                             Row(
