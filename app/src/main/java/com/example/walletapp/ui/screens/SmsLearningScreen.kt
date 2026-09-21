@@ -41,7 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
-import com.example.walletapp.sms.SmsIgnoreStore
+import com.example.walletapp.sms.SmsIgnoreManager
 import com.example.walletapp.sms.SmsLearningManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,12 +56,12 @@ fun SmsLearningScreen(
     var showManualLearningDialog by remember { mutableStateOf(false) }
 
     SmsLearningManager.attachContext(context)
-    SmsIgnoreStore.attachContext(context)
+    SmsIgnoreManager.attachContext(context)
 
     val learnedBanks = SmsLearningManager.getAllSenderBanks()
     val learnedPatterns = SmsLearningManager.getAllPatternRules()
-    val ignoredPatterns = SmsIgnoreStore.getIgnoredPatterns()
-    val ignoredSenders = SmsIgnoreStore.getIgnoredSenders()
+    val ignoredPatterns = SmsIgnoreManager.getIgnoredPatterns()
+    val ignoredSenders = SmsIgnoreManager.getIgnoredSenders()
 
     fun refresh() {
         refreshKey++
@@ -221,7 +221,7 @@ fun SmsLearningScreen(
                         sender = rule.sender,
                         pattern = rule.pattern,
                         onDelete = {
-                            SmsIgnoreStore.unignorePattern(
+                            SmsIgnoreManager.unignorePattern(
                                 sender = rule.sender,
                                 pattern = rule.pattern
                             )
@@ -296,7 +296,7 @@ fun SmsLearningScreen(
                 Button(
                     onClick = {
                         SmsLearningManager.clearAllLearning()
-                        SmsIgnoreStore.clearAllIgnored()
+                        SmsIgnoreManager.clearAllIgnored()
 
                         showClearDialog = false
                         refresh()
