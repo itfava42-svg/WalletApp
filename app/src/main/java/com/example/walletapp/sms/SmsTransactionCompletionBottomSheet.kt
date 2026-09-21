@@ -319,11 +319,11 @@ fun SmsTransactionCompletionBottomSheetContent(
         mutableStateOf(
             transaction.accountId
                 ?.takeIf { id ->
-                    matchingAccounts.any { it.id == id }
+                    availableAccounts.any { it.id == id }
                 }
                 ?: accountNumberMatches.singleOrNull()?.id
                 ?: cardLast4Matches.singleOrNull()?.id
-                ?: matchingAccounts.singleOrNull()?.id
+                ?: availableAccounts.singleOrNull()?.id
         )
     }
 
@@ -1060,7 +1060,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         Arrangement.spacedBy(10.dp),
                 ) {
 
-                    matchingAccounts.forEach { account ->
+                    availableAccounts.forEach { account ->
 
                         Column(
                             modifier =
