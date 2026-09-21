@@ -58,8 +58,8 @@ private val bankKeywords: List<Pair<String, String>> =
 
     private val transferKeywords =
         listOf(
-            "\u0627\u0646\u062a\0642\u0627\0644 \u0648\u062c\0647",
-            "\u0627\u0646\u062a\0642\u0627\0644 \u0627\u0632 \u06a9\u0627\u0631\u062a",
+            "\u0627\u0646\u062a\u0642\u0627\0644 \u0648\u062c\0647",
+            "\u0627\u0646\u062a\u0642\u0627\0644 \u0627\u0632 \u06a9\u0627\u0631\u062a",
             "\u06a9\u0627\u0631\u062a \u0628\u0647 \u06a9\u0627\u0631\u062a",
         )
 
