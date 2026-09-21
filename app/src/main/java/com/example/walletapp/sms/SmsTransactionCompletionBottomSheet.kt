@@ -558,7 +558,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             Modifier
                                 .weight(1f)
                                 .background(
-                                    if (selectedType == TransactionType.EXPENSE)
+                                    if (selectedType == TransactionType.EXPENSE && !isTransfer)
                                         androidx.compose.ui.graphics.Color(0xFFEB1C24)
                                     else
                                         androidx.compose.ui.graphics.Color.Transparent,
@@ -579,7 +579,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color =
-                                if (selectedType == TransactionType.EXPENSE)
+                                if (selectedType == TransactionType.EXPENSE && !isTransfer)
                                     androidx.compose.ui.graphics.Color.White
                                 else
                                     androidx.compose.ui.graphics.Color(0xFF1A1A1A),
@@ -735,6 +735,151 @@ fun SmsTransactionCompletionBottomSheetContent(
                     modifier =
                         Modifier.offset(y = (-8).dp),
                 )
+            }
+
+            // =================================================
+            // BANK SUMMARY / ACTIONS
+            // =================================================
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = androidx.compose.ui.graphics.Color(0xFFF7F8FA)
+                ),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(46.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(androidx.compose.ui.graphics.Color(0xFFE8F5E9)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AccountBalance,
+                                contentDescription = null,
+                                tint = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+
+                        Spacer(Modifier.width(12.dp))
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = if (selectedBank == BankSmsParser.UNKNOWN_BANK)
+                                    "بانک تشخیص داده نشد"
+                                else
+                                    selectedBank,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            )
+                            Text(
+                                text = if (selectedBank == BankSmsParser.UNKNOWN_BANK)
+                                    "برای اصلاح، روی نام بانک بزنید"
+                                else
+                                    "بانک تشخیص‌داده‌شده پیامک",
+                                fontSize = 11.sp,
+                                color = androidx.compose.ui.graphics.Color(0xFF6A6A6A),
+                            )
+                        }
+
+                        TextButton(onClick = { showBankDialog = true }) {
+                            Text(
+                                text = "تغییر",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(52.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = androidx.compose.ui.graphics.Color(0xFFE8F5E9)
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clickable { learnBank = !learnBank }
+                                    .padding(horizontal = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    text = "یادگیری بانک",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Switch(
+                                    checked = learnBank,
+                                    onCheckedChange = { learnBank = it },
+                                )
+                            }
+                        }
+
+                        Card(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(52.dp)
+                                .clickable { showIgnoreDialog = true },
+                            shape = RoundedCornerShape(14.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = androidx.compose.ui.graphics.Color(0xFFFFF3F3)
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Block,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = androidx.compose.ui.graphics.Color(0xFFB42318),
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    text = "این تراکنش بانکی نیست",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = androidx.compose.ui.graphics.Color(0xFFB42318),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             // =================================================
@@ -1052,132 +1197,6 @@ fun SmsTransactionCompletionBottomSheetContent(
                     )
                 }
             }
-            // =================================================
-            // BANK
-            // =================================================
-
-            Row(
-                modifier =
-                    Modifier
-                        .background(
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
-                            RoundedCornerShape(14.dp),
-                        )
-                        .padding(
-                            horizontal = 16.dp,
-                            vertical = 10.dp,
-                        )
-                        .align(Alignment.End)
-                        .clickable {
-                            showBankDialog = true
-                        },
-                horizontalArrangement =
-                    Arrangement.spacedBy(10.dp),
-                verticalAlignment =
-                    Alignment.CenterVertically,
-            ) {
-
-                Box(
-                    modifier =
-                        Modifier
-                            .size(28.dp)
-                            .background(
-                                androidx.compose.ui.graphics.Color.White,
-                                CircleShape,
-                            ),
-                    contentAlignment =
-                        Alignment.Center,
-                ) {
-                    Text(
-                        text =
-                            selectedBank
-                                .replace("بانک ", "")
-                                .take(3),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color =
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
-                    )
-                }
-
-                Column(
-                    verticalArrangement =
-                        Arrangement.spacedBy(2.dp),
-                ) {
-                    Text(
-                        text =
-                            if (selectedBank ==
-                                BankSmsParser.UNKNOWN_BANK
-                            ) {
-                                "بانک تشخیص داده نشد"
-                            } else {
-                                selectedBank
-                            },
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color =
-                            androidx.compose.ui.graphics.Color.White,
-                    )
-
-                    if (
-                        selectedBank ==
-                            BankSmsParser.UNKNOWN_BANK
-                    ) {
-                        Text(
-                            text =
-                                "لطفاً بانک تراکنش را انتخاب کنید",
-                            fontSize = 11.sp,
-                            color =
-                                androidx.compose.ui.graphics.Color.White,
-                        )
-                    }
-                }
-            }
-
-            // =================================================
-            // =================================================
-            // SMS DETAILS
-            // =================================================
-
-            if (smsCardNumber != null || smsCardLast4 != null || metadata?.balance != null) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = androidx.compose.ui.graphics.Color(0xFFF7F7F7)
-                    ),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(14.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Text(
-                            text = "اطلاعات پیامک بانکی",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
-                        )
-
-                        if (smsCardNumber != null || smsCardLast4 != null) {
-                            val displayCard = smsCardNumber ?: ("****" + smsCardLast4)
-                            Text(
-                                text = "کارت: " + displayCard,
-                                fontSize = 13.sp,
-                                color = androidx.compose.ui.graphics.Color(0xFF555555),
-                            )
-                        }
-
-                        metadata?.balance?.let { smsBalance ->
-                            Text(
-                                text = "موجودی پیامک: " + toPersianDigits(smsBalance.toString().replace(Regex("(\\\\d)(?=(\\\\d{3})+$)"), "$1,")) + " تومان",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = androidx.compose.ui.graphics.Color(0xFF157A37),
-                            )
-                        }
-                    }
-                }
-            }
             // ACCOUNTS
             // =================================================
 
@@ -1358,58 +1377,47 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
 
             // =================================================
-            // LEARNING
+            // =================================================
+            // SMS DETAILS
             // =================================================
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor =
-                            androidx.compose.ui.graphics.Color(0xFFF4F8F5)
+            if (smsCardNumber != null || smsCardLast4 != null || metadata?.balance != null) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = androidx.compose.ui.graphics.Color(0xFFF7F7F7)
                     ),
-            ) {
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = 14.dp,
-                                vertical = 10.dp,
-                            ),
-                    horizontalArrangement =
-                        Arrangement.SpaceBetween,
-                    verticalAlignment =
-                        Alignment.CenterVertically,
                 ) {
                     Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement =
-                            Arrangement.spacedBy(2.dp),
+                        modifier = Modifier.padding(14.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
-                            text = "یادگیری بانک",
+                            text = "اطلاعات پیامک بانکی",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color =
-                                androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
                         )
 
-                        Text(
-                            text = "بانک انتخاب‌شده برای پیامک‌های مشابه این فرستنده ذخیره شود",
-                            fontSize = 11.sp,
-                            color =
-                                androidx.compose.ui.graphics.Color(0xFF6A6A6A),
-                        )
+                        if (smsCardNumber != null || smsCardLast4 != null) {
+                            val displayCard = smsCardNumber ?: ("****" + smsCardLast4)
+                            Text(
+                                text = "کارت: " + displayCard,
+                                fontSize = 13.sp,
+                                color = androidx.compose.ui.graphics.Color(0xFF555555),
+                            )
+                        }
+
+                        metadata?.balance?.let { smsBalance ->
+                            Text(
+                                text = "موجودی پیامک: " + toPersianDigits(smsBalance.toString().replace(Regex("(\\\\d)(?=(\\\\d{3})+$)"), "$1,")) + " تومان",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = androidx.compose.ui.graphics.Color(0xFF157A37),
+                            )
+                        }
                     }
-
-                    Switch(
-                        checked = learnBank,
-                        onCheckedChange = {
-                            learnBank = it
-                        },
-                    )
                 }
             }
             // =================================================
