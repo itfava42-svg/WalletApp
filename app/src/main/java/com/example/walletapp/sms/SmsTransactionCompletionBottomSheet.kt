@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.Surface
 import androidx.compose.material3.HorizontalDivider
 
@@ -166,7 +167,7 @@ import com.example.walletapp.ui.theme.WalletAppTheme
 import java.io.File
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.foundation.border
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -250,6 +251,10 @@ fun SmsTransactionCompletionBottomSheetContent(
 
     var selectedType by remember(transaction.id) {
         mutableStateOf(transaction.type)
+    }
+
+    var isTransfer by remember(transaction.id) {
+        mutableStateOf(false)
     }
 
     var tags by remember {
@@ -352,6 +357,14 @@ fun SmsTransactionCompletionBottomSheetContent(
         mutableStateOf(false)
     }
 
+    var showDestinationAccountDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var destinationAccountId by remember(transaction.id) {
+        mutableStateOf<String?>(null)
+    }
+
     var showIgnoreDialog by remember {
         mutableStateOf(false)
     }
@@ -398,8 +411,9 @@ fun SmsTransactionCompletionBottomSheetContent(
         )
 
     val categories =
-        when (selectedType) {
-            TransactionType.EXPENSE ->
+        when {
+            isTransfer -> emptyList()
+            selectedType == TransactionType.EXPENSE ->
                 listOf(
                     "غذا",
                     "حمل‌ونقل",
@@ -411,7 +425,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                     "سایر",
                 )
 
-            TransactionType.INCOME ->
+            else ->
                 listOf(
                     "حقوق",
                     "هدیه",
@@ -422,7 +436,8 @@ fun SmsTransactionCompletionBottomSheetContent(
         }
 
     val hasCompletionData =
-        selectedType != transaction.type ||
+        isTransfer ||
+            selectedType != transaction.type ||
             selectedCategory != null ||
             tags.isNotEmpty() ||
             description.isNotBlank() ||
@@ -436,6 +451,7 @@ fun SmsTransactionCompletionBottomSheetContent(
         (hasCompletionData || transaction.requiresCompletion) &&
             availableAccounts.isNotEmpty() &&
             (availableAccounts.size == 1 || selectedAccountId != null) &&
+            (!isTransfer || (destinationAccountId != null && destinationAccountId != selectedAccountId)) &&
             (!isInstallmentCategory ||
                 (selectedLoan != null && selectedInstallment != null))
 
@@ -539,6 +555,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     RoundedCornerShape(10.dp),
                                 )
                                 .clickable {
+                                    isTransfer = false
                                     selectedType = TransactionType.EXPENSE
                                     selectedCategory = null
                                     selectedLoan = null
@@ -571,6 +588,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     RoundedCornerShape(10.dp),
                                 )
                                 .clickable {
+                                    isTransfer = false
                                     selectedType = TransactionType.INCOME
                                     selectedCategory = null
                                     selectedLoan = null
@@ -591,6 +609,37 @@ fun SmsTransactionCompletionBottomSheetContent(
                         )
                     }
                 }
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(
+                                if (isTransfer)
+                                    androidx.compose.ui.graphics.Color(0xFFEB1C24)
+                                else
+                                    androidx.compose.ui.graphics.Color.Transparent,
+                                RoundedCornerShape(10.dp),
+                            )
+                            .clickable {
+                                isTransfer = true
+                                selectedType = TransactionType.EXPENSE
+                                selectedCategory = null
+                                selectedLoan = null
+                                selectedInstallment = null
+                            }
+                            .padding(10.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "انتقال",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isTransfer)
+                                androidx.compose.ui.graphics.Color.White
+                            else
+                                androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        )
+                    }
 
                 Row(
                     modifier =
@@ -678,6 +727,35 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
 
             // =================================================
+            if (isTransfer) {
+                    SectionTitle(
+                        icon = Icons.Default.SwapHoriz,
+                        title = "حساب مقصد",
+                        subtitle = "حسابی که مبلغ به آن منتقل شده است",
+                    )
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showDestinationAccountDialog = true },
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(Icons.Default.AccountBalance, null)
+                            Spacer(Modifier.width(12.dp))
+                            Text(
+                                AccountStore.accounts.firstOrNull { it.id == destinationAccountId }?.name
+                                    ?: "انتخاب حساب مقصد",
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        }
+                    }
+                }
+
             // CATEGORY
             // =================================================
 
@@ -1706,6 +1784,22 @@ fun SmsTransactionCompletionBottomSheetContent(
                 }
             },
             confirmButton = { TextButton(onClick = { showInstallmentDialog = false }) { Text("بستن") } },
+        )
+    }
+
+    if (showDestinationAccountDialog) {
+        AccountSelectionDialog(
+            title = "انتخاب حساب مقصد",
+            accounts = availableAccounts,
+            selectedAccountId = destinationAccountId,
+            excludedAccountId = selectedAccountId,
+            onSelect = {
+                destinationAccountId = it
+                showDestinationAccountDialog = false
+            },
+            onDismiss = {
+                showDestinationAccountDialog = false
+            },
         )
     }
 
