@@ -823,13 +823,15 @@ fun SmsTransactionCompletionBottomSheetContent(
             ) {
 
                 val formattedTime =
-                    java.text.SimpleDateFormat(
-                        "HH:mm",
-                        java.util.Locale.US,
-                    ).format(
-                        java.util.Date(
-                            transaction.dateEpochMillis
-                                ?: System.currentTimeMillis()
+                    toPersianDigits(
+                        java.text.SimpleDateFormat(
+                            "HH:mm",
+                            java.util.Locale.US,
+                        ).format(
+                            java.util.Date(
+                                transaction.dateEpochMillis
+                                    ?: System.currentTimeMillis()
+                            )
                         )
                     )
 
