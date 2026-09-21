@@ -23,6 +23,9 @@ object SmsLearningManager {
     fun getSenderTransactionType(sender: String?): String? =
         SmsLearningStore.getSenderTransactionType(sender)
 
+    fun getSenderCategory(sender: String?): String? =
+        SmsLearningStore.getSenderCategory(sender)
+
     fun saveSenderBank(
         sender: String,
         bankName: String,
