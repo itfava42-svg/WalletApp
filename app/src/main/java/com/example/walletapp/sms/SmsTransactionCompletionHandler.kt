@@ -226,7 +226,7 @@ object SmsTransactionCompletionHandler {
             usableSelectedBank != null &&
             effectiveSender.isNotBlank()
         ) {
-            SmsLearningStore.saveSenderBank(
+            SmsLearningManager.saveSenderBank(
                 sender = effectiveSender,
                 bankName = usableSelectedBank,
             )
@@ -236,7 +236,7 @@ object SmsTransactionCompletionHandler {
             request.selectedCategory != null &&
             effectiveSender.isNotBlank()
         ) {
-            SmsLearningStore.saveSenderCategory(
+            SmsLearningManager.saveSenderCategory(
                 sender = effectiveSender,
                 category = request.selectedCategory,
             )
@@ -248,7 +248,7 @@ object SmsTransactionCompletionHandler {
             effectiveSender.isNotBlank() &&
             effectiveRawBody != null
         ) {
-            SmsLearningStore.savePatternRule(
+            SmsLearningManager.savePatternRule(
                 sender = effectiveSender,
                 pattern = effectiveRawBody,
                 bankName = usableSelectedBank,
@@ -276,7 +276,7 @@ object SmsTransactionCompletionHandler {
     ) {
         TransactionStore.attachContext(context)
         SmsTransactionMetadataStore.attachContext(context)
-        SmsIgnoreStore.attachContext(context)
+        SmsIgnoreManager.attachContext(context)
 
         val metadata =
             SmsTransactionMetadataStore.get(transaction.id)
@@ -286,7 +286,7 @@ object SmsTransactionCompletionHandler {
             metadata != null &&
             !metadata.rawBody.isNullOrBlank()
         ) {
-            SmsIgnoreStore.ignoreSender(
+            SmsIgnoreManager.ignoreSender(
                 sender = sender,
             )
         }
