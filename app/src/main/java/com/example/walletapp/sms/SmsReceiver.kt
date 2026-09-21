@@ -173,6 +173,7 @@ class SmsReceiver : BroadcastReceiver() {
                     accountNumber = parsed.accountNumber,
                     cardNumber = parsed.cardNumber,
                     cardLast4 = parsed.cardLast4,
+                    balance = parsed.balance,
                 )
 
                 Log.d(
