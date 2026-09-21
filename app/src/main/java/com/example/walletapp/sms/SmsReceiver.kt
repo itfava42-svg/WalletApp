@@ -32,7 +32,7 @@ class SmsReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
 
         TransactionStore.attachContext(context)
-        SmsTransactionMetadataStore.attachContext(context)
+        SmsTransactionMetadataManager.attachContext(context)
         SmsProcessedManager.attachContext(context)
 
         try {
@@ -162,7 +162,7 @@ class SmsReceiver : BroadcastReceiver() {
                         sourceId = sourceId,
                     )
 
-                SmsTransactionMetadataStore.save(
+                SmsTransactionMetadataManager.save(
                     transactionId = transaction.id,
                     sender = sender ?: "",
                     rawBody = fullBody,

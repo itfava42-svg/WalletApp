@@ -108,7 +108,7 @@ object SmsTransactionCompletionHandler {
             return CompletionResult.NoChanges
         }
         val metadata =
-            SmsTransactionMetadataStore.get(transaction.id)
+            SmsTransactionMetadataManager.get(transaction.id)
 
         val effectiveSender =
             metadata
@@ -275,11 +275,11 @@ object SmsTransactionCompletionHandler {
         sender: String?,
     ) {
         TransactionStore.attachContext(context)
-        SmsTransactionMetadataStore.attachContext(context)
+        SmsTransactionMetadataManager.attachContext(context)
         SmsIgnoreManager.attachContext(context)
 
         val metadata =
-            SmsTransactionMetadataStore.get(transaction.id)
+            SmsTransactionMetadataManager.get(transaction.id)
 
         if (
             !sender.isNullOrBlank() &&

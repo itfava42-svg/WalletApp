@@ -62,7 +62,7 @@ import com.example.walletapp.sms.SmsIgnoreStore
 import com.example.walletapp.sms.SmsLearningStore
 import com.example.walletapp.sms.SmsTransactionCompletionHandler
 import com.example.walletapp.sms.SmsTransactionCompletionSheetHost
-import com.example.walletapp.sms.SmsTransactionMetadataStore
+import com.example.walletapp.sms.SmsTransactionMetadataManager
 import com.example.walletapp.sms.SmsTransactionQueue
 import com.example.walletapp.ui.theme.WalletAppTheme
 
@@ -112,7 +112,7 @@ class MainActivity : ComponentActivity() {
         LoanLegacyMigration.migrate(applicationContext)
         CheckStore.attachContext(applicationContext)
         AccountStore.attachContext(applicationContext)
-        SmsTransactionMetadataStore.attachContext(applicationContext)
+        SmsTransactionMetadataManager.attachContext(applicationContext)
         SmsLearningStore.attachContext(applicationContext)
         SmsIgnoreStore.attachContext(applicationContext)
 
@@ -424,7 +424,7 @@ class MainActivity : ComponentActivity() {
 
             val metadata =
 
-                SmsTransactionMetadataStore.get(transaction.id)
+                SmsTransactionMetadataManager.get(transaction.id)
 
 
             val detectedBank =
@@ -613,7 +613,7 @@ class MainActivity : ComponentActivity() {
 
                     val currentMetadata =
 
-                        SmsTransactionMetadataStore.get(
+                        SmsTransactionMetadataManager.get(
 
                             transaction.id
 
