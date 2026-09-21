@@ -2,6 +2,7 @@ package com.example.walletapp.ui.screens
 
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
+import com.example.walletapp.data.toPersianDigits
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
