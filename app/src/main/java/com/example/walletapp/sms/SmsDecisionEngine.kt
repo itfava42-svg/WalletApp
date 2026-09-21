@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.sms
+package com.example.walletapp.sms
 
 import android.content.Context
 import com.example.walletapp.data.TransactionType
@@ -28,8 +28,8 @@ object SmsDecisionEngine {
         sender: String?,
         body: String,
     ): Decision {
-        SmsLearningStore.attachContext(context)
-        SmsIgnoreStore.attachContext(context)
+        SmsLearningManager.attachContext(context)
+        SmsIgnoreManager.attachContext(context)
 
         if (sender.isNullOrBlank() || body.isBlank()) {
             return Decision(
@@ -40,7 +40,7 @@ object SmsDecisionEngine {
         // -------------------------------------------------------------
         // 1. Complete sender-level ignore
         // -------------------------------------------------------------
-        if (SmsIgnoreStore.isSenderIgnored(sender)) {
+        if (SmsIgnoreManager.isSenderIgnored(sender)) {
             return Decision(
                 ignored = true,
             )
@@ -50,7 +50,7 @@ object SmsDecisionEngine {
         // 2. Sender + message-pattern ignore
         // -------------------------------------------------------------
         val ignoredPattern =
-            SmsIgnoreStore.findIgnoredPattern(
+            SmsIgnoreManager.findIgnoredPattern(
                 sender = sender,
                 messageBody = body,
             )
@@ -79,7 +79,7 @@ object SmsDecisionEngine {
         // Pattern rules are more specific than sender-wide rules.
         // -------------------------------------------------------------
         val learnedPattern =
-            SmsLearningStore.findPatternRule(
+            SmsLearningManager.findPatternRule(
                 sender = sender,
                 messageBody = body,
             )
@@ -124,10 +124,10 @@ object SmsDecisionEngine {
         // 5. Apply learned sender-wide rules
         // -------------------------------------------------------------
         val learnedBank =
-            SmsLearningStore.getSenderBank(sender)
+            SmsLearningManager.getSenderBank(sender)
 
         val learnedType =
-            SmsLearningStore.getSenderTransactionType(sender)
+            SmsLearningManager.getSenderTransactionType(sender)
                 ?.let { value ->
                     parseTransactionType(value)
                 }
@@ -225,4 +225,3 @@ object SmsDecisionEngine {
         }
     }
 }
-

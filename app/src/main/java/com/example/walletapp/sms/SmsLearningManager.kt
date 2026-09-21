@@ -17,6 +17,12 @@ object SmsLearningManager {
     fun getAllSenderBanks(): Map<String, String> =
         SmsLearningStore.getAllSenderBanks()
 
+    fun getSenderBank(sender: String?): String? =
+        SmsLearningStore.getSenderBank(sender)
+
+    fun getSenderTransactionType(sender: String?): String? =
+        SmsLearningStore.getSenderTransactionType(sender)
+
     fun saveSenderBank(
         sender: String,
         bankName: String,
@@ -36,6 +42,15 @@ object SmsLearningManager {
             category = category,
         )
     }
+
+    fun findPatternRule(
+        sender: String?,
+        messageBody: String,
+    ): SmsLearningStore.PatternRule? =
+        SmsLearningStore.findPatternRule(
+            sender = sender,
+            messageBody = messageBody,
+        )
 
     fun getAllPatternRules(): List<SmsLearningStore.PatternRule> =
         SmsLearningStore.getAllPatternRules()
