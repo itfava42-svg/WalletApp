@@ -188,44 +188,42 @@ object SmsTransactionCompletionHandler {
             return CompletionResult.AccountRequired
         }
 
-        if (request.selectedCategory == "قسط") {
+        val installmentLoan =
+            if (request.selectedCategory == "قسط") {
+                if (request.isTransfer || request.selectedType != com.example.walletapp.data.TransactionType.EXPENSE) {
+                    return CompletionResult.InvalidInstallment
+                }
 
-            val loan =
                 request.selectedLoan
                     ?: return CompletionResult.InvalidInstallment
+            } else {
+                null
+            }
 
-            val installmentNumber =
+        val installmentNumber =
+            if (installmentLoan != null) {
                 request.selectedInstallmentNumber
                     ?: return CompletionResult.InvalidInstallment
+            } else {
+                null
+            }
 
+        if (installmentLoan != null) {
             if (
-                installmentNumber < 1 ||
-                installmentNumber > loan.totalInstallments
+                installmentNumber!! < 1 ||
+                installmentNumber > installmentLoan.totalInstallments
             ) {
                 return CompletionResult.InvalidInstallment
             }
 
             if (
-                loan.payments.any {
+                installmentLoan.payments.any {
                     it.installmentNumber == installmentNumber
                 }
             ) {
                 return CompletionResult.InstallmentAlreadyPaid
             }
-
-            val payment =
-                LoanPaymentManager.linkExistingTransactionToInstallment(
-                    context = context,
-                    loan = loan,
-                    installmentNumber = installmentNumber,
-                    transactionId = transaction.id,
-                )
-
-            if (payment == null) {
-                return CompletionResult.InstallmentLinkFailed
-            }
         }
-
 
         val updatedTransaction =
             buildUpdatedTransaction(
@@ -233,7 +231,28 @@ object SmsTransactionCompletionHandler {
                 resolvedAccountId = resolvedAccountId,
             )
 
+        /*
+         * Persist the transaction first. LoanPaymentManager links the
+         * existing transaction to the installment, so doing the link
+         * first could leave a loan payment behind if transaction
+         * persistence failed.
+         */
         TransactionStore.update(updatedTransaction)
+
+        if (installmentLoan != null) {
+            val payment =
+                LoanPaymentManager.linkExistingTransactionToInstallment(
+                    context = context,
+                    loan = installmentLoan,
+                    installmentNumber = installmentNumber!!,
+                    transactionId = transaction.id,
+                )
+
+            if (payment == null) {
+                TransactionStore.update(transaction)
+                return CompletionResult.InstallmentLinkFailed
+            }
+        }
 
         /*
          * Learning is committed only after the transaction has passed
