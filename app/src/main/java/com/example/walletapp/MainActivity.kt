@@ -54,6 +54,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.io.File
+import com.example.walletapp.data.AccountManager
 import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.AccountType
 import com.example.walletapp.sms.SmsCompletionCoordinator
@@ -222,7 +223,7 @@ class MainActivity : ComponentActivity() {
                                             ?.let(Uri::parse)
                                 }
                             }
-                            SmsTransactionQueue.showNextIfNeeded(context)
+                            // SMS completion is triggered by the SMS flow, not app startup.
                             onDispose {
                                 SmsCompletionCoordinator.unregisterHost()
                             }
@@ -467,7 +468,7 @@ class MainActivity : ComponentActivity() {
             showAddBankAccountScreen = false
         },
         onSave = { bankName, accountNumber, cardNumber, openingBalance ->
-            AccountStore.add(
+            AccountManager.add(
                 name = bankName,
                 type = AccountType.BANK,
                 bankName = bankName,
@@ -836,6 +837,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 
 

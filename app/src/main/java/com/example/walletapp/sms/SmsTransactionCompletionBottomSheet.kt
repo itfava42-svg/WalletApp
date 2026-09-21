@@ -101,6 +101,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Switch
 
 import androidx.compose.material3.Icon
 
@@ -1203,6 +1204,61 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
 
             // =================================================
+            // LEARNING
+            // =================================================
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor =
+                            androidx.compose.ui.graphics.Color(0xFFF4F8F5)
+                    ),
+            ) {
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = 14.dp,
+                                vertical = 10.dp,
+                            ),
+                    horizontalArrangement =
+                        Arrangement.SpaceBetween,
+                    verticalAlignment =
+                        Alignment.CenterVertically,
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement =
+                            Arrangement.spacedBy(2.dp),
+                    ) {
+                        Text(
+                            text = "یادگیری بانک",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color =
+                                androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        )
+
+                        Text(
+                            text = "بانک انتخاب‌شده برای پیامک‌های مشابه این فرستنده ذخیره شود",
+                            fontSize = 11.sp,
+                            color =
+                                androidx.compose.ui.graphics.Color(0xFF6A6A6A),
+                        )
+                    }
+
+                    Switch(
+                        checked = learnBank,
+                        onCheckedChange = {
+                            learnBank = it
+                        },
+                    )
+                }
+            }
+            // =================================================
             // TAGS
             // =================================================
 
@@ -1966,6 +2022,7 @@ private fun SectionTitle(
         }
     }
 }
+
 
 
 
