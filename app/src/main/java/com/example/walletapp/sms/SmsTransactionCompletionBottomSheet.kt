@@ -303,6 +303,13 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
         }
 
+    val availableAccounts =
+        if (matchingAccounts.isNotEmpty()) {
+            matchingAccounts
+        } else {
+            AccountStore.accounts.filter { it.isActive }
+        }
+
     val accountNumberMatches =
         remember(selectedBank, smsAccountNumber) {
             if (smsAccountNumber == null) {
