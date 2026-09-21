@@ -11,6 +11,7 @@ data class ParsedBankSms(
     val accountNumber: String? = null,
     val cardNumber: String? = null,
     val cardLast4: String? = null,
+    val balance: Long? = null,
 )
 
 /**
@@ -131,7 +132,7 @@ private val bankKeywords: List<Pair<String, String>> =
 
     private val balanceRegex =
         Regex(
-            """(?:\\u0645\\u0648\\u062c\\u0648\\u062f\\u06cc|\\u0645\\u0627\\u0646\\u062f\\u0647)(?:\\s*(?:\\u062d\\u0633\\u0627\\u0628))?\\s*[:=]?\\s*([0-9\\u06F0-\\u06F9\\u0660-\\u0669]{1,3}(?:[,\\u060C\\u066C][0-9\\u06F0-\\u06F9\\u0660-\\u0669]{3})+|[0-9\\u06F0-\\u06F9\\u0660-\\u0669]+)"""
+            """(?:موجودی|مانده)(?:\s*حساب)?\s*[:=]?\s*([0-9۰-۹٠-٩]{1,3}(?:[,،٬][0-9۰-۹٠-٩]{3})+|[0-9۰-۹٠-٩]+)"""
         )
 
     private val merchantCueRegex =
@@ -341,6 +342,13 @@ private val bankKeywords: List<Pair<String, String>> =
                 ?.takeLast(4)
                 ?.takeIf { it.length == 4 }
 
+        val balance =
+            balanceRegex
+                .find(normalizedBody)
+                ?.groupValues
+                ?.getOrNull(1)
+                ?.let(::normalizeAmountToLong)
+
         return ParsedBankSms(
             bankName = bankName,
             amount = amount,
@@ -350,6 +358,7 @@ private val bankKeywords: List<Pair<String, String>> =
             accountNumber = accountNumber,
             cardNumber = cardNumber,
             cardLast4 = cardLast4,
+            balance = balance,
         )
     }
 
