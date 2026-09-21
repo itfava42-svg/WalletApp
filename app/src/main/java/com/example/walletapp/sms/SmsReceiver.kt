@@ -3,8 +3,10 @@
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings
 import android.provider.Telephony
 import android.util.Log
+import com.example.walletapp.MainActivity
 import com.example.walletapp.data.TransactionStore
 
 private const val TAG = "WalletSms"
@@ -181,28 +183,12 @@ class SmsReceiver : BroadcastReceiver() {
                 )
 
                 /*
-                 * Queue owns the completion flow.
-                 * Only one completion activity should be visible at a time.
+                 * The completion UI is hosted by MainActivity. When the
+                 * user has granted overlay access, bring MainActivity forward
+                 * immediately and pass the pending transaction id to it.
                  */
-                val completionScreenOpened =
-                    SmsTransactionQueue.showNextIfNeeded(
-                        context = context
-                    )
-
-                if (completionScreenOpened) {
-                    return
-                }
-
-                if (
-                    OverlayPopupManager.canShowOverlay(
-                        context
-                    )
-                ) {
-
-                    Log.d(
-                        TAG,
-                        "showing overlay popup"
-                    )
+                if (Settings.canDrawOverlays(context)) {
+                    Log.d(TAG, "opening MainActivity for SMS completion sheet")
 
                     OverlayPopupManager.showTransactionPopup(
                         context = context,
@@ -212,12 +198,37 @@ class SmsReceiver : BroadcastReceiver() {
                         type = parsed.type,
                     )
 
-                } else {
+                    val openIntent =
+                        Intent(context, MainActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                            putExtra(
+                                MainActivity.EXTRA_SMS_TRANSACTION_ID,
+                                transaction.id,
+                            )
+                        }
 
+                    runCatching {
+                        context.startActivity(openIntent)
+                    }.onFailure { error ->
+                        Log.e(
+                            TAG,
+                            "could not open MainActivity for SMS completion",
+                            error,
+                        )
+                        BankSmsNotifier.notify(
+                            context,
+                            parsed.bankName,
+                            amount,
+                            parsed.merchant,
+                            parsed.type,
+                        )
+                    }
+                } else {
                     Log.d(
                         TAG,
-                        "overlay permission not granted, " +
-                            "falling back to notification"
+                        "overlay permission not granted, falling back to notification"
                     )
 
                     BankSmsNotifier.notify(
