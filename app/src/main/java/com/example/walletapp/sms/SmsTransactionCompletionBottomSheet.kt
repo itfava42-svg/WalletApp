@@ -481,11 +481,11 @@ fun SmsTransactionCompletionBottomSheetContent(
                     .verticalScroll(
                         rememberScrollState()
                     )
-                    .padding(20.dp)
-                    .padding(bottom = 100.dp)
+                     .padding(horizontal = 18.dp, vertical = 16.dp)
+                    .padding(bottom = 108.dp)
                     .navigationBarsPadding(),
             verticalArrangement =
-                Arrangement.spacedBy(24.dp),
+                Arrangement.spacedBy(16.dp),
         ) {
 
             // =================================================
@@ -502,10 +502,10 @@ fun SmsTransactionCompletionBottomSheetContent(
 
                 Text(
                     text = "ثبت تراکنش",
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color =
-                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                 )
 
                 Icon(
@@ -528,13 +528,13 @@ fun SmsTransactionCompletionBottomSheetContent(
                         .fillMaxWidth()
                         .background(
                             color =
-                                androidx.compose.ui.graphics.Color(0xFFFDF2F2),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.primaryContainer,
                             shape = RoundedCornerShape(20.dp),
                         )
                         .border(
                             width = 1.dp,
                             color =
-                                androidx.compose.ui.graphics.Color(0xFFF8D7D7),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.outlineVariant,
                             shape = RoundedCornerShape(20.dp),
                         )
                         .padding(16.dp),
@@ -559,7 +559,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 .weight(1f)
                                 .background(
                                     if (selectedType == TransactionType.EXPENSE && !isTransfer)
-                                        androidx.compose.ui.graphics.Color(0xFFEB1C24)
+                                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.error
                                     else
                                         androidx.compose.ui.graphics.Color.Transparent,
                                     RoundedCornerShape(10.dp),
@@ -582,7 +582,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 if (selectedType == TransactionType.EXPENSE && !isTransfer)
                                     androidx.compose.ui.graphics.Color.White
                                 else
-                                    androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                                    androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                         )
                     }
 
@@ -592,7 +592,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 .weight(1f)
                                 .background(
                                     if (selectedType == TransactionType.INCOME)
-                                        androidx.compose.ui.graphics.Color(0xFFEB1C24)
+                                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.error
                                     else
                                         androidx.compose.ui.graphics.Color.Transparent,
                                     RoundedCornerShape(10.dp),
@@ -615,7 +615,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 if (selectedType == TransactionType.INCOME)
                                     androidx.compose.ui.graphics.Color.White
                                 else
-                                    androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                                    androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     Box(
@@ -624,7 +624,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 .weight(1f)
                                 .background(
                                     if (isTransfer)
-                                        androidx.compose.ui.graphics.Color(0xFFEB1C24)
+                                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.error
                                     else
                                         androidx.compose.ui.graphics.Color.Transparent,
                                     RoundedCornerShape(10.dp),
@@ -647,7 +647,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 if (isTransfer)
                                     androidx.compose.ui.graphics.Color.White
                                 else
-                                    androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                                    androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
@@ -657,7 +657,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         Modifier
                             .fillMaxWidth()
                             .background(
-                                androidx.compose.ui.graphics.Color(0xFFFCE8E8),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.secondaryContainer,
                                 RoundedCornerShape(14.dp),
                             )
                             .padding(16.dp),
@@ -672,7 +672,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Text(
@@ -701,11 +701,11 @@ fun SmsTransactionCompletionBottomSheetContent(
                             ).replace(
                                 '9', '۹'
                             ),
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Black,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFFEB1C24),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.End,
                         modifier =
                             Modifier
@@ -731,7 +731,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             .replace("9", "۹"),
                     fontSize = 12.sp,
                     color =
-                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     modifier =
                         Modifier.offset(y = (-8).dp),
                 )
@@ -745,7 +745,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = androidx.compose.ui.graphics.Color(0xFFF7F8FA)
+                    containerColor = androidx.compose.ui.graphics.MaterialTheme.colorScheme.surfaceContainerLow
                 ),
             ) {
                 Column(
@@ -762,13 +762,13 @@ fun SmsTransactionCompletionBottomSheetContent(
                             modifier = Modifier
                                 .size(46.dp)
                                 .clip(RoundedCornerShape(14.dp))
-                                .background(androidx.compose.ui.graphics.Color(0xFFE8F5E9)),
+                                .background(androidx.compose.ui.graphics.MaterialTheme.colorScheme.primaryContainer),
                             contentAlignment = Alignment.Center,
                         ) {
                             Icon(
                                 imageVector = Icons.Default.AccountBalance,
                                 contentDescription = null,
-                                tint = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                tint = androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(24.dp),
                             )
                         }
@@ -783,7 +783,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     selectedBank,
                                 fontSize = 17.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                                color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = if (selectedBank == BankSmsParser.UNKNOWN_BANK)
@@ -791,7 +791,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 else
                                     "بانک تشخیص‌داده‌شده پیامک",
                                 fontSize = 11.sp,
-                                color = androidx.compose.ui.graphics.Color(0xFF6A6A6A),
+                                color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
 
@@ -812,7 +812,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             .clickable { learnBank = !learnBank },
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = androidx.compose.ui.graphics.Color(0xFFE8F5E9)
+                            containerColor = androidx.compose.ui.graphics.MaterialTheme.colorScheme.primaryContainer
                         ),
                     ) {
                         Row(
@@ -825,14 +825,14 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 modifier = Modifier
                                     .size(40.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(androidx.compose.ui.graphics.Color(0xFFD7F0DE)),
+                                    .background(androidx.compose.ui.graphics.MaterialTheme.colorScheme.surface),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AutoAwesome,
                                     contentDescription = null,
                                     modifier = Modifier.size(20.dp),
-                                    tint = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                    tint = androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                                 )
                             }
 
@@ -846,13 +846,13 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     text = "یادگیری بانک",
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                    color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                                 )
                                 Text(
                                     text = "فرستنده و بانک انتخاب‌شده برای پیامک‌های بعدی به‌خاطر سپرده شود",
                                     fontSize = 11.sp,
                                     lineHeight = 17.sp,
-                                    color = androidx.compose.ui.graphics.Color(0xFF4B6351),
+                                    color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                             }
 
@@ -871,7 +871,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             .clickable { showIgnoreDialog = true },
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = androidx.compose.ui.graphics.Color(0xFFFFF3F3)
+                            containerColor = androidx.compose.ui.graphics.MaterialTheme.colorScheme.errorContainer
                         ),
                     ) {
                         Row(
@@ -884,14 +884,14 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 modifier = Modifier
                                     .size(36.dp)
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(androidx.compose.ui.graphics.Color(0xFFFFE4E4)),
+                                    .background(androidx.compose.ui.graphics.MaterialTheme.colorScheme.surface),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Block,
                                     contentDescription = null,
                                     modifier = Modifier.size(19.dp),
-                                    tint = androidx.compose.ui.graphics.Color(0xFFB42318),
+                                    tint = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onErrorContainer,
                                 )
                             }
 
@@ -905,13 +905,13 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     text = "این تراکنش بانکی نیست",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = androidx.compose.ui.graphics.Color(0xFFB42318),
+                                    color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onErrorContainer,
                                 )
                                 Text(
                                     text = "پیامک‌های مشابه این فرستنده را نادیده بگیر",
                                     fontSize = 11.sp,
                                     lineHeight = 16.sp,
-                                    color = androidx.compose.ui.graphics.Color(0xFF7A4A47),
+                                    color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onErrorContainer,
                                 )
                             }
 
@@ -919,7 +919,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 imageVector = Icons.Default.ChevronLeft,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
-                                tint = androidx.compose.ui.graphics.Color(0xFFB42318),
+                                tint = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onErrorContainer,
                             )
                         }
                     }
@@ -970,7 +970,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color =
-                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                 )
 
                 Row(
@@ -978,7 +978,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         Modifier
                             .fillMaxWidth()
                             .background(
-                                androidx.compose.ui.graphics.Color(0xFFFCE8E8),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.secondaryContainer,
                                 RoundedCornerShape(12.dp),
                             )
                             .clickable {
@@ -1012,7 +1012,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
                         tint =
-                            androidx.compose.ui.graphics.Color(0xFFEB1C24),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.error,
                     )
 
                     Row(
@@ -1027,7 +1027,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 selectedCategory ?: "تعیین نشده",
                             fontSize = 14.sp,
                             color =
-                                androidx.compose.ui.graphics.Color(0xFFEB1C24),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.error,
                         )
 
                         Icon(
@@ -1036,7 +1036,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
                             tint =
-                                androidx.compose.ui.graphics.Color(0xFFEB1C24),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.error,
                         )
                     }
                 }
@@ -1051,7 +1051,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                     Modifier
                         .fillMaxWidth()
                         .background(
-                            androidx.compose.ui.graphics.Color(0xFFF0F0F0),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.surfaceContainer,
                             RoundedCornerShape(12.dp),
                         )
                         .padding(
@@ -1072,7 +1072,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         androidx.compose.ui.text.TextStyle(
                             fontSize = 14.sp,
                             color =
-                                androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                         ),
                     singleLine = true,
                     decorationBox = { innerTextField ->
@@ -1124,7 +1124,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         Modifier
                             .weight(1f)
                             .background(
-                                androidx.compose.ui.graphics.Color(0xFFF0F0F0),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.surfaceContainer,
                                 RoundedCornerShape(12.dp),
                             )
                             .padding(
@@ -1141,7 +1141,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         text = formattedTime,
                         fontSize = 14.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Icon(
@@ -1150,7 +1150,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
                         tint =
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                     )
                 }
 
@@ -1159,7 +1159,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         Modifier
                             .weight(1f)
                             .background(
-                                androidx.compose.ui.graphics.Color(0xFFF0F0F0),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.surfaceContainer,
                                 RoundedCornerShape(12.dp),
                             )
                             .padding(
@@ -1176,7 +1176,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         text = formattedDate,
                         fontSize = 14.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Icon(
@@ -1185,7 +1185,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
                         tint =
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                     )
                 }
             }
@@ -1205,7 +1205,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color =
-                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                 )
 
                 Row(
@@ -1255,7 +1255,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color =
-                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                 )
 
                 Row(
@@ -1280,7 +1280,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                             androidx.compose.ui.graphics.Brush.linearGradient(
                                                 listOf(
                                                     androidx.compose.ui.graphics.Color.White,
-                                                    androidx.compose.ui.graphics.Color(0xFFF0F0F0),
+                                                    androidx.compose.ui.graphics.MaterialTheme.colorScheme.surfaceContainer,
                                                 )
                                             ),
                                         shape =
@@ -1288,7 +1288,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     )
                                     .border(
                                         1.dp,
-                                        androidx.compose.ui.graphics.Color(0xFFDCDCDC),
+                                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.outlineVariant,
                                         RoundedCornerShape(12.dp),
                                     )
                                     .clickable {
@@ -1311,7 +1311,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                         .width(22.dp)
                                         .height(14.dp)
                                         .background(
-                                            androidx.compose.ui.graphics.Color(0xFFF5C542),
+                                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.tertiaryContainer,
                                             RoundedCornerShape(4.dp),
                                         )
                             )
@@ -1336,7 +1336,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color =
-                                    androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                                    androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                                 textAlign = TextAlign.End,
                                 modifier = Modifier.fillMaxWidth(),
                             )
@@ -1347,7 +1347,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                         .align(Alignment.Start)
                                         .size(24.dp)
                                         .background(
-                                            androidx.compose.ui.graphics.Color(0xFFE8F5E9),
+                                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.primaryContainer,
                                             CircleShape,
                                         ),
                                 contentAlignment =
@@ -1359,7 +1359,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     contentDescription = null,
                                     modifier = Modifier.size(14.dp),
                                     tint =
-                                        androidx.compose.ui.graphics.Color(0xFF157A37),
+                                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                                 )
                             }
                         }
@@ -1392,7 +1392,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 Modifier
                                     .size(30.dp)
                                     .background(
-                                        androidx.compose.ui.graphics.Color(0xFFE8F5E9),
+                                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.primaryContainer,
                                         CircleShape,
                                     ),
                             contentAlignment =
@@ -1403,7 +1403,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color =
-                                    androidx.compose.ui.graphics.Color(0xFF157A37),
+                                    androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                             )
                         }
 
@@ -1430,7 +1430,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = androidx.compose.ui.graphics.Color(0xFFF7F7F7)
+                        containerColor = androidx.compose.ui.graphics.MaterialTheme.colorScheme.surfaceContainerLow
                     ),
                 ) {
                     Column(
@@ -1441,7 +1441,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             text = "اطلاعات پیامک بانکی",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                         )
 
                         if (smsCardNumber != null || smsCardLast4 != null) {
@@ -1449,7 +1449,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             Text(
                                 text = "کارت: " + displayCard,
                                 fontSize = 13.sp,
-                                color = androidx.compose.ui.graphics.Color(0xFF555555),
+                                color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
 
@@ -1458,7 +1458,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 text = "موجودی پیامک: " + toPersianDigits(smsBalance.toString().replace(Regex("(\\\\d)(?=(\\\\d{3})+$)"), "$1,")) + " تومان",
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                color = androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                             )
                         }
                     }
@@ -1479,14 +1479,14 @@ fun SmsTransactionCompletionBottomSheetContent(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color =
-                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                 )
 
                 Row(
                     modifier =
                         Modifier
                             .background(
-                                androidx.compose.ui.graphics.Color(0xFFE8F5E9),
+                                androidx.compose.ui.graphics.MaterialTheme.colorScheme.primaryContainer,
                                 RoundedCornerShape(12.dp),
                             )
                             .clickable {
@@ -1512,7 +1512,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                     )
 
                     Text(
@@ -1520,7 +1520,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                     )
                 }
             }
@@ -1534,7 +1534,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                     Modifier
                         .fillMaxWidth()
                         .background(
-                            androidx.compose.ui.graphics.Color(0xFFF0F0F0),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.surfaceContainer,
                             RoundedCornerShape(16.dp),
                         )
                         .padding(16.dp),
@@ -1549,7 +1549,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             .align(Alignment.TopEnd)
                             .size(18.dp),
                     tint =
-                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                 )
 
                 Column(
@@ -1566,7 +1566,7 @@ fun SmsTransactionCompletionBottomSheetContent(
     },
                         fontSize = 13.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Text(
@@ -1578,7 +1578,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             }",
                         fontSize = 13.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Text(
@@ -1588,7 +1588,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             } ریال",
                         fontSize = 13.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Text(
@@ -1602,7 +1602,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             }",
                         fontSize = 13.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Text(
@@ -1614,7 +1614,7 @@ fun SmsTransactionCompletionBottomSheetContent(
     }",
                         fontSize = 13.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Text(
@@ -1622,14 +1622,14 @@ fun SmsTransactionCompletionBottomSheetContent(
     "زمان: ${transaction.dateEpochMillis?.let { toPersianDigits(java.text.SimpleDateFormat("HH:mm", java.util.Locale.US).format(java.util.Date(it))) } ?: "—"}",
                         fontSize = 13.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
 
                     Text(
                         text = "فرستنده: ${sender ?: "—"}",
                         fontSize = 13.sp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
@@ -1650,11 +1650,11 @@ fun SmsTransactionCompletionBottomSheetContent(
                     .border(
                         width = 1.dp,
                         color =
-                            androidx.compose.ui.graphics.Color(0xFFF0F0F0),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.surfaceContainer,
                     )
                     .padding(
-                        horizontal = 20.dp,
-                        vertical = 16.dp,
+                        horizontal = 18.dp,
+                        vertical = 12.dp,
                     ),
         ) {
 
@@ -1700,21 +1700,21 @@ fun SmsTransactionCompletionBottomSheetContent(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(52.dp),
+                        .height(56.dp),
                 shape =
-                    RoundedCornerShape(14.dp),
+                    RoundedCornerShape(16.dp),
                 colors =
                     ButtonDefaults.buttonColors(
                         containerColor =
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
+                            androidx.compose.ui.graphics.MaterialTheme.colorScheme.primary,
                         disabledContainerColor =
                             androidx.compose.ui.graphics.Color(0xFFE0E0E0),
                     ),
             ) {
 
                 Text(
-                    text = "ذخیره تراکنش",
-                    fontSize = 15.sp,
+                    text = "ثبت و ذخیره تراکنش",
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = androidx.compose.ui.graphics.Color.White,
                 )
