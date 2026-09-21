@@ -534,6 +534,7 @@ object TransactionStore {
                 amount = amount,
                 type = type,
                 dateEpochMillis = smsDate ?: now,
+                kind = kind,
             requiresCompletion = true,
                 iconKey = "بانک",
                 sourceId = sourceId,
