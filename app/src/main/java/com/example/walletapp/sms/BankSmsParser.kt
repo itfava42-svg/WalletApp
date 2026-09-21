@@ -126,7 +126,7 @@ private val bankKeywords: List<Pair<String, String>> =
 
     private val cardNumberRegex =
         Regex(
-            """(?:\u0634\u0645\u0627\u0631\u0647\s*)?\u06a9\u0627\u0631\u062a\s*[:\-]?\s*((?:[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4}[\s\-_]*){3}[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4})"""
+            """(?:\u0634\u0645\u0627\u0631\u0647\s*)?\u06a9\u0627\u0631\u062a\s*[:\-]?\s*((?:[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4}[\s\-_]*){0,3}[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4})"""
         )
 
     private val merchantCueRegex =
