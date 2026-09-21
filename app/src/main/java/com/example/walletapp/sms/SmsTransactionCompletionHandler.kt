@@ -22,6 +22,8 @@ object SmsTransactionCompletionHandler {
     data class CompletionRequest(
         val transaction: Transaction,
         val selectedType: com.example.walletapp.data.TransactionType,
+        val isTransfer: Boolean,
+        val destinationAccountId: String?,
         val sender: String,
         val rawBody: String?,
         val selectedBank: String,
@@ -137,6 +139,32 @@ object SmsTransactionCompletionHandler {
 
         val activeAccounts =
             AccountStore.accounts.filter { it.isActive }
+
+        if (request.isTransfer) {
+            val sourceId =
+                request.selectedAccountId
+                    ?.trim()
+                    ?.takeIf { it.isNotBlank() }
+                    ?: resolvedAccountId
+
+            val destinationId =
+                request.destinationAccountId
+                    ?.trim()
+                    ?.takeIf { it.isNotBlank() }
+
+            if (sourceId == null || destinationId == null) {
+                return CompletionResult.AccountRequired
+            }
+
+            if (sourceId == destinationId) {
+                return CompletionResult.InvalidAccount
+            }
+
+            if (activeAccounts.none { it.id == sourceId } ||
+                activeAccounts.none { it.id == destinationId }) {
+                return CompletionResult.InvalidAccount
+            }
+        }
 
         val explicitAccount =
             request.selectedAccountId
@@ -432,18 +460,32 @@ object SmsTransactionCompletionHandler {
 
         return transaction.copy(
             type = request.selectedType,
-            title = updatedTitle,
-            subtitle = updatedSubtitle,
-            accountId =
+            title = if (request.isTransfer) "انتقال بین حساب‌ها" else updatedTitle,
+            subtitle = if (request.isTransfer) {
+                val source = AccountStore.accounts.firstOrNull { it.id == request.selectedAccountId }
+                val destination = AccountStore.accounts.firstOrNull { it.id == request.destinationAccountId }
+                if (source != null && destination != null) {
+                    "${source.name} → ${destination.name}"
+                } else {
+                    updatedSubtitle
+                }
+            } else updatedSubtitle,
+            accountId = if (request.isTransfer) null else
                 request.selectedAccountId
                     ?.takeIf { it.isNotBlank() }
                     ?: resolvedAccountId,
-            iconKey =
-                request.selectedCategory
-                    ?: transaction.iconKey,
-            category =
-                request.selectedCategory
-                    ?: transaction.category,
+            iconKey = if (request.isTransfer) "انتقال" else
+                request.selectedCategory ?: transaction.iconKey,
+            category = if (request.isTransfer) null else
+                request.selectedCategory ?: transaction.category,
+            kind = if (request.isTransfer) com.example.walletapp.data.TransactionKind.TRANSFER
+                else com.example.walletapp.data.TransactionKind.NORMAL,
+            sourceAccountId = if (request.isTransfer) {
+                request.selectedAccountId?.takeIf { it.isNotBlank() } ?: resolvedAccountId
+            } else null,
+            destinationAccountId = if (request.isTransfer) {
+                request.destinationAccountId?.takeIf { it.isNotBlank() }
+            } else null,
             tags = request.tags,
             description = request.description.trim(),
             receiptUri = request.receiptUri,
