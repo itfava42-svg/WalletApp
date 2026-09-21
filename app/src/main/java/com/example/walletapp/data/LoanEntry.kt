@@ -234,6 +234,7 @@ object LoanStore {
     fun add(loan: LoanEntry) {
         loans.add(0, loan)
         save()
+        context?.let { LoanReminderSynchronizer.syncLoan(it, loan) }
     }
 
     fun update(loan: LoanEntry) {
@@ -242,12 +243,17 @@ object LoanStore {
         if (index >= 0) {
             loans[index] = loan
             save()
+            context?.let { LoanReminderSynchronizer.syncLoan(it, loan) }
         }
     }
 
     fun remove(id: String) {
+        val removed = loans.any { it.id == id }
         loans.removeAll { it.id == id }
         save()
+        if (removed) {
+            context?.let { LoanReminderSynchronizer.removeLoan(it, id) }
+        }
     }
 
     fun getById(id: String): LoanEntry? {
