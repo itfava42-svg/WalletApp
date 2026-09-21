@@ -804,79 +804,123 @@ fun SmsTransactionCompletionBottomSheetContent(
                         }
                     }
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                    // PRIMARY OPTIONAL ACTION — full-width, spacious, and readable.
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 68.dp)
+                            .clickable { learnBank = !learnBank },
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = androidx.compose.ui.graphics.Color(0xFFE8F5E9)
+                        ),
                     ) {
-                        Card(
+                        Row(
                             modifier = Modifier
-                                .weight(1f)
-                                .height(52.dp),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = androidx.compose.ui.graphics.Color(0xFFE8F5E9)
-                            ),
+                                .fillMaxWidth()
+                                .padding(horizontal = 14.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Row(
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .clickable { learnBank = !learnBank }
-                                    .padding(horizontal = 10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(androidx.compose.ui.graphics.Color(0xFFD7F0DE)),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AutoAwesome,
                                     contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
+                                    modifier = Modifier.size(20.dp),
                                     tint = androidx.compose.ui.graphics.Color(0xFF157A37),
                                 )
-                                Spacer(Modifier.width(6.dp))
+                            }
+
+                            Spacer(Modifier.width(12.dp))
+
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(2.dp),
+                            ) {
                                 Text(
                                     text = "یادگیری بانک",
-                                    fontSize = 12.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = androidx.compose.ui.graphics.Color(0xFF157A37),
                                 )
-                                Spacer(Modifier.width(6.dp))
-                                Switch(
-                                    checked = learnBank,
-                                    onCheckedChange = { learnBank = it },
+                                Text(
+                                    text = "فرستنده و بانک انتخاب‌شده برای پیامک‌های بعدی به‌خاطر سپرده شود",
+                                    fontSize = 11.sp,
+                                    lineHeight = 17.sp,
+                                    color = androidx.compose.ui.graphics.Color(0xFF4B6351),
                                 )
                             }
-                        }
 
-                        Card(
+                            Switch(
+                                checked = learnBank,
+                                onCheckedChange = { learnBank = it },
+                            )
+                        }
+                    }
+
+                    // SECONDARY / DESTRUCTIVE ACTION — deliberately separated.
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 56.dp)
+                            .clickable { showIgnoreDialog = true },
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = androidx.compose.ui.graphics.Color(0xFFFFF3F3)
+                        ),
+                    ) {
+                        Row(
                             modifier = Modifier
-                                .weight(1f)
-                                .height(52.dp)
-                                .clickable { showIgnoreDialog = true },
-                            shape = RoundedCornerShape(14.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = androidx.compose.ui.graphics.Color(0xFFFFF3F3)
-                            ),
+                                .fillMaxWidth()
+                                .padding(horizontal = 14.dp, vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(androidx.compose.ui.graphics.Color(0xFFFFE4E4)),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Block,
                                     contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
+                                    modifier = Modifier.size(19.dp),
                                     tint = androidx.compose.ui.graphics.Color(0xFFB42318),
                                 )
-                                Spacer(Modifier.width(6.dp))
+                            }
+
+                            Spacer(Modifier.width(12.dp))
+
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(2.dp),
+                            ) {
                                 Text(
                                     text = "این تراکنش بانکی نیست",
-                                    fontSize = 11.sp,
+                                    fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = androidx.compose.ui.graphics.Color(0xFFB42318),
-                                    textAlign = TextAlign.Center,
+                                )
+                                Text(
+                                    text = "پیامک‌های مشابه این فرستنده را نادیده بگیر",
+                                    fontSize = 11.sp,
+                                    lineHeight = 16.sp,
+                                    color = androidx.compose.ui.graphics.Color(0xFF7A4A47),
                                 )
                             }
+
+                            Icon(
+                                imageVector = Icons.Default.ChevronLeft,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = androidx.compose.ui.graphics.Color(0xFFB42318),
+                            )
                         }
                     }
                 }
@@ -1675,18 +1719,6 @@ fun SmsTransactionCompletionBottomSheetContent(
                     color = androidx.compose.ui.graphics.Color.White,
                 )
             }
-            TextButton(
-                onClick = onDismissAsNotBankTransaction,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = "تراکنش بانکی نیست",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
-
-
         }
     }
     if (showBankDialog) {
