@@ -58,8 +58,8 @@ private val bankKeywords: List<Pair<String, String>> =
 
     private val transferKeywords =
         listOf(
-            "\u0627\u0646\u062a\u0642\u0627\0644 \u0648\u062c\0647",
-            "\u0627\u0646\u062a\u0642\u0627\0644 \u0627\u0632 \u06a9\u0627\u0631\u062a",
+            "\u0627\u0646\u062a\u0642\u0627\u0644 \u0648\u062c\u0647",
+            "\u0627\u0646\u062a\u0642\u0627\u0644 \u0627\u0632 \u06a9\u0627\u0631\u062a",
             "\u06a9\u0627\u0631\u062a \u0628\u0647 \u06a9\u0627\u0631\u062a",
         )
 
@@ -293,6 +293,9 @@ private val bankKeywords: List<Pair<String, String>> =
                 signFromAmount == '+' ->
                     TransactionType.INCOME
 
+                isTransfer ->
+                    TransactionType.EXPENSE
+
                 incomeKeywords.any {
                     normalizedBody.contains(it)
                 } ->
@@ -308,6 +311,7 @@ private val bankKeywords: List<Pair<String, String>> =
             }
 
         /*
+
          * Do not silently classify an unknown-direction bank SMS
          * as EXPENSE.
          *
