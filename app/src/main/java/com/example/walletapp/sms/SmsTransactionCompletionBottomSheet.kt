@@ -838,6 +838,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                 val formattedDate =
                     transaction.dateEpochMillis
                         ?.let { JalaliCalendar.fromEpochMillisSlashed(it) }
+                        ?.let(::toPersianDigits)
                         ?: "—"
 
                 Row(
