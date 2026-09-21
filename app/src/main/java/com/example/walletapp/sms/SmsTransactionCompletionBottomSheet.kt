@@ -1120,12 +1120,14 @@ fun SmsTransactionCompletionBottomSheetContent(
 
                             Text(
                                 text =
-                                    account.openingBalance
-                                        .toString()
-                                        .replace(
-                                            Regex("(\\d)(?=(\\d{3})+$)"),
-                                            "$1,"
-                                        ),
+                                    toPersianDigits(
+                                        AccountLedger.balanceOf(account.id)
+                                            .toString()
+                                            .replace(
+                                                Regex("(\\d)(?=(\\d{3})+$)"),
+                                                "$1,"
+                                            )
+                                    ),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color =
