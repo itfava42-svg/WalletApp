@@ -41,8 +41,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
-import com.example.walletapp.sms.SmsIgnoreStore
-import com.example.walletapp.sms.SmsLearningStore
+import com.example.walletapp.sms.SmsIgnoreManager
+import com.example.walletapp.sms.SmsLearningManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,13 +55,13 @@ fun SmsLearningScreen(
     var showClearDialog by remember { mutableStateOf(false) }
     var showManualLearningDialog by remember { mutableStateOf(false) }
 
-    SmsLearningStore.attachContext(context)
-    SmsIgnoreStore.attachContext(context)
+    SmsLearningManager.attachContext(context)
+    SmsIgnoreManager.attachContext(context)
 
-    val learnedBanks = SmsLearningStore.getAllSenderBanks()
-    val learnedPatterns = SmsLearningStore.getAllPatternRules()
-    val ignoredPatterns = SmsIgnoreStore.getIgnoredPatterns()
-    val ignoredSenders = SmsIgnoreStore.getIgnoredSenders()
+    val learnedBanks = SmsLearningManager.getAllSenderBanks()
+    val learnedPatterns = SmsLearningManager.getAllPatternRules()
+    val ignoredPatterns = SmsIgnoreManager.getIgnoredPatterns()
+    val ignoredSenders = SmsIgnoreManager.getIgnoredSenders()
 
     fun refresh() {
         refreshKey++
@@ -182,7 +182,7 @@ fun SmsLearningScreen(
                         category = rule.category,
                         transactionType = rule.transactionType,
                         onDelete = {
-                            SmsLearningStore.removePatternRule(
+                            SmsLearningManager.removePatternRule(
                                 sender = rule.sender,
                                 pattern = rule.pattern
                             )
@@ -221,7 +221,7 @@ fun SmsLearningScreen(
                         sender = rule.sender,
                         pattern = rule.pattern,
                         onDelete = {
-                            SmsIgnoreStore.unignorePattern(
+                            SmsIgnoreManager.unignorePattern(
                                 sender = rule.sender,
                                 pattern = rule.pattern
                             )
@@ -295,8 +295,8 @@ fun SmsLearningScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        SmsLearningStore.clearAllLearning()
-                        SmsIgnoreStore.clearAllIgnored()
+                        SmsLearningManager.clearAllLearning()
+                        SmsIgnoreManager.clearAllIgnored()
 
                         showClearDialog = false
                         refresh()
@@ -799,7 +799,7 @@ private fun ManualLearningDialog(
 
                         else -> {
 
-                            SmsLearningStore.savePatternRule(
+                            SmsLearningManager.savePatternRule(
                                 sender = sender.trim(),
                                 pattern = messageText.trim(),
                                 bankName = bankName.trim(),

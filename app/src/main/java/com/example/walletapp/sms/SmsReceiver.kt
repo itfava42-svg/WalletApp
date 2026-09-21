@@ -3,8 +3,10 @@
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings
 import android.provider.Telephony
 import android.util.Log
+import com.example.walletapp.MainActivity
 import com.example.walletapp.data.TransactionStore
 
 private const val TAG = "WalletSms"
@@ -32,8 +34,8 @@ class SmsReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
 
         TransactionStore.attachContext(context)
-        SmsTransactionMetadataStore.attachContext(context)
-        SmsProcessedStore.attachContext(context)
+        SmsTransactionMetadataManager.attachContext(context)
+        SmsProcessedManager.attachContext(context)
 
         try {
 
@@ -55,7 +57,6 @@ class SmsReceiver : BroadcastReceiver() {
                 "sender=$sender bodyLength=${fullBody.length} smsDate=$smsDate"
             )
 
-
             /*
              * IMPORTANT:
              * Claim the SMS BEFORE creating a transaction.
@@ -64,7 +65,7 @@ class SmsReceiver : BroadcastReceiver() {
              * import path sees it, it will be rejected here.
              */
             val claimed =
-                SmsProcessedStore.tryClaim(
+                SmsProcessedManager.tryClaim(
                     context = context,
                     sender = sender,
                     body = fullBody,
@@ -109,7 +110,7 @@ class SmsReceiver : BroadcastReceiver() {
                      * Release the claim because this SMS was not imported.
                      * This allows a later improved parser/inbox scan to retry it.
                      */
-                    SmsProcessedStore.release(
+                    SmsProcessedManager.release(
                         context = context,
                         sender = sender,
                         body = fullBody,
@@ -132,7 +133,7 @@ class SmsReceiver : BroadcastReceiver() {
                     parsed.amount
 
                 if (amount == null) {
-                    SmsProcessedStore.release(
+                    SmsProcessedManager.release(
                         context = context,
                         sender = sender,
                         body = fullBody,
@@ -147,7 +148,7 @@ class SmsReceiver : BroadcastReceiver() {
                     return
                 }
 
-                val sourceId = SmsProcessedStore.sourceId(
+                val sourceId = SmsProcessedManager.sourceId(
                     sender = sender ?: "",
                     smsDate = smsDate,
                     body = fullBody,
@@ -161,9 +162,14 @@ class SmsReceiver : BroadcastReceiver() {
                         type = parsed.type,
                         smsDate = smsDate,
                         sourceId = sourceId,
+                        kind = if (parsed.isTransfer) {
+                            com.example.walletapp.data.TransactionKind.TRANSFER
+                        } else {
+                            com.example.walletapp.data.TransactionKind.NORMAL
+                        },
                     )
 
-                SmsTransactionMetadataStore.save(
+                SmsTransactionMetadataManager.save(
                     transactionId = transaction.id,
                     sender = sender ?: "",
                     rawBody = fullBody,
@@ -172,6 +178,7 @@ class SmsReceiver : BroadcastReceiver() {
                     accountNumber = parsed.accountNumber,
                     cardNumber = parsed.cardNumber,
                     cardLast4 = parsed.cardLast4,
+                    balance = parsed.balance,
                 )
 
                 Log.d(
@@ -182,43 +189,63 @@ class SmsReceiver : BroadcastReceiver() {
                 )
 
                 /*
-                 * Queue owns the completion flow.
-                 * Only one completion activity should be visible at a time.
+                 * Always deliver through the coordinator first. If the app is
+                 * already foreground, the Compose host can open the sheet
+                 * immediately. If it is not foreground, the transaction ID is
+                 * retained until the host registers.
                  */
-                val completionScreenOpened =
-                    SmsTransactionQueue.showNextIfNeeded(
-                        context = context
-                    )
+                SmsCompletionCoordinator.deliver(transaction.id)
 
-                if (completionScreenOpened) {
-                    return
-                }
+                /*
+                 * The completion UI is hosted by MainActivity. When the
+                 * user has granted overlay access, bring MainActivity forward
+                 * immediately and pass the pending transaction id to it.
+                 */
+                if (Settings.canDrawOverlays(context)) {
+                    if (!SmsCompletionCoordinator.isHostRegistered()) {
+                        OverlayPopupManager.showTransactionPopup(
+                            context = context,
+                            bankName = parsed.bankName,
+                            amount = amount,
+                            merchant = parsed.merchant,
+                            type = parsed.type,
+                            transactionId = transaction.id,
+                        )
+                    }
 
-                if (
-                    OverlayPopupManager.canShowOverlay(
-                        context
-                    )
-                ) {
+                    Log.d(TAG, "opening MainActivity for SMS completion sheet")
 
-                    Log.d(
-                        TAG,
-                        "showing overlay popup"
-                    )
+                    val openIntent =
+                        Intent(context, MainActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                            putExtra(
+                                MainActivity.EXTRA_SMS_TRANSACTION_ID,
+                                transaction.id,
+                            )
+                        }
 
-                    OverlayPopupManager.showTransactionPopup(
-                        context = context,
-                        bankName = parsed.bankName,
-                        amount = amount,
-                        merchant = parsed.merchant,
-                        type = parsed.type,
-                    )
-
+                    runCatching {
+                        context.startActivity(openIntent)
+                    }.onFailure { error ->
+                        Log.e(
+                            TAG,
+                            "could not open MainActivity for SMS completion",
+                            error,
+                        )
+                        BankSmsNotifier.notify(
+                            context,
+                            parsed.bankName,
+                            amount,
+                            parsed.merchant,
+                            parsed.type,
+                        )
+                    }
                 } else {
-
                     Log.d(
                         TAG,
-                        "overlay permission not granted, " +
-                            "falling back to notification"
+                        "overlay permission not granted, falling back to notification"
                     )
 
                     BankSmsNotifier.notify(
@@ -235,7 +262,7 @@ class SmsReceiver : BroadcastReceiver() {
                 /*
                  * If importing failed after claiming, allow retry.
                  */
-                SmsProcessedStore.release(
+                SmsProcessedManager.release(
                     context = context,
                     sender = sender,
                     body = fullBody,
@@ -256,6 +283,3 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 }
-
-
-

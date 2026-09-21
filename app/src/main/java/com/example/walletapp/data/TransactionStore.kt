@@ -219,6 +219,24 @@ object TransactionStore {
     }
 
     /**
+     * Restores an existing transaction to a previously captured local state.
+     *
+     * This is intentionally a low-level rollback primitive for domain
+     * operations that coordinate more than one persistence boundary.
+     * It does not re-run current transaction validation because the supplied
+     * value is the already-persisted state being restored.
+     */
+    fun restore(transaction: Transaction) {
+        val index =
+            transactions.indexOfFirst { it.id == transaction.id }
+
+        if (index >= 0) {
+            transactions[index] = transaction
+            persist()
+        }
+    }
+
+    /**
      * Applies a transaction received from a remote sync source.
      *
      * IMPORTANT:
@@ -467,7 +485,8 @@ object TransactionStore {
                 amount = amount,
                 type = TransactionType.EXPENSE,
                     iconKey = "انتقال",
-                category = "انتقال داخلی",
+                // Internal transfers are not income/expense categories.
+                category = null,
                 dateEpochMillis = dateEpochMillis ?: now,
                 note = note.trim(),
                 kind = TransactionKind.TRANSFER,
@@ -513,8 +532,9 @@ object TransactionStore {
         amount: Long,
         merchant: String?,
         type: TransactionType,
-    smsDate: Long? = null,
-    sourceId: String? = null,
+        smsDate: Long? = null,
+        sourceId: String? = null,
+        kind: TransactionKind = TransactionKind.NORMAL,
     ): Transaction {
 
         val now = System.currentTimeMillis()
@@ -534,6 +554,7 @@ object TransactionStore {
                 amount = amount,
                 type = type,
                 dateEpochMillis = smsDate ?: now,
+                kind = kind,
             requiresCompletion = true,
                 iconKey = "بانک",
                 sourceId = sourceId,

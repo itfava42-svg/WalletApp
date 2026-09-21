@@ -52,9 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.Reminder
 import com.example.walletapp.data.ReminderKind
-import com.example.walletapp.data.ReminderStore
 import com.example.walletapp.data.RepeatFrequency
-import com.example.walletapp.reminders.ReminderScheduler
+import com.example.walletapp.reminders.ReminderManager
 import com.example.walletapp.data.JalaliCalendar
 import java.util.Calendar
 import java.util.UUID
@@ -190,16 +189,10 @@ fun AddReminderScreen(
             isActive = true
         )
 
-        if (existingReminder != null) {
-            ReminderScheduler.cancel(context, existingReminder)
-            ReminderStore.update(reminder)
-        } else {
-            ReminderStore.add(reminder)
-        }
-
-        ReminderScheduler.schedule(
-            context,
-            reminder
+        ReminderManager.save(
+            context = context,
+            reminder = reminder,
+            existingReminder = existingReminder,
         )
 
         onSaved()
@@ -868,6 +861,7 @@ private fun RepeatTile(
         }
     }
 }
+
 
 
 

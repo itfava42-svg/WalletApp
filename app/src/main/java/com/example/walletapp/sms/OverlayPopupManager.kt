@@ -1,6 +1,8 @@
 package com.example.walletapp.sms
 
 import android.content.Context
+import android.content.Intent
+import com.example.walletapp.MainActivity
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -40,6 +42,7 @@ object OverlayPopupManager {
         amount: Long?,
         merchant: String?,
         type: TransactionType,
+        transactionId: String? = null,
     ) {
         val appContext = context.applicationContext
         if (!canShowOverlay(appContext)) return
@@ -121,6 +124,23 @@ object OverlayPopupManager {
 
         container.setOnClickListener {
             runCatching { windowManager.removeView(container) }
+
+            if (!transactionId.isNullOrBlank()) {
+                val openIntent =
+                    Intent(appContext, MainActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        putExtra(
+                            MainActivity.EXTRA_SMS_TRANSACTION_ID,
+                            transactionId,
+                        )
+                    }
+
+                runCatching {
+                    appContext.startActivity(openIntent)
+                }
+            }
         }
 
         runCatching { windowManager.addView(container, params) }

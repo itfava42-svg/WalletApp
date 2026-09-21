@@ -1,5 +1,6 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.reminders.ReminderManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -385,7 +386,7 @@ fun ReminderScreen(
 
                         onComplete = {
 
-                            ReminderStore.setCompleted(
+                            ReminderManager.setCompleted(
                                 reminder.id,
                                 !reminder.isCompleted
                             )
@@ -401,7 +402,7 @@ fun ReminderScreen(
 
                         onDelete = {
 
-                            ReminderStore.remove(
+                            ReminderManager.remove(
                                 reminder.id
                             )
 
@@ -1412,3 +1413,5 @@ private fun persianDigits(
 
     return result
 }
+
+

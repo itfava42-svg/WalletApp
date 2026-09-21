@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.Surface
 import androidx.compose.material3.HorizontalDivider
 
@@ -101,6 +102,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Switch
 
 import androidx.compose.material3.Icon
 
@@ -165,13 +167,23 @@ import com.example.walletapp.ui.theme.WalletAppTheme
 import java.io.File
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.foundation.border
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Schedule
 
+
+private fun toPersianDigits(value: String): String =
+    buildString {
+        value.forEach { char ->
+            when (char) {
+                in '0'..'9' -> append(('۰'.code + char.code - '0'.code).toChar())
+                else -> append(char)
+            }
+        }
+    }
 
 private fun unpaidInstallmentsFor(
     loan: LoanEntry,
@@ -217,6 +229,8 @@ fun SmsTransactionCompletionBottomSheetContent(
     onTakePhoto: () -> Unit,
     onComplete: (
         selectedType: TransactionType,
+        isTransfer: Boolean,
+        destinationAccountId: String?,
         category: String?,
         tags: List<String>,
         description: String,
@@ -228,6 +242,7 @@ fun SmsTransactionCompletionBottomSheetContent(
         installment: SmsLoanInstallmentChoice?,
     ) -> Unit,
     onIgnoreSender: () -> Unit,
+    onDismissAsNotBankTransaction: () -> Unit,
     onAddBankAccount: () -> Unit,
 ) {
     BackHandler(enabled = true) {}
@@ -239,6 +254,12 @@ fun SmsTransactionCompletionBottomSheetContent(
 
     var selectedType by remember(transaction.id) {
         mutableStateOf(transaction.type)
+    }
+
+    var isTransfer by remember(transaction.id) {
+        mutableStateOf(
+            transaction.kind == com.example.walletapp.data.TransactionKind.TRANSFER
+        )
     }
 
     var tags by remember {
@@ -259,7 +280,7 @@ fun SmsTransactionCompletionBottomSheetContent(
 
     val metadata =
         remember(transaction.id) {
-            SmsTransactionMetadataStore.get(transaction.id)
+            SmsTransactionMetadataManager.get(transaction.id)
         }
 
     val smsAccountNumber =
@@ -292,6 +313,18 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
         }
 
+    val availableAccounts =
+        if (matchingAccounts.isNotEmpty()) {
+            matchingAccounts
+        } else {
+            AccountStore.accounts.filter { it.isActive }
+        }
+
+    // A transfer destination may be any active account, not only an
+    // account belonging to the detected source bank.
+    val transferDestinationAccounts =
+        AccountStore.accounts.filter { it.isActive }
+
     val accountNumberMatches =
         remember(selectedBank, smsAccountNumber) {
             if (smsAccountNumber == null) {
@@ -318,11 +351,11 @@ fun SmsTransactionCompletionBottomSheetContent(
         mutableStateOf(
             transaction.accountId
                 ?.takeIf { id ->
-                    matchingAccounts.any { it.id == id }
+                    availableAccounts.any { it.id == id }
                 }
                 ?: accountNumberMatches.singleOrNull()?.id
                 ?: cardLast4Matches.singleOrNull()?.id
-                ?: matchingAccounts.singleOrNull()?.id
+                ?: availableAccounts.singleOrNull()?.id
         )
     }
 
@@ -332,6 +365,14 @@ fun SmsTransactionCompletionBottomSheetContent(
 
     var showAccountDialog by remember {
         mutableStateOf(false)
+    }
+
+    var showDestinationAccountDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var destinationAccountId by remember(transaction.id) {
+        mutableStateOf<String?>(null)
     }
 
     var showIgnoreDialog by remember {
@@ -380,8 +421,9 @@ fun SmsTransactionCompletionBottomSheetContent(
         )
 
     val categories =
-        when (selectedType) {
-            TransactionType.EXPENSE ->
+        when {
+            isTransfer -> emptyList()
+            selectedType == TransactionType.EXPENSE ->
                 listOf(
                     "غذا",
                     "حمل‌ونقل",
@@ -393,7 +435,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                     "سایر",
                 )
 
-            TransactionType.INCOME ->
+            else ->
                 listOf(
                     "حقوق",
                     "هدیه",
@@ -404,7 +446,8 @@ fun SmsTransactionCompletionBottomSheetContent(
         }
 
     val hasCompletionData =
-        selectedType != transaction.type ||
+        isTransfer ||
+            selectedType != transaction.type ||
             selectedCategory != null ||
             tags.isNotEmpty() ||
             description.isNotBlank() ||
@@ -416,8 +459,9 @@ fun SmsTransactionCompletionBottomSheetContent(
         selectedLoan?.let(::unpaidInstallmentsFor).orEmpty()
     val canComplete =
         (hasCompletionData || transaction.requiresCompletion) &&
-            matchingAccounts.isNotEmpty() &&
-            (matchingAccounts.size == 1 || selectedAccountId != null) &&
+            availableAccounts.isNotEmpty() &&
+            (availableAccounts.size == 1 || selectedAccountId != null) &&
+            (!isTransfer || (destinationAccountId != null && destinationAccountId != selectedAccountId)) &&
             (!isInstallmentCategory ||
                 (selectedLoan != null && selectedInstallment != null))
 
@@ -514,13 +558,14 @@ fun SmsTransactionCompletionBottomSheetContent(
                             Modifier
                                 .weight(1f)
                                 .background(
-                                    if (selectedType == TransactionType.EXPENSE)
+                                    if (selectedType == TransactionType.EXPENSE && !isTransfer)
                                         androidx.compose.ui.graphics.Color(0xFFEB1C24)
                                     else
                                         androidx.compose.ui.graphics.Color.Transparent,
                                     RoundedCornerShape(10.dp),
                                 )
                                 .clickable {
+                                    isTransfer = false
                                     selectedType = TransactionType.EXPENSE
                                     selectedCategory = null
                                     selectedLoan = null
@@ -534,7 +579,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color =
-                                if (selectedType == TransactionType.EXPENSE)
+                                if (selectedType == TransactionType.EXPENSE && !isTransfer)
                                     androidx.compose.ui.graphics.Color.White
                                 else
                                     androidx.compose.ui.graphics.Color(0xFF1A1A1A),
@@ -553,6 +598,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     RoundedCornerShape(10.dp),
                                 )
                                 .clickable {
+                                    isTransfer = false
                                     selectedType = TransactionType.INCOME
                                     selectedCategory = null
                                     selectedLoan = null
@@ -567,6 +613,38 @@ fun SmsTransactionCompletionBottomSheetContent(
                             fontWeight = FontWeight.Bold,
                             color =
                                 if (selectedType == TransactionType.INCOME)
+                                    androidx.compose.ui.graphics.Color.White
+                                else
+                                    androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        )
+                    }
+                    Box(
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .background(
+                                    if (isTransfer)
+                                        androidx.compose.ui.graphics.Color(0xFFEB1C24)
+                                    else
+                                        androidx.compose.ui.graphics.Color.Transparent,
+                                    RoundedCornerShape(10.dp),
+                                )
+                                .clickable {
+                                    isTransfer = true
+                                    selectedType = TransactionType.EXPENSE
+                                    selectedCategory = null
+                                    selectedLoan = null
+                                    selectedInstallment = null
+                                }
+                                .padding(10.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "انتقال",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color =
+                                if (isTransfer)
                                     androidx.compose.ui.graphics.Color.White
                                 else
                                     androidx.compose.ui.graphics.Color(0xFF1A1A1A),
@@ -660,6 +738,180 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
 
             // =================================================
+            // BANK SUMMARY / ACTIONS
+            // =================================================
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = androidx.compose.ui.graphics.Color(0xFFF7F8FA)
+                ),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(46.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(androidx.compose.ui.graphics.Color(0xFFE8F5E9)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AccountBalance,
+                                contentDescription = null,
+                                tint = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+
+                        Spacer(Modifier.width(12.dp))
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = if (selectedBank == BankSmsParser.UNKNOWN_BANK)
+                                    "بانک تشخیص داده نشد"
+                                else
+                                    selectedBank,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            )
+                            Text(
+                                text = if (selectedBank == BankSmsParser.UNKNOWN_BANK)
+                                    "برای اصلاح، روی نام بانک بزنید"
+                                else
+                                    "بانک تشخیص‌داده‌شده پیامک",
+                                fontSize = 11.sp,
+                                color = androidx.compose.ui.graphics.Color(0xFF6A6A6A),
+                            )
+                        }
+
+                        TextButton(onClick = { showBankDialog = true }) {
+                            Text(
+                                text = "تغییر",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(52.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = androidx.compose.ui.graphics.Color(0xFFE8F5E9)
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clickable { learnBank = !learnBank }
+                                    .padding(horizontal = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    text = "یادگیری بانک",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = androidx.compose.ui.graphics.Color(0xFF157A37),
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Switch(
+                                    checked = learnBank,
+                                    onCheckedChange = { learnBank = it },
+                                )
+                            }
+                        }
+
+                        Card(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(52.dp)
+                                .clickable { showIgnoreDialog = true },
+                            shape = RoundedCornerShape(14.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = androidx.compose.ui.graphics.Color(0xFFFFF3F3)
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Block,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = androidx.compose.ui.graphics.Color(0xFFB42318),
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    text = "این تراکنش بانکی نیست",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = androidx.compose.ui.graphics.Color(0xFFB42318),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // =================================================
+            if (isTransfer) {
+                    SectionTitle(
+                        icon = Icons.Default.SwapHoriz,
+                        title = "حساب مقصد",
+                        subtitle = "حسابی که مبلغ به آن منتقل شده است",
+                    )
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showDestinationAccountDialog = true },
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(Icons.Default.AccountBalance, null)
+                            Spacer(Modifier.width(12.dp))
+                            Text(
+                                AccountStore.accounts.firstOrNull { it.id == destinationAccountId }?.name
+                                    ?: "انتخاب حساب مقصد",
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        }
+                    }
+                }
+
             // CATEGORY
             // =================================================
 
@@ -805,26 +1057,23 @@ fun SmsTransactionCompletionBottomSheetContent(
             ) {
 
                 val formattedTime =
-                    java.text.SimpleDateFormat(
-                        "HH:mm",
-                        java.util.Locale.US,
-                    ).format(
-                        java.util.Date(
-                            transaction.dateEpochMillis
-                                ?: System.currentTimeMillis()
+                    toPersianDigits(
+                        java.text.SimpleDateFormat(
+                            "HH:mm",
+                            java.util.Locale.US,
+                        ).format(
+                            java.util.Date(
+                                transaction.dateEpochMillis
+                                    ?: System.currentTimeMillis()
+                            )
                         )
                     )
 
                 val formattedDate =
-                    java.text.SimpleDateFormat(
-                        "d MMMM yyyy",
-                        java.util.Locale("fa"),
-                    ).format(
-                        java.util.Date(
-                            transaction.dateEpochMillis
-                                ?: System.currentTimeMillis()
-                        )
-                    )
+                    transaction.dateEpochMillis
+                        ?.let { JalaliCalendar.fromEpochMillisSlashed(it) }
+                        ?.let(::toPersianDigits)
+                        ?: "—"
 
                 Row(
                     modifier =
@@ -948,89 +1197,6 @@ fun SmsTransactionCompletionBottomSheetContent(
                     )
                 }
             }
-            // =================================================
-            // BANK
-            // =================================================
-
-            Row(
-                modifier =
-                    Modifier
-                        .background(
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
-                            RoundedCornerShape(14.dp),
-                        )
-                        .padding(
-                            horizontal = 16.dp,
-                            vertical = 10.dp,
-                        )
-                        .align(Alignment.End)
-                        .clickable {
-                            showBankDialog = true
-                        },
-                horizontalArrangement =
-                    Arrangement.spacedBy(10.dp),
-                verticalAlignment =
-                    Alignment.CenterVertically,
-            ) {
-
-                Box(
-                    modifier =
-                        Modifier
-                            .size(28.dp)
-                            .background(
-                                androidx.compose.ui.graphics.Color.White,
-                                CircleShape,
-                            ),
-                    contentAlignment =
-                        Alignment.Center,
-                ) {
-                    Text(
-                        text =
-                            selectedBank
-                                .replace("بانک ", "")
-                                .take(3),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color =
-                            androidx.compose.ui.graphics.Color(0xFF157A37),
-                    )
-                }
-
-                Column(
-                    verticalArrangement =
-                        Arrangement.spacedBy(2.dp),
-                ) {
-                    Text(
-                        text =
-                            if (selectedBank ==
-                                BankSmsParser.UNKNOWN_BANK
-                            ) {
-                                "بانک تشخیص داده نشد"
-                            } else {
-                                selectedBank
-                            },
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color =
-                            androidx.compose.ui.graphics.Color.White,
-                    )
-
-                    if (
-                        selectedBank ==
-                            BankSmsParser.UNKNOWN_BANK
-                    ) {
-                        Text(
-                            text =
-                                "لطفاً بانک تراکنش را انتخاب کنید",
-                            fontSize = 11.sp,
-                            color =
-                                androidx.compose.ui.graphics.Color.White,
-                        )
-                    }
-                }
-            }
-
-            // =================================================
             // ACCOUNTS
             // =================================================
 
@@ -1059,7 +1225,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                         Arrangement.spacedBy(10.dp),
                 ) {
 
-                    matchingAccounts.forEach { account ->
+                    availableAccounts.forEach { account ->
 
                         Column(
                             modifier =
@@ -1083,6 +1249,12 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     )
                                     .clickable {
                                         selectedAccountId = account.id
+                                        if (
+                                            selectedBank == BankSmsParser.UNKNOWN_BANK ||
+                                            matchingAccounts.none { it.id == account.id }
+                                        ) {
+                                            selectedBank = account.bankName
+                                        }
                                     }
                                     .padding(12.dp),
                             verticalArrangement =
@@ -1109,12 +1281,14 @@ fun SmsTransactionCompletionBottomSheetContent(
 
                             Text(
                                 text =
-                                    account.openingBalance
-                                        .toString()
-                                        .replace(
-                                            Regex("(\\d)(?=(\\d{3})+$)"),
-                                            "$1,"
-                                        ),
+                                    toPersianDigits(
+                                        AccountLedger.balanceOf(account.id)
+                                            .toString()
+                                            .replace(
+                                                Regex("(\\d)(?=(\\d{3})+$)"),
+                                                "$1,"
+                                            )
+                                    ),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color =
@@ -1202,6 +1376,50 @@ fun SmsTransactionCompletionBottomSheetContent(
                 }
             }
 
+            // =================================================
+            // =================================================
+            // SMS DETAILS
+            // =================================================
+
+            if (smsCardNumber != null || smsCardLast4 != null || metadata?.balance != null) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = androidx.compose.ui.graphics.Color(0xFFF7F7F7)
+                    ),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(14.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = "اطلاعات پیامک بانکی",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        )
+
+                        if (smsCardNumber != null || smsCardLast4 != null) {
+                            val displayCard = smsCardNumber ?: ("****" + smsCardLast4)
+                            Text(
+                                text = "کارت: " + displayCard,
+                                fontSize = 13.sp,
+                                color = androidx.compose.ui.graphics.Color(0xFF555555),
+                            )
+                        }
+
+                        metadata?.balance?.let { smsBalance ->
+                            Text(
+                                text = "موجودی پیامک: " + toPersianDigits(smsBalance.toString().replace(Regex("(\\\\d)(?=(\\\\d{3})+$)"), "$1,")) + " تومان",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = androidx.compose.ui.graphics.Color(0xFF157A37),
+                            )
+                        }
+                    }
+                }
+            }
             // =================================================
             // TAGS
             // =================================================
@@ -1357,18 +1575,7 @@ fun SmsTransactionCompletionBottomSheetContent(
 
                     Text(
                         text =
-    "زمان: ${
-        transaction.dateEpochMillis
-            ?.let {
-                java.text.SimpleDateFormat(
-                    "HH:mm",
-                    java.util.Locale.US,
-                ).format(
-                    java.util.Date(it)
-                )
-            }
-            ?: "—"
-    }",
+    "زمان: ${transaction.dateEpochMillis?.let { toPersianDigits(java.text.SimpleDateFormat("HH:mm", java.util.Locale.US).format(java.util.Date(it))) } ?: "—"}",
                         fontSize = 13.sp,
                         color =
                             androidx.compose.ui.graphics.Color(0xFF1A1A1A),
@@ -1416,6 +1623,8 @@ fun SmsTransactionCompletionBottomSheetContent(
                     ) {
                         onComplete(
                             selectedType,
+                            isTransfer,
+                            destinationAccountId,
                             selectedCategory,
                             tags,
                             description,
@@ -1429,6 +1638,8 @@ fun SmsTransactionCompletionBottomSheetContent(
                     } else if (!isInstallmentCategory) {
                         onComplete(
                             selectedType,
+                            isTransfer,
+                            destinationAccountId,
                             selectedCategory,
                             tags,
                             description,
@@ -1464,6 +1675,18 @@ fun SmsTransactionCompletionBottomSheetContent(
                     color = androidx.compose.ui.graphics.Color.White,
                 )
             }
+            TextButton(
+                onClick = onDismissAsNotBankTransaction,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = "تراکنش بانکی نیست",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
+
+
         }
     }
     if (showBankDialog) {
@@ -1587,6 +1810,58 @@ fun SmsTransactionCompletionBottomSheetContent(
         )
     }
 
+    if (showDestinationAccountDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showDestinationAccountDialog = false
+            },
+            title = {
+                Text("انتخاب حساب مقصد")
+            },
+            text = {
+                Column {
+                    transferDestinationAccounts
+                        .filter { it.id != selectedAccountId }
+                        .forEach { account ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        destinationAccountId = account.id
+                                        showDestinationAccountDialog = false
+                                    }
+                                    .padding(
+                                        vertical = 12.dp,
+                                        horizontal = 8.dp,
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                RadioButton(
+                                    selected = destinationAccountId == account.id,
+                                    onClick = {
+                                        destinationAccountId = account.id
+                                        showDestinationAccountDialog = false
+                                    },
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    text = account.name,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                        }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDestinationAccountDialog = false
+                }) {
+                    Text("بستن")
+                }
+            },
+        )
+    }
+
     if (showAccountDialog) {
         AlertDialog(
             onDismissRequest = {
@@ -1597,7 +1872,7 @@ fun SmsTransactionCompletionBottomSheetContent(
             },
             text = {
                 Column {
-                    matchingAccounts.forEach { account ->
+                    availableAccounts.forEach { account ->
                         Row(
                             modifier =
                                 Modifier
@@ -1966,6 +2241,7 @@ private fun SectionTitle(
         }
     }
 }
+
 
 
 

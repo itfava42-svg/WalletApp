@@ -52,7 +52,7 @@ fun AddTransactionScreen(
     onSave: (Transaction) -> Unit,
 ) {
     var type by remember { mutableStateOf(TransactionType.EXPENSE) }
-    var amountDigits by remember { mutableStateOf("") } // raw ASCII digits only
+    var amountDigits by remember { mutableStateOf("") } // normalized ASCII digits
     var title by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<TransactionCategory?>(null) }
@@ -196,11 +196,23 @@ fun AddTransactionScreen(
             Surface(shadowElevation = 8.dp, color = SurfaceContainerLowest) {
                 Button(
                     onClick = {
-                        val amountLong = amountDigits.toLongOrNull()
+                        val normalizedAmount = amountDigits.map { ch ->
+                            when {
+                                ch.code in 0x06F0..0x06F9 -> ('0'.code + (ch.code - 0x06F0)).toChar()
+                                ch.code in 0x0660..0x0669 -> ('0'.code + (ch.code - 0x0660)).toChar()
+                                else -> ch
+                            }
+                        }.joinToString("")
+                        val amountLong = normalizedAmount.toLongOrNull()
                         if (amountLong == null || amountLong <= 0L || title.isBlank()) {
                             showValidationError = true
                             return@Button
                         }
+                        if (selectedAccountId == null || activeAccounts.none { it.id == selectedAccountId }) {
+                            showValidationError = true
+                            return@Button
+                        }
+                        showValidationError = false
                         val category = selectedCategory
                         val subtitle = buildString {
                             append(category?.label ?: "سایر")
@@ -281,7 +293,17 @@ fun AddTransactionScreen(
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = amountDigits,
-                onValueChange = { input -> amountDigits = input.filter { it.isDigit() }.take(12) },
+                onValueChange = { input ->
+                    amountDigits = input.mapNotNull { ch ->
+                        when {
+                            ch in '0'..'9' -> ch
+                            ch.code in 0x06F0..0x06F9 -> ('0'.code + (ch.code - 0x06F0)).toChar()
+                            ch.code in 0x0660..0x0669 -> ('0'.code + (ch.code - 0x0660)).toChar()
+                            else -> null
+                        }
+                    }.take(12).joinToString("")
+                    showValidationError = false
+                },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("۰") },
                 suffix = { Text("تومان") },
@@ -509,7 +531,7 @@ fun AddTransactionScreen(
             if (showValidationError) {
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    "لطفاً مبلغ و عنوان را وارد کنید.",
+                    "لطفاً مبلغ، عنوان و یک حساب فعال را بررسی کنید.",
                     color = AppError,
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -618,7 +640,6 @@ private fun CategoryChip(
         )
     }
 }
-
 
 
 

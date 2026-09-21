@@ -64,6 +64,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.Account
+import com.example.walletapp.data.AccountManager
 import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.AccountType
 import com.example.walletapp.data.AccountLedger
@@ -376,10 +377,10 @@ bottomBar = {
                             accountPendingDelete = account
                         },
                         onSetDefault = {
-                            AccountStore.setDefault(account.id)
+                            AccountManager.setDefault(account.id)
                         },
                         onToggleActive = {
-                            AccountStore.setActive(
+                            AccountManager.setActive(
                                 id = account.id,
                                 active = !account.isActive,
                             )
@@ -412,7 +413,7 @@ bottomBar = {
                     onClick = {
 
                         val deleted =
-                            AccountStore.delete(account.id)
+                            AccountManager.delete(account.id)
 
                         accountPendingDelete = null
 
@@ -451,7 +452,7 @@ bottomBar = {
             },
             onSave = { name, type, bank, number, cardLast4, openingBalance, isDefault ->
 
-                AccountStore.add(
+                AccountManager.add(
                     name = name,
                     type = type,
                     bankName = bank,
@@ -476,7 +477,7 @@ bottomBar = {
             },
             onSave = { name, type, bank, number, cardLast4, openingBalance, isDefault ->
 
-                AccountStore.update(
+                AccountManager.update(
                     account.copy(
                         name = name,
                         type = type,
@@ -1107,6 +1108,7 @@ private fun formatAmount(
 
     return amount.toPersianCurrency()
 }
+
 
 
 

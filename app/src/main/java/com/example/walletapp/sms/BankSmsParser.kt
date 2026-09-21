@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.sms
+package com.example.walletapp.sms
 
 import com.example.walletapp.data.TransactionType
 
@@ -11,6 +11,8 @@ data class ParsedBankSms(
     val accountNumber: String? = null,
     val cardNumber: String? = null,
     val cardLast4: String? = null,
+    val balance: Long? = null,
+    val isTransfer: Boolean = false,
 )
 
 /**
@@ -52,6 +54,13 @@ private val bankKeywords: List<Pair<String, String>> =
             "\u0628\u0644\u0648\u0628\u0627\u0646\u06a9" to "\u0628\u0644\u0648 (\u0628\u0627\u0646\u06a9 \u0622\u06cc\u0646\u062f\u0647)",
             "\u0628\u0644\u0648" to "\u0628\u0644\u0648 (\u0628\u0627\u0646\u06a9 \u0622\u06cc\u0646\u062f\u0647)",
             "\u0628\u0627\u0646\u06a9 \u0622\u06cc\u0646\u062f\u0647" to "\u0628\u0627\u0646\u06a9 \u0622\u06cc\u0646\u062f\u0647",
+        )
+
+    private val transferKeywords =
+        listOf(
+            "\u0627\u0646\u062a\u0642\u0627\u0644 \u0648\u062c\u0647",
+            "\u0627\u0646\u062a\u0642\u0627\u0644 \u0627\u0632 \u06a9\u0627\u0631\u062a",
+            "\u06a9\u0627\u0631\u062a \u0628\u0647 \u06a9\u0627\u0631\u062a",
         )
 
     private val expenseKeywords =
@@ -97,12 +106,12 @@ private val bankKeywords: List<Pair<String, String>> =
      */
     private val signedAmountRegex =
         Regex(
-            """([+-]?)\s*([0-9\u06F0-\u06F9\u0660-\u0669]{1,3}(?:[,\u060C\u066C][0-9\u06F0-\u06F9\u0660-\u0669]{3})+|[0-9\u06F0-\u06F9\u0660-\u0669]+)\s*([+-]?)"""
+            """(?<![0-9\u06F0-\u06F9\u0660-\u0669])([+-]?)\s*([0-9\u06F0-\u06F9\u0660-\u0669]{1,3}(?:[,\u060C\u066C][0-9\u06F0-\u06F9\u0660-\u0669]{3})+|[0-9\u06F0-\u06F9\u0660-\u0669]+)\s*([+-]?)(?![0-9\u06F0-\u06F9\u0660-\u0669])"""
         )
 
     private val currencyAmountRegex =
         Regex(
-            """([+-]?)\s*([0-9\u06F0-\u06F9\u0660-\u0669]{1,3}(?:[,\u060C\u066C][0-9\u06F0-\u06F9\u0660-\u0669]{3})+|[0-9\u06F0-\u06F9\u0660-\u0669]+)\s*(?:\u0631\u06cc\u0627\u0644|\u062a\u0648\u0645\u0627\u0646)\s*([+-]?)"""
+            """(?<![0-9\u06F0-\u06F9\u0660-\u0669])([+-]?)\s*([0-9\u06F0-\u06F9\u0660-\u0669]{1,3}(?:[,\u060C\u066C][0-9\u06F0-\u06F9\u0660-\u0669]{3})+|[0-9\u06F0-\u06F9\u0660-\u0669]+)\s*(?:\u0631\u06cc\u0627\u0644|\u062a\u0648\u0645\u0627\u0646)\s*([+-]?)(?![0-9\u06F0-\u06F9\u0660-\u0669])"""
         )
 
     /*
@@ -126,7 +135,12 @@ private val bankKeywords: List<Pair<String, String>> =
 
     private val cardNumberRegex =
         Regex(
-            """(?:\u0634\u0645\u0627\u0631\u0647\s*)?\u06a9\u0627\u0631\u062a\s*[:\-]?\s*((?:[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4}[\s\-_]*){3}[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4})"""
+            """(?:\u0634\u0645\u0627\u0631\u0647\s*)?\u06a9\u0627\u0631\u062a\s*[:\-]?\s*((?:[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4}[\s\-_]*){0,3}[0-9\u06F0-\u06F9\u0660-\u0669Xx*]{4})"""
+        )
+
+    private val balanceRegex =
+        Regex(
+            """(?:موجودی|مانده)(?:\s*حساب)?\s*[:=]?\s*([0-9۰-۹٠-٩]{1,3}(?:[,،٬][0-9۰-۹٠-٩]{3})+|[0-9۰-۹٠-٩]+)"""
         )
 
     private val merchantCueRegex =
@@ -182,14 +196,76 @@ private val bankKeywords: List<Pair<String, String>> =
             detectedBank
                 ?: UNKNOWN_BANK
 
+        /*
+         * Protect non-amount numeric fields before amount parsing.
+         * The old parser selected the first numeric token, so card/account/
+         * sender/balance numbers could be mistaken for the transaction amount.
+         * We mask protected ranges with spaces while preserving string indexes.
+         */
+        val accountNumberMatch =
+            accountNumberRegex.find(normalizedBody)
+
+        val cardNumberMatch =
+            cardNumberRegex.find(normalizedBody)
+
+        val balanceMatch =
+            balanceRegex.find(normalizedBody)
+
+        var amountSearchBody = normalizedBody
+
+        listOf(
+            accountNumberMatch,
+            cardNumberMatch,
+            balanceMatch,
+        )
+            .filterNotNull()
+            .sortedByDescending { it.range.first }
+            .forEach { match ->
+                val length = match.range.last - match.range.first + 1
+                amountSearchBody =
+                    amountSearchBody.replaceRange(
+                        match.range.first,
+                        match.range.last + 1,
+                        " ".repeat(length),
+                    )
+            }
+
+        /*
+         * A sender short-code/number can also appear in the SMS body.
+         * Mask the exact sender digits so it cannot become the amount.
+         */
+        val senderDigits =
+            sender
+                ?.let(::normalizeDigits)
+                ?.filter { it.isDigit() }
+                ?.takeIf { it.isNotBlank() }
+
+        if (!senderDigits.isNullOrBlank()) {
+            var senderIndex = amountSearchBody.indexOf(senderDigits)
+
+            while (senderIndex >= 0) {
+                amountSearchBody =
+                    amountSearchBody.replaceRange(
+                        senderIndex,
+                        senderIndex + senderDigits.length,
+                        " ".repeat(senderDigits.length),
+                    )
+
+                senderIndex =
+                    amountSearchBody.indexOf(
+                        senderDigits,
+                        senderIndex + senderDigits.length,
+                    )
+            }
+        }
+
         var signFromAmount: Char? = null
         var amount: Long? = null
 
         val currencyMatch =
-            currencyAmountRegex.find(normalizedBody)
+            currencyAmountRegex.find(amountSearchBody)
 
         if (currencyMatch != null) {
-
             val prefixSign =
                 currencyMatch
                     .groupValues[1]
@@ -221,13 +297,11 @@ private val bankKeywords: List<Pair<String, String>> =
         }
 
         if (amount == null) {
-
             val signedMatch =
                 signedAmountRegex
-                    .find(normalizedBody)
+                    .find(amountSearchBody)
 
             if (signedMatch != null) {
-
                 val prefixSign =
                     signedMatch
                         .groupValues[1]
@@ -266,6 +340,11 @@ private val bankKeywords: List<Pair<String, String>> =
                 ?.get(1)
                 ?.trim()
 
+        val isTransfer =
+            transferKeywords.any {
+                normalizedBody.contains(it)
+            }
+
         val type =
             when {
                 signFromAmount == '-' ->
@@ -273,6 +352,9 @@ private val bankKeywords: List<Pair<String, String>> =
 
                 signFromAmount == '+' ->
                     TransactionType.INCOME
+
+                isTransfer ->
+                    TransactionType.EXPENSE
 
                 incomeKeywords.any {
                     normalizedBody.contains(it)
@@ -289,6 +371,7 @@ private val bankKeywords: List<Pair<String, String>> =
             }
 
         /*
+
          * Do not silently classify an unknown-direction bank SMS
          * as EXPENSE.
          *
@@ -298,7 +381,7 @@ private val bankKeywords: List<Pair<String, String>> =
         if (amount == null || type == null) {
             return null
         }
-
+
         /*
          * If the bank is unknown, require strong transaction
          * evidence. This prevents ordinary numeric SMS messages
@@ -315,16 +398,14 @@ private val bankKeywords: List<Pair<String, String>> =
         }
 
         val accountNumber =
-            accountNumberRegex
-                .find(normalizedBody)
+            accountNumberMatch
                 ?.groupValues
                 ?.getOrNull(1)
                 ?.let(::normalizeDigits)
                 ?.takeIf { it.length in 6..20 }
 
         val cardNumber =
-            cardNumberRegex
-                .find(normalizedBody)
+            cardNumberMatch
                 ?.groupValues
                 ?.getOrNull(1)
                 ?.let(::normalizeDigits)
@@ -336,6 +417,12 @@ private val bankKeywords: List<Pair<String, String>> =
                 ?.takeLast(4)
                 ?.takeIf { it.length == 4 }
 
+        val balance =
+            balanceMatch
+                ?.groupValues
+                ?.getOrNull(1)
+                ?.let(::normalizeAmountToLong)
+
         return ParsedBankSms(
             bankName = bankName,
             amount = amount,
@@ -345,6 +432,8 @@ private val bankKeywords: List<Pair<String, String>> =
             accountNumber = accountNumber,
             cardNumber = cardNumber,
             cardLast4 = cardLast4,
+            balance = balance,
+            isTransfer = isTransfer,
         )
     }
 

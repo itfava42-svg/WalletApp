@@ -62,12 +62,49 @@ fun TransferScreen(
     val accounts =
         AccountStore.accounts.filter { it.isActive }
 
-    var sourceAccountId by remember {
-        mutableStateOf<String?>(null)
+    // Smart defaults: prefer the user's default account as the source and,
+    // when transfer history exists, reuse the most recent counterpart as the
+    // destination. These are only suggestions; the user can change either.
+    val suggestedSourceId = remember(accounts) {
+        accounts.firstOrNull { it.isDefault }?.id
+            ?: accounts.firstOrNull()?.id
     }
 
-    var destinationAccountId by remember {
-        mutableStateOf<String?>(null)
+    val suggestedDestinationId = remember(accounts) {
+        val sourceId = suggestedSourceId
+        val recentCounterpart =
+            sourceId?.let { source ->
+                TransactionStore.transactions
+                    .asSequence()
+                    .filter { transaction ->
+                        transaction.kind == com.example.walletapp.data.TransactionKind.TRANSFER &&
+                            (transaction.sourceAccountId == source || transaction.destinationAccountId == source)
+                    }
+                    .mapNotNull { transaction ->
+                        if (transaction.sourceAccountId == source) {
+                            transaction.destinationAccountId
+                        } else {
+                            transaction.sourceAccountId
+                        }
+                    }
+                    .firstOrNull { candidate ->
+                        accounts.any { it.id == candidate && it.id != sourceId }
+                    }
+            }
+
+        recentCounterpart
+            ?: accounts.firstOrNull { it.id != sourceId }?.id
+    }
+
+    var sourceAccountId by remember(suggestedSourceId) {
+        mutableStateOf(suggestedSourceId)
+    }
+
+    var destinationAccountId by remember(suggestedDestinationId, sourceAccountId) {
+        mutableStateOf(
+            suggestedDestinationId?.takeIf { it != sourceAccountId }
+                ?: accounts.firstOrNull { it.id != sourceAccountId }?.id
+        )
     }
 
     var amountText by remember {
@@ -97,6 +134,14 @@ fun TransferScreen(
             .replace(",", "")
             .replace("٬", "")
             .trim()
+            .map { ch ->
+                when (ch) {
+                    in '۰'..'۹' -> ('0'.code + (ch.code - '۰'.code)).toChar()
+                    in '٠'..'٩' -> ('0'.code + (ch.code - '٠'.code)).toChar()
+                    else -> ch
+                }
+            }
+            .joinToString("")
             .toLongOrNull()
 
     fun submitTransfer() {

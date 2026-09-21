@@ -22,6 +22,8 @@ object SmsTransactionCompletionHandler {
     data class CompletionRequest(
         val transaction: Transaction,
         val selectedType: com.example.walletapp.data.TransactionType,
+        val isTransfer: Boolean,
+        val destinationAccountId: String?,
         val sender: String,
         val rawBody: String?,
         val selectedBank: String,
@@ -108,7 +110,7 @@ object SmsTransactionCompletionHandler {
             return CompletionResult.NoChanges
         }
         val metadata =
-            SmsTransactionMetadataStore.get(transaction.id)
+            SmsTransactionMetadataManager.get(transaction.id)
 
         val effectiveSender =
             metadata
@@ -138,65 +140,90 @@ object SmsTransactionCompletionHandler {
         val activeAccounts =
             AccountStore.accounts.filter { it.isActive }
 
-        val matchingAccounts =
-            activeAccounts.filter {
-                it.bankName.trim() == request.selectedBank.trim()
+        if (request.isTransfer) {
+            val sourceId =
+                request.selectedAccountId
+                    ?.trim()
+                    ?.takeIf { it.isNotBlank() }
+                    ?: resolvedAccountId
+
+            val destinationId =
+                request.destinationAccountId
+                    ?.trim()
+                    ?.takeIf { it.isNotBlank() }
+
+            if (sourceId == null || destinationId == null) {
+                return CompletionResult.AccountRequired
             }
 
-        if (matchingAccounts.isEmpty()) {
-            return CompletionResult.AccountRequired
+            if (sourceId == destinationId) {
+                return CompletionResult.InvalidAccount
+            }
+
+            if (activeAccounts.none { it.id == sourceId } ||
+                activeAccounts.none { it.id == destinationId }) {
+                return CompletionResult.InvalidAccount
+            }
         }
 
         val explicitAccount =
             request.selectedAccountId
+                ?.trim()
                 ?.takeIf { it.isNotBlank() }
 
+        /*
+         * An explicitly selected active account is authoritative.
+         * It must not be rejected merely because its bank differs from
+         * the parser's detected/selected bank: the user is allowed to
+         * correct a wrong bank detection by choosing the real account.
+         */
         if (explicitAccount != null) {
-            if (resolvedAccountId != explicitAccount) {
+            val selectedAccount =
+                activeAccounts.firstOrNull { it.id == explicitAccount }
+
+            if (selectedAccount == null) {
                 return CompletionResult.InvalidAccount
             }
         } else if (resolvedAccountId == null) {
             return CompletionResult.AccountRequired
         }
 
-        if (request.selectedCategory == "قسط") {
+        val installmentLoan =
+            if (request.selectedCategory == "قسط") {
+                if (request.isTransfer || request.selectedType != com.example.walletapp.data.TransactionType.EXPENSE) {
+                    return CompletionResult.InvalidInstallment
+                }
 
-            val loan =
                 request.selectedLoan
                     ?: return CompletionResult.InvalidInstallment
+            } else {
+                null
+            }
 
-            val installmentNumber =
+        val installmentNumber =
+            if (installmentLoan != null) {
                 request.selectedInstallmentNumber
                     ?: return CompletionResult.InvalidInstallment
+            } else {
+                null
+            }
 
+        if (installmentLoan != null) {
             if (
-                installmentNumber < 1 ||
-                installmentNumber > loan.totalInstallments
+                installmentNumber!! < 1 ||
+                installmentNumber > installmentLoan.totalInstallments
             ) {
                 return CompletionResult.InvalidInstallment
             }
 
             if (
-                loan.payments.any {
+                installmentLoan.payments.any {
                     it.installmentNumber == installmentNumber
                 }
             ) {
                 return CompletionResult.InstallmentAlreadyPaid
             }
-
-            val payment =
-                LoanPaymentManager.linkExistingTransactionToInstallment(
-                    context = context,
-                    loan = loan,
-                    installmentNumber = installmentNumber,
-                    transactionId = transaction.id,
-                )
-
-            if (payment == null) {
-                return CompletionResult.InstallmentLinkFailed
-            }
         }
-
 
         val updatedTransaction =
             buildUpdatedTransaction(
@@ -204,7 +231,28 @@ object SmsTransactionCompletionHandler {
                 resolvedAccountId = resolvedAccountId,
             )
 
+        /*
+         * Persist the transaction first. LoanPaymentManager links the
+         * existing transaction to the installment, so doing the link
+         * first could leave a loan payment behind if transaction
+         * persistence failed.
+         */
         TransactionStore.update(updatedTransaction)
+
+        if (installmentLoan != null) {
+            val payment =
+                LoanPaymentManager.linkExistingTransactionToInstallment(
+                    context = context,
+                    loan = installmentLoan,
+                    installmentNumber = installmentNumber!!,
+                    transactionId = transaction.id,
+                )
+
+            if (payment == null) {
+                TransactionStore.restore(transaction)
+                return CompletionResult.InstallmentLinkFailed
+            }
+        }
 
         /*
          * Learning is committed only after the transaction has passed
@@ -226,7 +274,7 @@ object SmsTransactionCompletionHandler {
             usableSelectedBank != null &&
             effectiveSender.isNotBlank()
         ) {
-            SmsLearningStore.saveSenderBank(
+            SmsLearningManager.saveSenderBank(
                 sender = effectiveSender,
                 bankName = usableSelectedBank,
             )
@@ -236,7 +284,7 @@ object SmsTransactionCompletionHandler {
             request.selectedCategory != null &&
             effectiveSender.isNotBlank()
         ) {
-            SmsLearningStore.saveSenderCategory(
+            SmsLearningManager.saveSenderCategory(
                 sender = effectiveSender,
                 category = request.selectedCategory,
             )
@@ -248,7 +296,7 @@ object SmsTransactionCompletionHandler {
             effectiveSender.isNotBlank() &&
             effectiveRawBody != null
         ) {
-            SmsLearningStore.savePatternRule(
+            SmsLearningManager.savePatternRule(
                 sender = effectiveSender,
                 pattern = effectiveRawBody,
                 bankName = usableSelectedBank,
@@ -269,24 +317,42 @@ object SmsTransactionCompletionHandler {
      * UI lifecycle and Queue advancement remain outside
      * this business operation.
      */
+    /**
+     * Removes the current SMS transaction when the user confirms that
+     * this message is not a bank transaction.
+     *
+     * The pending transaction must be removed, not merely marked complete,
+     * so it cannot affect the ledger or be uploaded by Sync.
+     */
+    fun dismissAsNotBankTransaction(
+        context: Context,
+        transaction: Transaction,
+    ) {
+        TransactionStore.attachContext(context)
+        SmsTransactionMetadataManager.attachContext(context)
+
+        TransactionStore.remove(transaction.id)
+        SmsTransactionMetadataManager.remove(transaction.id)
+    }
+
     fun ignoreSender(
         context: Context,
         transaction: Transaction,
         sender: String?,
     ) {
         TransactionStore.attachContext(context)
-        SmsTransactionMetadataStore.attachContext(context)
-        SmsIgnoreStore.attachContext(context)
+        SmsTransactionMetadataManager.attachContext(context)
+        SmsIgnoreManager.attachContext(context)
 
         val metadata =
-            SmsTransactionMetadataStore.get(transaction.id)
+            SmsTransactionMetadataManager.get(transaction.id)
 
         if (
             !sender.isNullOrBlank() &&
             metadata != null &&
             !metadata.rawBody.isNullOrBlank()
         ) {
-            SmsIgnoreStore.ignoreSender(
+            SmsIgnoreManager.ignoreSender(
                 sender = sender,
             )
         }
@@ -413,18 +479,32 @@ object SmsTransactionCompletionHandler {
 
         return transaction.copy(
             type = request.selectedType,
-            title = updatedTitle,
-            subtitle = updatedSubtitle,
-            accountId =
+            title = if (request.isTransfer) "انتقال بین حساب‌ها" else updatedTitle,
+            subtitle = if (request.isTransfer) {
+                val source = AccountStore.accounts.firstOrNull { it.id == request.selectedAccountId }
+                val destination = AccountStore.accounts.firstOrNull { it.id == request.destinationAccountId }
+                if (source != null && destination != null) {
+                    "${source.name} → ${destination.name}"
+                } else {
+                    updatedSubtitle
+                }
+            } else updatedSubtitle,
+            accountId = if (request.isTransfer) null else
                 request.selectedAccountId
                     ?.takeIf { it.isNotBlank() }
                     ?: resolvedAccountId,
-            iconKey =
-                request.selectedCategory
-                    ?: transaction.iconKey,
-            category =
-                request.selectedCategory
-                    ?: transaction.category,
+            iconKey = if (request.isTransfer) "انتقال" else
+                request.selectedCategory ?: transaction.iconKey,
+            category = if (request.isTransfer) null else
+                request.selectedCategory ?: transaction.category,
+            kind = if (request.isTransfer) com.example.walletapp.data.TransactionKind.TRANSFER
+                else com.example.walletapp.data.TransactionKind.NORMAL,
+            sourceAccountId = if (request.isTransfer) {
+                request.selectedAccountId?.takeIf { it.isNotBlank() } ?: resolvedAccountId
+            } else null,
+            destinationAccountId = if (request.isTransfer) {
+                request.destinationAccountId?.takeIf { it.isNotBlank() }
+            } else null,
             tags = request.tags,
             description = request.description.trim(),
             receiptUri = request.receiptUri,

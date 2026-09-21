@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.JalaliDatePickerDialog
 
@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.CheckEntry
 import com.example.walletapp.data.CheckStatus
+import com.example.walletapp.data.CheckManager
 import com.example.walletapp.data.CheckStore
 import com.example.walletapp.data.CheckType
 import com.example.walletapp.data.JalaliCalendar
@@ -193,9 +194,9 @@ fun CheckManagementScreen(
             onSave = { check ->
 
                 if (editingCheck == null) {
-                    CheckStore.add(check)
+                    CheckManager.add(check)
                 } else {
-                    CheckStore.update(check)
+                    CheckManager.update(check)
                 }
 
                 showEditor = false
@@ -226,7 +227,7 @@ fun CheckManagementScreen(
 
                 Button(
                     onClick = {
-                        CheckStore.remove(check.id)
+                        CheckManager.remove(check.id)
                         deleteCheck = null
                     }
                 ) {
