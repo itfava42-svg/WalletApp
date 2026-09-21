@@ -97,6 +97,14 @@ fun TransferScreen(
             .replace(",", "")
             .replace("٬", "")
             .trim()
+            .map { ch ->
+                when (ch) {
+                    in '۰'..'۹' -> ('0'.code + (ch.code - '۰'.code)).toChar()
+                    in '٠'..'٩' -> ('0'.code + (ch.code - '٠'.code)).toChar()
+                    else -> ch
+                }
+            }
+            .joinToString("")
             .toLongOrNull()
 
     fun submitTransfer() {
