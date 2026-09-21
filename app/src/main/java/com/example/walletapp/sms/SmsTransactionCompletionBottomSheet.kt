@@ -618,38 +618,39 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     androidx.compose.ui.graphics.Color(0xFF1A1A1A),
                         )
                     }
-                }
-
                     Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(
-                                if (isTransfer)
-                                    androidx.compose.ui.graphics.Color(0xFFEB1C24)
-                                else
-                                    androidx.compose.ui.graphics.Color.Transparent,
-                                RoundedCornerShape(10.dp),
-                            )
-                            .clickable {
-                                isTransfer = true
-                                selectedType = TransactionType.EXPENSE
-                                selectedCategory = null
-                                selectedLoan = null
-                                selectedInstallment = null
-                            }
-                            .padding(10.dp),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .background(
+                                    if (isTransfer)
+                                        androidx.compose.ui.graphics.Color(0xFFEB1C24)
+                                    else
+                                        androidx.compose.ui.graphics.Color.Transparent,
+                                    RoundedCornerShape(10.dp),
+                                )
+                                .clickable {
+                                    isTransfer = true
+                                    selectedType = TransactionType.EXPENSE
+                                    selectedCategory = null
+                                    selectedLoan = null
+                                    selectedInstallment = null
+                                }
+                                .padding(10.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "انتقال",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = if (isTransfer)
-                                androidx.compose.ui.graphics.Color.White
-                            else
-                                androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                            color =
+                                if (isTransfer)
+                                    androidx.compose.ui.graphics.Color.White
+                                else
+                                    androidx.compose.ui.graphics.Color(0xFF1A1A1A),
                         )
                     }
+                }
 
                 Row(
                     modifier =
