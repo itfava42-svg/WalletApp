@@ -834,15 +834,9 @@ fun SmsTransactionCompletionBottomSheetContent(
                     )
 
                 val formattedDate =
-                    java.text.SimpleDateFormat(
-                        "d MMMM yyyy",
-                        java.util.Locale("fa"),
-                    ).format(
-                        java.util.Date(
-                            transaction.dateEpochMillis
-                                ?: System.currentTimeMillis()
-                        )
-                    )
+                    transaction.dateEpochMillis
+                        ?.let { JalaliCalendar.fromEpochMillisSlashed(it) }
+                        ?: "—"
 
                 Row(
                     modifier =
@@ -1481,18 +1475,7 @@ fun SmsTransactionCompletionBottomSheetContent(
 
                     Text(
                         text =
-    "زمان: ${
-        transaction.dateEpochMillis
-            ?.let {
-                java.text.SimpleDateFormat(
-                    "HH:mm",
-                    java.util.Locale.US,
-                ).format(
-                    java.util.Date(it)
-                )
-            }
-            ?: "—"
-    }",
+    "زمان: ${transaction.dateEpochMillis?.let { toPersianDigits(java.text.SimpleDateFormat("HH:mm", java.util.Locale.US).format(java.util.Date(it))) } ?: "—"}",
                         fontSize = 13.sp,
                         color =
                             androidx.compose.ui.graphics.Color(0xFF1A1A1A),
