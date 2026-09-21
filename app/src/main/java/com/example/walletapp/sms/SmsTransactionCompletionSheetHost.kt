@@ -29,6 +29,8 @@ fun SmsTransactionCompletionSheetHost(
     onTakePhoto: () -> Unit,
     onComplete: (
         selectedType: TransactionType,
+        isTransfer: Boolean,
+        destinationAccountId: String?,
         category: String?,
         tags: List<String>,
         description: String,
@@ -40,13 +42,14 @@ fun SmsTransactionCompletionSheetHost(
         installment: SmsLoanInstallmentChoice?,
     ) -> Unit,
     onIgnoreSender: () -> Unit,
+    onDismissAsNotBankTransaction: () -> Unit,
     onAddBankAccount: () -> Unit,
     onDismiss: () -> Unit,
 ) {
 
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
-    )
+    )
     
 
 BackHandler(enabled = true) {
@@ -81,6 +84,7 @@ BackHandler(enabled = true) {
             onTakePhoto = onTakePhoto,
             onComplete = onComplete,
             onIgnoreSender = onIgnoreSender,
+            onDismissAsNotBankTransaction = onDismissAsNotBankTransaction,
             onAddBankAccount = onAddBankAccount,
         )
     }
