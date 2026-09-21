@@ -1049,6 +1049,49 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
 
             // =================================================
+            // =================================================
+            // SMS DETAILS
+            // =================================================
+
+            if (smsCardNumber != null || smsCardLast4 != null || metadata?.balance != null) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = androidx.compose.ui.graphics.Color(0xFFF7F7F7)
+                    ),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(14.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = "اطلاعات پیامک بانکی",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                        )
+
+                        if (smsCardNumber != null || smsCardLast4 != null) {
+                            val displayCard = smsCardNumber ?: ("****" + smsCardLast4)
+                            Text(
+                                text = "کارت: " + displayCard,
+                                fontSize = 13.sp,
+                                color = androidx.compose.ui.graphics.Color(0xFF555555),
+                            )
+                        }
+
+                        metadata?.balance?.let { smsBalance ->
+                            Text(
+                                text = "موجودی پیامک: " + toPersianDigits(smsBalance.toString().replace(Regex("(\\\\d)(?=(\\\\d{3})+$)"), "$1,")) + " تومان",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = androidx.compose.ui.graphics.Color(0xFF157A37),
+                            )
+                        }
+                    }
+                }
+            }
             // ACCOUNTS
             // =================================================
 
