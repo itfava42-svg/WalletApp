@@ -1621,6 +1621,8 @@ fun SmsTransactionCompletionBottomSheetContent(
                     } else if (!isInstallmentCategory) {
                         onComplete(
                             selectedType,
+                            isTransfer,
+                            destinationAccountId,
                             selectedCategory,
                             tags,
                             description,
