@@ -257,7 +257,9 @@ fun SmsTransactionCompletionBottomSheetContent(
     }
 
     var isTransfer by remember(transaction.id) {
-        mutableStateOf(false)
+        mutableStateOf(
+            transaction.kind == com.example.walletapp.data.TransactionKind.TRANSFER
+        )
     }
 
     var tags by remember {
