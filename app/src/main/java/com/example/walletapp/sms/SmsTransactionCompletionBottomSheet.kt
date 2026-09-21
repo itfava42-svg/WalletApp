@@ -256,12 +256,6 @@ fun SmsTransactionCompletionBottomSheetContent(
         mutableStateOf(transaction.type)
     }
 
-    var isTransfer by remember(transaction.id) {
-        mutableStateOf(
-            transaction.kind == com.example.walletapp.data.TransactionKind.TRANSFER
-        )
-    }
-
     var tags by remember {
         mutableStateOf(transaction.tags)
     }
@@ -305,6 +299,30 @@ fun SmsTransactionCompletionBottomSheetContent(
                 ?.trim()
                 ?.takeIf { it.isNotBlank() }
 
+    val smartTransferSuggestion =
+        remember(
+            transaction.id,
+            selectedBank,
+            smsAccountNumber,
+            smsCardLast4,
+            metadata?.rawBody,
+        ) {
+            SmsTransferDetector.suggest(
+                rawBody = metadata?.rawBody,
+                detectedBank = selectedBank,
+                smsAccountNumber = smsAccountNumber,
+                smsCardLast4 = smsCardLast4,
+                accounts = AccountStore.accounts.toList(),
+            )
+        }
+
+    var isTransfer by remember(transaction.id, smartTransferSuggestion?.confidence) {
+        mutableStateOf(
+            transaction.kind == com.example.walletapp.data.TransactionKind.TRANSFER ||
+                smartTransferSuggestion?.isUsableTransferSuggestion == true
+        )
+    }
+
     val matchingAccounts =
         remember(selectedBank) {
             AccountStore.accounts.filter { account ->
@@ -347,12 +365,20 @@ fun SmsTransactionCompletionBottomSheetContent(
             }
         }
 
-    var selectedAccountId by remember(transaction.id, selectedBank) {
+    var selectedAccountId by remember(
+        transaction.id,
+        selectedBank,
+        smartTransferSuggestion?.sourceAccountId,
+    ) {
         mutableStateOf(
             transaction.accountId
                 ?.takeIf { id ->
                     availableAccounts.any { it.id == id }
                 }
+                ?: smartTransferSuggestion?.sourceAccountId
+                    ?.takeIf { id ->
+                        availableAccounts.any { it.id == id }
+                    }
                 ?: accountNumberMatches.singleOrNull()?.id
                 ?: cardLast4Matches.singleOrNull()?.id
                 ?: availableAccounts.singleOrNull()?.id
@@ -371,8 +397,11 @@ fun SmsTransactionCompletionBottomSheetContent(
         mutableStateOf(false)
     }
 
-    var destinationAccountId by remember(transaction.id) {
-        mutableStateOf<String?>(null)
+    var destinationAccountId by remember(
+        transaction.id,
+        smartTransferSuggestion?.destinationAccountId,
+    ) {
+        mutableStateOf(smartTransferSuggestion?.destinationAccountId)
     }
 
     var showIgnoreDialog by remember {
