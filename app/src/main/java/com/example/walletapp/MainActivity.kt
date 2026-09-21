@@ -618,6 +618,8 @@ class MainActivity : ComponentActivity() {
                 onComplete = {
 
                     selectedType,
+                    isTransfer,
+                    destinationAccountId,
 
                     category,
 
@@ -662,6 +664,8 @@ class MainActivity : ComponentActivity() {
                                     transaction = transaction,
 
                                     selectedType = selectedType,
+                                    isTransfer = isTransfer,
+                                    destinationAccountId = destinationAccountId,
 
                                     sender =
 
