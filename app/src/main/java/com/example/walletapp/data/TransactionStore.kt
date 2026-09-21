@@ -485,7 +485,8 @@ object TransactionStore {
                 amount = amount,
                 type = TransactionType.EXPENSE,
                     iconKey = "انتقال",
-                category = "انتقال داخلی",
+                // Internal transfers are not income/expense categories.
+                category = null,
                 dateEpochMillis = dateEpochMillis ?: now,
                 note = note.trim(),
                 kind = TransactionKind.TRANSFER,
