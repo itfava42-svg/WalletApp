@@ -1574,6 +1574,18 @@ fun SmsTransactionCompletionBottomSheetContent(
                     color = androidx.compose.ui.graphics.Color.White,
                 )
             }
+            TextButton(
+                onClick = onDismissAsNotBankTransaction,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = "تراکنش بانکی نیست",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
+
+
         }
     }
     if (showBankDialog) {
