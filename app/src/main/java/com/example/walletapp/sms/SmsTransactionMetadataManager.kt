@@ -20,6 +20,7 @@ object SmsTransactionMetadataManager {
         accountNumber: String? = null,
         cardNumber: String? = null,
         cardLast4: String? = null,
+        balance: Long? = null,
     ) = SmsTransactionMetadataStore.save(
         transactionId = transactionId,
         sender = sender,
@@ -29,6 +30,7 @@ object SmsTransactionMetadataManager {
         accountNumber = accountNumber,
         cardNumber = cardNumber,
         cardLast4 = cardLast4,
+        balance = balance,
     )
 
     fun get(transactionId: String): SmsTransactionMetadataStore.Metadata? =
