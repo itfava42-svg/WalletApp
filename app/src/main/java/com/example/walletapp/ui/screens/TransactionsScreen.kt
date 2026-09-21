@@ -1,5 +1,6 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
 
 import androidx.compose.foundation.background
@@ -494,10 +495,18 @@ private fun formatTransactionDate(transaction: Transaction): String {
         return ""
     }
 
-    return SimpleDateFormat(
-        "yyyy/MM/dd HH:mm",
-        Locale.getDefault()
-    ).format(Date(timestamp))
+    val jalaliDate =
+        JalaliCalendar.fromEpochMillisSlashed(timestamp)
+
+    val time =
+        SimpleDateFormat(
+            "HH:mm",
+            Locale.US
+        )
+            .format(Date(timestamp))
+            .toPersianDigits()
+
+    return "$jalaliDate $time"
 }
 
 @Composable
