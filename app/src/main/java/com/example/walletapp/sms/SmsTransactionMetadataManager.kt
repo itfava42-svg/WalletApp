@@ -31,7 +31,7 @@ object SmsTransactionMetadataManager {
         cardLast4 = cardLast4,
     )
 
-    fun get(transactionId: String): Metadata? =
+    fun get(transactionId: String): SmsTransactionMetadataStore.Metadata? =
         SmsTransactionMetadataStore.get(transactionId)
 
     fun remove(transactionId: String) =
