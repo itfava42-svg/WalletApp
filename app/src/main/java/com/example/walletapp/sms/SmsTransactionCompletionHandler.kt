@@ -138,21 +138,22 @@ object SmsTransactionCompletionHandler {
         val activeAccounts =
             AccountStore.accounts.filter { it.isActive }
 
-        val matchingAccounts =
-            activeAccounts.filter {
-                it.bankName.trim() == request.selectedBank.trim()
-            }
-
-        if (matchingAccounts.isEmpty()) {
-            return CompletionResult.AccountRequired
-        }
-
         val explicitAccount =
             request.selectedAccountId
+                ?.trim()
                 ?.takeIf { it.isNotBlank() }
 
+        /*
+         * An explicitly selected active account is authoritative.
+         * It must not be rejected merely because its bank differs from
+         * the parser's detected/selected bank: the user is allowed to
+         * correct a wrong bank detection by choosing the real account.
+         */
         if (explicitAccount != null) {
-            if (resolvedAccountId != explicitAccount) {
+            val selectedAccount =
+                activeAccounts.firstOrNull { it.id == explicitAccount }
+
+            if (selectedAccount == null) {
                 return CompletionResult.InvalidAccount
             }
         } else if (resolvedAccountId == null) {
