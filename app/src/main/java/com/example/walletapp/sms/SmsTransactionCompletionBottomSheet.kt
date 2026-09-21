@@ -1794,17 +1794,53 @@ fun SmsTransactionCompletionBottomSheetContent(
     }
 
     if (showDestinationAccountDialog) {
-        AccountSelectionDialog(
-            title = "انتخاب حساب مقصد",
-            accounts = availableAccounts,
-            selectedAccountId = destinationAccountId,
-            excludedAccountId = selectedAccountId,
-            onSelect = {
-                destinationAccountId = it
+        AlertDialog(
+            onDismissRequest = {
                 showDestinationAccountDialog = false
             },
-            onDismiss = {
-                showDestinationAccountDialog = false
+            title = {
+                Text("انتخاب حساب مقصد")
+            },
+            text = {
+                Column {
+                    availableAccounts
+                        .filter { it.id != selectedAccountId }
+                        .forEach { account ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        destinationAccountId = account.id
+                                        showDestinationAccountDialog = false
+                                    }
+                                    .padding(
+                                        vertical = 12.dp,
+                                        horizontal = 8.dp,
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                RadioButton(
+                                    selected = destinationAccountId == account.id,
+                                    onClick = {
+                                        destinationAccountId = account.id
+                                        showDestinationAccountDialog = false
+                                    },
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    text = account.name,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                        }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDestinationAccountDialog = false
+                }) {
+                    Text("بستن")
+                }
             },
         )
     }
