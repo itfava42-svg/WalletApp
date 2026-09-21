@@ -75,7 +75,19 @@ val AppTypography = Typography(
     displayLarge = AppTextStyles.displayLg,
     headlineMedium = AppTextStyles.headlineMd,
     headlineSmall = AppTextStyles.headlineSm,
+    titleMedium = AppTextStyles.headlineSm.copy(
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+    ),
     bodyLarge = AppTextStyles.bodyLg,
     bodyMedium = AppTextStyles.bodyMd,
+    bodySmall = AppTextStyles.labelMd.copy(
+        fontSize = 13.sp,
+        lineHeight = 20.sp,
+    ),
     labelMedium = AppTextStyles.labelMd,
+    labelSmall = AppTextStyles.labelMd.copy(
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+    ),
 )
