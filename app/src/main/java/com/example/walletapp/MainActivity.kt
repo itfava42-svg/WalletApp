@@ -59,8 +59,8 @@ import com.example.walletapp.data.AccountManager
 import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.AccountType
 import com.example.walletapp.sms.SmsCompletionCoordinator
-import com.example.walletapp.sms.SmsIgnoreStore
-import com.example.walletapp.sms.SmsLearningStore
+import com.example.walletapp.sms.SmsIgnoreManager
+import com.example.walletapp.sms.SmsLearningManager
 import com.example.walletapp.sms.SmsTransactionCompletionHandler
 import com.example.walletapp.sms.SmsTransactionCompletionSheetHost
 import com.example.walletapp.sms.SmsTransactionMetadataManager
@@ -123,8 +123,8 @@ class MainActivity : ComponentActivity() {
         CheckStore.attachContext(applicationContext)
         AccountStore.attachContext(applicationContext)
         SmsTransactionMetadataManager.attachContext(applicationContext)
-        SmsLearningStore.attachContext(applicationContext)
-        SmsIgnoreStore.attachContext(applicationContext)
+        SmsLearningManager.attachContext(applicationContext)
+        SmsIgnoreManager.attachContext(applicationContext)
 
         setContent {
             // App content is Persian, so force RTL layout direction regardless
@@ -476,7 +476,7 @@ class MainActivity : ComponentActivity() {
 
                 metadata?.let {
 
-                    SmsLearningStore.findPatternRule(
+                    SmsLearningManager.findPatternRule(
 
                         sender = it.sender,
 
@@ -484,7 +484,7 @@ class MainActivity : ComponentActivity() {
 
                     )?.category
 
-                        ?: SmsLearningStore.getSenderCategory(
+                        ?: SmsLearningManager.getSenderTransactionType(
 
                             it.sender
 
