@@ -190,14 +190,6 @@ class SmsReceiver : BroadcastReceiver() {
                 if (Settings.canDrawOverlays(context)) {
                     Log.d(TAG, "opening MainActivity for SMS completion sheet")
 
-                    OverlayPopupManager.showTransactionPopup(
-                        context = context,
-                        bankName = parsed.bankName,
-                        amount = amount,
-                        merchant = parsed.merchant,
-                        type = parsed.type,
-                    )
-
                     val openIntent =
                         Intent(context, MainActivity::class.java).apply {
                             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
