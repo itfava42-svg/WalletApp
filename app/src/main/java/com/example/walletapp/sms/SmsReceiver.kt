@@ -184,6 +184,14 @@ class SmsReceiver : BroadcastReceiver() {
                 )
 
                 /*
+                 * Always deliver through the coordinator first. If the app is
+                 * already foreground, the Compose host can open the sheet
+                 * immediately. If it is not foreground, the transaction ID is
+                 * retained until the host registers.
+                 */
+                SmsCompletionCoordinator.deliver(transaction.id)
+
+                /*
                  * The completion UI is hosted by MainActivity. When the
                  * user has granted overlay access, bring MainActivity forward
                  * immediately and pass the pending transaction id to it.
