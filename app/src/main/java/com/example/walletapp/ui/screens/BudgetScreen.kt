@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.Budget
 import com.example.walletapp.data.BudgetPeriod
+import com.example.walletapp.data.BudgetManager
 import com.example.walletapp.data.BudgetStore
 import com.example.walletapp.data.TransactionCategories
 import com.example.walletapp.data.toPersianCurrency
@@ -116,7 +117,7 @@ fun BudgetScreen(
         AddBudgetDialog(
             onDismiss = { showAddDialog = false },
             onSave = { category, amount, period ->
-                BudgetStore.add(category, amount, period)
+                BudgetManager.add(category, amount, period)
                 showAddDialog = false
             },
         )
