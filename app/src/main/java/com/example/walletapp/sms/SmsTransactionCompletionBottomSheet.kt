@@ -229,6 +229,8 @@ fun SmsTransactionCompletionBottomSheetContent(
     onTakePhoto: () -> Unit,
     onComplete: (
         selectedType: TransactionType,
+        isTransfer: Boolean,
+        destinationAccountId: String?,
         category: String?,
         tags: List<String>,
         description: String,
