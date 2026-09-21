@@ -513,8 +513,9 @@ object TransactionStore {
         amount: Long,
         merchant: String?,
         type: TransactionType,
-    smsDate: Long? = null,
-    sourceId: String? = null,
+        smsDate: Long? = null,
+        sourceId: String? = null,
+        kind: TransactionKind = TransactionKind.NORMAL,
     ): Transaction {
 
         val now = System.currentTimeMillis()
