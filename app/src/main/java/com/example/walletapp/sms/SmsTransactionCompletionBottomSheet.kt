@@ -1606,6 +1606,8 @@ fun SmsTransactionCompletionBottomSheetContent(
                     ) {
                         onComplete(
                             selectedType,
+                            isTransfer,
+                            destinationAccountId,
                             selectedCategory,
                             tags,
                             description,
