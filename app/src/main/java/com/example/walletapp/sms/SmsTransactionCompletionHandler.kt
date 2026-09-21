@@ -270,6 +270,24 @@ object SmsTransactionCompletionHandler {
      * UI lifecycle and Queue advancement remain outside
      * this business operation.
      */
+    /**
+     * Removes the current SMS transaction when the user confirms that
+     * this message is not a bank transaction.
+     *
+     * The pending transaction must be removed, not merely marked complete,
+     * so it cannot affect the ledger or be uploaded by Sync.
+     */
+    fun dismissAsNotBankTransaction(
+        context: Context,
+        transaction: Transaction,
+    ) {
+        TransactionStore.attachContext(context)
+        SmsTransactionMetadataManager.attachContext(context)
+
+        TransactionStore.remove(transaction.id)
+        SmsTransactionMetadataManager.remove(transaction.id)
+    }
+
     fun ignoreSender(
         context: Context,
         transaction: Transaction,
