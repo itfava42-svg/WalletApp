@@ -197,6 +197,17 @@ class SmsReceiver : BroadcastReceiver() {
                  * immediately and pass the pending transaction id to it.
                  */
                 if (Settings.canDrawOverlays(context)) {
+                    if (!SmsCompletionCoordinator.isHostRegistered()) {
+                        OverlayPopupManager.showTransactionPopup(
+                            context = context,
+                            bankName = parsed.bankName,
+                            amount = amount,
+                            merchant = parsed.merchant,
+                            type = parsed.type,
+                            transactionId = transaction.id,
+                        )
+                    }
+
                     Log.d(TAG, "opening MainActivity for SMS completion sheet")
 
                     val openIntent =
