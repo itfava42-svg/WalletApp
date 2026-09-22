@@ -282,6 +282,12 @@ fun SmsLearningScreen(
         }
     }
 
+    if (showHistoryImportDialog) {
+        SmsHistoryImportDialog(
+            onDismiss = { showHistoryImportDialog = false }
+        )
+    }
+
     if (showManualLearningDialog) {
         ManualLearningDialog(
             onDismiss = {
@@ -1171,9 +1177,3 @@ private fun SmsHistoryImportDialog(
         }
     )
 }
-    if (showHistoryImportDialog) {
-        SmsHistoryImportDialog(
-            onDismiss = { showHistoryImportDialog = false }
-        )
-    }
-
