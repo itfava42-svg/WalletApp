@@ -20,14 +20,28 @@ object LoanPaymentManager {
         TransactionStore.attachContext(context)
         LoanStore.attachContext(context)
 
+        val currentLoan =
+            LoanStore.getById(loan.id)
+                ?: return null
+
         val transaction =
             TransactionStore.transactions.firstOrNull { it.id == transactionId }
                 ?: return null
 
+        val transactionDate =
+            transaction.dateEpochMillis
+                ?: return null
+
         if (
             transaction.type != TransactionType.EXPENSE ||
-            installmentNumber !in 1..loan.totalInstallments ||
-            loan.payments.any { it.installmentNumber == installmentNumber }
+            transaction.amount <= 0L ||
+            installmentNumber !in 1..currentLoan.totalInstallments ||
+            currentLoan.payments.any { it.installmentNumber == installmentNumber } ||
+            currentLoan.payments.any { it.transactionId == transaction.id } ||
+            !LoanPaymentDateValidator.isPaymentDateValid(
+                currentLoan,
+                transactionDate
+            )
         ) {
             return null
         }
@@ -46,7 +60,7 @@ object LoanPaymentManager {
 
         val added =
             LoanStore.addPayment(
-                loan.id,
+                currentLoan.id,
                 payment
             )
 
@@ -77,16 +91,17 @@ object LoanPaymentManager {
         TransactionStore.attachContext(context)
         LoanStore.attachContext(context)
 
-        if (
-            installmentNumber !in 1..loan.totalInstallments ||
-            accountId.isBlank()
-        ) {
+        if (installmentNumber !in 1..loan.totalInstallments || accountId.isBlank()) {
             return false
         }
 
         val currentLoan =
             LoanStore.getById(loan.id)
                 ?: return false
+
+        if (!LoanPaymentDateValidator.isPaymentDateValid(currentLoan, paymentDateEpochMillis)) {
+            return false
+        }
 
         if (
             currentLoan.payments.any {
