@@ -126,11 +126,13 @@ object SmsHistoryImporter {
                     }
                 }
 
-                onProgress(
-                    Progress(
-                        scanned, recognized, imported, duplicates, ignored, unsupported
+                withContext(Dispatchers.Main.immediate) {
+                    onProgress(
+                        Progress(
+                            scanned, recognized, imported, duplicates, ignored, unsupported
+                        )
                     )
-                )
+                }
             }
         }
 
