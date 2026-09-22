@@ -300,12 +300,6 @@ fun SmsLearningScreen(
         )
     }
 
-    if (showHistoryImportDialog) {
-        SmsHistoryImportDialog(
-            onDismiss = { showHistoryImportDialog = false }
-        )
-    }
-
     if (showClearDialog) {
         AlertDialog(
             onDismissRequest = {
