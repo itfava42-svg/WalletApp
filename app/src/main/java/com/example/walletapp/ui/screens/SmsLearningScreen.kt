@@ -32,15 +32,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
+import com.example.walletapp.data.AccountStore
+import com.example.walletapp.sms.SmsHistoryImporter
 import com.example.walletapp.sms.SmsIgnoreManager
 import com.example.walletapp.sms.SmsLearningManager
 
@@ -54,6 +58,7 @@ fun SmsLearningScreen(
     var refreshKey by remember { mutableStateOf(0) }
     var showClearDialog by remember { mutableStateOf(false) }
     var showManualLearningDialog by remember { mutableStateOf(false) }
+    var showHistoryImportDialog by remember { mutableStateOf(false) }
 
     SmsLearningManager.attachContext(context)
     SmsIgnoreManager.attachContext(context)
@@ -111,6 +116,15 @@ fun SmsLearningScreen(
                     Spacer(Modifier.padding(horizontal = 4.dp))
 
                     Text("یادگیری دستی پیامک")
+                }
+            }
+
+            item {
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { showHistoryImportDialog = true }
+                ) {
+                    Text("📥 وارد کردن پیامک‌های قبلی")
                 }
             }
 
@@ -276,6 +290,12 @@ fun SmsLearningScreen(
                 refresh()
                 showManualLearningDialog = false
             }
+        )
+    }
+
+    if (showHistoryImportDialog) {
+        SmsHistoryImportDialog(
+            onDismiss = { showHistoryImportDialog = false }
         )
     }
 
@@ -1044,4 +1064,115 @@ private fun compactPattern(pattern: String): String {
 }
 
 
+
+
+
+@Composable
+private fun SmsHistoryImportDialog(
+    onDismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val accounts = AccountStore.accounts.filter { it.isActive }
+
+    var selectedAccountId by remember { mutableStateOf<String?>(accounts.firstOrNull()?.id) }
+    var limit by remember { mutableStateOf(500) }
+    var running by remember { mutableStateOf(false) }
+    var progress by remember { mutableStateOf(SmsHistoryImporter.Progress(0, 0, 0, 0, 0, 0)) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = { if (!running) onDismiss() },
+        title = { Text("📥 وارد کردن پیامک‌های قبلی") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    "پیامک‌های بانکی موجود در صندوق پیامک بررسی می‌شوند و فقط تراکنش‌های قابل‌تشخیص وارد حساب انتخابی می‌شوند."
+                )
+                Text(
+                    "برای ایمنی، هر بار حداکثر ۵۰۰۰ پیامک بررسی می‌شود. پیامک‌های تکراری دوباره ثبت نمی‌شوند."
+                )
+
+                Text("حساب مقصد", fontWeight = FontWeight.Bold)
+                accounts.forEach { account ->
+                    if (selectedAccountId == account.id) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { selectedAccountId = account.id }
+                        ) { Text(account.name) }
+                    } else {
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { selectedAccountId = account.id }
+                        ) { Text(account.name) }
+                    }
+                }
+
+                Text("تعداد پیامک در این مرحله", fontWeight = FontWeight.Bold)
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    listOf(100, 500, 1000, 5000).forEach { value ->
+                        if (limit == value) {
+                            Button(onClick = { limit = value }) { Text(value.toString()) }
+                        } else {
+                            OutlinedButton(onClick = { limit = value }) { Text(value.toString()) }
+                        }
+                    }
+                }
+
+                Text(
+                    "بررسی‌شده: ${progress.scanned}  |  قابل‌تشخیص: ${progress.recognized}\n" +
+                        "واردشده: ${progress.imported}  |  تکراری: ${progress.duplicates}\n" +
+                        "نادیده: ${progress.ignored}  |  نامعتبر/پشتیبانی‌نشده: ${progress.unsupported}"
+                )
+
+                if (error != null) {
+                    Text(
+                        error.orEmpty(),
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                enabled = !running && selectedAccountId != null && accounts.isNotEmpty(),
+                onClick = {
+                    val accountId = selectedAccountId ?: return@Button
+                    running = true
+                    error = null
+                    scope.launch {
+                        try {
+                            progress = SmsHistoryImporter.import(
+                                context = context,
+                                accountId = accountId,
+                                limit = limit,
+                                onProgress = { progress = it }
+                            )
+                        } catch (e: SecurityException) {
+                            error = "دسترسی خواندن پیامک‌ها فعال نیست."
+                        } catch (e: Throwable) {
+                            error = e.message ?: "وارد کردن پیامک‌ها انجام نشد."
+                        } finally {
+                            running = false
+                        }
+                    }
+                }
+            ) {
+                Text(if (running) "در حال بررسی..." else "شروع وارد کردن")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                enabled = !running,
+                onClick = onDismiss
+            ) { Text("بستن") }
+        }
+    )
+}
+    if (showHistoryImportDialog) {
+        SmsHistoryImportDialog(
+            onDismiss = { showHistoryImportDialog = false }
+        )
+    }
 
