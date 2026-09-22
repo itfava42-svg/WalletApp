@@ -60,6 +60,7 @@ fun SmsLearningScreen(
     var showManualLearningDialog by remember { mutableStateOf(false) }
     var showHistoryImportDialog by remember { mutableStateOf(false) }
 
+    AccountStore.attachContext(context)
     SmsLearningManager.attachContext(context)
     SmsIgnoreManager.attachContext(context)
 
