@@ -585,6 +585,66 @@ object TransactionStore {
 
         return storedTransaction
     }
+    /**
+     * Imports an already-received bank SMS directly into an account.
+     *
+     * Unlike addFromBankSms(), this path is intended for controlled history
+     * import: the transaction is immediately complete, keeps SMS provenance,
+     * and is never added to the completion queue.
+     */
+    fun addImportedBankSms(
+        accountId: String,
+        bankName: String,
+        amount: Long,
+        merchant: String?,
+        type: TransactionType,
+        smsDate: Long,
+        sourceId: String,
+        category: String? = null,
+    ): Transaction {
+        require(accountId.isNotBlank()) { "Import account is required." }
+        require(amount > 0L) { "Imported amount must be greater than zero." }
+        require(sourceId.isNotBlank()) { "Imported sourceId is required." }
+
+        AccountStore.accounts.firstOrNull {
+            it.id == accountId && it.isActive
+        } ?: throw IllegalArgumentException(
+            "Import account does not exist or is inactive."
+        )
+
+        require(
+            transactions.none { it.sourceId == sourceId }
+        ) {
+            "This SMS has already been imported."
+        }
+
+        val now = System.currentTimeMillis()
+        val transaction = Transaction(
+            id = UUID.randomUUID().toString(),
+            title = merchant?.takeIf { it.isNotBlank() } ?: bankName,
+            subtitle = if (merchant != null) bankName else "تراکنش بانکی",
+            amount = amount,
+            type = type,
+            iconKey = "بانک",
+            accountId = accountId,
+            category = category,
+            dateEpochMillis = smsDate,
+            note = "",
+            kind = TransactionKind.NORMAL,
+            description = "واردشده از سابقه پیامک بانکی",
+            requiresCompletion = false,
+            createdAt = now,
+            updatedAt = now,
+            source = TransactionSource.SMS,
+            syncStatus = SyncStatus.LOCAL_ONLY,
+            sourceId = sourceId,
+        )
+
+        transactions.add(0, transaction)
+        persist()
+        return transaction
+    }
+
 }
 
 
