@@ -1584,39 +1584,27 @@ private fun LoanEditorDialog(
     }
 
     var loanType by remember {
-        mutableStateOf(
-            existingLoan?.type ?: LoanType.PERSONAL
-        )
+        mutableStateOf(existingLoan?.type ?: LoanType.PERSONAL)
     }
 
     var amountText by remember {
-        mutableStateOf(
-            existingLoan?.totalAmount?.toString() ?: ""
-        )
+        mutableStateOf(existingLoan?.totalAmount?.toString() ?: "")
     }
 
     var interestText by remember {
-        mutableStateOf(
-            existingLoan?.interestRatePercent?.toString() ?: ""
-        )
+        mutableStateOf(existingLoan?.interestRatePercent?.toString() ?: "")
     }
 
     var installmentText by remember {
-        mutableStateOf(
-            existingLoan?.installmentAmount?.toString() ?: ""
-        )
+        mutableStateOf(existingLoan?.installmentAmount?.toString() ?: "")
     }
 
     var totalInstallmentsText by remember {
-        mutableStateOf(
-            existingLoan?.totalInstallments?.toString() ?: ""
-        )
+        mutableStateOf(existingLoan?.totalInstallments?.toString() ?: "")
     }
 
     var intervalMonths by remember {
-        mutableStateOf(
-            existingLoan?.intervalMonths ?: 1
-        )
+        mutableStateOf(existingLoan?.intervalMonths ?: 1)
     }
 
     var startDate by remember {
@@ -1644,24 +1632,15 @@ private fun LoanEditorDialog(
     }
 
     var guaranteeNote by remember {
-        mutableStateOf(
-            existingLoan?.guaranteeNote ?: ""
-        )
+        mutableStateOf(existingLoan?.guaranteeNote ?: "")
     }
 
     var reminderEnabled by remember {
-        mutableStateOf(
-            existingLoan?.reminderEnabled ?: false
-        )
+        mutableStateOf(existingLoan?.reminderEnabled ?: false)
     }
 
-    var expandedType by remember {
-        mutableStateOf(false)
-    }
-
-    var expandedInterval by remember {
-        mutableStateOf(false)
-    }
+    var expandedType by remember { mutableStateOf(false) }
+    var expandedInterval by remember { mutableStateOf(false) }
 
     val calculatedInstallment = remember(
         amountText,
@@ -1675,370 +1654,622 @@ private fun LoanEditorDialog(
         )
     }
 
-    AlertDialog(
+    androidx.compose.ui.window.Dialog(
         onDismissRequest = onDismiss,
-        modifier = Modifier.fillMaxWidth(),
-        title = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+        properties = androidx.compose.ui.window.DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false
+        )
+    ) {
+        androidx.compose.runtime.CompositionLocalProvider(
+            androidx.compose.ui.platform.LocalLayoutDirection provides
+                androidx.compose.ui.unit.LayoutDirection.Rtl
+        ) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 20.dp),
+                shape = MaterialTheme.shapes.extraLarge,
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 4.dp
             ) {
-                Text(
-                    text = if (existingLoan == null) {
-                        "ثبت وام جدید"
-                    } else {
-                        "ویرایش وام"
-                    },
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Text(
-                    text = "اطلاعات وام را وارد کنید",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        },
-        text = {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-
-                item {
-                    LoanEditorSectionTitle(
-                        title = "اطلاعات وام"
-                    )
-                }
-
-                item {
-                    LoanInputTile(
-                        title = "نام وام",
-                        value = title,
-                        onValueChange = {
-                            title = it
-                        },
-                        background = MatureColors.Surface,
-                        accent = MatureColors.Primary,
-                        icon = Icons.Filled.AccountBalance,
-                        keyboardType = KeyboardType.Text
-                    )
-                }
-
-                item {
-                    LoanInputTile(
-                        title = "مبلغ وام",
-                        value = amountText,
-                        onValueChange = {
-                            amountText =
-                                it.filter { c -> c.isDigit() }
-                        },
-                        background = LoanOrangeLight,
-                        accent = LoanOrange,
-                        icon = Icons.Filled.Payments
-                    )
-                }
-
-                item {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement =
-                            Arrangement.spacedBy(9.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = 20.dp,
+                                end = 12.dp,
+                                top = 14.dp,
+                                bottom = 8.dp
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        LoanInputTile(
-                            modifier = Modifier.weight(1f),
-                            title = "درصد سود",
-                            value = interestText,
-                            onValueChange = {
-                                interestText = it
-                            },
-                            background = LoanGreenLight,
-                            accent = LoanGreen,
-                            icon = Icons.Filled.Percent,
-                            keyboardType = KeyboardType.Decimal
-                        )
-
-                        LoanInputTile(
-                            modifier = Modifier.weight(1f),
-                            title = "تعداد اقساط",
-                            value = totalInstallmentsText,
-                            onValueChange = {
-                                totalInstallmentsText =
-                                    it.filter { c ->
-                                        c.isDigit()
-                                    }
-                            },
-                            background = MatureColors.Surface,
-                            accent = MatureColors.Primary,
-                            icon = Icons.Filled.Schedule
-                        )
-                    }
-                }
-
-                item {
-                    LoanEditorSectionTitle(
-                        title = "تنظیمات اقساط"
-                    )
-                }
-
-                item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        OutlinedTextField(
-                            value = "هر $intervalMonths ماه",
-                            onValueChange = {},
-                            readOnly = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(14.dp),
-                            label = {
-                                Text("فاصله اقساط")
-                            }
-                        )
-
-                        DropdownMenu(
-                            expanded = expandedInterval,
-                            onDismissRequest = {
-                                expandedInterval = false
-                            }
+                        Column(
+                            modifier = Modifier.weight(1f)
                         ) {
-                            listOf(
-                                1,
-                                2,
-                                3,
-                                6,
-                                12
-                            ).forEach { months ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text("هر $months ماه")
-                                    },
-                                    onClick = {
-                                        intervalMonths = months
-                                        expandedInterval = false
-                                    }
-                                )
-                            }
+                            Text(
+                                text = if (existingLoan == null) {
+                                    "ثبت وام جدید"
+                                } else {
+                                    "ویرایش وام"
+                                },
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Spacer(Modifier.height(3.dp))
+
+                            Text(
+                                text = "اطلاعات وام را وارد کنید",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        IconButton(onClick = onDismiss) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "بازگشت",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
-                }
 
-                item {
-                    LoanInputTile(
-                        title = "قسط ماهیانه محاسبه‌شده",
-                        value =
-                            if (calculatedInstallment > 0) {
-                                calculatedInstallment
-                                    .toPersianCurrency()
-                            } else {
-                                "—"
-                            },
-                        onValueChange = {},
-                        background = LoanGreenLight,
-                        accent = LoanGreen,
-                        icon = Icons.Filled.Payments,
-                        readOnly = true,
-                        keyboardType = KeyboardType.Number
-                    )
-                }
-
-                item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f, fill = false),
+                        contentPadding = PaddingValues(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 8.dp,
+                            bottom = 12.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        OutlinedTextField(
-                            value = loanType.label,
-                            onValueChange = {},
-                            readOnly = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(14.dp),
-                            label = {
-                                Text("نوع وام")
-                            }
-                        )
+                        item {
+                            LoanFormField(
+                                label = "نام وام",
+                                value = title,
+                                onValueChange = { title = it },
+                                placeholder = "مثلاً وام خرید",
+                                icon = Icons.Filled.AccountBalance,
+                                keyboardType = KeyboardType.Text
+                            )
+                        }
 
-                        DropdownMenu(
-                            expanded = expandedType,
-                            onDismissRequest = {
-                                expandedType = false
-                            }
-                        ) {
-                            LoanType.entries.forEach { type ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(type.label)
+                        item {
+                            LoanAmountCard(
+                                value = amountText,
+                                onValueChange = {
+                                    amountText = it.filter { c -> c.isDigit() }
+                                }
+                            )
+                        }
+
+                        item {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                LoanFormField(
+                                    modifier = Modifier.weight(1f),
+                                    label = "درصد سود",
+                                    value = interestText,
+                                    onValueChange = { interestText = it },
+                                    placeholder = "۰",
+                                    icon = Icons.Filled.Percent,
+                                    keyboardType = KeyboardType.Decimal
+                                )
+
+                                LoanFormField(
+                                    modifier = Modifier.weight(1f),
+                                    label = "تعداد اقساط",
+                                    value = totalInstallmentsText,
+                                    onValueChange = {
+                                        totalInstallmentsText =
+                                            it.filter { c -> c.isDigit() }
                                     },
-                                    onClick = {
-                                        loanType = type
+                                    placeholder = "۱۲",
+                                    icon = Icons.Filled.Schedule,
+                                    keyboardType = KeyboardType.Number
+                                )
+
+                                Box(modifier = Modifier.weight(1f)) {
+                                    OutlinedTextField(
+                                        value = "هر $intervalMonths ماه",
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(56.dp),
+                                        shape = MaterialTheme.shapes.medium,
+                                        label = { Text("فاصله") },
+                                        trailingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Filled.Schedule,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary
+                                            )
+                                        },
+                                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                                        )
+                                    )
+
+                                    Box(
+                                        modifier = Modifier
+                                            .matchParentSize()
+                                            .clickable {
+                                                expandedInterval = true
+                                            }
+                                    )
+
+                                    DropdownMenu(
+                                        expanded = expandedInterval,
+                                        onDismissRequest = {
+                                            expandedInterval = false
+                                        }
+                                    ) {
+                                        listOf(1, 2, 3, 6, 12).forEach { months ->
+                                            DropdownMenuItem(
+                                                text = { Text("هر $months ماه") },
+                                                onClick = {
+                                                    intervalMonths = months
+                                                    expandedInterval = false
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        item {
+                            LoanMonthlyInstallmentCard(
+                                value = if (calculatedInstallment > 0) {
+                                    calculatedInstallment.toPersianCurrency()
+                                } else {
+                                    "—"
+                                }
+                            )
+                        }
+
+                        item {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                OutlinedTextField(
+                                    value = loanType.label,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(56.dp),
+                                    shape = MaterialTheme.shapes.medium,
+                                    label = { Text("نوع وام") },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Filled.AccountBalance,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
+                                    },
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Filled.MoreVert,
+                                            contentDescription = "انتخاب نوع وام",
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
+                                    },
+                                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                                    )
+                                )
+
+                                Box(
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .clickable { expandedType = true }
+                                )
+
+                                DropdownMenu(
+                                    expanded = expandedType,
+                                    onDismissRequest = {
                                         expandedType = false
                                     }
-                                )
+                                ) {
+                                    LoanType.entries.forEach { type ->
+                                        DropdownMenuItem(
+                                            text = { Text(type.label) },
+                                            onClick = {
+                                                loanType = type
+                                                expandedType = false
+                                            }
+                                        )
+                                    }
+                                }
                             }
                         }
-                    }
-                }
 
-                item {
-                    LoanEditorSectionTitle(
-                        title = "تاریخ‌ها"
-                    )
-                }
-
-                item {
-                    DateField(
-                        label = "تاریخ وام",
-                        value = startDate,
-                        onDateSelected = {
-                            startDate = it
-                        },
-                        context = context
-                    )
-                }
-
-                item {
-                    DateField(
-                        label = "تاریخ اولین قسط",
-                        value = firstInstallmentDate,
-                        onDateSelected = {
-                            firstInstallmentDate = it
-                        },
-                        context = context
-                    )
-                }
-
-                item {
-                    LoanEditorSectionTitle(
-                        title = "ضمانت و توضیحات"
-                    )
-                }
-
-                item {
-                    OutlinedTextField(
-                        value = guaranteeNote,
-                        onValueChange = {
-                            guaranteeNote = it
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        minLines = 2,
-                        shape = RoundedCornerShape(14.dp),
-                        label = {
-                            Text("ضمانت و توضیحات")
-                        }
-                    )
-                }
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    val amount =
-                        amountText.toLongOrNull() ?: 0L
-
-                    val interest =
-                        interestText.toDoubleOrNull() ?: 0.0
-
-                    val installments =
-                        totalInstallmentsText
-                            .toIntOrNull() ?: 0
-
-                    val startParts =
-                        parseJalaliDate(startDate)
-
-                    val firstParts =
-                        parseJalaliDate(
-                            firstInstallmentDate
-                        )
-
-                    if (
-                        title.isBlank() ||
-                        amount <= 0 ||
-                        installments <= 0 ||
-                        startParts == null
-                    ) {
-                        return@Button
-                    }
-
-                    val paidInstallmentCount =
-                        existingLoan?.payments?.size ?: 0
-
-                    if (
-                        existingLoan != null &&
-                        installments < paidInstallmentCount
-                    ) {
-                        return@Button
-                    }
-
-                    val finalInstallment =
-                        if (calculatedInstallment > 0) {
-                            calculatedInstallment
-                        } else {
-                            installmentText
-                                .toLongOrNull() ?: 0L
+                        item {
+                            Text(
+                                text = "تاریخ‌ها",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.padding(
+                                    top = 4.dp,
+                                    bottom = 0.dp
+                                )
+                            )
                         }
 
-                    val loan =
-                        LoanEntry(
-                            id =
-                                existingLoan?.id
-                                    ?: UUID.randomUUID()
-                                        .toString(),
-                            title = title.trim(),
-                            type = loanType,
-                            totalAmount = amount,
-                            interestRatePercent = interest,
-                            installmentAmount =
-                                finalInstallment,
-                            totalInstallments =
-                                installments,
-                            intervalMonths =
-                                intervalMonths,
-                            startYear =
-                                startParts[0],
-                            startMonth =
-                                startParts[1],
-                            startDay =
-                                startParts[2],
-                            firstInstallmentYear =
-                                firstParts?.get(0),
-                            firstInstallmentMonth =
-                                firstParts?.get(1),
-                            firstInstallmentDay =
-                                firstParts?.get(2),
-                            guaranteeNote =
-                                guaranteeNote.trim(),
-                            reminderEnabled =
-                                reminderEnabled,
-                            payments =
-                                existingLoan?.payments
-                                    ?: emptyList()
-                        )
+                        item {
+                            LoanDateField(
+                                label = "تاریخ دریافت وام",
+                                value = startDate,
+                                onClick = {
+                                    // Date picker is opened by the field itself.
+                                },
+                                context = context,
+                                onDateSelected = { startDate = it }
+                            )
+                        }
 
-                    onSave(loan)
-                },
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MatureColors.Primary
-                )
-            ) {
-                Text(
-                    if (existingLoan == null) {
-                        "ثبت وام"
-                    } else {
-                        "ذخیره تغییرات"
-                    },
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        },
-        dismissButton = {
-            OutlinedButton(
-                onClick = onDismiss,
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Text("انصراف")
+                        item {
+                            LoanDateField(
+                                label = "تاریخ اولین قسط (اختیاری)",
+                                value = firstInstallmentDate,
+                                onClick = {},
+                                context = context,
+                                onDateSelected = { firstInstallmentDate = it }
+                            )
+                        }
+
+                        item {
+                            OutlinedTextField(
+                                value = guaranteeNote,
+                                onValueChange = { guaranteeNote = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                minLines = 2,
+                                shape = MaterialTheme.shapes.medium,
+                                label = { Text("ضمانت و توضیحات") },
+                                placeholder = {
+                                    Text("توضیحات اختیاری")
+                                },
+                                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                                )
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = 20.dp,
+                                end = 20.dp,
+                                top = 8.dp,
+                                bottom = 16.dp
+                            ),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(52.dp),
+                            shape = MaterialTheme.shapes.large
+                        ) {
+                            Text(
+                                "انصراف",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+
+                        Button(
+                            onClick = {
+                                val amount =
+                                    amountText.toLongOrNull() ?: 0L
+
+                                val interest =
+                                    interestText.toDoubleOrNull() ?: 0.0
+
+                                val installments =
+                                    totalInstallmentsText.toIntOrNull() ?: 0
+
+                                val startParts =
+                                    parseJalaliDate(startDate)
+
+                                val firstParts =
+                                    parseJalaliDate(firstInstallmentDate)
+
+                                if (
+                                    title.isBlank() ||
+                                    amount <= 0 ||
+                                    installments <= 0 ||
+                                    startParts == null
+                                ) {
+                                    return@Button
+                                }
+
+                                val paidInstallmentCount =
+                                    existingLoan?.payments?.size ?: 0
+
+                                if (
+                                    existingLoan != null &&
+                                    installments < paidInstallmentCount
+                                ) {
+                                    return@Button
+                                }
+
+                                val finalInstallment =
+                                    if (calculatedInstallment > 0) {
+                                        calculatedInstallment
+                                    } else {
+                                        installmentText.toLongOrNull() ?: 0L
+                                    }
+
+                                val loan =
+                                    LoanEntry(
+                                        id =
+                                            existingLoan?.id
+                                                ?: UUID.randomUUID().toString(),
+                                        title = title.trim(),
+                                        type = loanType,
+                                        totalAmount = amount,
+                                        interestRatePercent = interest,
+                                        installmentAmount = finalInstallment,
+                                        totalInstallments = installments,
+                                        intervalMonths = intervalMonths,
+                                        startYear = startParts[0],
+                                        startMonth = startParts[1],
+                                        startDay = startParts[2],
+                                        firstInstallmentYear = firstParts?.get(0),
+                                        firstInstallmentMonth = firstParts?.get(1),
+                                        firstInstallmentDay = firstParts?.get(2),
+                                        guaranteeNote = guaranteeNote.trim(),
+                                        reminderEnabled = reminderEnabled,
+                                        payments = existingLoan?.payments ?: emptyList()
+                                    )
+
+                                onSave(loan)
+                            },
+                            modifier = Modifier
+                                .weight(1.35f)
+                                .height(52.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text(
+                                if (existingLoan == null) {
+                                    "ثبت وام"
+                                } else {
+                                    "ذخیره تغییرات"
+                                },
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun LoanFormField(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    keyboardType: KeyboardType
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        singleLine = true,
+        shape = MaterialTheme.shapes.medium,
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+        )
     )
+}
+
+@Composable
+private fun LoanAmountCard(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.16f)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Payments,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(22.dp)
+                )
+
+                Spacer(Modifier.size(8.dp))
+
+                Text(
+                    text = "مبلغ وام",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+
+            OutlinedTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp),
+                singleLine = true,
+                shape = MaterialTheme.shapes.medium,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                placeholder = { Text("مبلغ وام را وارد کنید") },
+                suffix = { Text("ریال") },
+                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun LoanMonthlyInstallmentCard(
+    value: String
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.tertiaryContainer,
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.16f)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                modifier = Modifier.size(42.dp),
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.12f)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.Payments,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.size(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "قسط ماهیانه",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+
+                Spacer(Modifier.height(2.dp))
+
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            }
+
+            Text(
+                text = "محاسبه‌شده",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.70f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun LoanDateField(
+    label: String,
+    value: String,
+    onClick: () -> Unit,
+    context: android.content.Context,
+    onDateSelected: (String) -> Unit
+) {
+    var showPicker by remember { mutableStateOf(false) }
+
+    OutlinedTextField(
+        value = value,
+        onValueChange = {},
+        readOnly = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clickable { showPicker = true },
+        shape = MaterialTheme.shapes.medium,
+        label = { Text(label) },
+        placeholder = { Text("انتخاب تاریخ") },
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Filled.CalendarMonth,
+                contentDescription = "انتخاب تاریخ",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
+        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+        )
+    )
+
+    if (showPicker) {
+        JalaliDatePickerDialog(
+            initialDate = value,
+            onDismissRequest = { showPicker = false },
+            onDateSelected = {
+                onDateSelected(it)
+                showPicker = false
+            }
+        )
+    }
 }
 
 @Composable
