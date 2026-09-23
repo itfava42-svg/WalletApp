@@ -1688,15 +1688,15 @@ private fun LoanEditorDialog(
                     } else {
                         "ویرایش وام"
                     },
-                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = MatureColors.TextPrimary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
                     text = "اطلاعات وام را وارد کنید",
-                    fontSize = 12.sp,
-                    color = MatureColors.TextSecondary
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         },
