@@ -2310,38 +2310,59 @@ private fun DateField(
 ) {
     var showPicker by remember { mutableStateOf(false) }
 
-    OutlinedTextField(
-        value = value,
-        onValueChange = {},
-        readOnly = true,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        label = {
-            Text(label)
-        },
-        leadingIcon = {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .clickable { showPicker = true },
+        shape = RoundedCornerShape(18.dp),
+        color = Color.White,
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            Color(0xFFD2D2D2)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ChevronLeft,
+                contentDescription = null,
+                tint = MatureColors.TextSecondary,
+                modifier = Modifier.size(22.dp)
+            )
+
+            Spacer(Modifier.weight(1f))
+
+            Text(
+                text = if (value.isBlank()) "انتخاب تاریخ" else value,
+                fontSize = 16.sp,
+                fontWeight = if (value.isBlank()) {
+                    FontWeight.Normal
+                } else {
+                    FontWeight.Bold
+                },
+                color = if (value.isBlank()) {
+                    MatureColors.TextSecondary
+                } else {
+                    MatureColors.TextPrimary
+                },
+                textAlign = TextAlign.End
+            )
+
+            Spacer(Modifier.width(12.dp))
+
             Icon(
                 imageVector = Icons.Filled.CalendarMonth,
-                contentDescription = null,
-                tint = MatureColors.Primary
+                contentDescription = "انتخاب تاریخ",
+                tint = MatureColors.Primary,
+                modifier = Modifier.size(23.dp)
             )
-        },
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    showPicker = true
-                }
-            ) {
-                Icon(
-                    imageVector =
-                        Icons.Filled.CalendarMonth,
-                    contentDescription =
-                        "انتخاب تاریخ",
-                    tint = MatureColors.Primary
-                )
-            }
         }
-    )
+    }
 
     if (showPicker) {
         JalaliDatePickerDialog(
