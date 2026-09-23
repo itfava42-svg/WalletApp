@@ -2048,13 +2048,13 @@ private fun LoanEditorSectionTitle(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 3.dp, bottom = 1.dp),
+            .padding(top = 8.dp, bottom = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Surface(
-            modifier = Modifier.size(8.dp),
+            modifier = Modifier.size(width = 4.dp, height = 22.dp),
             shape = MaterialTheme.shapes.extraSmall,
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.primary
         ) {}
 
         Spacer(Modifier.size(10.dp))
@@ -2063,7 +2063,7 @@ private fun LoanEditorSectionTitle(
             text = title,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -2083,25 +2083,33 @@ private fun LoanInputTile(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        color = background,
+        color = MaterialTheme.colorScheme.surface,
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
             MaterialTheme.colorScheme.outlineVariant
         )
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = accent,
-                    modifier = Modifier.size(20.dp)
-                )
+                Surface(
+                    modifier = Modifier.size(32.dp),
+                    shape = MaterialTheme.shapes.small,
+                    color = accent.copy(alpha = 0.10f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = accent,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
 
-                Spacer(Modifier.size(8.dp))
+                Spacer(Modifier.size(9.dp))
 
                 Text(
                     text = title,
@@ -2121,7 +2129,11 @@ private fun LoanInputTile(
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                placeholder = { Text("وارد کنید") }
+                placeholder = { Text("وارد کنید") },
+                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                )
             )
         }
     }
