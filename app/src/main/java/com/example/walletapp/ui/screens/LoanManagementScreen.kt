@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RectangleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -1670,7 +1669,7 @@ private fun LoanEditorDialog(
         ) {
             Surface(
                 modifier = Modifier.fillMaxSize(),
-                shape = androidx.compose.foundation.shape.RectangleShape,
+                shape = RoundedCornerShape(0.dp),
                 color = MaterialTheme.colorScheme.background,
                 tonalElevation = 0.dp
             ) {
