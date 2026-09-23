@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -2153,7 +2154,7 @@ private fun LoanDropdownField(
     value: String,
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
-    menuContent: @Composable ColumnScope.() -> Unit
+    menuContent: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         OutlinedTextField(
