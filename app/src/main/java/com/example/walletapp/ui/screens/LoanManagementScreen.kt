@@ -1667,12 +1667,10 @@ private fun LoanEditorDialog(
                 androidx.compose.ui.unit.LayoutDirection.Rtl
         ) {
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 20.dp),
-                shape = MaterialTheme.shapes.extraLarge,
-                color = MaterialTheme.colorScheme.surface,
-                tonalElevation = 4.dp
+                modifier = Modifier.fillMaxSize(),
+                shape = androidx.compose.foundation.shape.RectangleShape,
+                color = MaterialTheme.colorScheme.background,
+                tonalElevation = 0.dp
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth()
@@ -1680,10 +1678,11 @@ private fun LoanEditorDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
                             .padding(
                                 start = 20.dp,
                                 end = 12.dp,
-                                top = 14.dp,
+                                top = 12.dp,
                                 bottom = 8.dp
                             ),
                         verticalAlignment = Alignment.CenterVertically
@@ -1723,12 +1722,12 @@ private fun LoanEditorDialog(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f, fill = false),
+                            .weight(1f),
                         contentPadding = PaddingValues(
                             start = 20.dp,
                             end = 20.dp,
-                            top = 8.dp,
-                            bottom = 12.dp
+                            top = 10.dp,
+                            bottom = 20.dp
                         ),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
@@ -1954,11 +1953,12 @@ private fun LoanEditorDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
                             .padding(
                                 start = 20.dp,
                                 end = 20.dp,
-                                top = 8.dp,
-                                bottom = 16.dp
+                                top = 10.dp,
+                                bottom = 20.dp
                             ),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
