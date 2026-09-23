@@ -1,4 +1,4 @@
-﻿name: WalletApp Android Build
+name: WalletApp CI Pipeline
 
 on:
   workflow_dispatch:
@@ -13,32 +13,50 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build and Test
+  ci-15a:
+    name: CI-15A — Loan UI Safety / UTF-8 / Build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: CI-15A — Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: CI-15A — Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
+      - name: CI-15A — Set up Android SDK
         uses: android-actions/setup-android@v4
         with:
           packages: 'platform-tools'
 
-      - name: Make Gradle executable
+      - name: CI-15A — Verify source file
+        shell: bash
+        run: |
+          set -e
+          FILE="app/src/main/java/com/example/walletapp/ui/screens/LoanManagementScreen.kt"
+          test -f "$FILE"
+          echo "PASS: $FILE found"
+
+      - name: CI-15A — UTF-8 marker audit
+        shell: bash
+        run: |
+          set -e
+          FILE="app/src/main/java/com/example/walletapp/ui/screens/LoanManagementScreen.kt"
+          grep -F "درصد سود" "$FILE"
+          grep -F "تعداد اقساط" "$FILE"
+          echo "PASS: Persian UTF-8 markers found"
+
+      - name: CI-15A — Make Gradle executable
         run: chmod +x ./gradlew
 
-      - name: Build Debug APK
+      - name: CI-15A — Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: Run Unit Tests
+      - name: CI-15A — Run Unit Tests
         run: ./gradlew test --stacktrace
 
-
+      - name: CI-15A — COMPLETE
+        run: echo "WALLETAPP CI-15A COMPLETE — ALL CHECKS PASSED"
