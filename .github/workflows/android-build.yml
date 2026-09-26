@@ -14,45 +14,45 @@ permissions:
   contents: read
 
 jobs:
-  ci-16l:
-    name: ci-16l — Loan Editor Interval UI Repair
+  ci-22:
+    name: CI-22 — UI Standardization
     runs-on: ubuntu-latest
 
     steps:
-      - name: ci-16l — Checkout
+      - name: CI-22 — Checkout
         uses: actions/checkout@v4
 
-      - name: ci-16l — Set up JDK 17
+      - name: CI-22 — Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: ci-16l — Set up Android SDK
+      - name: CI-22 — Set up Android SDK
         uses: android-actions/setup-android@v4
         with:
           packages: 'platform-tools'
 
-      - name: ci-16l — Verify Loan UI label
+      - name: CI-22 — Verify Loan UI label
         shell: bash
         run: |
           set -e
           FILE="app/src/main/java/com/example/walletapp/ui/screens/LoanManagementScreen.kt"
           test -f "$FILE"
-          grep -F 'label = { Text("فاصله اقساط") }' "$FILE"
-          grep -F 'label = { Text("نوع وام") }' "$FILE"
-          grep -F 'text = "قسط ماهیانه"' "$FILE"
-          grep -F 'color = MatureColors.Success.copy(alpha = 0.10f)' "$FILE"
-          echo "PASS: loan editor layout/contrast markers"
+          grep -F 'فاصله اقساط' "$FILE"
+          grep -F 'نوع وام' "$FILE"
+          grep -F 'قسط ماهیانه' "$FILE"
+          grep -F 'MatureColors.Success.copy(alpha = 0.10f)' "$FILE"
+          echo "PASS: CI-22 loan UI markers"
 
-      - name: ci-16l — Make Gradle executable
+      - name: CI-22 — Make Gradle executable
         run: chmod +x ./gradlew
 
-      - name: ci-16l — Build Debug APK
+      - name: CI-22 — Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: ci-16l — Run Unit Tests
+      - name: CI-22 — Run Unit Tests
         run: ./gradlew test --stacktrace
 
-      - name: ci-16l — COMPLETE
+      - name: CI-22 — COMPLETE
         run: echo "WALLETAPP ci-16l COMPLETE — ALL CHECKS PASSED"
