@@ -76,6 +76,7 @@ import com.example.walletapp.data.LoanPaymentManager
 import com.example.walletapp.data.LoanType
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.loan.MatureColors
+import com.example.walletapp.reminders.LoanReminderSynchronizer
 import java.util.Calendar
 import java.util.UUID
 import kotlin.math.pow
@@ -358,6 +359,7 @@ fun LoanManagementScreen(
             },
             onSave = { loan ->
                 LoanManager.add(loan)
+                LoanReminderSynchronizer.syncLoan(context, loan)
                 showAddDialog = false
             }
         )
@@ -371,6 +373,7 @@ fun LoanManagementScreen(
             },
             onSave = { updatedLoan ->
                 LoanManager.update(updatedLoan)
+                LoanReminderSynchronizer.syncLoan(context, updatedLoan)
                 editingLoan = null
             }
         )
