@@ -1755,7 +1755,7 @@ private fun LoanEditorDialog(
                         item {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
                                 LoanFormField(
                                     modifier = Modifier.weight(1f),
@@ -1779,53 +1779,50 @@ private fun LoanEditorDialog(
                                     icon = Icons.Filled.Schedule,
                                     keyboardType = KeyboardType.Number
                                 )
+                            }
+                        }
 
-                                Box(modifier = Modifier.weight(1f)) {
-                                    OutlinedTextField(
-                                        value = "هر $intervalMonths ماه",
-                                        onValueChange = {},
-                                        readOnly = true,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(56.dp),
-                                        shape = MaterialTheme.shapes.medium,
-                                        label = { Text("فاصله اقساط") },
-                                        trailingIcon = {
-                                            Icon(
-                                                imageVector = Icons.Filled.Schedule,
-                                                contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.primary
-                                            )
+                        item {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                OutlinedTextField(
+                                    value = "هر $intervalMonths ماه",
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(58.dp)
+                                        .clickable {
+                                            expandedInterval = true
                                         },
-                                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                                    shape = MaterialTheme.shapes.medium,
+                                    label = { Text("فاصله اقساط") },
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Filled.Schedule,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary
                                         )
+                                    },
+                                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                                     )
+                                )
 
-                                    Box(
-                                        modifier = Modifier
-                                            .matchParentSize()
-                                            .clickable {
-                                                expandedInterval = true
+                                DropdownMenu(
+                                    expanded = expandedInterval,
+                                    onDismissRequest = {
+                                        expandedInterval = false
+                                    }
+                                ) {
+                                    listOf(1, 2, 3, 6, 12).forEach { months ->
+                                        DropdownMenuItem(
+                                            text = { Text("هر $months ماه") },
+                                            onClick = {
+                                                intervalMonths = months
+                                                expandedInterval = false
                                             }
-                                    )
-
-                                    DropdownMenu(
-                                        expanded = expandedInterval,
-                                        onDismissRequest = {
-                                            expandedInterval = false
-                                        }
-                                    ) {
-                                        listOf(1, 2, 3, 6, 12).forEach { months ->
-                                            DropdownMenuItem(
-                                                text = { Text("هر $months ماه") },
-                                                onClick = {
-                                                    intervalMonths = months
-                                                    expandedInterval = false
-                                                }
-                                            )
-                                        }
+                                        )
                                     }
                                 }
                             }
@@ -1849,7 +1846,8 @@ private fun LoanEditorDialog(
                                     readOnly = true,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(56.dp),
+                                        .height(58.dp)
+                                        .clickable { expandedType = true },
                                     shape = MaterialTheme.shapes.medium,
                                     label = { Text("نوع وام") },
                                     leadingIcon = {
@@ -1870,12 +1868,6 @@ private fun LoanEditorDialog(
                                         focusedBorderColor = MaterialTheme.colorScheme.primary,
                                         unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                                     )
-                                )
-
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .clickable { expandedType = true }
                                 )
 
                                 DropdownMenu(
@@ -2112,15 +2104,15 @@ private fun LoanAmountCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.primaryContainer,
+        color = MatureColors.Success.copy(alpha = 0.10f),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.16f)
+            MatureColors.Success.copy(alpha = 0.30f)
         )
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -2129,7 +2121,7 @@ private fun LoanAmountCard(
                 Icon(
                     imageVector = Icons.Filled.Payments,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    tint = MatureColors.Success,
                     modifier = Modifier.size(22.dp)
                 )
 
@@ -2139,7 +2131,7 @@ private fun LoanAmountCard(
                     text = "مبلغ وام",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -2154,11 +2146,23 @@ private fun LoanAmountCard(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-                placeholder = { Text("مبلغ وام را وارد کنید") },
-                suffix = { Text("ریال") },
+                placeholder = {
+                    Text(
+                        "مبلغ وام را وارد کنید",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                suffix = {
+                    Text(
+                        "ریال",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
                 colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                    focusedBorderColor = MatureColors.Success,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -2172,10 +2176,10 @@ private fun LoanMonthlyInstallmentCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.tertiaryContainer,
+        color = MatureColors.SecondaryLight.copy(alpha = 0.70f),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.16f)
+            MatureColors.Secondary.copy(alpha = 0.28f)
         )
     ) {
         Row(
@@ -2187,13 +2191,13 @@ private fun LoanMonthlyInstallmentCard(
             Surface(
                 modifier = Modifier.size(42.dp),
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.12f)
+                color = MatureColors.Secondary.copy(alpha = 0.12f)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Filled.Payments,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.tertiary,
+                        tint = MatureColors.Secondary,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -2205,7 +2209,7 @@ private fun LoanMonthlyInstallmentCard(
                 Text(
                     text = "قسط ماهیانه",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Spacer(Modifier.height(2.dp))
@@ -2214,14 +2218,14 @@ private fun LoanMonthlyInstallmentCard(
                     text = value,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
             Text(
                 text = "محاسبه‌شده",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.70f)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
