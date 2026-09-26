@@ -50,6 +50,17 @@ jobs:
       - name: CI-22 — Make Gradle executable
         run: chmod +x ./gradlew
 
+
+      - name: CI-23 — Verify Reminder UI
+        shell: bash
+        run: |
+          FILE="app/src/main/java/com/example/walletapp/ui/screens/ReminderScreen.kt"
+          grep -F 'horizontal = 18.dp' "$FILE"
+          grep -F 'vertical = 18.dp' "$FILE"
+          grep -F 'RoundedCornerShape(24.dp)' "$FILE"
+          grep -F 'defaultElevation = 2.dp' "$FILE"
+          echo "PASS: CI-23 reminder UI markers"
+
       - name: CI-22 — Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
