@@ -165,18 +165,19 @@ fun LoanManagementScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
             contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 16.dp,
+                start = 18.dp,
+                end = 18.dp,
+                top = 18.dp,
                 bottom = 96.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(26.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MatureColors.Surface
                     )
@@ -1797,8 +1798,8 @@ private fun LoanEditorDialog(
                                         readOnly = true,
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(56.dp),
-                                        shape = MaterialTheme.shapes.medium,
+                                            .height(64.dp),
+                                        shape = RoundedCornerShape(18.dp),
                                         label = { Text("فاصله اقساط") },
                                         trailingIcon = {
                                             Icon(
@@ -2002,7 +2003,7 @@ private fun LoanEditorDialog(
                                 onValueChange = { guaranteeNote = it },
                                 modifier = Modifier.fillMaxWidth(),
                                 minLines = 2,
-                                shape = MaterialTheme.shapes.medium,
+                                shape = RoundedCornerShape(18.dp),
                                 label = { Text("ضمانت و توضیحات") },
                                 placeholder = {
                                     Text("توضیحات اختیاری")
@@ -2178,7 +2179,7 @@ private fun LoanFormField(
         onValueChange = onValueChange,
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(58.dp),
         singleLine = true,
         shape = RoundedCornerShape(18.dp),
         label = { Text(label) },
@@ -2244,7 +2245,7 @@ private fun LoanAmountCard(
                     .fillMaxWidth()
                     .height(58.dp),
                 singleLine = true,
-                shape = MaterialTheme.shapes.medium,
+                shape = RoundedCornerShape(18.dp),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
