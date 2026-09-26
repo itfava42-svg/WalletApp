@@ -249,7 +249,7 @@ fun AddReminderScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 18.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
             Spacer(modifier = Modifier.height(2.dp))
@@ -388,7 +388,9 @@ fun AddReminderScreen(
                     title = it
                     errorMessage = null
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp),
                 label = {
                     Text("عنوان یادآوری")
                 },
@@ -396,7 +398,13 @@ fun AddReminderScreen(
                     Text("مثلاً پرداخت قبض برق")
                 },
                 singleLine = true,
-                shape = MaterialTheme.shapes.medium
+                shape = RoundedCornerShape(18.dp),
+                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                )
             )
 
             OutlinedTextField(
@@ -409,7 +417,9 @@ fun AddReminderScreen(
                             ch == '٬'
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp),
                 label = {
                     Text("مبلغ")
                 },
@@ -420,7 +430,13 @@ fun AddReminderScreen(
                     Text("ریال")
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(18.dp),
+                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                )
             )
 
             OutlinedTextField(
@@ -428,7 +444,9 @@ fun AddReminderScreen(
                 onValueChange = {
                     description = it
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 104.dp),
                 label = {
                     Text("توضیحات")
                 },
@@ -437,7 +455,13 @@ fun AddReminderScreen(
                 },
                 minLines = 3,
                 maxLines = 5,
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(18.dp),
+                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                )
             )
 
             SectionTitle(
@@ -654,7 +678,7 @@ private fun ReminderTypeTile(
                 if (selected)
                     color.copy(alpha = 0.12f)
                 else
-                    Color.White
+                    MaterialTheme.colorScheme.surface
         ),
         border =
             if (selected)
@@ -733,7 +757,7 @@ private fun InfoTile(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Row(
@@ -796,7 +820,7 @@ private fun RepeatTile(
             if (selected)
                 color.copy(alpha = 0.10f)
             else
-                Color.White,
+                MaterialTheme.colorScheme.surface,
         border =
             if (selected)
                 androidx.compose.foundation.BorderStroke(
