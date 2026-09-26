@@ -1304,59 +1304,84 @@ private fun LoanInstallmentsDialog(
                                     }
 
                                     if (isPaid) {
-                                        Text(
-                                            text = "پرداخت شده",
-                                            fontSize = 11.sp,
-                                            fontWeight =
-                                                FontWeight.Bold,
-                                            color =
-                                                MatureColors.Success
-                                        )
-                                    } else {
-                                        TextButton(
-                                            onClick = {
-                                                historicalInstallmentNumber = number
-                                                historicalDate = dueDate
-                                                historicalAmount = currentLoan.installmentAmount.toString()
-                                                historicalPaymentError = null
-                                            }
+                                        Surface(
+                                            shape = RoundedCornerShape(12.dp),
+                                            color = MatureColors.Success.copy(alpha = 0.10f)
                                         ) {
                                             Text(
-                                                text = "ثبت سابقه پرداخت",
-                                                fontSize = 12.sp
+                                                text = "پرداخت شده",
+                                                modifier = Modifier.padding(
+                                                    horizontal = 12.dp,
+                                                    vertical = 8.dp
+                                                ),
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MatureColors.Success
                                             )
                                         }
-
-                                        Button(
-                                            onClick = {
-                                                val alreadyPaid =
-                                                    LoanStore
-                                                        .getById(
-                                                            currentLoan.id
-                                                        )
-                                                        ?.payments
-                                                        ?.any {
-                                                            it.installmentNumber ==
-                                                                number
-                                                        } == true
-
-                                                if (!alreadyPaid) {
-                                                    selectedInstallmentNumber = number
-                                                    selectedAccountId = null
-                                                }
-                                            },
-                                            colors =
-                                                ButtonDefaults.buttonColors(
-                                                    containerColor =
-                                                        MatureColors.Primary
-                                                ),
-                                            shape =
-                                                RoundedCornerShape(11.dp)
+                                    } else {
+                                        Column(
+                                            modifier = Modifier.width(150.dp),
+                                            verticalArrangement = Arrangement.spacedBy(7.dp),
+                                            horizontalAlignment = Alignment.End
                                         ) {
-                                            Text(
-                                                text = "ثبت پرداخت",
-                                                fontSize = 13.sp
-                                            )
+                                            Button(
+                                                onClick = {
+                                                    val alreadyPaid =
+                                                        LoanStore
+                                                            .getById(
+                                                                currentLoan.id
+                                                            )
+                                                            ?.payments
+                                                            ?.any {
+                                                                it.installmentNumber ==
+                                                                    number
+                                                            } == true
+
+                                                    if (!alreadyPaid) {
+                                                        selectedInstallmentNumber = number
+                                                        selectedAccountId = null
+                                                    }
+                                                },
+                                                modifier = Modifier.fillMaxWidth(),
+                                                colors =
+                                                    ButtonDefaults.buttonColors(
+                                                        containerColor =
+                                                            MatureColors.Primary
+                                                    ),
+                                                shape =
+                                                    RoundedCornerShape(11.dp),
+                                                contentPadding = PaddingValues(
+                                                    horizontal = 10.dp,
+                                                    vertical = 8.dp
+                                                )
+                                            ) {
+                                                Text(
+                                                    text = "ثبت پرداخت",
+                                                    fontSize = 12.sp,
+                                                    maxLines = 1
+                                                )
+                                            }
+
+                                            TextButton(
+                                                onClick = {
+                                                    historicalInstallmentNumber = number
+                                                    historicalDate = dueDate
+                                                    historicalAmount = currentLoan.installmentAmount.toString()
+                                                    historicalPaymentError = null
+                                                },
+                                                modifier = Modifier.fillMaxWidth(),
+                                                contentPadding = PaddingValues(
+                                                    horizontal = 8.dp,
+                                                    vertical = 4.dp
+                                                )
+                                            ) {
+                                                Text(
+                                                    text = "ثبت سابقه پرداخت",
+                                                    fontSize = 11.sp,
+                                                    maxLines = 1
+                                                )
+                                            }
                                         }
                                     }
                                 }
