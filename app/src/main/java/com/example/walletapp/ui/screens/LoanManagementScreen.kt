@@ -1932,7 +1932,7 @@ private fun LoanEditorDialog(
                                         }
                                         if (paidInstallmentNumbers.isNotEmpty()) {
                                             Text(
-                                                text = "اقساط ثبت‌شده: \${paidInstallmentNumbers.joinToString("، ")}",
+                                                text = "اقساط ثبت‌شده: " + paidInstallmentNumbers.joinToString("، "),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 fontWeight = FontWeight.SemiBold
                                             )
