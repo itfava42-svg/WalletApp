@@ -252,7 +252,7 @@ fun AddReminderScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
 
             Spacer(modifier = Modifier.height(2.dp))
@@ -262,7 +262,7 @@ fun AddReminderScreen(
              */
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 ),
@@ -273,7 +273,7 @@ fun AddReminderScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(18.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -308,7 +308,7 @@ fun AddReminderScreen(
                                 title.ifBlank {
                                     "عنوان یادآوری"
                                 },
-                            fontSize = 17.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = TextDark
                         )
@@ -321,7 +321,7 @@ fun AddReminderScreen(
                                     "یادآوری پرداخت"
                                 else
                                     "یادآوری دریافت",
-                            fontSize = 12.sp,
+                            fontSize = 11.sp,
                             color = selectedKindColor
                         )
                     }
@@ -333,7 +333,7 @@ fun AddReminderScreen(
                             Text(
                                 text = amountText,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
+                                fontSize = 14.sp,
                                 color = TextDark
                             )
 
@@ -399,7 +399,7 @@ fun AddReminderScreen(
                     Text("مثلاً پرداخت قبض برق")
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(20.dp)
             )
 
             OutlinedTextField(
@@ -546,11 +546,11 @@ fun AddReminderScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(58.dp),
                 onClick = {
                     save()
                 },
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(18.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Save,
@@ -570,7 +570,7 @@ fun AddReminderScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 
@@ -649,7 +649,7 @@ private fun ReminderTypeTile(
 ) {
     Card(
         modifier = modifier
-            .height(112.dp)
+            .height(100.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
@@ -708,13 +708,13 @@ private fun ReminderTypeTile(
                 Text(
                     text = title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp
+                    fontSize = 13.sp
                 )
 
                 Text(
                     text = subtitle,
                     color = TextGray,
-                    fontSize = 10.sp
+                    fontSize = 9.sp
                 )
             }
         }
@@ -732,7 +732,7 @@ private fun InfoTile(
 ) {
     Card(
         modifier = modifier
-            .height(92.dp)
+            .height(82.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
@@ -765,7 +765,7 @@ private fun InfoTile(
             Column {
                 Text(
                     text = title,
-                    fontSize = 11.sp,
+                    fontSize = 10.sp,
                     color = TextGray
                 )
 
@@ -773,7 +773,7 @@ private fun InfoTile(
 
                 Text(
                     text = value,
-                    fontSize = 14.sp,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
                     color = TextDark
                 )
@@ -794,7 +794,7 @@ private fun RepeatTile(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(17.dp),
         color =
             if (selected)
                 color.copy(alpha = 0.10f)
