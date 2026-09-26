@@ -43,7 +43,9 @@ jobs:
           grep -F 'نوع وام' "$FILE"
           grep -F 'قسط ماهیانه' "$FILE"
           grep -F 'MatureColors.Success.copy(alpha = 0.10f)' "$FILE"
-          echo "PASS: CI-22 loan UI markers"
+          grep -F 'RadioButton(' "$FILE"
+          grep -F 'LoanReminderSynchronizer.syncLoan(context, loan)' "$FILE"
+          echo "PASS: CI-22 loan reminder integration markers"
 
       - name: CI-22 — Make Gradle executable
         run: chmod +x ./gradlew
