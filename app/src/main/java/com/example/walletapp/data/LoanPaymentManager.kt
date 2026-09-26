@@ -140,4 +140,39 @@ object LoanPaymentManager {
 
         return true
     }
+    /**
+     * Records a historical installment payment without creating a financial transaction.
+     * This is intended for installments that were paid before the loan was entered into WalletApp.
+     */
+    fun recordHistoricalInstallmentPayment(
+        context: Context,
+        loan: LoanEntry,
+        installmentNumber: Int,
+        amount: Long,
+        dateLabel: String,
+    ): Boolean {
+        LoanStore.attachContext(context)
+        if (
+            installmentNumber !in 1..loan.totalInstallments ||
+            amount <= 0L ||
+            dateLabel.isBlank()
+        ) {
+            return false
+        }
+        val currentLoan = LoanStore.getById(loan.id) ?: return false
+        if (currentLoan.payments.any { it.installmentNumber == installmentNumber }) {
+            return false
+        }
+        return LoanStore.addPayment(
+            loanId = currentLoan.id,
+            payment = LoanPayment(
+                id = UUID.randomUUID().toString(),
+                installmentNumber = installmentNumber,
+                amount = amount,
+                dateLabel = dateLabel.trim(),
+                transactionId = null,
+            )
+        )
+    }
+
 }
