@@ -211,40 +211,35 @@ fun AddReminderScreen(
         containerColor = Background,
 
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text =
-                                if (existingReminder == null)
-                                    "افزودن یادآوری"
-                                else
-                                    "ویرایش یادآوری",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
-
-                        Text(
-                            text = "یادآوری‌های مالی خود را مدیریت کنید",
-                            fontSize = 11.sp,
-                            color = TextGray
-                        )
-                    }
-                },
-
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "بازگشت"
-                        )
-                    }
-                },
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background
-                )
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(start = 20.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = if (existingReminder == null) "افزودن یادآوری" else "ویرایش یادآوری",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        text = "اطلاعات یادآوری را وارد کنید",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "بازگشت",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         }
     ) { paddingValues ->
 
