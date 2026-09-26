@@ -1761,13 +1761,15 @@ private fun LoanEditorDialog(
                         item {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 LoanFormField(
                                     modifier = Modifier.weight(1f),
                                     label = "درصد سود",
                                     value = interestText,
-                                    onValueChange = { interestText = normalizeLoanDigits(it) },
+                                    onValueChange = {
+                                        interestText = normalizeLoanDigits(it)
+                                    },
                                     placeholder = "۰",
                                     icon = Icons.Filled.Percent,
                                     keyboardType = KeyboardType.Decimal
@@ -1785,50 +1787,55 @@ private fun LoanEditorDialog(
                                     icon = Icons.Filled.Schedule,
                                     keyboardType = KeyboardType.Number
                                 )
-                            }
-                        }
 
-                        item {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                OutlinedTextField(
-                                    value = "هر $intervalMonths ماه",
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(58.dp)
-                                        .clickable {
-                                            expandedInterval = true
-                                        },
-                                    shape = MaterialTheme.shapes.medium,
-                                    label = { Text("فاصله اقساط") },
-                                    trailingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Filled.Schedule,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary
-                                        )
-                                    },
-                                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                                    )
-                                )
-
-                                DropdownMenu(
-                                    expanded = expandedInterval,
-                                    onDismissRequest = {
-                                        expandedInterval = false
-                                    }
+                                Box(
+                                    modifier = Modifier.weight(1f)
                                 ) {
-                                    listOf(1, 2, 3, 6, 12).forEach { months ->
-                                        DropdownMenuItem(
-                                            text = { Text("هر $months ماه") },
-                                            onClick = {
-                                                intervalMonths = months
-                                                expandedInterval = false
-                                            }
+                                    OutlinedTextField(
+                                        value = "هر $intervalMonths ماه",
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(56.dp),
+                                        shape = MaterialTheme.shapes.medium,
+                                        label = { Text("فاصله") },
+                                        trailingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Filled.Schedule,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary
+                                            )
+                                        },
+                                        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                                         )
+                                    )
+
+                                    Box(
+                                        modifier = Modifier
+                                            .matchParentSize()
+                                            .clickable {
+                                                expandedInterval = true
+                                            }
+                                    )
+
+                                    DropdownMenu(
+                                        expanded = expandedInterval,
+                                        onDismissRequest = {
+                                            expandedInterval = false
+                                        }
+                                    ) {
+                                        listOf(1, 2, 3, 6, 12).forEach { months ->
+                                            DropdownMenuItem(
+                                                text = { Text("هر $months ماه") },
+                                                onClick = {
+                                                    intervalMonths = months
+                                                    expandedInterval = false
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -2704,7 +2711,6 @@ private fun calculateMonthlyInstallment(
 
     return payment.toLong()
 }
-
 
 
 
