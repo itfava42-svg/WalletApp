@@ -14,6 +14,11 @@ enum class LoanType(val label: String) {
     OTHER("سایر")
 }
 
+enum class LoanTrackingMode(val label: String) {
+    NEW("وام جدید"),
+    EXISTING("وام قبلی")
+}
+
 data class LoanPayment(
     val id: String,
     val installmentNumber: Int,
@@ -39,7 +44,12 @@ data class LoanEntry(
     val firstInstallmentDay: Int?,
     val guaranteeNote: String,
     val reminderEnabled: Boolean,
-    val payments: List<LoanPayment>
+    val payments: List<LoanPayment>,
+    val trackingMode: LoanTrackingMode = LoanTrackingMode.NEW,
+    val historicalPaidInstallments: Int = 0,
+    val trackingStartYear: Int? = null,
+    val trackingStartMonth: Int? = null,
+    val trackingStartDay: Int? = null
 )
 
 object LoanStore {
@@ -134,7 +144,36 @@ object LoanStore {
                             item.optString("guaranteeNote", ""),
                         reminderEnabled =
                             item.optBoolean("reminderEnabled", false),
-                        payments = payments
+                        payments = payments,
+                        trackingMode =
+                            runCatching {
+                                LoanTrackingMode.valueOf(
+                                    item.optString(
+                                        "trackingMode",
+                                        LoanTrackingMode.NEW.name
+                                    )
+                                )
+                            }.getOrDefault(LoanTrackingMode.NEW),
+                        historicalPaidInstallments =
+                            item.optInt(
+                                "historicalPaidInstallments",
+                                0
+                            ).coerceAtLeast(0),
+                        trackingStartYear =
+                            if (item.isNull("trackingStartYear"))
+                                null
+                            else
+                                item.optInt("trackingStartYear"),
+                        trackingStartMonth =
+                            if (item.isNull("trackingStartMonth"))
+                                null
+                            else
+                                item.optInt("trackingStartMonth"),
+                        trackingStartDay =
+                            if (item.isNull("trackingStartDay"))
+                                null
+                            else
+                                item.optInt("trackingStartDay")
                     )
                 )
             }
@@ -202,6 +241,29 @@ object LoanStore {
 
             item.put("guaranteeNote", loan.guaranteeNote)
             item.put("reminderEnabled", loan.reminderEnabled)
+            item.put("trackingMode", loan.trackingMode.name)
+            item.put(
+                "historicalPaidInstallments",
+                loan.historicalPaidInstallments
+            )
+
+            if (loan.trackingStartYear == null) {
+                item.put("trackingStartYear", JSONObject.NULL)
+            } else {
+                item.put("trackingStartYear", loan.trackingStartYear)
+            }
+
+            if (loan.trackingStartMonth == null) {
+                item.put("trackingStartMonth", JSONObject.NULL)
+            } else {
+                item.put("trackingStartMonth", loan.trackingStartMonth)
+            }
+
+            if (loan.trackingStartDay == null) {
+                item.put("trackingStartDay", JSONObject.NULL)
+            } else {
+                item.put("trackingStartDay", loan.trackingStartDay)
+            }
 
             val paymentsArray = JSONArray()
 
@@ -305,8 +367,3 @@ object LoanStore {
         )
     }
 }
-
-
-
-
-
