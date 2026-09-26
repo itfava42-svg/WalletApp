@@ -1,4 +1,4 @@
-package com.example.walletapp.ui.screens
+﻿package com.example.walletapp.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.RadioButton
@@ -1859,25 +1859,46 @@ private fun LoanEditorDialog(
                                     readOnly = true,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(58.dp)
+                                        .height(64.dp)
                                         .clickable { expandedType = true },
-                                    shape = MaterialTheme.shapes.medium,
-                                    label = { Text("نوع وام") },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Filled.AccountBalance,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary
+                                    shape = RoundedCornerShape(18.dp),
+                                    label = {
+                                        Text(
+                                            text = "نوع وام",
+                                            maxLines = 1
                                         )
+                                    },
+                                    leadingIcon = {
+                                        Surface(
+                                            modifier = Modifier.size(36.dp),
+                                            shape = RoundedCornerShape(12.dp),
+                                            color = MaterialTheme.colorScheme.primary.copy(
+                                                alpha = 0.10f
+                                            )
+                                        ) {
+                                            Box(
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.AccountBalance,
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier.size(20.dp)
+                                                )
+                                            }
+                                        }
                                     },
                                     trailingIcon = {
                                         Icon(
                                             imageVector = Icons.Filled.MoreVert,
                                             contentDescription = "انتخاب نوع وام",
-                                            tint = MaterialTheme.colorScheme.primary
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(22.dp)
                                         )
                                     },
                                     colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                                         focusedBorderColor = MaterialTheme.colorScheme.primary,
                                         unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                                     )
@@ -2159,7 +2180,7 @@ private fun LoanFormField(
             .fillMaxWidth()
             .height(56.dp),
         singleLine = true,
-        shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(18.dp),
         label = { Text(label) },
         placeholder = { Text(placeholder) },
         leadingIcon = {
@@ -2184,11 +2205,11 @@ private fun LoanAmountCard(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        color = MatureColors.Success.copy(alpha = 0.10f),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.72f),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            MatureColors.Success.copy(alpha = 0.30f)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
         )
     ) {
         Column(
@@ -2202,7 +2223,7 @@ private fun LoanAmountCard(
                 Icon(
                     imageVector = Icons.Filled.Payments,
                     contentDescription = null,
-                    tint = MatureColors.Success,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(22.dp)
                 )
 
@@ -2240,7 +2261,7 @@ private fun LoanAmountCard(
                     )
                 },
                 colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MatureColors.Success,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
                     unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface
@@ -2256,11 +2277,11 @@ private fun LoanMonthlyInstallmentCard(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        color = MatureColors.SecondaryLight.copy(alpha = 0.70f),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.72f),
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            MatureColors.Secondary.copy(alpha = 0.28f)
+            MaterialTheme.colorScheme.secondary.copy(alpha = 0.25f)
         )
     ) {
         Row(
@@ -2272,13 +2293,13 @@ private fun LoanMonthlyInstallmentCard(
             Surface(
                 modifier = Modifier.size(42.dp),
                 shape = MaterialTheme.shapes.medium,
-                color = MatureColors.Secondary.copy(alpha = 0.12f)
+                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Filled.Payments,
                         contentDescription = null,
-                        tint = MatureColors.Secondary,
+                        tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -2328,9 +2349,9 @@ private fun LoanDateField(
         readOnly = true,
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(64.dp)
             .clickable { showPicker = true },
-        shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(18.dp),
         label = { Text(label) },
         placeholder = { Text("انتخاب تاریخ") },
         trailingIcon = {
@@ -2449,8 +2470,10 @@ private fun LoanInputTile(
                 placeholder = { Text("وارد کنید") },
                 colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                )
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+        )
             )
         }
     }
@@ -2711,6 +2734,9 @@ private fun calculateMonthlyInstallment(
 
     return payment.toLong()
 }
+
+
+
 
 
 
