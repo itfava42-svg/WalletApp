@@ -2455,17 +2455,18 @@ private fun LoanDateField(
         readOnly = true,
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
-            .clickable { showPicker = true },
+            .height(64.dp),
         shape = RoundedCornerShape(18.dp),
         label = { Text(label) },
         placeholder = { Text("انتخاب تاریخ") },
         trailingIcon = {
-            Icon(
-                imageVector = Icons.Filled.CalendarMonth,
-                contentDescription = "انتخاب تاریخ",
-                tint = MaterialTheme.colorScheme.primary
-            )
+            IconButton(onClick = { showPicker = true }) {
+                Icon(
+                    imageVector = Icons.Filled.CalendarMonth,
+                    contentDescription = "انتخاب تاریخ",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         },
         colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
