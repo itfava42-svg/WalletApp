@@ -252,7 +252,7 @@ fun AddReminderScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
 
             Spacer(modifier = Modifier.height(2.dp))
@@ -262,7 +262,7 @@ fun AddReminderScreen(
              */
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 ),
@@ -273,7 +273,7 @@ fun AddReminderScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(18.dp),
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -399,7 +399,7 @@ fun AddReminderScreen(
                     Text("مثلاً پرداخت قبض برق")
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(14.dp)
             )
 
             OutlinedTextField(
@@ -546,11 +546,11 @@ fun AddReminderScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(58.dp),
+                    .height(52.dp),
                 onClick = {
                     save()
                 },
-                shape = RoundedCornerShape(18.dp)
+                shape = RoundedCornerShape(14.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Save,
@@ -570,7 +570,7 @@ fun AddReminderScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 
@@ -794,7 +794,7 @@ private fun RepeatTile(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(17.dp),
+        shape = RoundedCornerShape(14.dp),
         color =
             if (selected)
                 color.copy(alpha = 0.10f)
