@@ -58,5 +58,13 @@ jobs:
       - name: CI-15A — Run Unit Tests
         run: ./gradlew test --stacktrace
 
+      - name: CI-18 — Publish Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: WalletApp-CI-18-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
+
       - name: CI-15A — COMPLETE
         run: echo "WALLETAPP CI-15A COMPLETE — ALL CHECKS PASSED"
