@@ -49,6 +49,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
@@ -1643,6 +1644,8 @@ private fun LoanEditorDialog(
         mutableStateOf(existingLoan?.reminderEnabled ?: false)
     }
 
+    var validationMessage by remember { mutableStateOf<String?>(null) }
+
     var expandedType by remember { mutableStateOf(false) }
     var expandedInterval by remember { mutableStateOf(false) }
 
@@ -1750,7 +1753,7 @@ private fun LoanEditorDialog(
                             LoanAmountCard(
                                 value = amountText,
                                 onValueChange = {
-                                    amountText = it.filter { c -> c.isDigit() }
+                                    amountText = normalizeLoanDigits(it).filter { c -> c.isDigit() }
                                 }
                             )
                         }
@@ -1764,7 +1767,7 @@ private fun LoanEditorDialog(
                                     modifier = Modifier.weight(1f),
                                     label = "درصد سود",
                                     value = interestText,
-                                    onValueChange = { interestText = it },
+                                    onValueChange = { interestText = normalizeLoanDigits(it) },
                                     placeholder = "۰",
                                     icon = Icons.Filled.Percent,
                                     keyboardType = KeyboardType.Decimal
@@ -1776,7 +1779,7 @@ private fun LoanEditorDialog(
                                     value = totalInstallmentsText,
                                     onValueChange = {
                                         totalInstallmentsText =
-                                            it.filter { c -> c.isDigit() }
+                                            normalizeLoanDigits(it).filter { c -> c.isDigit() }
                                     },
                                     placeholder = "۱۲",
                                     icon = Icons.Filled.Schedule,
@@ -1928,6 +1931,44 @@ private fun LoanEditorDialog(
                         }
 
                         item {
+                            Surface(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = MaterialTheme.shapes.large,
+                                color = MaterialTheme.colorScheme.surface,
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.outlineVariant
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(14.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            text = "یادآوری وام",
+                                            style = MaterialTheme.typography.titleSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Spacer(Modifier.height(3.dp))
+                                        Text(
+                                            text = "برای اقساط این وام یادآوری خودکار ایجاد شود",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                    Switch(
+                                        checked = reminderEnabled,
+                                        onCheckedChange = { reminderEnabled = it }
+                                    )
+                                }
+                            }
+                        }
+
+                        item {
                             OutlinedTextField(
                                 value = guaranteeNote,
                                 onValueChange = { guaranteeNote = it },
@@ -1944,6 +1985,17 @@ private fun LoanEditorDialog(
                                 )
                             )
                         }
+                    }
+
+                    if (validationMessage != null) {
+                        Text(
+                            text = validationMessage!!,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp, top = 4.dp),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
                     }
 
                     Row(
@@ -1988,12 +2040,28 @@ private fun LoanEditorDialog(
                                 val firstParts =
                                     parseJalaliDate(firstInstallmentDate)
 
-                                if (
-                                    title.isBlank() ||
-                                    amount <= 0 ||
-                                    installments <= 0 ||
-                                    startParts == null
-                                ) {
+                                if (title.isBlank()) {
+                                    validationMessage = "نام وام را وارد کنید"
+                                    return@Button
+                                }
+
+                                if (amount <= 0L) {
+                                    validationMessage = "مبلغ وام را وارد کنید"
+                                    return@Button
+                                }
+
+                                if (installments <= 0) {
+                                    validationMessage = "تعداد اقساط را وارد کنید"
+                                    return@Button
+                                }
+
+                                if (startParts == null) {
+                                    validationMessage = "تاریخ دریافت وام را انتخاب کنید"
+                                    return@Button
+                                }
+
+                                if (reminderEnabled && firstParts == null) {
+                                    validationMessage = "برای فعال‌سازی یادآوری، تاریخ اولین قسط را انتخاب کنید"
                                     return@Button
                                 }
 
@@ -2004,8 +2072,11 @@ private fun LoanEditorDialog(
                                     existingLoan != null &&
                                     installments < paidInstallmentCount
                                 ) {
+                                    validationMessage = "تعداد اقساط نمی‌تواند از اقساط پرداخت‌شده کمتر باشد"
                                     return@Button
                                 }
+
+                                validationMessage = null
 
                                 val finalInstallment =
                                     if (calculatedInstallment > 0) {
@@ -2591,6 +2662,15 @@ private fun parseJalaliDate(
         day
     )
 }
+
+private fun normalizeLoanDigits(value: String): String =
+    value.map { ch ->
+        when (ch) {
+            in '۰'..'۹' -> ('0'.code + (ch.code - '۰'.code)).toChar()
+            in '٠'..'٩' -> ('0'.code + (ch.code - '٠'.code)).toChar()
+            else -> ch
+        }
+    }.joinToString("")
 
 private fun calculateMonthlyInstallment(
     principal: Long,
