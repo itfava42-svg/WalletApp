@@ -282,8 +282,8 @@ fun ReminderScreen(
 
             contentPadding =
                 androidx.compose.foundation.layout.PaddingValues(
-                    horizontal = 16.dp,
-                    vertical = 16.dp
+                    horizontal = 18.dp,
+                    vertical = 18.dp
                 ),
 
             verticalArrangement =
@@ -427,7 +427,7 @@ private fun ReminderHeader(
                 ),
             elevation =
                 CardDefaults.cardElevation(
-                    defaultElevation = 3.dp
+                    defaultElevation = 2.dp
                 )
         ) {
 
@@ -867,7 +867,7 @@ private fun ReminderItemCard(
     Card(
         modifier =
             Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp)
+        shape = RoundedCornerShape(24.dp)
     ) {
 
         Column(
