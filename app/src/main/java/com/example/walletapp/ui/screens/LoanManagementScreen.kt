@@ -1799,7 +1799,7 @@ private fun LoanEditorDialog(
                                             .fillMaxWidth()
                                             .height(56.dp),
                                         shape = MaterialTheme.shapes.medium,
-                                        label = { Text("فاصله") },
+                                        label = { Text("فاصله اقساط") },
                                         trailingIcon = {
                                             Icon(
                                                 imageVector = Icons.Filled.Schedule,
