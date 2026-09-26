@@ -1162,11 +1162,16 @@ private fun LoanInstallmentsDialog(
                     }
                 }
 
-                if (
-                    firstYear == null ||
-                    firstMonth == null ||
-                    firstDay == null
-                ) {
+                val hasDueDateBase =
+                    (firstYear != null && firstMonth != null && firstDay != null) ||
+                        (
+                            currentLoan.trackingMode == LoanTrackingMode.EXISTING &&
+                                currentLoan.trackingStartYear != null &&
+                                currentLoan.trackingStartMonth != null &&
+                                currentLoan.trackingStartDay != null
+                            )
+
+                if (!hasDueDateBase) {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(20.dp),
