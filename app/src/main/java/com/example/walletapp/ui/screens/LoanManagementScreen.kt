@@ -49,7 +49,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
@@ -406,6 +406,10 @@ fun LoanManagementScreen(
             confirmButton = {
                 Button(
                     onClick = {
+                        LoanReminderSynchronizer.removeLoan(
+                            context,
+                            loan.id
+                        )
                         LoanManager.remove(loan.id)
                         deleteLoan = null
                     }
@@ -1989,9 +1993,11 @@ private fun LoanEditorDialog(
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
-                                    Switch(
-                                        checked = reminderEnabled,
-                                        onCheckedChange = { reminderEnabled = it }
+                                    RadioButton(
+                                        selected = reminderEnabled,
+                                        onClick = {
+                                            reminderEnabled = !reminderEnabled
+                                        }
                                     )
                                 }
                             }
