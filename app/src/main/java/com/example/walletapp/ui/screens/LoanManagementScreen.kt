@@ -78,6 +78,7 @@ import com.example.walletapp.data.LoanManager
 import com.example.walletapp.data.LoanPaymentDateValidator
 import com.example.walletapp.data.LoanPaymentManager
 import com.example.walletapp.data.LoanType
+import com.example.walletapp.data.LoanTrackingMode
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.loan.MatureColors
 import java.util.Calendar
@@ -123,8 +124,7 @@ fun LoanManagementScreen(
 
     val totalPaidInstallments =
         LoanStore.loans.sumOf { loan ->
-            loan.payments.size
-                .coerceAtMost(loan.totalInstallments)
+            loan.paidInstallmentNumbers().size
         }
 
     val totalInstallments =
@@ -656,8 +656,7 @@ private fun LoanCard(
     onInstallments: () -> Unit
 ) {
     val paidCount =
-        loan.payments.size
-            .coerceAtMost(loan.totalInstallments)
+        loan.paidInstallmentNumbers().size
 
     val remainingCount =
         (loan.totalInstallments - paidCount)
@@ -897,8 +896,7 @@ private fun LoanCard(
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Payments,
-                    contentDescription = null
+                    imageVector = Icons.Filled.Payments,                    contentDescription = null
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -1098,14 +1096,10 @@ private fun LoanInstallmentsDialog(
         currentLoan.firstInstallmentDay
 
     val paidInstallments =
-        currentLoan.payments
-            .map { it.installmentNumber }
-            .filter { it > 0 }
-            .toSet()
+        currentLoan.paidInstallmentNumbers()
 
     val paidCount =
-        currentLoan.payments.size
-            .coerceAtMost(currentLoan.totalInstallments)
+        paidInstallments.size
 
     val remainingCount =
         (currentLoan.totalInstallments - paidCount)
@@ -1204,14 +1198,7 @@ private fun LoanInstallmentsDialog(
                                     .contains(number)
 
                             val dueDate =
-                                calculateLoanInstallmentDate(
-                                    year = firstYear,
-                                    month = firstMonth,
-                                    day = firstDay,
-                                    monthsToAdd =
-                                        (number - 1) *
-                                            currentLoan.intervalMonths
-                                )
+                                currentLoan.installmentDueDate(number)
 
                             Surface(
                                 modifier = Modifier.fillMaxWidth(),
@@ -1546,6 +1533,39 @@ private fun LoanInstallmentsDialog(
         )
     }}
 
+private fun LoanEntry.paidInstallmentNumbers(): Set<Int> {
+    val historical = if (trackingMode == LoanTrackingMode.EXISTING) {
+        (1..historicalPaidInstallments.coerceAtMost(totalInstallments)).toSet()
+    } else emptySet()
+    val recorded = payments.map { it.installmentNumber }
+        .filter { it in 1..totalInstallments }.toSet()
+    return historical + recorded
+}
+
+private fun LoanEntry.installmentDueDate(installmentNumber: Int): String {
+    if (trackingMode == LoanTrackingMode.EXISTING &&
+        trackingStartYear != null && trackingStartMonth != null && trackingStartDay != null &&
+        installmentNumber > historicalPaidInstallments
+    ) {
+        return calculateLoanInstallmentDate(
+            year = trackingStartYear,
+            month = trackingStartMonth,
+            day = trackingStartDay,
+            monthsToAdd = (installmentNumber - historicalPaidInstallments - 1) * intervalMonths
+        )
+    }
+    val year = firstInstallmentYear
+    val month = firstInstallmentMonth
+    val day = firstInstallmentDay
+    if (year == null || month == null || day == null) return "—"
+    return calculateLoanInstallmentDate(
+        year = year,
+        month = month,
+        day = day,
+        monthsToAdd = (installmentNumber - 1) * intervalMonths
+    )
+}
+
 private fun calculateLoanInstallmentDate(
     year: Int,
     month: Int,
@@ -1610,6 +1630,17 @@ private fun LoanEditorFullScreen(
     }
     var guaranteeNote by remember { mutableStateOf(existingLoan?.guaranteeNote ?: "") }
     var reminderEnabled by remember { mutableStateOf(existingLoan?.reminderEnabled ?: false) }
+    var trackingMode by remember { mutableStateOf(existingLoan?.trackingMode ?: LoanTrackingMode.NEW) }
+    var historicalPaidText by remember { mutableStateOf(existingLoan?.historicalPaidInstallments?.toString() ?: "0") }
+    var trackingStartDate by remember {
+        mutableStateOf(
+            existingLoan?.let {
+                if (it.trackingStartYear != null && it.trackingStartMonth != null && it.trackingStartDay != null) {
+                    "${it.trackingStartYear}/${it.trackingStartMonth.toString().padStart(2, '0')}/${it.trackingStartDay.toString().padStart(2, '0')}"
+                } else JalaliCalendar.todaySlashed()
+            } ?: JalaliCalendar.todaySlashed()
+        )
+    }
     var expandedType by remember { mutableStateOf(false) }
     var expandedInterval by remember { mutableStateOf(false) }
 
@@ -1627,10 +1658,19 @@ private fun LoanEditorFullScreen(
         val installments = totalInstallmentsText.toIntOrNull() ?: 0
         val startParts = parseJalaliDate(startDate)
         val firstParts = parseJalaliDate(firstInstallmentDate)
+        val trackingParts = if (trackingMode == LoanTrackingMode.EXISTING) parseJalaliDate(trackingStartDate) else null
+        val historicalPaid = historicalPaidText.toIntOrNull() ?: 0
+        val actualPaidInstallmentCount = existingLoan?.payments
+            ?.map { it.installmentNumber }
+            ?.filter { it > 0 }
+            ?.toSet()
+            ?.size ?: 0
+        val totalPaidCount = if (trackingMode == LoanTrackingMode.EXISTING) historicalPaid + actualPaidInstallmentCount else actualPaidInstallmentCount
 
         if (title.isBlank() || amount <= 0 || installments <= 0 || startParts == null) return
-        val paidInstallmentCount = existingLoan?.payments?.size ?: 0
-        if (existingLoan != null && installments < paidInstallmentCount) return
+        if (historicalPaid !in 0..installments) return
+        if (trackingMode == LoanTrackingMode.EXISTING && trackingParts == null) return
+        if (installments < totalPaidCount) return
 
         val finalInstallment = if (calculatedInstallment > 0) calculatedInstallment
         else installmentText.toLongOrNull() ?: 0L
@@ -1653,7 +1693,12 @@ private fun LoanEditorFullScreen(
                 firstInstallmentDay = firstParts?.get(2),
                 guaranteeNote = guaranteeNote.trim(),
                 reminderEnabled = reminderEnabled,
-                payments = existingLoan?.payments ?: emptyList()
+                payments = existingLoan?.payments ?: emptyList(),
+                trackingMode = trackingMode,
+                historicalPaidInstallments = historicalPaid,
+                trackingStartYear = trackingParts?.get(0),
+                trackingStartMonth = trackingParts?.get(1),
+                trackingStartDay = trackingParts?.get(2)
             )
         )
     }
@@ -1797,8 +1842,7 @@ private fun LoanEditorFullScreen(
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
                         label = { Text("نام وام") },
-                        placeholder = { Text("مثلاً وام خرید") },
-                        leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
+                        placeholder = { Text("مثلاً وام خرید") },                        leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                     )
                     Spacer(Modifier.height(10.dp))
                     OutlinedTextField(
@@ -1813,6 +1857,67 @@ private fun LoanEditorFullScreen(
                         leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
+                }
+            }
+
+            item {
+                LoanEditorDashboardCard(title = "وضعیت وام") {
+                    Text(
+                        text = "مشخص کنید این وام را از ابتدا ثبت می‌کنید یا ادامه وضعیت قبلی را پیگیری می‌کنید.",
+                        fontSize = 11.sp,
+                        color = MatureColors.TextSecondary
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        LoanTrackingModeCard(
+                            modifier = Modifier.weight(1f),
+                            mode = LoanTrackingMode.NEW,
+                            selected = trackingMode == LoanTrackingMode.NEW,
+                            onClick = { trackingMode = LoanTrackingMode.NEW }
+                        )
+                        LoanTrackingModeCard(
+                            modifier = Modifier.weight(1f),
+                            mode = LoanTrackingMode.EXISTING,
+                            selected = trackingMode == LoanTrackingMode.EXISTING,
+                            onClick = { trackingMode = LoanTrackingMode.EXISTING }
+                        )
+                    }
+                    if (trackingMode == LoanTrackingMode.EXISTING) {
+                        Spacer(Modifier.height(12.dp))
+                        OutlinedTextField(
+                            value = historicalPaidText,
+                            onValueChange = { historicalPaidText = it.filter(Char::isDigit) },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            shape = RoundedCornerShape(16.dp),
+                            label = { Text("تعداد اقساطی که قبلاً پرداخت شده") },
+                            leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        DateField(
+                            label = "شروع پیگیری از این تاریخ",
+                            value = trackingStartDate,
+                            onDateSelected = { trackingStartDate = it },
+                            context = context
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            color = MatureColors.SecondaryLight
+                        ) {
+                            Text(
+                                text = "اقساط قبلی فقط به‌عنوان سابقه پرداخت در نظر گرفته می‌شوند و برای آن‌ها تراکنش مالی جدید ساخته نمی‌شود. از تاریخ شروع پیگیری، فقط اقساط باقی‌مانده مدیریت و یادآوری خواهند شد.",
+                                modifier = Modifier.padding(14.dp),
+                                fontSize = 11.sp,
+                                color = MatureColors.TextPrimary
+                            )
+                        }
+                    }
                 }
             }
 
@@ -1956,6 +2061,41 @@ private fun LoanEditorFullScreen(
                 }
             }
             item { Spacer(Modifier.height(8.dp)) }
+        }
+    }
+}
+
+@Composable
+private fun LoanTrackingModeCard(
+    modifier: Modifier,
+    mode: LoanTrackingMode,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = modifier.clip(RoundedCornerShape(16.dp)).clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        color = if (selected) MatureColors.Primary.copy(alpha = 0.10f) else MatureColors.CardBackground
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(selected = selected, onClick = onClick)
+            Spacer(Modifier.width(4.dp))
+            Column {
+                Text(
+                    text = mode.label,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MatureColors.TextPrimary
+                )
+                Text(
+                    text = if (mode == LoanTrackingMode.NEW) "شروع از قسط اول" else "ادامه از وضعیت فعلی",
+                    fontSize = 10.sp,
+                    color = MatureColors.TextSecondary
+                )
+            }
         }
     }
 }
@@ -2581,7 +2721,6 @@ private fun calculateMonthlyInstallment(
 
     return payment.toLong()
 }
-
 
 
 
