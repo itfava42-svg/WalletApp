@@ -1090,6 +1090,10 @@ private fun LoanInstallmentsDialog(
         mutableStateOf<String?>(null)
     }
     var loanPaymentError by remember { mutableStateOf<String?>(null) }
+    var historicalInstallmentNumber by remember { mutableStateOf<Int?>(null) }
+    var historicalDate by remember { mutableStateOf("") }
+    var historicalAmount by remember { mutableStateOf("") }
+    var historicalPaymentError by remember { mutableStateOf<String?>(null) }
 
     val activeAccounts =
         AccountStore.accounts.filter { it.isActive }
@@ -1309,6 +1313,20 @@ private fun LoanInstallmentsDialog(
                                                 MatureColors.Success
                                         )
                                     } else {
+                                        TextButton(
+                                            onClick = {
+                                                historicalInstallmentNumber = number
+                                                historicalDate = dueDate
+                                                historicalAmount = currentLoan.installmentAmount.toString()
+                                                historicalPaymentError = null
+                                            }
+                                        ) {
+                                            Text(
+                                                text = "ثبت سابقه پرداخت",
+                                                fontSize = 12.sp
+                                            )
+                                        }
+
                                         Button(
                                             onClick = {
                                                 val alreadyPaid =
@@ -1379,6 +1397,105 @@ private fun LoanInstallmentsDialog(
                     onClick = { loanPaymentError = null }
                 ) {
                     Text("متوجه شدم")
+                }
+            }
+        )
+    }
+    historicalInstallmentNumber?.let { installmentNumber ->
+        AlertDialog(
+            onDismissRequest = {
+                historicalInstallmentNumber = null
+                historicalPaymentError = null
+            },
+            title = {
+                Text(
+                    text = "ثبت سابقه قسط",
+                    fontWeight = FontWeight.Bold,
+                    color = MatureColors.TextPrimary
+                )
+            },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "قسط شماره $installmentNumber قبلاً پرداخت شده است؟ تاریخ و مبلغ واقعی پرداخت را وارد کنید. این ثبت، تراکنش مالی جدید ایجاد نمی‌کند.",
+                        fontSize = 13.sp,
+                        color = MatureColors.TextSecondary
+                    )
+
+                    DateField(
+                        label = "تاریخ پرداخت واقعی",
+                        value = historicalDate,
+                        onDateSelected = { historicalDate = it },
+                        context = context
+                    )
+
+                    OutlinedTextField(
+                        value = historicalAmount,
+                        onValueChange = { historicalAmount = it },
+                        modifier = Modifier.fillMaxWidth().height(58.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(18.dp),
+                        label = { Text("مبلغ پرداختی") },
+                        suffix = { Text("ریال") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+
+                    historicalPaymentError?.let { message ->
+                        Text(
+                            text = message,
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val amount = normalizeLoanDigits(historicalAmount).filter { it.isDigit() }.toLongOrNull()
+                        val normalizedDate = normalizeLoanDigits(historicalDate)
+                        val validDate = parseJalaliDate(normalizedDate) != null
+
+                        if (amount == null || amount <= 0L) {
+                            historicalPaymentError = "مبلغ پرداختی را به‌درستی وارد کنید."
+                            return@Button
+                        }
+                        if (!validDate) {
+                            historicalPaymentError = "تاریخ پرداخت را به‌صورت معتبر انتخاب کنید."
+                            return@Button
+                        }
+
+                        val recorded = LoanPaymentManager.recordHistoricalInstallmentPayment(
+                            context = context,
+                            loan = currentLoan,
+                            installmentNumber = installmentNumber,
+                            amount = amount,
+                            dateLabel = normalizedDate
+                        )
+
+                        if (recorded) {
+                            historicalInstallmentNumber = null
+                            historicalPaymentError = null
+                        } else {
+                            historicalPaymentError = "ثبت سابقه قسط انجام نشد؛ ممکن است این قسط قبلاً ثبت شده باشد."
+                        }
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("ثبت سابقه")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        historicalInstallmentNumber = null
+                        historicalPaymentError = null
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("انصراف")
                 }
             }
         )
