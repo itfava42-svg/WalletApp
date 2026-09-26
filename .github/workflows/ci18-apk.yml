@@ -1,4 +1,5 @@
 name: CI-18 — Existing Loan Tracking APK
+# CI-18 APK publication workflow — artifact required for real-device validation
 
 on:
   push:
