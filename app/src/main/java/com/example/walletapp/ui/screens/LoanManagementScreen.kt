@@ -165,18 +165,19 @@ fun LoanManagementScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
             contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 16.dp,
+                start = 18.dp,
+                end = 18.dp,
+                top = 18.dp,
                 bottom = 96.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(26.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MatureColors.Surface
                     )
@@ -1792,13 +1793,7 @@ private fun LoanEditorDialog(
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     OutlinedTextField(
-                                        value = "هر $intervalMonths ماه",
-                                        onValueChange = {},
-                                        readOnly = true,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(56.dp),
-                                        shape = MaterialTheme.shapes.medium,
+                                        v
                                         label = { Text("فاصله اقساط") },
                                         trailingIcon = {
                                             Icon(
@@ -1998,11 +1993,7 @@ private fun LoanEditorDialog(
 
                         item {
                             OutlinedTextField(
-                                value = guaranteeNote,
-                                onValueChange = { guaranteeNote = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                minLines = 2,
-                                shape = MaterialTheme.shapes.medium,
+                                v
                                 label = { Text("ضمانت و توضیحات") },
                                 placeholder = {
                                     Text("توضیحات اختیاری")
@@ -2164,21 +2155,7 @@ private fun LoanEditorDialog(
 }
 
 @Composable
-private fun LoanFormField(
-    modifier: Modifier = Modifier,
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholder: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    keyboardType: KeyboardType
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp),
+p,
         singleLine = true,
         shape = RoundedCornerShape(18.dp),
         label = { Text(label) },
@@ -2199,52 +2176,7 @@ private fun LoanFormField(
 }
 
 @Composable
-private fun LoanAmountCard(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.72f),
-        border = androidx.compose.foundation.BorderStroke(
-            1.dp,
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Payments,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(22.dp)
-                )
-
-                Spacer(Modifier.size(8.dp))
-
-                Text(
-                    text = "مبلغ وام",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
-                singleLine = true,
-                shape = MaterialTheme.shapes.medium,
+p,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
