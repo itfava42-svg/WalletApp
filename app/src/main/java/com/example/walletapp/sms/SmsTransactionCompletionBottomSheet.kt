@@ -2178,6 +2178,7 @@ private fun CategoryPickerDialog(
 ) {
     var query by remember { mutableStateOf("") }
     var expandedId by remember { mutableStateOf<String?>(selectedCategory) }
+    var sortAscending by remember { mutableStateOf(true) }
 
     val expenseItems = listOf(
         CategoryPickerItem("غذا", Icons.Default.Fastfood, Color(0xFF2E9D57), listOf("رستوران", "سوپرمارکت", "کافه", "میوه و سبزیجات")),
@@ -2199,11 +2200,15 @@ private fun CategoryPickerDialog(
 
     val items = if (selectedType == TransactionType.EXPENSE) expenseItems else incomeItems
     val normalizedQuery = query.trim()
-    val filtered = items.filter { item ->
-        normalizedQuery.isBlank() ||
-            item.name.contains(normalizedQuery, ignoreCase = true) ||
-            item.subs.any { it.contains(normalizedQuery, ignoreCase = true) }
-    }
+    val filtered = items
+        .filter { item ->
+            normalizedQuery.isBlank() ||
+                item.name.contains(normalizedQuery, ignoreCase = true) ||
+                item.subs.any { it.contains(normalizedQuery, ignoreCase = true) }
+        }
+        .let { matches ->
+            if (sortAscending) matches.sortedBy { it.name } else matches.sortedByDescending { it.name }
+        }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -2227,13 +2232,24 @@ private fun CategoryPickerDialog(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        IconButton(onClick = { }) {
+                        IconButton(
+                            onClick = { sortAscending = !sortAscending },
+                            contentDescription = "مرتب‌سازی",
+                        ) {
                             Icon(Icons.Default.Sort, "مرتب‌سازی", tint = Color.White)
                         }
-                        IconButton(onClick = { }) {
+                        IconButton(
+                            onClick = { },
+                            enabled = false,
+                            contentDescription = "افزودن دسته",
+                        ) {
                             Icon(Icons.Default.Add, "افزودن دسته", tint = Color.White)
                         }
-                        IconButton(onClick = { }) {
+                        IconButton(
+                            onClick = { },
+                            enabled = false,
+                            contentDescription = "دانلود",
+                        ) {
                             Icon(Icons.Default.Download, "دانلود", tint = Color.White)
                         }
                     }
