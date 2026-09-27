@@ -1188,7 +1188,6 @@ private fun formatReminderDate(triggerAtMillis: Long): String {
             jd.toString().padStart(2, '0')
     )
 }
-}
 
 @androidx.compose.runtime.Composable
 private fun EmptyReminderCard(
