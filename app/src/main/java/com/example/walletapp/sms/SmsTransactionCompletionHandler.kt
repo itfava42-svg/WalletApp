@@ -91,24 +91,18 @@ object SmsTransactionCompletionHandler {
             return CompletionResult.TransactionNotFound
         }
 
-        val hasCompletionData =
-            request.selectedType != transaction.type ||
-            request.selectedCategory != null ||
-                request.tags.isNotEmpty() ||
-                request.description.isNotBlank() ||
-                request.receiptUri != null ||
-                request.selectedBank.trim() != transaction.subtitle.trim() ||
-            request.selectedAccountId != null
         /*
          * A transaction marked requiresCompletion is already waiting
          * for user confirmation. Confirmation itself is a valid
          * completion even when the user does not change optional fields.
          *
          * Account validation below remains mandatory.
+         *
+         * Do not gate completion on optional field changes: the previous
+         * implementation checked !transaction.requiresCompletion here,
+         * but that state had already returned above, making the condition
+         * unreachable.
          */
-        if (!hasCompletionData && !transaction.requiresCompletion) {
-            return CompletionResult.NoChanges
-        }
         val metadata =
             SmsTransactionMetadataManager.get(transaction.id)
 
