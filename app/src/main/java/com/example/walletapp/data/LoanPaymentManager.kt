@@ -112,7 +112,11 @@ object LoanPaymentManager {
                 accountId = accountId
             )
 
-        TransactionStore.addManual(transaction)
+        try {
+            TransactionStore.addManual(transaction)
+        } catch (_: IllegalArgumentException) {
+            return false
+        }
 
         val today =
             JalaliCalendar.fromEpochMillisSlashed(
