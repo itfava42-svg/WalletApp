@@ -371,6 +371,7 @@ fun ReminderScreen(
                         onComplete = {
 
                             ReminderManager.setCompleted(
+                                context,
                                 reminder.id,
                                 !reminder.isCompleted
                             )
