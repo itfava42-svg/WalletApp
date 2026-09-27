@@ -1096,8 +1096,10 @@ private fun LoanInstallmentsDialog(
     var historicalPaymentError by remember { mutableStateOf<String?>(null) }
     var historicalAccountId by remember { mutableStateOf<String?>(null) }
 
-    val activeAccounts =
-        AccountStore.accounts.filter { it.isActive }
+    // Historical payments may have been made from an account that is inactive today.
+    // Keep every account selectable for historical records; this does not affect balance.
+    val historicalAccounts =
+        AccountStore.accounts
 
     val currentLoan =
         LoanStore.getById(loan.id) ?: loan
@@ -1468,9 +1470,9 @@ private fun LoanInstallmentsDialog(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
 
-                    if (activeAccounts.isEmpty()) {
+                    if (historicalAccounts.isEmpty()) {
                         Text(
-                            text = "برای ثبت سابقه، حداقل یک حساب فعال لازم است.",
+                            text = "برای ثبت سابقه، حداقل یک حساب باید در برنامه وجود داشته باشد.",
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.error
                         )
@@ -1485,7 +1487,7 @@ private fun LoanInstallmentsDialog(
                         Column(
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            activeAccounts.forEach { account ->
+                            historicalAccounts.forEach { account ->
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -1518,6 +1520,14 @@ private fun LoanInstallmentsDialog(
                                             Text(
                                                 text = account.bankName,
                                                 fontSize = 11.sp,
+                                                color = MatureColors.TextSecondary
+                                            )
+                                        }
+
+                                        if (!account.isActive) {
+                                            Text(
+                                                text = "حساب غیرفعال — فقط برای ثبت سابقه",
+                                                fontSize = 10.sp,
                                                 color = MatureColors.TextSecondary
                                             )
                                         }
