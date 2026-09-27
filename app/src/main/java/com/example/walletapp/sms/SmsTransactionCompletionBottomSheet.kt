@@ -276,6 +276,10 @@ fun SmsTransactionCompletionBottomSheetContent(
             mutableStateOf(initialCategory)
         }
 
+    var selectedSubcategory by remember(initialCategory) {
+        mutableStateOf<String?>(null)
+    }
+
     var selectedType by remember(transaction.id) {
         mutableStateOf(transaction.type)
     }
@@ -1703,8 +1707,9 @@ fun SmsTransactionCompletionBottomSheetContent(
             selectedLoan = selectedLoan,
             selectedInstallment = selectedInstallment,
             onDismiss = { showCategoryPicker = false },
-            onCategorySelected = { category ->
+            onCategorySelected = { category, subcategory ->
                 selectedCategory = category
+                selectedSubcategory = subcategory
                 if (category != "قسط") {
                     selectedLoan = null
                     selectedInstallment = null
@@ -2067,7 +2072,7 @@ private fun CategoryPickerDialog(
     selectedLoan: LoanEntry?,
     selectedInstallment: SmsLoanInstallmentChoice?,
     onDismiss: () -> Unit,
-    onCategorySelected: (String) -> Unit,
+    onCategorySelected: (String, String?) -> Unit,
 ) {
     var query by remember { mutableStateOf("") }
     var expandedId by remember { mutableStateOf<String?>(selectedCategory) }
@@ -2221,8 +2226,8 @@ private fun CategoryPickerDialog(
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .clickable {
-                                                        onCategorySelected(item.name)
+                                                     .clickable {
+                                                        onCategorySelected(item.name, sub)
                                                     }
                                                     .padding(vertical = 9.dp),
                                                 verticalAlignment = Alignment.CenterVertically,
@@ -2240,7 +2245,7 @@ private fun CategoryPickerDialog(
                                     }
 
                                     TextButton(
-                                        onClick = { onCategorySelected(item.name) },
+                                        onClick = { onCategorySelected(item.name, null) },
                                         modifier = Modifier.fillMaxWidth(),
                                     ) {
                                         Text("انتخاب «${item.name}»")
