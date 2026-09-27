@@ -20,6 +20,7 @@ data class LoanPayment(
     val amount: Long,
     val dateLabel: String,
     val transactionId: String? = null,
+    val accountId: String? = null,
 )
 
 data class LoanEntry(
@@ -91,6 +92,7 @@ object LoanStore {
                             amount = payment.getLong("amount"),
                             dateLabel = payment.getString("dateLabel"),
                             transactionId = payment.optString("transactionId").takeIf { it.isNotBlank() },
+                            accountId = payment.optString("accountId").takeIf { it.isNotBlank() },
                         )
                     )
                 }
@@ -213,6 +215,7 @@ object LoanStore {
                 paymentObject.put("amount", payment.amount)
                 paymentObject.put("dateLabel", payment.dateLabel)
                 paymentObject.put("transactionId", payment.transactionId ?: JSONObject.NULL)
+                paymentObject.put("accountId", payment.accountId ?: JSONObject.NULL)
 
                 paymentsArray.put(paymentObject)
             }
@@ -305,7 +308,6 @@ object LoanStore {
         )
     }
 }
-
 
 
 
