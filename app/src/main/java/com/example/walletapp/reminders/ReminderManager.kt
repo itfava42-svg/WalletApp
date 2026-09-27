@@ -44,6 +44,22 @@ object ReminderManager {
     }
 
     /**
+     * Removes a reminder and cancels its scheduled alarm.
+     */
+    fun remove(
+        context: Context,
+        id: String,
+    ) {
+        ReminderStore.getById(id)?.let { reminder ->
+            ReminderScheduler.cancel(
+                context,
+                reminder,
+            )
+        }
+        ReminderStore.remove(id)
+    }
+
+    /**
      * Domain boundary for changing reminder completion state.
      */
     fun setCompleted(
