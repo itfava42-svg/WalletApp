@@ -387,6 +387,7 @@ fun ReminderScreen(
                         onDelete = {
 
                             ReminderManager.remove(
+                                context,
                                 reminder.id
                             )
 
