@@ -1009,11 +1009,28 @@ fun SmsTransactionCompletionBottomSheetContent(
                                 }
                                 if (isInstallmentCategory && selectedLoan != null) {
                                     Text(
-                                        text = selectedLoan!!.title +
-                                            (selectedInstallment?.let { " — قسط ${it.number}" } ?: ""),
+                                        text = "وام: " + selectedLoan!!.title,
                                         fontSize = 11.sp,
                                         color = androidx.compose.ui.graphics.Color(0xFF7A7A7A),
                                     )
+                                    selectedInstallment?.let { installment ->
+                                        Text(
+                                            text = "قسط: شماره ${installment.number} — ${installment.amount.toPersianCurrency()} تومان",
+                                            fontSize = 11.sp,
+                                            color = androidx.compose.ui.graphics.Color(0xFF7A7A7A),
+                                        )
+                                    }
+                                    selectedAccountId
+                                        ?.let { accountId -> AccountStore.accounts.firstOrNull { it.id == accountId } }
+                                        ?.let { paymentAccount ->
+                                            if (paymentAccount.bankName.isNotBlank()) {
+                                                Text(
+                                                    text = "بانک حساب پرداخت: " + paymentAccount.bankName,
+                                                    fontSize = 11.sp,
+                                                    color = androidx.compose.ui.graphics.Color(0xFF7A7A7A),
+                                                )
+                                            }
+                                        }
                                 }
                             }
                             Icon(
