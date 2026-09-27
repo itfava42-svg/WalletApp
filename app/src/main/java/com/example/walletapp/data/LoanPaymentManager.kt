@@ -150,6 +150,7 @@ object LoanPaymentManager {
         installmentNumber: Int,
         amount: Long,
         dateLabel: String,
+        accountId: String? = null,
     ): Boolean {
         LoanStore.attachContext(context)
         if (
@@ -171,6 +172,7 @@ object LoanPaymentManager {
                 amount = amount,
                 dateLabel = dateLabel.trim(),
                 transactionId = null,
+                accountId = accountId?.takeIf { it.isNotBlank() },
             )
         )
     }
