@@ -276,8 +276,13 @@ fun SmsTransactionCompletionBottomSheetContent(
             mutableStateOf(initialCategory)
         }
 
-    var selectedSubcategory by remember(initialCategory) {
-        mutableStateOf<String?>(null)
+    var selectedSubcategory by remember(initialCategory, transaction.id) {
+        mutableStateOf(
+            transaction.tags
+                .firstOrNull { it.startsWith("زیردسته:") }
+                ?.removePrefix("زیردسته:")
+                ?.takeIf { it.isNotBlank() }
+        )
     }
 
     var selectedType by remember(transaction.id) {
