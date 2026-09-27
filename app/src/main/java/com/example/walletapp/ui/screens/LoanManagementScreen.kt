@@ -1215,9 +1215,14 @@ private fun LoanInstallmentsDialog(
                             key = { it }
                         ) { number ->
 
+                            val paymentRecord =
+                                currentLoan.payments.firstOrNull {
+                                    it.installmentNumber == number
+                                }
+
                             val isPaid =
-                                paidInstallments
-                                    .contains(number)
+                                paymentRecord != null ||
+                                    paidInstallments.contains(number)
 
                             val dueDate =
                                 calculateLoanInstallmentDate(
@@ -1295,15 +1300,33 @@ private fun LoanInstallmentsDialog(
 
                                         Text(
                                             text =
-                                                currentLoan
-                                                    .installmentAmount
+                                                (paymentRecord?.amount
+                                                    ?: currentLoan.installmentAmount)
                                                     .toPersianCurrency(),
                                             fontSize = 13.sp,
-                                            fontWeight =
-                                                FontWeight.Bold,
-                                            color =
-                                                MatureColors.Primary
+                                            fontWeight = FontWeight.Bold,
+                                            color = MatureColors.Primary
                                         )
+
+                                        if (paymentRecord != null) {
+                                            Text(
+                                                text = "پرداخت: " + paymentRecord.dateLabel,
+                                                fontSize = 11.sp,
+                                                color = MatureColors.TextSecondary
+                                            )
+
+                                            paymentRecord.accountId?.let { accountId ->
+                                                AccountStore.accounts
+                                                    .firstOrNull { it.id == accountId }
+                                                    ?.let { account ->
+                                                        Text(
+                                                            text = "حساب: " + account.name,
+                                                            fontSize = 11.sp,
+                                                            color = MatureColors.TextSecondary
+                                                        )
+                                                    }
+                                            }
+                                        }
                                     }
 
                                     if (isPaid) {
