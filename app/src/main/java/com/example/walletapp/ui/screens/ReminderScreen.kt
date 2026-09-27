@@ -1177,15 +1177,15 @@ private fun ReminderItemCard(
 
 private fun formatReminderDate(triggerAtMillis: Long): String {
     val calendar = Calendar.getInstance().apply { timeInMillis = triggerAtMillis }
-    val date = JalaliCalendar.fromGregorian(
+    val (jy, jm, jd) = JalaliCalendar.gregorianToJalali(
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH) + 1,
         calendar.get(Calendar.DAY_OF_MONTH)
     )
     return persianDigits(
-        date.year.toString() + "/" +
-            date.month.toString().padStart(2, '0') + "/" +
-            date.day.toString().padStart(2, '0')
+        jy.toString() + "/" +
+            jm.toString().padStart(2, '0') + "/" +
+            jd.toString().padStart(2, '0')
     )
 }
 }
