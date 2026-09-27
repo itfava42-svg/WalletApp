@@ -2299,7 +2299,11 @@ private fun CategoryPickerDialog(
                                     .fillMaxWidth()
                                     .heightIn(min = 52.dp)
                                     .clickable {
-                                        expandedId = if (isExpanded) null else item.name
+                                        if (item.subs.isEmpty()) {
+                                            onCategorySelected(item.name, null)
+                                        } else {
+                                            expandedId = if (isExpanded) null else item.name
+                                        }
                                     }
                                     .padding(horizontal = 12.dp, vertical = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
