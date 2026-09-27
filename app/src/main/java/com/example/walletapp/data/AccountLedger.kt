@@ -1,37 +1,27 @@
-﻿package com.example.walletapp.data
+package com.example.walletapp.data
 
 /**
  * Central financial ledger for account balances.
  *
  * IMPORTANT:
- * Account.openingBalance is used only as the starting balance; current balance is derived from the ledger.
+ * Account.openingBalance is used only as the starting balance; current balance
+ * is derived from finalized ledger transactions.
  *
- * The ledger derives balances from transactions:
- *
- * NORMAL + INCOME
- *     accountId -> +amount
- *
- * NORMAL + EXPENSE
- *     accountId -> -amount
- *
- * TRANSFER
- *     sourceAccountId      -> -amount
- *     destinationAccountId -> +amount
- *
- * Old transactions remain compatible because their kind defaults
- * to TransactionKind.NORMAL.
+ * A transaction that still requires user completion is a pending SMS review
+ * item, not a finalized financial transaction. It must therefore have NO
+ * effect on balances, income/expense totals, or transfer totals until the
+ * completion flow sets requiresCompletion=false.
  */
 object AccountLedger {
 
     /**
      * Calculates the current balance of one account
-     * from the transaction history.
+     * from finalized transaction history.
      */
     fun balanceOf(
         accountId: String,
         transactions: List<Transaction> = TransactionStore.transactions,
     ): Long {
-
         var balance =
             AccountStore.accounts
                 .firstOrNull { it.id == accountId }
@@ -39,11 +29,12 @@ object AccountLedger {
                 ?: 0L
 
         transactions.forEach { transaction ->
+            if (transaction.requiresCompletion) {
+                return@forEach
+            }
 
             when (transaction.kind) {
-
                 TransactionKind.NORMAL -> {
-
                     if (transaction.accountId != accountId) {
                         return@forEach
                     }
@@ -55,7 +46,6 @@ object AccountLedger {
                 }
 
                 TransactionKind.TRANSFER -> {
-
                     if (transaction.sourceAccountId == accountId) {
                         balance -= transaction.amount
                     }
@@ -71,25 +61,22 @@ object AccountLedger {
     }
 
     /**
-     * Calculates the current balance using the exact Account
-     * instance supplied by the caller.
-     *
-     * This keeps balances(accounts = customList) independent
-     * from AccountStore.accounts.
+     * Calculates the current balance using the exact Account instance
+     * supplied by the caller.
      */
     private fun balanceOf(
         account: Account,
         transactions: List<Transaction>,
     ): Long {
-
         var balance = account.openingBalance
 
         transactions.forEach { transaction ->
+            if (transaction.requiresCompletion) {
+                return@forEach
+            }
 
             when (transaction.kind) {
-
                 TransactionKind.NORMAL -> {
-
                     if (transaction.accountId != account.id) {
                         return@forEach
                     }
@@ -101,7 +88,6 @@ object AccountLedger {
                 }
 
                 TransactionKind.TRANSFER -> {
-
                     if (transaction.sourceAccountId == account.id) {
                         balance -= transaction.amount
                     }
@@ -115,16 +101,14 @@ object AccountLedger {
 
         return balance
     }
+
     /**
      * Calculates balances for all active accounts.
-     *
-     * Current balance is derived from openingBalance plus transaction history.
      */
     fun balances(
         accounts: List<Account> = AccountStore.accounts,
         transactions: List<Transaction> = TransactionStore.transactions,
     ): Map<String, Long> {
-
         return accounts
             .filter { it.isActive }
             .associate { account ->
@@ -138,15 +122,13 @@ object AccountLedger {
     /**
      * Calculates the total balance of all active accounts.
      *
-     * Transfers between the user's own accounts cancel each other
-     * automatically because one account is debited and the other
-     * account is credited.
+     * Internal transfers cancel automatically because one account is debited
+     * and the other account is credited.
      */
     fun totalBalance(
         accounts: List<Account> = AccountStore.accounts,
         transactions: List<Transaction> = TransactionStore.transactions,
     ): Long {
-
         return balances(
             accounts = accounts,
             transactions = transactions,
@@ -154,17 +136,17 @@ object AccountLedger {
     }
 
     /**
-     * Returns only normal income transactions assigned to an account.
+     * Returns only finalized normal income transactions assigned to an account.
      */
     fun incomeForAccount(
         accountId: String,
         transactions: List<Transaction> = TransactionStore.transactions,
     ): Long {
-
         return transactions
             .asSequence()
             .filter {
-                it.kind == TransactionKind.NORMAL &&
+                !it.requiresCompletion &&
+                    it.kind == TransactionKind.NORMAL &&
                     it.type == TransactionType.INCOME &&
                     it.accountId == accountId
             }
@@ -172,17 +154,17 @@ object AccountLedger {
     }
 
     /**
-     * Returns only normal expense transactions assigned to an account.
+     * Returns only finalized normal expense transactions assigned to an account.
      */
     fun expenseForAccount(
         accountId: String,
         transactions: List<Transaction> = TransactionStore.transactions,
     ): Long {
-
         return transactions
             .asSequence()
             .filter {
-                it.kind == TransactionKind.NORMAL &&
+                !it.requiresCompletion &&
+                    it.kind == TransactionKind.NORMAL &&
                     it.type == TransactionType.EXPENSE &&
                     it.accountId == accountId
             }
@@ -196,11 +178,11 @@ object AccountLedger {
         accountId: String,
         transactions: List<Transaction> = TransactionStore.transactions,
     ): Long {
-
         return transactions
             .asSequence()
             .filter {
-                it.kind == TransactionKind.TRANSFER &&
+                !it.requiresCompletion &&
+                    it.kind == TransactionKind.TRANSFER &&
                     it.sourceAccountId == accountId
             }
             .sumOf { it.amount }
@@ -213,15 +195,13 @@ object AccountLedger {
         accountId: String,
         transactions: List<Transaction> = TransactionStore.transactions,
     ): Long {
-
         return transactions
             .asSequence()
             .filter {
-                it.kind == TransactionKind.TRANSFER &&
+                !it.requiresCompletion &&
+                    it.kind == TransactionKind.TRANSFER &&
                     it.destinationAccountId == accountId
             }
             .sumOf { it.amount }
     }
 }
-
-
