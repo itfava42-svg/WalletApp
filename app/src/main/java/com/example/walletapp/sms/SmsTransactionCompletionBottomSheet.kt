@@ -2289,7 +2289,7 @@ private fun CategoryPickerDialog(
 
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(15.dp),
+                            shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                             ),
@@ -2297,15 +2297,16 @@ private fun CategoryPickerDialog(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .heightIn(min = 52.dp)
                                     .clickable {
                                         expandedId = if (isExpanded) null else item.name
                                     }
-                                    .padding(12.dp),
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .size(42.dp)
+                                        .size(44.dp)
                                         .clip(androidx.compose.foundation.shape.CircleShape)
                                         .background(item.accent.copy(alpha = 0.14f)),
                                     contentAlignment = Alignment.Center,
@@ -2348,10 +2349,11 @@ private fun CategoryPickerDialog(
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                     .clickable {
+                                                    .heightIn(min = 44.dp)
+                                                    .clickable {
                                                         onCategorySelected(item.name, sub)
                                                     }
-                                                    .padding(vertical = 9.dp),
+                                                    .padding(vertical = 6.dp),
                                                 verticalAlignment = Alignment.CenterVertically,
                                             ) {
                                                 Box(
@@ -2690,7 +2692,6 @@ private fun SectionTitle(
         }
     }
 }
-
 
 
 
