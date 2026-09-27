@@ -680,7 +680,9 @@ private fun SummaryBox(
             Text(
                 text = title,
                 style =
-                    MaterialTheme.typography.labelSmall
+                    MaterialTheme.typography.labelSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
