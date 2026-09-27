@@ -997,6 +997,8 @@ private fun ReminderItemCard(
                     Text(
                         text =
                             statusText,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         color =
                             if (
                                 overdue &&
@@ -1027,7 +1029,9 @@ private fun ReminderItemCard(
                                     reminder.amount
                                 ),
                             style =
-                                MaterialTheme.typography.bodyMedium
+                                MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
 
@@ -1226,7 +1230,9 @@ private fun EmptyReminderCard(
                 text =
                     "برای افزودن یادآوری جدید لمس کنید",
                 style =
-                    MaterialTheme.typography.bodySmall
+                    MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
