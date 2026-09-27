@@ -1173,7 +1173,7 @@ private fun ReminderItemCard(
             }
         }
     }
-
+}
 
 private fun formatReminderDate(triggerAtMillis: Long): String {
     val calendar = Calendar.getInstance().apply { timeInMillis = triggerAtMillis }
