@@ -1624,6 +1624,8 @@ private fun LoanInstallmentsDialog(
             }
         )
     }
+    val activeAccounts = AccountStore.accounts.filter { it.isActive }
+
     selectedInstallmentNumber?.let { installmentNumber ->
 
         AlertDialog(
