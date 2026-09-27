@@ -1847,7 +1847,7 @@ private fun LoanEditorDialog(
     var startDate by remember {
         mutableStateOf(
             existingLoan?.let {
-                "\${it.startYear}/\${it.startMonth.toString().padStart(2, '0')}/\${it.startDay.toString().padStart(2, '0')}"
+                "${it.startYear}/${it.startMonth.toString().padStart(2, '0')}/${it.startDay.toString().padStart(2, '0')}"
             } ?: JalaliCalendar.todaySlashed()
         )
     }
@@ -1855,7 +1855,7 @@ private fun LoanEditorDialog(
         mutableStateOf(
             existingLoan?.let {
                 if (it.firstInstallmentYear != null && it.firstInstallmentMonth != null && it.firstInstallmentDay != null) {
-                    "\${it.firstInstallmentYear}/\${it.firstInstallmentMonth.toString().padStart(2, '0')}/\${it.firstInstallmentDay.toString().padStart(2, '0')}"
+                    "${it.firstInstallmentYear}/${it.firstInstallmentMonth.toString().padStart(2, '0')}/${it.firstInstallmentDay.toString().padStart(2, '0')}"
                 } else {
                     ""
                 }
@@ -2063,7 +2063,7 @@ private fun LoanEditorDialog(
                                     )
                                     Box(modifier = Modifier.fillMaxWidth()) {
                                         OutlinedTextField(
-                                            value = "هر \${intervalMonths} ماه",
+                                            value = "هر ${intervalMonths} ماه",
                                             onValueChange = {},
                                             readOnly = true,
                                             modifier = Modifier.fillMaxWidth().heightIn(min = 72.dp),
@@ -2165,12 +2165,12 @@ private fun LoanEditorDialog(
                                             SmallLoanInfo(
                                                 modifier = Modifier.weight(1f),
                                                 title = "پرداخت‌شده",
-                                                value = "\${paidInstallmentCount} قسط"
+                                                value = "${paidInstallmentCount} قسط"
                                             )
                                             SmallLoanInfo(
                                                 modifier = Modifier.weight(1f),
                                                 title = "باقی‌مانده",
-                                                value = "\${remainingInstallmentCount} قسط"
+                                                value = "${remainingInstallmentCount} قسط"
                                             )
                                         }
                                         if (paidInstallmentNumbers.isNotEmpty()) {
