@@ -1016,45 +1016,53 @@ private fun ReminderItemCard(
                     Spacer(
                         modifier =
                             Modifier.height(
-                                4.dp
+                                8.dp
                             )
                     )
 
-                    Text(
-                        text =
-                            statusText,
-                        color =
-                            if (
-                                overdue &&
-                                !reminder.isCompleted
-                            ) {
-                                MaterialTheme.colorScheme.error
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                        fontWeight =
-                            FontWeight.SemiBold
-                    )
-
-                    if (
-                        reminder.amount > 0
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(14.dp),
+                        tonalElevation = 1.dp
                     ) {
+                        Column(
+                            modifier = Modifier.padding(
+                                horizontal = 12.dp,
+                                vertical = 10.dp
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = "وضعیت: " + statusText,
+                                color =
+                                    if (
+                                        overdue &&
+                                        !reminder.isCompleted
+                                    ) {
+                                        MaterialTheme.colorScheme.error
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                    },
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
 
-                        Spacer(
-                            modifier =
-                                Modifier.height(
-                                    3.dp
+                            Text(
+                                text = "سررسید: " + formatReminderDate(reminder.triggerAtMillis),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            if (reminder.amount > 0) {
+                                Text(
+                                    text = "مبلغ قسط: " + formatMoney(reminder.amount),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold
                                 )
-                        )
-
-                        Text(
-                            text =
-                                formatMoney(
-                                    reminder.amount
-                                ),
-                            style =
-                                MaterialTheme.typography.bodyMedium
-                        )
+                            }
+                        }
                     }
 
                     if (
@@ -1165,6 +1173,21 @@ private fun ReminderItemCard(
             }
         }
     }
+
+
+private fun formatReminderDate(triggerAtMillis: Long): String {
+    val calendar = Calendar.getInstance().apply { timeInMillis = triggerAtMillis }
+    val date = JalaliCalendar.fromGregorian(
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH) + 1,
+        calendar.get(Calendar.DAY_OF_MONTH)
+    )
+    return persianDigits(
+        date.year.toString() + "/" +
+            date.month.toString().padStart(2, '0') + "/" +
+            date.day.toString().padStart(2, '0')
+    )
+}
 }
 
 @androidx.compose.runtime.Composable
