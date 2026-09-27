@@ -1836,7 +1836,9 @@ private fun LoanEditorDialog(
     onSave: (LoanEntry) -> Unit
 ) {
     val context = LocalContext.current
+    AccountStore.attachContext(context)
     var title by remember { mutableStateOf(existingLoan?.title ?: "") }
+    var selectedAccountId by remember { mutableStateOf(existingLoan?.accountId) }
     var loanType by remember { mutableStateOf(existingLoan?.type ?: LoanType.PERSONAL) }
     var amountText by remember { mutableStateOf(existingLoan?.totalAmount?.toString() ?: "") }
     var interestText by remember { mutableStateOf(existingLoan?.interestRatePercent?.toString() ?: "") }
@@ -1868,6 +1870,7 @@ private fun LoanEditorDialog(
     var validationMessage by remember { mutableStateOf<String?>(null) }
     var expandedType by remember { mutableStateOf(false) }
     var expandedInterval by remember { mutableStateOf(false) }
+    var expandedAccount by remember { mutableStateOf(false) }
 
     val calculatedInstallment = remember(amountText, interestText, totalInstallmentsText) {
         calculateMonthlyInstallment(
@@ -2032,6 +2035,45 @@ private fun LoanEditorDialog(
                                                     }
                                                 )
                                             }
+                                        }
+                                    }
+
+                                    Spacer(Modifier.height(2.dp))
+
+                                    val selectedAccount = AccountStore.accounts.firstOrNull { it.id == selectedAccountId }
+                                    LoanDropdownField(
+                                        label = "حساب / بانک وام",
+                                        value = selectedAccount?.let {
+                                            if (it.bankName.isBlank()) it.name else "${it.bankName} — ${it.name}"
+                                        } ?: "انتخاب حساب مرتبط با وام",
+                                        expanded = expandedAccount,
+                                        onExpandedChange = { expandedAccount = it }
+                                    ) {
+                                        if (AccountStore.accounts.none { it.isActive }) {
+                                            DropdownMenuItem(
+                                                text = { Text("هیچ حساب فعالی ثبت نشده است") },
+                                                onClick = { expandedAccount = false }
+                                            )
+                                        } else {
+                                            AccountStore.accounts
+                                                .filter { it.isActive }
+                                                .forEach { account ->
+                                                    DropdownMenuItem(
+                                                        text = {
+                                                            Text(
+                                                                if (account.bankName.isBlank()) {
+                                                                    account.name
+                                                                } else {
+                                                                    "${account.bankName} — ${account.name}"
+                                                                }
+                                                            )
+                                                        },
+                                                        onClick = {
+                                                            selectedAccountId = account.id
+                                                            expandedAccount = false
+                                                        }
+                                                    )
+                                                }
                                         }
                                     }
                                 }
@@ -2315,6 +2357,10 @@ private fun LoanEditorDialog(
                                         validationMessage = "برای فعال‌سازی یادآوری، تاریخ اولین قسط را انتخاب کنید"
                                         return@Button
                                     }
+                                    if (reminderEnabled && selectedAccountId == null) {
+                                        validationMessage = "برای فعال‌سازی یادآوری، حساب / بانک مربوط به وام را انتخاب کنید"
+                                        return@Button
+                                    }
 
                                     val maxPaidInstallment = paidInstallmentNumbers.maxOrNull() ?: 0
                                     if (existingLoan != null && installments < maxPaidInstallment) {
@@ -2347,6 +2393,7 @@ private fun LoanEditorDialog(
                                             firstInstallmentDay = firstParts?.get(2),
                                             guaranteeNote = guaranteeNote.trim(),
                                             reminderEnabled = reminderEnabled,
+                                            accountId = selectedAccountId,
                                             payments = existingLoan?.payments ?: emptyList()
                                         )
                                     )
