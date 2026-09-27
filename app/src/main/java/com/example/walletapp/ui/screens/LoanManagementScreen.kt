@@ -1094,6 +1094,7 @@ private fun LoanInstallmentsDialog(
     var historicalDate by remember { mutableStateOf("") }
     var historicalAmount by remember { mutableStateOf("") }
     var historicalPaymentError by remember { mutableStateOf<String?>(null) }
+    var historicalAccountId by remember { mutableStateOf<String?>(null) }
 
     val activeAccounts =
         AccountStore.accounts.filter { it.isActive }
@@ -1444,7 +1445,7 @@ private fun LoanInstallmentsDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "قسط شماره $installmentNumber قبلاً پرداخت شده است؟ تاریخ و مبلغ واقعی پرداخت را وارد کنید. این ثبت، تراکنش مالی جدید ایجاد نمی‌کند.",
+                        text = "قسط شماره $installmentNumber قبلاً پرداخت شده است؟ تاریخ، مبلغ و حساب مربوط به پرداخت را ثبت کنید. موجودی حساب تغییر نمی‌کند و تراکنش مالی جدیدی ساخته نمی‌شود.",
                         fontSize = 13.sp,
                         color = MatureColors.TextSecondary
                     )
@@ -1459,13 +1460,72 @@ private fun LoanInstallmentsDialog(
                     OutlinedTextField(
                         value = historicalAmount,
                         onValueChange = { historicalAmount = it },
-                        modifier = Modifier.fillMaxWidth().height(58.dp),
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 70.dp),
                         singleLine = true,
                         shape = RoundedCornerShape(18.dp),
                         label = { Text("مبلغ پرداختی") },
                         suffix = { Text("ریال") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
+
+                    if (activeAccounts.isEmpty()) {
+                        Text(
+                            text = "برای ثبت سابقه، حداقل یک حساب فعال لازم است.",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    } else {
+                        Text(
+                            text = "حساب مربوط به پرداخت قبلی",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MatureColors.TextPrimary
+                        )
+
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            activeAccounts.forEach { account ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .clickable {
+                                            historicalAccountId = account.id
+                                        }
+                                        .padding(horizontal = 8.dp, vertical = 5.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = historicalAccountId == account.id,
+                                        onClick = {
+                                            historicalAccountId = account.id
+                                        }
+                                    )
+
+                                    Spacer(Modifier.size(8.dp))
+
+                                    Column(
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text(
+                                            text = account.name,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MatureColors.TextPrimary
+                                        )
+
+                                        if (account.bankName.isNotBlank()) {
+                                            Text(
+                                                text = account.bankName,
+                                                fontSize = 11.sp,
+                                                color = MatureColors.TextSecondary
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     historicalPaymentError?.let { message ->
                         Text(
@@ -1491,17 +1551,23 @@ private fun LoanInstallmentsDialog(
                             historicalPaymentError = "تاریخ پرداخت را به‌صورت معتبر انتخاب کنید."
                             return@Button
                         }
+                        if (historicalAccountId == null) {
+                            historicalPaymentError = "حساب مربوط به پرداخت قبلی را انتخاب کنید."
+                            return@Button
+                        }
 
                         val recorded = LoanPaymentManager.recordHistoricalInstallmentPayment(
                             context = context,
                             loan = currentLoan,
                             installmentNumber = installmentNumber,
                             amount = amount,
-                            dateLabel = normalizedDate
+                            dateLabel = normalizedDate,
+                            accountId = historicalAccountId
                         )
 
                         if (recorded) {
                             historicalInstallmentNumber = null
+                            historicalAccountId = null
                             historicalPaymentError = null
                         } else {
                             historicalPaymentError = "ثبت سابقه قسط انجام نشد؛ ممکن است این قسط قبلاً ثبت شده باشد."
@@ -2841,7 +2907,6 @@ private fun calculateMonthlyInstallment(
 
     return payment.toLong()
 }
-
 
 
 
