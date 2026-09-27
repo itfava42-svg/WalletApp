@@ -125,7 +125,8 @@ object LoanPaymentManager {
                 installmentNumber = installmentNumber,
                 amount = currentLoan.installmentAmount,
                 dateLabel = today,
-                transactionId = transaction.id
+                transactionId = transaction.id,
+                accountId = accountId,
             )
 
         val added =
