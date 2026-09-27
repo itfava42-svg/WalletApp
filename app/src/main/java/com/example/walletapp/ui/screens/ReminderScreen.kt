@@ -766,7 +766,9 @@ private fun NextReminderCard(
                 style =
                     MaterialTheme.typography.titleLarge,
                 fontWeight =
-                    FontWeight.Bold
+                    FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
             )
 
             Spacer(
@@ -785,7 +787,9 @@ private fun NextReminderCard(
                 style =
                     MaterialTheme.typography.bodyLarge,
                 fontWeight =
-                    FontWeight.SemiBold
+                    FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
             )
 
             if (reminder.amount > 0) {
@@ -801,7 +805,9 @@ private fun NextReminderCard(
                     text =
                         formatMoney(
                             reminder.amount
-                        )
+                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
