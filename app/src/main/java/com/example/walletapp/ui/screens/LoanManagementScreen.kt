@@ -1470,7 +1470,7 @@ private fun LoanInstallmentsDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "قسط شماره $installmentNumber قبلاً پرداخت شده است؟ تاریخ، مبلغ و حساب مربوط به پرداخت را ثبت کنید. موجودی حساب تغییر نمی‌کند و تراکنش مالی جدیدی ساخته نمی‌شود.",
+                        text = "قسط شماره $installmentNumber قبلاً پرداخت شده است؟ تاریخ و مبلغ پرداخت را ثبت کنید. در صورت تمایل حساب مربوط به پرداخت را هم انتخاب کنید. موجودی حساب تغییر نمی‌کند و تراکنش مالی جدیدی ساخته نمی‌شود.",
                         fontSize = 13.sp,
                         color = MatureColors.TextSecondary
                     )
@@ -1493,67 +1493,85 @@ private fun LoanInstallmentsDialog(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
 
-                    if (historicalAccounts.isEmpty()) {
-                        Text(
-                            text = "برای ثبت سابقه، حداقل یک حساب باید در برنامه وجود داشته باشد.",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    } else {
-                        Text(
-                            text = "حساب مربوط به پرداخت قبلی",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MatureColors.TextPrimary
-                        )
+                    Text(
+                        text = "حساب مربوط به پرداخت قبلی (اختیاری)",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MatureColors.TextPrimary
+                    )
 
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(14.dp))
+                                .clickable {
+                                    historicalAccountId = null
+                                }
+                                .padding(horizontal = 8.dp, vertical = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            historicalAccounts.forEach { account ->
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(14.dp))
-                                        .clickable {
-                                            historicalAccountId = account.id
-                                        }
-                                        .padding(horizontal = 8.dp, vertical = 5.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                            RadioButton(
+                                selected = historicalAccountId == null,
+                                onClick = {
+                                    historicalAccountId = null
+                                }
+                            )
+
+                            Spacer(Modifier.size(8.dp))
+
+                            Text(
+                                text = "حساب ثبت نشده / نامشخص",
+                                fontSize = 13.sp,
+                                color = MatureColors.TextPrimary
+                            )
+                        }
+
+                        historicalAccounts.forEach { account ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .clickable {
+                                        historicalAccountId = account.id
+                                    }
+                                    .padding(horizontal = 8.dp, vertical = 5.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = historicalAccountId == account.id,
+                                    onClick = {
+                                        historicalAccountId = account.id
+                                    }
+                                )
+
+                                Spacer(Modifier.size(8.dp))
+
+                                Column(
+                                    modifier = Modifier.weight(1f)
                                 ) {
-                                    RadioButton(
-                                        selected = historicalAccountId == account.id,
-                                        onClick = {
-                                            historicalAccountId = account.id
-                                        }
+                                    Text(
+                                        text = account.name,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MatureColors.TextPrimary
                                     )
 
-                                    Spacer(Modifier.size(8.dp))
-
-                                    Column(
-                                        modifier = Modifier.weight(1f)
-                                    ) {
+                                    if (account.bankName.isNotBlank()) {
                                         Text(
-                                            text = account.name,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MatureColors.TextPrimary
+                                            text = account.bankName,
+                                            fontSize = 11.sp,
+                                            color = MatureColors.TextSecondary
                                         )
+                                    }
 
-                                        if (account.bankName.isNotBlank()) {
-                                            Text(
-                                                text = account.bankName,
-                                                fontSize = 11.sp,
-                                                color = MatureColors.TextSecondary
-                                            )
-                                        }
-
-                                        if (!account.isActive) {
-                                            Text(
-                                                text = "حساب غیرفعال — فقط برای ثبت سابقه",
-                                                fontSize = 10.sp,
-                                                color = MatureColors.TextSecondary
-                                            )
-                                        }
+                                    if (!account.isActive) {
+                                        Text(
+                                            text = "حساب غیرفعال — فقط برای ثبت سابقه",
+                                            fontSize = 10.sp,
+                                            color = MatureColors.TextSecondary
+                                        )
                                     }
                                 }
                             }
@@ -1584,11 +1602,6 @@ private fun LoanInstallmentsDialog(
                             historicalPaymentError = "تاریخ پرداخت را به‌صورت معتبر انتخاب کنید."
                             return@Button
                         }
-                        if (historicalAccountId == null) {
-                            historicalPaymentError = "حساب مربوط به پرداخت قبلی را انتخاب کنید."
-                            return@Button
-                        }
-
                         val recorded = LoanPaymentManager.recordHistoricalInstallmentPayment(
                             context = context,
                             loan = currentLoan,
