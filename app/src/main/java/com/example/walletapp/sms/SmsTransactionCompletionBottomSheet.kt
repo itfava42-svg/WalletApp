@@ -1669,7 +1669,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             isTransfer,
                             destinationAccountId,
                             selectedCategory,
-                            tags,
+                            completionTags,
                             description,
                             receiptUri,
                             selectedBank,
