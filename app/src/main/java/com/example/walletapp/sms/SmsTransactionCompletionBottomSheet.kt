@@ -269,8 +269,6 @@ fun SmsTransactionCompletionBottomSheetContent(
     onDismissAsNotBankTransaction: () -> Unit,
     onAddBankAccount: () -> Unit,
 ) {
-    BackHandler(enabled = true) {}
-
     var selectedCategory by
         remember(initialCategory) {
             mutableStateOf(initialCategory)
@@ -1755,6 +1753,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                 if (category != "قسط") {
                     selectedLoan = null
                     selectedInstallment = null
+                    showCategoryPicker = false
                 } else {
                     selectedLoan = null
                     selectedInstallment = null
@@ -2312,8 +2311,10 @@ private fun CategoryPickerDialog(
                                 Text(
                                     text = item.name,
                                     modifier = Modifier.weight(1f),
-                                    fontSize = 15.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                                 )
 
                                 Icon(
@@ -2354,7 +2355,14 @@ private fun CategoryPickerDialog(
                                                         .background(item.accent),
                                                 )
                                                 Spacer(Modifier.width(10.dp))
-                                                Text(text = sub, fontSize = 13.sp)
+                                                Text(
+                                                    text = sub,
+                                                    modifier = Modifier.weight(1f),
+                                                    fontSize = 14.sp,
+                                                    fontWeight = FontWeight.Medium,
+                                                    maxLines = 1,
+                                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                                )
                                             }
                                         }
                                     }
