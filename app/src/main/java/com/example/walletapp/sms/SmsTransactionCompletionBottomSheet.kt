@@ -483,6 +483,12 @@ fun SmsTransactionCompletionBottomSheetContent(
             receiptUri != null ||
             selectedBank != detectedBank
 
+    val completionTags = if (!selectedSubcategory.isNullOrBlank()) {
+        tags.filterNot { it.startsWith("زیردسته:") } + ("زیردسته:" + selectedSubcategory)
+    } else {
+        tags
+    }
+
     val isInstallmentCategory = selectedCategory == "قسط"
     val unpaidInstallments =
         selectedLoan?.let(::unpaidInstallmentsFor).orEmpty()
@@ -989,6 +995,13 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     fontWeight = FontWeight.SemiBold,
                                     color = androidx.compose.ui.graphics.Color(0xFFEB1C24),
                                 )
+                                if (selectedSubcategory != null) {
+                                    Text(
+                                        text = "جزئیات: " + selectedSubcategory,
+                                        fontSize = 11.sp,
+                                        color = androidx.compose.ui.graphics.Color(0xFF777777),
+                                    )
+                                }
                                 if (isInstallmentCategory && selectedLoan != null) {
                                     Text(
                                         text = selectedLoan!!.title +
@@ -1636,7 +1649,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                             isTransfer,
                             destinationAccountId,
                             selectedCategory,
-                            tags,
+                            completionTags,
                             description,
                             receiptUri,
                             selectedBank,
