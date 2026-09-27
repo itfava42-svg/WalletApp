@@ -42,8 +42,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +59,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.Reminder
 import com.example.walletapp.loan.MatureColors
+import com.example.walletapp.data.ReminderKind
 import com.example.walletapp.data.ReminderStore
 import com.example.walletapp.data.JalaliCalendar
 import java.util.Calendar
@@ -214,7 +217,8 @@ fun ReminderScreen(
                 !isOverdue(
                     it,
                     now
-                )            }
+                )
+            }
             .minByOrNull {
                 it.triggerAtMillis
             }
@@ -433,7 +437,8 @@ private fun ReminderHeader(
 
             Column(
                 modifier =
-                    Modifier.padding(                        18.dp
+                    Modifier.padding(
+                        18.dp
                     )
             ) {
 
@@ -652,7 +657,8 @@ private fun SummaryBox(
                     icon,
                 contentDescription =
                     null,
-                modifier =                    Modifier.size(
+                modifier =
+                    Modifier.size(
                         20.dp
                     )
             )
@@ -871,6 +877,7 @@ private fun ReminderItemCard(
         linkedAccount?.let {
             if (it.bankName.isBlank()) it.name else it.bankName
         }
+
     val statusText =
         if (reminder.isCompleted) {
             "انجام‌شده"
@@ -1099,3 +1106,338 @@ private fun ReminderItemCard(
                     onClick =
                         onComplete
                 ) {
+
+                    Icon(
+                        imageVector =
+                            Icons.Default.CheckCircle,
+                        contentDescription =
+                            if (
+                                reminder.isCompleted
+                            ) {
+                                "بازگرداندن"
+                            } else {
+                                "انجام شد"
+                            }
+                    )
+                }
+
+                IconButton(
+                    onClick =
+                        onEdit
+                ) {
+
+                    Icon(
+                        imageVector =
+                            Icons.Default.Edit,
+                        contentDescription =
+                            "ویرایش"
+                    )
+                }
+
+                IconButton(
+                    onClick =
+                        onDelete
+                ) {
+
+                    Icon(
+                        imageVector =
+                            Icons.Default.Delete,
+                        contentDescription =
+                            "حذف"
+                    )
+                }
+
+                Spacer(
+                    modifier =
+                        Modifier.weight(
+                            1f
+                        )
+                )
+
+                Text(
+                    text =
+                        JalaliCalendar.fromEpochMillisSlashed(
+                            reminder.triggerAtMillis
+                        ),
+                    style =
+                        MaterialTheme.typography.labelMedium
+                )
+            }
+        }
+    }
+}
+
+@androidx.compose.runtime.Composable
+private fun EmptyReminderCard(
+    filter: ReminderFilter,
+    onAddReminder: () -> Unit
+) {
+
+    Card(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(
+                    onClick =
+                        onAddReminder
+                ),
+        shape =
+            RoundedCornerShape(
+                20.dp
+            )
+    ) {
+
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        28.dp
+                    ),
+            horizontalAlignment =
+                Alignment.CenterHorizontally
+        ) {
+
+            Icon(
+                imageVector =
+                    Icons.Default.Notifications,
+                contentDescription =
+                    null,
+                modifier =
+                    Modifier.size(
+                        42.dp
+                    )
+            )
+
+            Spacer(
+                modifier =
+                    Modifier.height(
+                        10.dp
+                    )
+            )
+
+            Text(
+                text =
+                    when (filter) {
+                        ReminderFilter.ALL ->
+                            "هنوز یادآوری‌ای ثبت نشده است"
+
+                        ReminderFilter.TODAY ->
+                            "برای امروز یادآوری‌ای ندارید"
+
+                        ReminderFilter.NEXT_THREE_DAYS ->
+                            "در سه روز آینده موردی ندارید"
+
+                        ReminderFilter.THIS_WEEK ->
+                            "برای این هفته موردی ندارید"
+
+                        ReminderFilter.OVERDUE ->
+                            "یادآوری عقب‌افتاده‌ای ندارید"
+
+                        ReminderFilter.COMPLETED ->
+                            "مورد انجام‌شده‌ای وجود ندارد"
+                    },
+                fontWeight =
+                    FontWeight.Bold
+            )
+
+            Spacer(
+                modifier =
+                    Modifier.height(
+                        6.dp
+                    )
+            )
+
+            Text(
+                text =
+                    "برای افزودن یادآوری جدید لمس کنید",
+                style =
+                    MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+private const val DAY_MILLIS =
+    24L * 60L * 60L * 1000L
+
+private fun startOfDay(
+    millis: Long
+): Long {
+
+    return Calendar
+        .getInstance()
+        .apply {
+
+            timeInMillis =
+                millis
+
+            set(
+                Calendar.HOUR_OF_DAY,
+                0
+            )
+
+            set(
+                Calendar.MINUTE,
+                0
+            )
+
+            set(
+                Calendar.SECOND,
+                0
+            )
+
+            set(
+                Calendar.MILLISECOND,
+                0
+            )
+        }
+        .timeInMillis
+}
+
+private fun endOfWeek(
+    millis: Long
+): Long {
+
+    val calendar =
+        Calendar.getInstance()
+
+    calendar.timeInMillis =
+        millis
+
+    calendar.set(
+        Calendar.DAY_OF_WEEK,
+        calendar.firstDayOfWeek
+    )
+
+    calendar.add(
+        Calendar.DAY_OF_MONTH,
+        7
+    )
+
+    return startOfDay(
+        calendar.timeInMillis
+    )
+}
+
+private fun isToday(
+    reminder: Reminder,
+    todayStart: Long
+): Boolean {
+
+    val trigger =
+        startOfDay(
+            reminder.triggerAtMillis
+        )
+
+    return trigger ==
+        todayStart
+}
+
+private fun isOverdue(
+    reminder: Reminder,
+    now: Long
+): Boolean {
+
+    if (
+        reminder.isCompleted ||
+        !reminder.isActive
+    ) {
+        return false
+    }
+
+    return startOfDay(
+        reminder.triggerAtMillis
+    ) <
+        startOfDay(now)
+}
+
+private fun dueText(
+    reminder: Reminder,
+    now: Long
+): String {
+
+    if (
+        reminder.isCompleted
+    ) {
+        return "انجام‌شده"
+    }
+
+    val due =
+        startOfDay(
+            reminder.triggerAtMillis
+        )
+
+    val today =
+        startOfDay(now)
+
+    val diff =
+        (
+            due - today
+        ) / DAY_MILLIS
+
+    return when {
+
+        diff == 0L ->
+            "امروز سررسید"
+
+        diff == 1L ->
+            "فردا"
+
+        diff > 1L ->
+            "${persianDigits(diff.toString())} روز مانده"
+
+        diff == -1L ->
+            "۱ روز از سررسید گذشته"
+
+        else ->
+            "${persianDigits(abs(diff).toString())} روز از سررسید گذشته"
+    }
+}
+
+private fun formatMoney(
+    amount: Long
+): String {
+
+    return amount
+        .toString()
+        .reversed()
+        .chunked(3)
+        .joinToString(",")
+        .reversed()
+        .let {
+            "${persianDigits(it)} تومان"
+        }
+}
+
+private fun persianDigits(
+    value: String
+): String {
+
+    val english =
+        charArrayOf(
+            '0','1','2','3','4',
+            '5','6','7','8','9'
+        )
+
+    val persian =
+        charArrayOf(
+            '۰','۱','۲','۳','۴',
+            '۵','۶','۷','۸','۹'
+        )
+
+    var result =
+        value
+
+    for (i in english.indices) {
+        result =
+            result.replace(
+                english[i],
+                persian[i]
+            )
+    }
+
+    return result
+}
+
+
