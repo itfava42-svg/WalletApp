@@ -2215,8 +2215,8 @@ private fun CategoryPickerDialog(
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth(0.94f)
-                .heightIn(max = 760.dp),
+                .fillMaxWidth(0.92f)
+                .heightIn(max = 700.dp),
             shape = RoundedCornerShape(26.dp),
             tonalElevation = 5.dp,
             color = MaterialTheme.colorScheme.surface,
@@ -2250,10 +2250,16 @@ private fun CategoryPickerDialog(
                         }
                     }
                     Text(
-                        text = "انتخاب دسته بندی",
+                        text = "انتخاب دسته‌بندی",
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
                     )
                     IconButton(onClick = onDismiss) {
                         Icon(Icons.Default.ChevronLeft, "بازگشت", tint = Color.White)
@@ -2394,7 +2400,9 @@ private fun CategoryPickerDialog(
                         BasicTextField(
                             value = query,
                             onValueChange = { query = it },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .weight(1f)
+                                .heightIn(min = 44.dp),
                             singleLine = true,
                             textStyle = androidx.compose.ui.text.TextStyle(
                                 color = MaterialTheme.colorScheme.onSurface,
