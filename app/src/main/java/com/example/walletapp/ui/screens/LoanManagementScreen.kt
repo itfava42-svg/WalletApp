@@ -1886,7 +1886,7 @@ private fun LoanEditorDialog(
                                             value = loanType.label,
                                             onValueChange = {},
                                             readOnly = true,
-                                            modifier = Modifier.fillMaxWidth().height(64.dp),
+                                            modifier = Modifier.fillMaxWidth().heightIn(min = 72.dp),
                                             shape = RoundedCornerShape(18.dp),
                                             label = { Text("نوع وام") },
                                             leadingIcon = {
@@ -1965,7 +1965,7 @@ private fun LoanEditorDialog(
                                             value = "هر \${intervalMonths} ماه",
                                             onValueChange = {},
                                             readOnly = true,
-                                            modifier = Modifier.fillMaxWidth().height(64.dp),
+                                            modifier = Modifier.fillMaxWidth().heightIn(min = 72.dp),
                                             shape = RoundedCornerShape(18.dp),
                                             label = { Text("فاصله اقساط") },
                                             trailingIcon = {
@@ -2136,8 +2136,8 @@ private fun LoanEditorDialog(
                                     OutlinedTextField(
                                         value = guaranteeNote,
                                         onValueChange = { guaranteeNote = it },
-                                        modifier = Modifier.fillMaxWidth().heightIn(min = 104.dp),
-                                        minLines = 3,
+                                        modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp),
+                                        minLines = 4,
                                         shape = RoundedCornerShape(18.dp),
                                         label = { Text("ضمانت و توضیحات") },
                                         placeholder = { Text("توضیحات اختیاری") },
@@ -2177,7 +2177,7 @@ private fun LoanEditorDialog(
                         ) {
                             OutlinedButton(
                                 onClick = onDismiss,
-                                modifier = Modifier.weight(1f).height(52.dp),
+                                modifier = Modifier.weight(1f).heightIn(min = 56.dp),
                                 shape = RoundedCornerShape(16.dp)
                             ) {
                                 Text("انصراف")
@@ -2250,7 +2250,7 @@ private fun LoanEditorDialog(
                                         )
                                     )
                                 },
-                                modifier = Modifier.weight(1.35f).height(52.dp),
+                                modifier = Modifier.weight(1.35f).heightIn(min = 56.dp),
                                 shape = RoundedCornerShape(16.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary
@@ -2284,7 +2284,7 @@ private fun LoanFormField(
         onValueChange = onValueChange,
         modifier = modifier
             .fillMaxWidth()
-            .height(58.dp),
+            .heightIn(min = 70.dp),
         singleLine = true,
         shape = RoundedCornerShape(18.dp),
         label = { Text(label) },
@@ -2348,7 +2348,7 @@ private fun LoanAmountCard(
                 onValueChange = onValueChange,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(58.dp),
+                    .heightIn(min = 70.dp),
                 singleLine = true,
                 shape = RoundedCornerShape(18.dp),
                 keyboardOptions = KeyboardOptions(
@@ -2455,7 +2455,7 @@ private fun LoanDateField(
         readOnly = true,
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp),
+            .heightIn(min = 72.dp),
         shape = RoundedCornerShape(18.dp),
         label = { Text(label) },
         placeholder = { Text("انتخاب تاریخ") },
@@ -2698,173 +2698,3 @@ private fun SmallLoanInfo(
             MaterialTheme.colorScheme.outlineVariant
         )
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(Modifier.height(4.dp))
-
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
-
-@Composable
-private fun DateField(
-    label: String,
-    value: String,
-    onDateSelected: (String) -> Unit,
-    context: android.content.Context
-) {
-    var showPicker by remember { mutableStateOf(false) }
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = {},
-        readOnly = true,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = MaterialTheme.shapes.medium,
-        label = { Text(label) },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Filled.CalendarMonth,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
-        },
-        trailingIcon = {
-            IconButton(onClick = { showPicker = true }) {
-                Icon(
-                    imageVector = Icons.Filled.CalendarMonth,
-                    contentDescription = "انتخاب تاریخ",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-    )
-
-    if (showPicker) {
-        JalaliDatePickerDialog(
-            initialDate = value,
-            onDismissRequest = { showPicker = false },
-            onDateSelected = { selectedDate ->
-                onDateSelected(selectedDate)
-                showPicker = false
-            }
-        )
-    }
-}
-
-private fun parseJalaliDate(
-    value: String
-): IntArray? {
-    val parts = value.split("/")
-
-    if (parts.size != 3) {
-        return null
-    }
-
-    val year =
-        parts[0].toIntOrNull()
-            ?: return null
-
-    val month =
-        parts[1].toIntOrNull()
-            ?: return null
-
-    val day =
-        parts[2].toIntOrNull()
-            ?: return null
-
-    if (
-        month !in 1..12 ||
-        day !in 1..31
-    ) {
-        return null
-    }
-
-    return intArrayOf(
-        year,
-        month,
-        day
-    )
-}
-
-private fun normalizeLoanDigits(value: String): String =
-    value.map { ch ->
-        when (ch) {
-            in '۰'..'۹' -> ('0'.code + (ch.code - '۰'.code)).toChar()
-            in '٠'..'٩' -> ('0'.code + (ch.code - '٠'.code)).toChar()
-            else -> ch
-        }
-    }.joinToString("")
-
-private fun calculateMonthlyInstallment(
-    principal: Long,
-    annualInterestPercent: Double,
-    numberOfPayments: Int
-): Long {
-    if (
-        principal <= 0L ||
-        numberOfPayments <= 0
-    ) {
-        return 0L
-    }
-
-    if (annualInterestPercent <= 0.0) {
-        return principal / numberOfPayments
-    }
-
-    val monthlyRate =
-        annualInterestPercent /
-            100.0 /
-            12.0
-
-    val power =
-        (1.0 + monthlyRate)
-            .pow(numberOfPayments)
-
-    val payment =
-        principal *
-            (monthlyRate * power) /
-            (power - 1.0)
-
-    return payment.toLong()
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
