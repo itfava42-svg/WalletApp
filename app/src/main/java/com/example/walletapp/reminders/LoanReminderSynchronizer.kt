@@ -139,6 +139,12 @@ object LoanReminderSynchronizer {
                     reminderId
                 )
 
+            // A one-time reminder that the user already completed
+            // must not be recreated by a later synchronization.
+            if (current?.isCompleted == true) {
+                continue
+            }
+
             val nextTrigger =
                 calculateNextTrigger(
                     dueAtMillis,
