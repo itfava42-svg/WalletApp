@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -809,16 +811,23 @@ private fun LazyFilterRow(
     onSelected: (ReminderFilter) -> Unit
 ) {
 
-    androidx.compose.foundation.lazy.LazyRow(
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp)
+                .horizontalScroll(
+                    rememberScrollState()
+                ),
         horizontalArrangement =
             Arrangement.spacedBy(
                 8.dp
-            )
+            ),
+        verticalAlignment =
+            Alignment.CenterVertically
     ) {
 
-        items(
-            ReminderFilter.entries
-        ) { filter ->
+        ReminderFilter.entries.forEach { filter ->
 
             FilterChip(
                 selected =
@@ -833,7 +842,9 @@ private fun LazyFilterRow(
                 label = {
                     Text(
                         text =
-                            filter.title
+                            filter.title,
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
             )
