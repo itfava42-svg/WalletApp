@@ -2394,7 +2394,8 @@ private fun CategoryPickerDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                            .heightIn(min = 52.dp)
+                            .padding(horizontal = 14.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(Icons.Default.Search, contentDescription = "جستجو", tint = Color(0xFF1B7A43))
@@ -2409,6 +2410,7 @@ private fun CategoryPickerDialog(
                             textStyle = androidx.compose.ui.text.TextStyle(
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 14.sp,
+                                textAlign = TextAlign.Right,
                             ),
                             decorationBox = { innerTextField ->
                                 if (query.isBlank()) {
