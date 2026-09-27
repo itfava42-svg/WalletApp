@@ -380,6 +380,7 @@ fun SmsTransactionCompletionBottomSheetContent(
     }
 
     var showLoanDialog by remember { mutableStateOf(false) }
+    var showCategoryPicker by remember { mutableStateOf(false) }
     var showInstallmentDialog by remember { mutableStateOf(false) }
     var selectedLoan by remember { mutableStateOf<LoanEntry?>(null) }
     var selectedInstallment by remember { mutableStateOf<SmsLoanInstallmentChoice?>(null) }
@@ -917,88 +918,69 @@ fun SmsTransactionCompletionBottomSheetContent(
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement =
-                    Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-
                 Text(
                     text = "دسته بندی",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color =
-                        androidx.compose.ui.graphics.Color(0xFF1A1A1A),
+                    color = androidx.compose.ui.graphics.Color(0xFF1A1A1A),
                 )
 
-                Row(
-                    modifier =
-                        Modifier
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showCategoryPicker = true },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = androidx.compose.ui.graphics.Color(0xFFFCE8E8),
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier
                             .fillMaxWidth()
-                            .background(
-                                androidx.compose.ui.graphics.Color(0xFFFCE8E8),
-                                RoundedCornerShape(12.dp),
-                            )
-                            .clickable {
-                                if (selectedType == TransactionType.EXPENSE) {
-                                    selectedCategory =
-                                        if (selectedCategory == null)
-                                            "سایر"
-                                        else
-                                            null
-                                } else {
-                                    selectedCategory =
-                                        if (selectedCategory == null)
-                                            "سایر"
-                                        else
-                                            null
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChevronLeft,
+                            contentDescription = "انتخاب دسته بندی",
+                            modifier = Modifier.size(20.dp),
+                            tint = androidx.compose.ui.graphics.Color(0xFFEB1C24),
+                        )
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column(horizontalAlignment = Alignment.End) {
+                                Text(
+                                    text = selectedCategory ?: "تعیین نشده",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = androidx.compose.ui.graphics.Color(0xFFEB1C24),
+                                )
+                                if (isInstallmentCategory && selectedLoan != null) {
+                                    Text(
+                                        text = selectedLoan!!.title +
+                                            (selectedInstallment?.let { " — قسط ${it.number}" } ?: ""),
+                                        fontSize = 11.sp,
+                                        color = androidx.compose.ui.graphics.Color(0xFF7A7A7A),
+                                    )
                                 }
                             }
-                            .padding(
-                                horizontal = 16.dp,
-                                vertical = 12.dp,
-                            ),
-                    horizontalArrangement =
-                        Arrangement.SpaceBetween,
-                    verticalAlignment =
-                        Alignment.CenterVertically,
-                ) {
-
-                    Icon(
-                        imageVector =
-                            androidx.compose.material.icons.Icons.Default.ChevronLeft,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                        tint =
-                            androidx.compose.ui.graphics.Color(0xFFEB1C24),
-                    )
-
-                    Row(
-                        horizontalArrangement =
-                            Arrangement.spacedBy(8.dp),
-                        verticalAlignment =
-                            Alignment.CenterVertically,
-                    ) {
-
-                        Text(
-                            text =
-                                selectedCategory ?: "تعیین نشده",
-                            fontSize = 14.sp,
-                            color =
-                                androidx.compose.ui.graphics.Color(0xFFEB1C24),
-                        )
-
-                        Icon(
-                            imageVector =
-                                androidx.compose.material.icons.Icons.Default.Folder,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                            tint =
-                                androidx.compose.ui.graphics.Color(0xFFEB1C24),
-                        )
+                            Icon(
+                                imageVector = Icons.Default.Folder,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                                tint = androidx.compose.ui.graphics.Color(0xFFEB1C24),
+                            )
+                        }
                     }
                 }
             }
 
-            // =================================================
             // DESCRIPTION
             // =================================================
 
@@ -1689,6 +1671,29 @@ fun SmsTransactionCompletionBottomSheetContent(
 
         }
     }
+    if (showCategoryPicker) {
+        CategoryPickerDialog(
+            selectedType = selectedType,
+            selectedCategory = selectedCategory,
+            activeLoans = activeLoans,
+            selectedLoan = selectedLoan,
+            selectedInstallment = selectedInstallment,
+            onDismiss = { showCategoryPicker = false },
+            onCategorySelected = { category ->
+                selectedCategory = category
+                if (category != "قسط") {
+                    selectedLoan = null
+                    selectedInstallment = null
+                } else {
+                    selectedLoan = null
+                    selectedInstallment = null
+                    showCategoryPicker = false
+                    showLoanDialog = true
+                }
+            },
+        )
+    }
+
     if (showBankDialog) {
         AlertDialog(
             onDismissRequest = {
@@ -1974,6 +1979,244 @@ fun SmsTransactionCompletionBottomSheetContent(
                 }
             },
         )
+    }
+}
+
+data class CategoryPickerItem(
+    val name: String,
+    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val accent: Color,
+    val subs: List<String>,
+)
+
+@Composable
+private fun CategoryPickerDialog(
+    selectedType: TransactionType,
+    selectedCategory: String?,
+    activeLoans: List<LoanEntry>,
+    selectedLoan: LoanEntry?,
+    selectedInstallment: SmsLoanInstallmentChoice?,
+    onDismiss: () -> Unit,
+    onCategorySelected: (String) -> Unit,
+) {
+    var query by remember { mutableStateOf("") }
+    var expandedId by remember { mutableStateOf<String?>(selectedCategory) }
+
+    val expenseItems = listOf(
+        CategoryPickerItem("غذا", Icons.Default.Fastfood, Color(0xFF2E9D57), listOf("رستوران", "سوپرمارکت", "کافه", "میوه و سبزیجات")),
+        CategoryPickerItem("حمل‌ونقل", Icons.Default.DirectionsCar, Color(0xFF3578C4), listOf("بنزین", "تعمیرات", "بیمه", "پارکینگ")),
+        CategoryPickerItem("قبض", Icons.Default.Description, Color(0xFF20A7A7), listOf("برق", "آب", "گاز", "اینترنت")),
+        CategoryPickerItem("قسط", Icons.Default.Payments, Color(0xFFE58A21), listOf("وام مسکن", "وام خودرو", "وام قرض‌الحسنه", "بازپرداخت اقساط")),
+        CategoryPickerItem("خرید", Icons.Default.ShoppingBag, Color(0xFFD36A9A), listOf("پوشاک", "کفش", "لوازم خانه", "خرید روزمره")),
+        CategoryPickerItem("سلامت", Icons.Default.LocalHospital, Color(0xFFD84C4C), listOf("دارو", "دکتر", "آزمایش", "بیمارستان")),
+        CategoryPickerItem("تفریح", Icons.Default.SportsEsports, Color(0xFF5A8FD8), listOf("سینما", "بازی", "سفر", "سرگرمی")),
+        CategoryPickerItem("سایر", Icons.Default.Category, Color(0xFF777777), emptyList()),
+    )
+    val incomeItems = listOf(
+        CategoryPickerItem("حقوق", Icons.Default.AttachMoney, Color(0xFF2E9D57), listOf("حقوق ماهانه", "دستمزد", "پاداش")),
+        CategoryPickerItem("هدیه", Icons.Default.CardGiftcard, Color(0xFFD36A9A), listOf("هدیه نقدی", "هدیه غیرنقدی")),
+        CategoryPickerItem("سرمایه‌گذاری", Icons.Default.TrendingUp, Color(0xFFD4A62A), listOf("سود", "سهام", "سپرده بانکی")),
+        CategoryPickerItem("بازگشت وجه", Icons.Default.Replay, Color(0xFF5A8FD8), listOf("استرداد", "برگشت خرید")),
+        CategoryPickerItem("سایر", Icons.Default.Category, Color(0xFF777777), emptyList()),
+    )
+
+    val items = if (selectedType == TransactionType.EXPENSE) expenseItems else incomeItems
+    val normalizedQuery = query.trim()
+    val filtered = items.filter { item ->
+        normalizedQuery.isBlank() ||
+            item.name.contains(normalizedQuery, ignoreCase = true) ||
+            item.subs.any { it.contains(normalizedQuery, ignoreCase = true) }
+    }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth(0.94f)
+                .heightIn(max = 760.dp),
+            shape = RoundedCornerShape(26.dp),
+            tonalElevation = 5.dp,
+            color = MaterialTheme.colorScheme.surface,
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFF1B7A43))
+                        .padding(horizontal = 14.dp, vertical = 14.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        IconButton(onClick = { }) {
+                            Icon(Icons.Default.Sort, "مرتب‌سازی", tint = Color.White)
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(Icons.Default.Add, "افزودن دسته", tint = Color.White)
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(Icons.Default.Download, "دانلود", tint = Color.White)
+                        }
+                    }
+                    Text(
+                        text = "انتخاب دسته بندی",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.ChevronLeft, "بازگشت", tint = Color.White)
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(9.dp),
+                ) {
+                    if (filtered.isEmpty()) {
+                        Text(
+                            text = "دسته یا زیردسته‌ای پیدا نشد",
+                            modifier = Modifier.fillMaxWidth().padding(24.dp),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+                    filtered.forEach { item ->
+                        val isExpanded = expandedId == item.name
+                        val matchesSub = normalizedQuery.isNotBlank() &&
+                            item.subs.any { it.contains(normalizedQuery, ignoreCase = true) }
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(15.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        expandedId = if (isExpanded) null else item.name
+                                    }
+                                    .padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(42.dp)
+                                        .clip(androidx.compose.foundation.shape.CircleShape)
+                                        .background(item.accent.copy(alpha = 0.14f)),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Icon(item.icon, contentDescription = null, tint = item.accent)
+                                }
+
+                                Spacer(Modifier.width(12.dp))
+                                Text(
+                                    text = item.name,
+                                    modifier = Modifier.weight(1f),
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+
+                                Icon(
+                                    imageVector = if (isExpanded || matchesSub) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+
+                            AnimatedVisibility(
+                                visible = isExpanded || matchesSub,
+                                enter = expandVertically(),
+                                exit = shrinkVertically(),
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 66.dp, end = 12.dp, bottom = 10.dp),
+                                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                                ) {
+                                    item.subs.forEach { sub ->
+                                        val subMatches = normalizedQuery.isBlank() ||
+                                            sub.contains(normalizedQuery, ignoreCase = true)
+                                        if (subMatches) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .clickable {
+                                                        onCategorySelected(item.name)
+                                                    }
+                                                    .padding(vertical = 9.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                            ) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(8.dp)
+                                                        .clip(androidx.compose.foundation.shape.CircleShape)
+                                                        .background(item.accent),
+                                                )
+                                                Spacer(Modifier.width(10.dp))
+                                                Text(text = sub, fontSize = 13.sp)
+                                            }
+                                        }
+                                    }
+
+                                    TextButton(
+                                        onClick = { onCategorySelected(item.name) },
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        Text("انتخاب «${item.name}»")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Surface(
+                    color = Color(0xFFC8E6C9),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(Icons.Default.Search, contentDescription = "جستجو", tint = Color(0xFF1B7A43))
+                        Spacer(Modifier.width(8.dp))
+                        BasicTextField(
+                            value = query,
+                            onValueChange = { query = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            textStyle = androidx.compose.ui.text.TextStyle(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 14.sp,
+                            ),
+                            decorationBox = { innerTextField ->
+                                if (query.isBlank()) {
+                                    Text(
+                                        text = "جستجوی دسته یا زیردسته...",
+                                        color = Color(0xFF5B765F),
+                                        fontSize = 13.sp,
+                                    )
+                                }
+                                innerTextField()
+                            },
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
