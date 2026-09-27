@@ -1873,6 +1873,34 @@ fun SmsTransactionCompletionBottomSheetContent(
                                         fontSize = 12.sp,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
+
+                                    val recordedPayment = loan.payments
+                                        .asSequence()
+                                        .filter { it.installmentNumber in 1..loan.totalInstallments }
+                                        .maxByOrNull { it.installmentNumber }
+                                    val recordedAccount = recordedPayment?.accountId
+                                        ?.let { accountId -> AccountStore.accounts.firstOrNull { it.id == accountId } }
+
+                                    if (recordedAccount != null) {
+                                        Text(
+                                            text = "حساب ثبت‌شده: " + recordedAccount.name,
+                                            fontSize = 12.sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                        if (recordedAccount.bankName.isNotBlank()) {
+                                            Text(
+                                                text = "بانک: " + recordedAccount.bankName,
+                                                fontSize = 11.sp,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                        }
+                                    } else {
+                                        Text(
+                                            text = "حساب پرداخت قبلی: ثبت نشده",
+                                            fontSize = 11.sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
                                 }
                             }
                         }
