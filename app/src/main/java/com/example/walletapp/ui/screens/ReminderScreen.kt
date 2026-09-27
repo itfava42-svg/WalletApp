@@ -955,13 +955,13 @@ private fun ReminderItemCard(
                 ) {
 
                     Column(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier =
+                            Modifier.fillMaxWidth()
                     ) {
 
                         Text(
                             text = reminder.title,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -976,41 +976,18 @@ private fun ReminderItemCard(
                     }
 
                     if (bankLabel != null) {
-                        Spacer(modifier = Modifier.height(7.dp))
-                        Surface(
-                            shape = RoundedCornerShape(10.dp),
-                            tonalElevation = 1.dp
-                        ) {
-                            Text(
-                                text = "بانک: ${bankLabel}",
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(
-                                    horizontal = 10.dp,
-                                    vertical = 6.dp
+                        Spacer(
+                            modifier =
+                                Modifier.height(
+                                    5.dp
                                 )
-                            )
-                        }
-                    }
-
-                    if (linkedLoan != null) {
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = "وام: ${linkedLoan.title}",
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Medium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
                         )
-
-                        reminder.sourceInstallmentNumber?.let { installmentNumber ->
-                            Text(
-                                text = "قسط ${persianDigits(installmentNumber.toString())} از ${persianDigits(linkedLoan.totalInstallments.toString())}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                        Text(
+                            text = "بانک: $bankLabel",
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
 
                     Spacer(
