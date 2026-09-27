@@ -42,6 +42,7 @@ object LoanPaymentManager {
                         JalaliCalendar.fromEpochMillisSlashed(it)
                     } ?: "امروز",
                 transactionId = transaction.id,
+                accountId = transaction.accountId?.takeIf { it.isNotBlank() },
             )
 
         val added =
