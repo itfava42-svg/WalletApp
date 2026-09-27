@@ -1243,3 +1243,223 @@ private fun EmptyReminderCard(
                     when (filter) {
                         ReminderFilter.ALL ->
                             "هنوز یادآوری‌ای ثبت نشده است"
+
+                        ReminderFilter.TODAY ->
+                            "برای امروز یادآوری‌ای ندارید"
+
+                        ReminderFilter.NEXT_THREE_DAYS ->
+                            "در سه روز آینده موردی ندارید"
+
+                        ReminderFilter.THIS_WEEK ->
+                            "برای این هفته موردی ندارید"
+
+                        ReminderFilter.OVERDUE ->
+                            "یادآوری عقب‌افتاده‌ای ندارید"
+
+                        ReminderFilter.COMPLETED ->
+                            "مورد انجام‌شده‌ای وجود ندارد"
+                    },
+                fontWeight =
+                    FontWeight.Bold
+            )
+
+            Spacer(
+                modifier =
+                    Modifier.height(
+                        6.dp
+                    )
+            )
+
+            Text(
+                text =
+                    "برای افزودن یادآوری جدید لمس کنید",
+                style =
+                    MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+private const val DAY_MILLIS =
+    24L * 60L * 60L * 1000L
+
+private fun startOfDay(
+    millis: Long
+): Long {
+
+    return Calendar
+        .getInstance()
+        .apply {
+
+            timeInMillis =
+                millis
+
+            set(
+                Calendar.HOUR_OF_DAY,
+                0
+            )
+
+            set(
+                Calendar.MINUTE,
+                0
+            )
+
+            set(
+                Calendar.SECOND,
+                0
+            )
+
+            set(
+                Calendar.MILLISECOND,
+                0
+            )
+        }
+        .timeInMillis
+}
+
+private fun endOfWeek(
+    millis: Long
+): Long {
+
+    val calendar =
+        Calendar.getInstance()
+
+    calendar.timeInMillis =
+        millis
+
+    calendar.set(
+        Calendar.DAY_OF_WEEK,
+        calendar.firstDayOfWeek
+    )
+
+    calendar.add(
+        Calendar.DAY_OF_MONTH,
+        7
+    )
+
+    return startOfDay(
+        calendar.timeInMillis
+    )
+}
+
+private fun isToday(
+    reminder: Reminder,
+    todayStart: Long
+): Boolean {
+
+    val trigger =
+        startOfDay(
+            reminder.triggerAtMillis
+        )
+
+    return trigger ==
+        todayStart
+}
+
+private fun isOverdue(
+    reminder: Reminder,
+    now: Long
+): Boolean {
+
+    if (
+        reminder.isCompleted ||
+        !reminder.isActive
+    ) {
+        return false
+    }
+
+    return startOfDay(
+        reminder.triggerAtMillis
+    ) <
+        startOfDay(now)
+}
+
+private fun dueText(
+    reminder: Reminder,
+    now: Long
+): String {
+
+    if (
+        reminder.isCompleted
+    ) {
+        return "انجام‌شده"
+    }
+
+    val due =
+        startOfDay(
+            reminder.triggerAtMillis
+        )
+
+    val today =
+        startOfDay(now)
+
+    val diff =
+        (
+            due - today
+        ) / DAY_MILLIS
+
+    return when {
+
+        diff == 0L ->
+            "امروز سررسید"
+
+        diff == 1L ->
+            "فردا"
+
+        diff > 1L ->
+            "${persianDigits(diff.toString())} روز مانده"
+
+        diff == -1L ->
+            "۱ روز از سررسید گذشته"
+
+        else ->
+            "${persianDigits(abs(diff).toString())} روز از سررسید گذشته"
+    }
+}
+
+private fun formatMoney(
+    amount: Long
+): String {
+
+    return amount
+        .toString()
+        .reversed()
+        .chunked(3)
+        .joinToString(",")
+        .reversed()
+        .let {
+            "${persianDigits(it)} تومان"
+        }
+}
+
+private fun persianDigits(
+    value: String
+): String {
+
+    val english =
+        charArrayOf(
+            '0','1','2','3','4',
+            '5','6','7','8','9'
+        )
+
+    val persian =
+        charArrayOf(
+            '۰','۱','۲','۳','۴',
+            '۵','۶','۷','۸','۹'
+        )
+
+    var result =
+        value
+
+    for (i in english.indices) {
+        result =
+            result.replace(
+                english[i],
+                persian[i]
+            )
+    }
+
+    return result
+}
+
+
