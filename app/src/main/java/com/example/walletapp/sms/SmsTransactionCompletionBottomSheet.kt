@@ -1819,15 +1819,22 @@ fun SmsTransactionCompletionBottomSheetContent(
                     modifier = Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    if (activeLoans.isEmpty()) {
+                    val selectableLoans = activeLoans.filter { loan ->
+                        unpaidInstallmentsFor(loan).isNotEmpty()
+                    }
+                    if (selectableLoans.isEmpty()) {
                         Text(
-                            text = "هیچ وام فعالی برای انتخاب وجود ندارد.",
+                            text = if (activeLoans.isEmpty()) {
+                                "هیچ وام فعالی برای انتخاب وجود ندارد."
+                            } else {
+                                "برای وام‌های موجود، قسط پرداخت‌نشده‌ای برای انتخاب وجود ندارد."
+                            },
                             modifier = Modifier.fillMaxWidth().padding(20.dp),
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     } else {
-                        activeLoans.forEach { loan ->
+                        selectableLoans.forEach { loan ->
                             val paidCount = loan.payments
                                 .map { it.installmentNumber }
                                 .filter { it in 1..loan.totalInstallments }
@@ -1936,15 +1943,24 @@ fun SmsTransactionCompletionBottomSheetContent(
                     modifier = Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    unpaidInstallments.forEach { installment ->
+                    if (unpaidInstallments.isEmpty()) {
                         Text(
-                            text = "قسط شماره ${installment.number} — ${installment.dueDate} — ${installment.amount.toPersianCurrency()} تومان",
-                            modifier = Modifier.fillMaxWidth().clickable {
-                                selectedInstallment = installment
-                                showInstallmentDialog = false
-                            }.padding(vertical = 12.dp, horizontal = 8.dp),
-                            color = if (selectedInstallment?.number == installment.number) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            text = "برای این وام قسط پرداخت‌نشده‌ای باقی نمانده است.",
+                            modifier = Modifier.fillMaxWidth().padding(20.dp),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                    } else {
+                        unpaidInstallments.forEach { installment ->
+                            Text(
+                                text = "قسط شماره ${installment.number} — ${installment.dueDate} — ${installment.amount.toPersianCurrency()} تومان",
+                                modifier = Modifier.fillMaxWidth().clickable {
+                                    selectedInstallment = installment
+                                    showInstallmentDialog = false
+                                }.padding(vertical = 12.dp, horizontal = 8.dp),
+                                color = if (selectedInstallment?.number == installment.number) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
                     }
                 }
             },
