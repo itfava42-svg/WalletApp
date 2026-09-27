@@ -332,7 +332,9 @@ fun AddReminderScreen(
                                 text = amountText,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 15.sp,
-                                color = TextDark
+                                color = TextDark,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                             )
 
                             Text(
@@ -784,11 +786,15 @@ private fun InfoTile(
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            Column {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = title,
                     fontSize = 11.sp,
-                    color = TextGray
+                    color = TextGray,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
 
                 Spacer(modifier = Modifier.height(3.dp))
@@ -797,7 +803,9 @@ private fun InfoTile(
                     text = value,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextDark
+                    color = TextDark,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
             }
         }
