@@ -71,5 +71,28 @@ object ReminderManager {
             completed,
         )
     }
+
+    /**
+     * Marks a reminder complete and cancels its pending alarm.
+     */
+    fun setCompleted(
+        context: Context,
+        id: String,
+        completed: Boolean,
+    ) {
+        if (completed) {
+            ReminderStore.getById(id)?.let { reminder ->
+                ReminderScheduler.cancel(
+                    context,
+                    reminder,
+                )
+            }
+        }
+
+        ReminderStore.setCompleted(
+            id,
+            completed,
+        )
+    }
 }
 
