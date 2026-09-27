@@ -2234,21 +2234,18 @@ private fun CategoryPickerDialog(
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         IconButton(
                             onClick = { sortAscending = !sortAscending },
-                            contentDescription = "مرتب‌سازی",
                         ) {
                             Icon(Icons.Default.Sort, "مرتب‌سازی", tint = Color.White)
                         }
                         IconButton(
                             onClick = { },
                             enabled = false,
-                            contentDescription = "افزودن دسته",
                         ) {
                             Icon(Icons.Default.Add, "افزودن دسته", tint = Color.White)
                         }
                         IconButton(
                             onClick = { },
                             enabled = false,
-                            contentDescription = "دانلود",
                         ) {
                             Icon(Icons.Default.Download, "دانلود", tint = Color.White)
                         }
