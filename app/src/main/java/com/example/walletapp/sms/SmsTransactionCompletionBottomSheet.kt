@@ -1796,17 +1796,63 @@ fun SmsTransactionCompletionBottomSheetContent(
                     modifier = Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    activeLoans.forEach { loan ->
+                    if (activeLoans.isEmpty()) {
                         Text(
-                            text = loan.title,
-                            modifier = Modifier.fillMaxWidth().clickable {
-                                selectedLoan = loan
-                                selectedInstallment = null
-                                showLoanDialog = false
-                                showInstallmentDialog = true
-                            }.padding(vertical = 12.dp, horizontal = 8.dp),
-                            color = if (selectedLoan?.id == loan.id) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            text = "هیچ وام فعالی برای انتخاب وجود ندارد.",
+                            modifier = Modifier.fillMaxWidth().padding(20.dp),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                    } else {
+                        activeLoans.forEach { loan ->
+                            val paidCount = loan.payments
+                                .map { it.installmentNumber }
+                                .filter { it in 1..loan.totalInstallments }
+                                .distinct()
+                                .size
+                            val remainingCount = (loan.totalInstallments - paidCount).coerceAtLeast(0)
+
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selectedLoan = loan
+                                        selectedInstallment = null
+                                        showLoanDialog = false
+                                        showInstallmentDialog = true
+                                    },
+                                shape = RoundedCornerShape(14.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                                ),
+                            ) {
+                                Column(modifier = Modifier.padding(14.dp)) {
+                                    Text(
+                                        text = loan.title,
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (selectedLoan?.id == loan.id) {
+                                            MaterialTheme.colorScheme.primary
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurface
+                                        },
+                                    )
+                                    Spacer(Modifier.height(5.dp))
+                                    Text(
+                                        text = "نوع وام: " + loan.type.label,
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                    Text(
+                                        text = "اقساط: " + loan.totalInstallments +
+                                            "  •  پرداخت‌شده: " + paidCount +
+                                            "  •  باقی‌مانده: " + remainingCount,
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             },
