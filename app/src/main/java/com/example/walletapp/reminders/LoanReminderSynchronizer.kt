@@ -110,7 +110,16 @@ object LoanReminderSynchronizer {
                 calculateInstallmentDate(
                     loan,
                     installmentNumber
-                ) ?: continue
+                )
+
+            if (dueDate == null) {
+                removeInstallmentReminder(
+                    context,
+                    loan.id,
+                    installmentNumber
+                )
+                continue
+            }
 
             val dueAtMillis =
                 JalaliCalendar.jalaliToEpochMillis(
