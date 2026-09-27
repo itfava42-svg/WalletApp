@@ -1874,29 +1874,45 @@ fun SmsTransactionCompletionBottomSheetContent(
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
 
-                                    val recordedPayment = loan.payments
+                                    val recordedPayments = loan.payments
                                         .asSequence()
                                         .filter { it.installmentNumber in 1..loan.totalInstallments }
-                                        .maxByOrNull { it.installmentNumber }
-                                    val recordedAccount = recordedPayment?.accountId
+                                        .sortedByDescending { it.installmentNumber }
+                                        .toList()
+                                    val latestRecordedPayment = recordedPayments.firstOrNull()
+                                    val latestRecordedAccount = latestRecordedPayment?.accountId
                                         ?.let { accountId -> AccountStore.accounts.firstOrNull { it.id == accountId } }
 
-                                    if (recordedAccount != null) {
+                                    if (latestRecordedPayment != null) {
                                         Text(
-                                            text = "حساب ثبت‌شده: " + recordedAccount.name,
+                                            text = "آخرین قسط ثبت‌شده: شماره ${latestRecordedPayment.installmentNumber}",
                                             fontSize = 12.sp,
+                                            fontWeight = FontWeight.SemiBold,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         )
-                                        if (recordedAccount.bankName.isNotBlank()) {
+                                        if (latestRecordedAccount != null) {
                                             Text(
-                                                text = "بانک: " + recordedAccount.bankName,
+                                                text = "حساب پرداخت: " + latestRecordedAccount.name,
+                                                fontSize = 12.sp,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                            if (latestRecordedAccount.bankName.isNotBlank()) {
+                                                Text(
+                                                    text = "بانک حساب: " + latestRecordedAccount.bankName,
+                                                    fontSize = 11.sp,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                )
+                                            }
+                                        } else {
+                                            Text(
+                                                text = "حساب قسط ثبت‌شده: ثبت نشده",
                                                 fontSize = 11.sp,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             )
                                         }
                                     } else {
                                         Text(
-                                            text = "حساب پرداخت قبلی: ثبت نشده",
+                                            text = "هنوز قسط پرداخت‌شده‌ای ثبت نشده",
                                             fontSize = 11.sp,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         )
