@@ -2320,8 +2320,9 @@ private fun CategoryPickerDialog(
                                     modifier = Modifier.weight(1f),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    maxLines = 1,
-                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                    maxLines = 2,
+                                    softWrap = true,
+                                    textAlign = TextAlign.Right,
                                 )
 
                                 Icon(
@@ -2368,8 +2369,9 @@ private fun CategoryPickerDialog(
                                                     modifier = Modifier.weight(1f),
                                                     fontSize = 14.sp,
                                                     fontWeight = FontWeight.Medium,
-                                                    maxLines = 1,
-                                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                                    maxLines = 2,
+                                                    softWrap = true,
+                                                    textAlign = TextAlign.Right,
                                                 )
                                             }
                                         }
