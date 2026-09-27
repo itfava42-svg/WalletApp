@@ -608,6 +608,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     isTransfer = false
                                     selectedType = TransactionType.EXPENSE
                                     selectedCategory = null
+                                    selectedSubcategory = null
                                     selectedLoan = null
                                     selectedInstallment = null
                                 }
@@ -641,6 +642,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     isTransfer = false
                                     selectedType = TransactionType.INCOME
                                     selectedCategory = null
+                                    selectedSubcategory = null
                                     selectedLoan = null
                                     selectedInstallment = null
                                 }
@@ -673,6 +675,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                                     isTransfer = true
                                     selectedType = TransactionType.EXPENSE
                                     selectedCategory = null
+                                    selectedSubcategory = null
                                     selectedLoan = null
                                     selectedInstallment = null
                                 }
