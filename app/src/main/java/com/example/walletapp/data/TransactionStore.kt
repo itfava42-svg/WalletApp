@@ -535,6 +535,19 @@ object TransactionStore {
         sourceId: String? = null,
         kind: TransactionKind = TransactionKind.NORMAL,
     ): Transaction {
+        require(bankName.isNotBlank()) {
+            "Bank name is required."
+        }
+
+        require(amount > 0L) {
+            "SMS transaction amount must be greater than zero."
+        }
+
+        if (kind == TransactionKind.TRANSFER) {
+            throw IllegalArgumentException(
+                "A bank SMS transfer cannot be persisted as an internal transfer before completion."
+            )
+        }
 
         val now = System.currentTimeMillis()
         val transaction =
