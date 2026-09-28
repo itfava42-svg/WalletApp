@@ -40,8 +40,13 @@ object TransactionSyncIdempotencyKey {
                 append("|")
                 append(client.protocolVersion)
                 append("|")
-                append(generatedAt)
-                append("|")
+
+                /*
+                 * generatedAt is intentionally excluded from the identity.
+                 * A retry of the same logical upload batch must produce the
+                 * same Idempotency-Key; otherwise a transient network retry
+                 * would look like a brand-new request to the server.
+                 */
 
                 transactions
                     .sortedWith(
