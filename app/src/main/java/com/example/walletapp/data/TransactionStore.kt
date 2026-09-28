@@ -64,6 +64,14 @@ object TransactionStore {
      */
     fun addManual(transaction: Transaction) {
 
+        require(transaction.amount > 0L) {
+            "Transaction amount must be greater than zero."
+        }
+
+        require(!transaction.requiresCompletion) {
+            "Manual transactions cannot require completion."
+        }
+
         if (transaction.kind == TransactionKind.NORMAL) {
 
             val accountId =
@@ -127,12 +135,18 @@ object TransactionStore {
      */
     fun update(transaction: Transaction) {
 
+        require(transaction.amount > 0L) {
+            "Transaction amount must be greater than zero."
+        }
+
         if (transaction.kind == TransactionKind.NORMAL) {
             val accountId = transaction.accountId?.takeIf {
                 it.isNotBlank()
-            }
+            } ?: throw IllegalArgumentException(
+                "A normal transaction must have an account."
+            )
 
-            if (accountId != null) {
+            if (accountId.isNotBlank()) {
                 AccountStore.accounts.firstOrNull {
                     it.id == accountId &&
                         it.isActive
