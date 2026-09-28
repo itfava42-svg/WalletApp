@@ -57,6 +57,17 @@ object TransactionSyncValidation {
 
         if (transaction.kind == TransactionKind.TRANSFER) {
 
+            // Internal transfers are not income/expense categories.
+            if (!transaction.category.isNullOrBlank()) {
+                return false
+            }
+
+            // A transfer is represented by source/destination accounts,
+            // never by the single-account field used by NORMAL transactions.
+            if (!transaction.accountId.isNullOrBlank()) {
+                return false
+            }
+
             if (transaction.sourceAccountId.isNullOrBlank()) {
                 return false
             }
