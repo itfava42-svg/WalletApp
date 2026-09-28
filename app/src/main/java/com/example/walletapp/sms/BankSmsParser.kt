@@ -143,6 +143,17 @@ private val bankKeywords: List<Pair<String, String>> =
             """(?:موجودی|مانده)(?:\s*حساب)?\s*[:=]?\s*([0-9۰-۹٠-٩]{1,3}(?:[,،٬][0-9۰-۹٠-٩]{3})+|[0-9۰-۹٠-٩]+)"""
         )
 
+    /*
+     * Reference/identifier numbers are not transaction amounts.
+     * Mask them before amount extraction so a bank SMS containing only
+     * a payment/reference/trace identifier cannot be promoted to a
+     * financial transaction because of its first numeric token.
+     */
+    private val referenceNumberRegex =
+        Regex(
+            """(?:شناسه\s*(?:پرداخت|تراکنش)|شماره\s*(?:پیگیری|رهگیری)|کد\s*(?:رهگیری|پیگیری|تراکنش))\s*[:=\-]?\s*[0-9۰-۹٠-٩]{4,30}"""
+        )
+
     private val merchantCueRegex =
         Regex(
             """(?:\u062e\u0631\u06cc\u062f \u0627\u0632|\u0641\u0631\u0648\u0634\u06af\u0627\u0647[:\s]|\u067e\u0630\u06cc\u0631\u0646\u062f\u0647[:\s]|\u0628\u0627\u0628\u062a|\u0646\u0632\u062f|\u0628\u0647 \u0646\u0627\u0645[:\s])\s*([^\n\r,\u060C]{2,40})"""
@@ -211,12 +222,16 @@ private val bankKeywords: List<Pair<String, String>> =
         val balanceMatch =
             balanceRegex.find(normalizedBody)
 
+        val referenceNumberMatch =
+            referenceNumberRegex.find(normalizedBody)
+
         var amountSearchBody = normalizedBody
 
         listOf(
             accountNumberMatch,
             cardNumberMatch,
             balanceMatch,
+            referenceNumberMatch,
         )
             .filterNotNull()
             .sortedByDescending { it.range.first }
