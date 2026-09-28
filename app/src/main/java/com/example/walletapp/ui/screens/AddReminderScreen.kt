@@ -248,8 +248,8 @@ fun AddReminderScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(horizontal = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
 
             Spacer(modifier = Modifier.height(2.dp))
@@ -259,9 +259,9 @@ fun AddReminderScreen(
              */
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 2.dp
