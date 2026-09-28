@@ -14,7 +14,17 @@ class TransactionSyncRetryPolicyTest {
         assertTrue(isTransactionSyncRetryable(IOException("network")))
         assertTrue(
             isTransactionSyncRetryable(
-                TransactionSyncHttpStatusException(500, "")
+                TransactionSyncHttpStatusException(408, "")
+            )
+        )
+        assertTrue(
+            isTransactionSyncRetryable(
+                TransactionSyncHttpStatusException(429, "")
+            )
+        )
+        assertTrue(
+            isTransactionSyncRetryable(
+                TransactionSyncHttpStatusException(500, ""
             )
         )
         assertFalse(
