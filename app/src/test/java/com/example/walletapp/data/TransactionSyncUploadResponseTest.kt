@@ -9,17 +9,13 @@ class TransactionSyncUploadResponseTest {
     @Test
     fun parsesAlreadyExistsAndUpdatedAsProcessedSuccess() {
         val response = TransactionSyncJson.uploadResponseFromJson(
-            JSONObject(
-                """
-                {
-                  "acceptedCount": 1,
-                  "alreadyExistsCount": 2,
-                  "updatedCount": 1,
-                  "rejectedCount": 0,
-                  "serverTime": 1000
-                }
-                """.trimIndent()
-            )
+            JSONObject().apply {
+                put("acceptedCount", 1)
+                put("alreadyExistsCount", 2)
+                put("updatedCount", 1)
+                put("rejectedCount", 0)
+                put("serverTime", 1000)
+            }
         )
 
         assertEquals(1, response.acceptedCount)
@@ -32,14 +28,10 @@ class TransactionSyncUploadResponseTest {
     @Test
     fun missingNewCountsRemainBackwardCompatible() {
         val response = TransactionSyncJson.uploadResponseFromJson(
-            JSONObject(
-                """
-                {
-                  "acceptedCount": 2,
-                  "serverTime": 1000
-                }
-                """.trimIndent()
-            )
+            JSONObject().apply {
+                put("acceptedCount", 2)
+                put("serverTime", 1000)
+            }
         )
 
         assertEquals(2, response.acceptedCount)
