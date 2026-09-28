@@ -62,7 +62,7 @@ fun isTransactionSyncRetryable(
 
     if (error is TransactionSyncHttpStatusException) {
 
-        return error.statusCode >= 500
+        return error.statusCode == 408 ||\n            error.statusCode == 429 ||\n            error.statusCode >= 500
     }
 
     return error is IOException
