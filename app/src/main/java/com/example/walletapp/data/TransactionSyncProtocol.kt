@@ -93,17 +93,39 @@ data class TransactionSyncDownloadRequest(
 
 data class TransactionSyncUploadResponse(
     val acceptedCount: Int,
-    val serverTime: Long
+    val serverTime: Long,
+    val alreadyExistsCount: Int = 0,
+    val updatedCount: Int = 0,
+    val rejectedCount: Int = 0
 ) {
     init {
         require(acceptedCount >= 0) {
             "Accepted count must not be negative."
         }
 
+        require(alreadyExistsCount >= 0) {
+            "Already-exists count must not be negative."
+        }
+
+        require(updatedCount >= 0) {
+            "Updated count must not be negative."
+        }
+
+        require(rejectedCount >= 0) {
+            "Rejected count must not be negative."
+        }
+
         require(serverTime >= 0L) {
             "Server time must not be negative."
         }
     }
+
+    val processedCount: Int
+        get() =
+            acceptedCount +
+                alreadyExistsCount +
+                updatedCount +
+                rejectedCount
 }
 
 data class TransactionSyncDownloadResponse(
