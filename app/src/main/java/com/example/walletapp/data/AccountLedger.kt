@@ -28,8 +28,10 @@ object AccountLedger {
                 ?.openingBalance
                 ?: 0L
 
+        val knownAccountIds = AccountStore.accounts.mapTo(mutableSetOf()) { it.id }
+
         transactions.forEach { transaction ->
-            if (transaction.requiresCompletion) {
+            if (transaction.requiresCompletion || transaction.amount <= 0L) {
                 return@forEach
             }
 
@@ -46,11 +48,23 @@ object AccountLedger {
                 }
 
                 TransactionKind.TRANSFER -> {
-                    if (transaction.sourceAccountId == accountId) {
+                    val sourceId = transaction.sourceAccountId
+                    val destinationId = transaction.destinationAccountId
+
+                    if (sourceId.isNullOrBlank() ||
+                        destinationId.isNullOrBlank() ||
+                        sourceId == destinationId ||
+                        sourceId !in knownAccountIds ||
+                        destinationId !in knownAccountIds
+                    ) {
+                        return@forEach
+                    }
+
+                    if (sourceId == accountId) {
                         balance -= transaction.amount
                     }
 
-                    if (transaction.destinationAccountId == accountId) {
+                    if (destinationId == accountId) {
                         balance += transaction.amount
                     }
                 }
@@ -70,8 +84,10 @@ object AccountLedger {
     ): Long {
         var balance = account.openingBalance
 
+        val knownAccountIds = AccountStore.accounts.mapTo(mutableSetOf()) { it.id }
+
         transactions.forEach { transaction ->
-            if (transaction.requiresCompletion) {
+            if (transaction.requiresCompletion || transaction.amount <= 0L) {
                 return@forEach
             }
 
