@@ -16,6 +16,22 @@ object TransactionSyncValidation {
             return false
         }
 
+        /*
+         * Sync may only accept finalized financial transactions.
+         * A pending SMS is intentionally local until completion.
+         */
+        if (transaction.requiresCompletion) {
+            return false
+        }
+
+        /*
+         * Zero/negative amounts are not valid persisted financial
+         * transaction values and must never cross the sync boundary.
+         */
+        if (transaction.amount <= 0L) {
+            return false
+        }
+
         if (transaction.createdAt < 0L) {
             return false
         }
