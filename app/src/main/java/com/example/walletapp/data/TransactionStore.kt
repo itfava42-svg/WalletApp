@@ -543,6 +543,26 @@ object TransactionStore {
             "SMS transaction amount must be greater than zero."
         }
 
+        /*
+         * Defense in depth against duplicate SMS imports.
+         *
+         * SmsProcessedStore normally blocks repeated delivery, but its
+         * bounded history can eventually evict an old fingerprint.
+         * sourceId is the stable identity of the original SMS event, so
+         * never create a second transaction when that identity already
+         * exists in the ledger.
+         */
+        val existingSourceId =
+            sourceId?.takeIf { it.isNotBlank() }
+
+        if (existingSourceId != null &&
+            transactions.any { it.sourceId == existingSourceId }
+        ) {
+            throw IllegalStateException(
+                "SMS source event has already been imported."
+            )
+        }
+
         if (kind == TransactionKind.TRANSFER) {
             throw IllegalArgumentException(
                 "A bank SMS transfer cannot be persisted as an internal transfer before completion."
