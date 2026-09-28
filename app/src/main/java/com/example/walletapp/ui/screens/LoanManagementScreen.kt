@@ -3,6 +3,7 @@ package com.example.walletapp.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.RadioButton
 import com.example.walletapp.data.AccountStore
+import com.example.walletapp.data.Account
 import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
@@ -1638,6 +1639,7 @@ private fun LoanEditorFullScreen(
     }
     var guaranteeNote by remember { mutableStateOf(existingLoan?.guaranteeNote ?: "") }
     var reminderEnabled by remember { mutableStateOf(existingLoan?.reminderEnabled ?: false) }
+    var selectedLoanAccountId by remember { mutableStateOf(existingLoan?.accountId) }
     var trackingMode by remember { mutableStateOf(existingLoan?.trackingMode ?: LoanTrackingMode.NEW) }
     var historicalPaidText by remember { mutableStateOf(existingLoan?.historicalPaidInstallments?.toString() ?: "0") }
     var trackingStartDate by remember {
@@ -1701,6 +1703,7 @@ private fun LoanEditorFullScreen(
                 firstInstallmentDay = firstParts?.get(2),
                 guaranteeNote = guaranteeNote.trim(),
                 reminderEnabled = reminderEnabled,
+                accountId = selectedLoanAccountId,
                 payments = existingLoan?.payments ?: emptyList(),
                 trackingMode = trackingMode,
                 historicalPaidInstallments = historicalPaid,
@@ -2038,7 +2041,56 @@ private fun LoanEditorFullScreen(
             }
 
             item {
-                LoanEditorDashboardCard(title = "ضمانت و یادآوری") {
+                LoanEditorDashboardCard(title = "حساب بانکی وام") {
+                Text(
+                    text = "حسابی را که این وام به آن مربوط است انتخاب کنید. برای وام‌های قدیمی، انتخاب حساب اختیاری است.",
+                    fontSize = 11.sp,
+                    color = MatureColors.TextSecondary
+                )
+                Spacer(Modifier.height(10.dp))
+                val accountLabel = selectedLoanAccountId?.let { id ->
+                    AccountStore.accounts.firstOrNull { it.id == id }?.name
+                } ?: "بدون حساب مشخص"
+                var expandedAccount by remember { mutableStateOf(false) }
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedTextField(
+                        value = accountLabel,
+                        onValueChange = {},
+                        readOnly = true,
+                        modifier = Modifier.fillMaxWidth().clickable { expandedAccount = true },
+                        singleLine = true,
+                        shape = RoundedCornerShape(18.dp),
+                        label = { Text("حساب / بانک وام") },
+                        trailingIcon = {
+                            Icon(Icons.Filled.AccountBalance, contentDescription = null)
+                        }
+                    )
+                    DropdownMenu(
+                        expanded = expandedAccount,
+                        onDismissRequest = { expandedAccount = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("بدون حساب مشخص") },
+                            onClick = {
+                                selectedLoanAccountId = null
+                                expandedAccount = false
+                            }
+                        )
+                        AccountStore.accounts.forEach { account ->
+                            DropdownMenuItem(
+                                text = { Text(account.name) },
+                                onClick = {
+                                    selectedLoanAccountId = account.id
+                                    expandedAccount = false
+                                }
+                            )
+                        }
+                    }
+                }
+                Spacer(Modifier.height(14.dp))
+            }
+
+            LoanEditorDashboardCard(title = "ضمانت و یادآوری") {
                     OutlinedTextField(
                         value = guaranteeNote,
                         onValueChange = { guaranteeNote = it },
