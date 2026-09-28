@@ -52,7 +52,14 @@ data class LoanEntry(
     val trackingStartYear: Int? = null,
     val trackingStartMonth: Int? = null,
     val trackingStartDay: Int? = null
-)
+) {
+    /** Returns true when an installment is already paid, including historical payments. */
+    fun isInstallmentPaid(installmentNumber: Int): Boolean {
+        if (installmentNumber !in 1..totalInstallments) return false
+        return installmentNumber <= historicalPaidInstallments ||
+            payments.any { it.installmentNumber == installmentNumber }
+    }
+}
 
 object LoanStore {
 

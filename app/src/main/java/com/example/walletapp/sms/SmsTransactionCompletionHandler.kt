@@ -216,11 +216,7 @@ object SmsTransactionCompletionHandler {
                 return CompletionResult.InvalidInstallment
             }
 
-            if (
-                installmentLoan.payments.any {
-                    it.installmentNumber == installmentNumber
-                }
-            ) {
+            if (installmentLoan.isInstallmentPaid(installmentNumber)) {
                 return CompletionResult.InstallmentAlreadyPaid
             }
         }
