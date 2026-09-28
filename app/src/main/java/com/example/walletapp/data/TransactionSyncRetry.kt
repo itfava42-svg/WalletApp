@@ -11,7 +11,8 @@ import kotlin.random.Random
  *
  * Rules:
  * - 401 / 403 are never retried.
- * - Other 4xx errors are never retried.
+ * - Other 4xx errors are never retried, except 408 and 429.
+ * - 408 / 429 are retryable transient HTTP errors.
  * - 5xx errors are retryable.
  * - IO/network failures are retryable.
  * - malformed server responses are not classified here;
@@ -62,7 +63,9 @@ fun isTransactionSyncRetryable(
 
     if (error is TransactionSyncHttpStatusException) {
 
-        return error.statusCode >= 500
+        return error.statusCode == 408 ||
+            error.statusCode == 429 ||
+            error.statusCode >= 500
     }
 
     return error is IOException
