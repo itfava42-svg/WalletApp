@@ -77,8 +77,9 @@ class TransactionSyncCoordinator(
                     uploadResult.getOrThrow()
 
                 if (
-                    response.acceptedCount !=
-                        chunk.size
+                    response.processedCount !=
+                        chunk.size ||
+                    response.rejectedCount > 0
                 ) {
 
                     chunk.forEach {

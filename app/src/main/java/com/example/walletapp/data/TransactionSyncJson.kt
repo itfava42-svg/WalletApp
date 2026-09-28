@@ -323,10 +323,46 @@ object TransactionSyncJson {
             (serverTimeRaw as Number)
                 .toLong()
 
+        val alreadyExistsCount =
+            json.optLong(
+                "alreadyExistsCount",
+                0L
+            )
+
+        val updatedCount =
+            json.optLong(
+                "updatedCount",
+                0L
+            )
+
+        val rejectedCount =
+            json.optLong(
+                "rejectedCount",
+                0L
+            )
+
         require(
             acceptedCount >= 0L
         ) {
             "Upload response acceptedCount is invalid."
+        }
+
+        require(
+            alreadyExistsCount >= 0L
+        ) {
+            "Upload response alreadyExistsCount is invalid."
+        }
+
+        require(
+            updatedCount >= 0L
+        ) {
+            "Upload response updatedCount is invalid."
+        }
+
+        require(
+            rejectedCount >= 0L
+        ) {
+            "Upload response rejectedCount is invalid."
         }
 
         require(
@@ -339,7 +375,13 @@ object TransactionSyncJson {
             acceptedCount =
                 acceptedCount.toInt(),
             serverTime =
-                serverTime
+                serverTime,
+            alreadyExistsCount =
+                alreadyExistsCount.toInt(),
+            updatedCount =
+                updatedCount.toInt(),
+            rejectedCount =
+                rejectedCount.toInt()
         )
     }
 
