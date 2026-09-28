@@ -1638,6 +1638,7 @@ private fun LoanEditorFullScreen(
     }
     var guaranteeNote by remember { mutableStateOf(existingLoan?.guaranteeNote ?: "") }
     var reminderEnabled by remember { mutableStateOf(existingLoan?.reminderEnabled ?: false) }
+    var selectedLoanAccountId by remember { mutableStateOf(existingLoan?.accountId) }
     var trackingMode by remember { mutableStateOf(existingLoan?.trackingMode ?: LoanTrackingMode.NEW) }
     var historicalPaidText by remember { mutableStateOf(existingLoan?.historicalPaidInstallments?.toString() ?: "0") }
     var trackingStartDate by remember {
@@ -1701,6 +1702,7 @@ private fun LoanEditorFullScreen(
                 firstInstallmentDay = firstParts?.get(2),
                 guaranteeNote = guaranteeNote.trim(),
                 reminderEnabled = reminderEnabled,
+                accountId = selectedLoanAccountId,
                 payments = existingLoan?.payments ?: emptyList(),
                 trackingMode = trackingMode,
                 historicalPaidInstallments = historicalPaid,
