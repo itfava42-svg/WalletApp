@@ -2133,29 +2133,52 @@ private fun LoanTrackingModeCard(
     onClick: () -> Unit
 ) {
     Surface(
-        modifier = modifier.clip(RoundedCornerShape(18.dp)).clickable(onClick = onClick),
+        modifier = modifier
+            .heightIn(min = 92.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(18.dp),
-        color = if (selected) MatureColors.Primary.copy(alpha = 0.10f) else MatureColors.CardBackground
+        color = if (selected) {
+            MatureColors.Primary.copy(alpha = 0.10f)
+        } else {
+            MatureColors.CardBackground
+        }
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 9.dp),
+            verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            RadioButton(selected = selected, onClick = onClick)
-            Spacer(Modifier.width(4.dp))
-            Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = selected,
+                    onClick = onClick
+                )
+                Spacer(Modifier.width(2.dp))
                 Text(
                     text = mode.label,
+                    modifier = Modifier.weight(1f),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MatureColors.TextPrimary
-                )
-                Text(
-                    text = if (mode == LoanTrackingMode.NEW) "شروع از قسط اول" else "ادامه از وضعیت فعلی",
-                    fontSize = 10.sp,
-                    color = MatureColors.TextSecondary
+                    color = MatureColors.TextPrimary,
+                    maxLines = 1
                 )
             }
+            Text(
+                text = if (mode == LoanTrackingMode.NEW) {
+                    "شروع از قسط اول"
+                } else {
+                    "ادامه از وضعیت فعلی"
+                },
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 10.sp,
+                color = MatureColors.TextSecondary,
+                maxLines = 1
+            )
         }
     }
 }
