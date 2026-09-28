@@ -72,6 +72,10 @@ object TransactionStore {
             "Manual transactions cannot require completion."
         }
 
+        require(transaction.kind == TransactionKind.NORMAL) {
+            "Internal transfers must be created with addTransfer()."
+        }
+
         if (transaction.kind == TransactionKind.NORMAL) {
 
             val accountId =
@@ -199,8 +203,21 @@ object TransactionStore {
 
             val now = System.currentTimeMillis()
 
+            val normalizedTransaction =
+                if (transaction.kind == TransactionKind.TRANSFER) {
+                    transaction.copy(
+                        accountId = null,
+                        category = null,
+                    )
+                } else {
+                    transaction.copy(
+                        sourceAccountId = null,
+                        destinationAccountId = null,
+                    )
+                }
+
             val storedTransaction =
-                transaction.copy(
+                normalizedTransaction.copy(
                     createdAt =
                         transaction.createdAt.takeIf {
                             it > 0L
