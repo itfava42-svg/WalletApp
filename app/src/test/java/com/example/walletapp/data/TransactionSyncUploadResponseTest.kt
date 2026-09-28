@@ -1,8 +1,8 @@
 package com.example.walletapp.data
 
 import org.json.JSONObject
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import org.junit.Test
+import org.junit.Assert.assertEquals
 
 class TransactionSyncUploadResponseTest {
 
