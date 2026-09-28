@@ -56,6 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.Reminder
+import com.example.walletapp.loan.MatureColors
 import com.example.walletapp.data.ReminderKind
 import com.example.walletapp.data.ReminderStore
 import com.example.walletapp.data.JalaliCalendar
@@ -221,66 +222,49 @@ fun ReminderScreen(
             }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
 
         topBar = {
-
-            SmallTopAppBar(
-
-                title = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(start = 20.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "یادآوری‌ها",
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                },
-
-                navigationIcon = {
-
-                    IconButton(
-                        onClick = onBack
-                    ) {
-
-                        Icon(
-                            imageVector =
-                                Icons.Default.ArrowBack,
-                            contentDescription =
-                                "بازگشت"
-                        )
-                    }
-                },
-
-                actions = {
-
-                    IconButton(
-                        onClick = {
-                            refreshKey++
-                        }
-                    ) {
-
-                        Icon(
-                            imageVector =
-                                Icons.Default.Notifications,
-                            contentDescription =
-                                "به‌روزرسانی"
-                        )
-                    }
-                },
-
-                colors =
-                    TopAppBarDefaults.smallTopAppBarColors()
-            )
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        text = "مدیریت اقساط، پرداخت‌ها و رویدادهای مهم",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "بازگشت",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         },
 
         floatingActionButton = {
-
             FloatingActionButton(
-                onClick = onAddReminder
+                onClick = onAddReminder,
+                shape = RoundedCornerShape(20.dp),
+                containerColor = MatureColors.Primary
             ) {
-
                 Icon(
-                    imageVector =
-                        Icons.Default.Add,
-                    contentDescription =
-                        "یادآوری جدید"
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "یادآوری جدید"
                 )
             }
         }
@@ -706,10 +690,7 @@ private fun NextReminderCard(
     Card(
         modifier =
             Modifier.fillMaxWidth(),
-        shape =
-            RoundedCornerShape(
-                20.dp
-            ),
+        shape = RoundedCornerShape(26.dp),
         colors =
             CardDefaults.cardColors(
                 containerColor =
@@ -886,10 +867,7 @@ private fun ReminderItemCard(
     Card(
         modifier =
             Modifier.fillMaxWidth(),
-        shape =
-            RoundedCornerShape(
-                18.dp
-            )
+        shape = RoundedCornerShape(22.dp)
     ) {
 
         Column(

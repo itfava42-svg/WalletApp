@@ -33,6 +33,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -55,17 +56,18 @@ import com.example.walletapp.data.ReminderKind
 import com.example.walletapp.data.RepeatFrequency
 import com.example.walletapp.reminders.ReminderManager
 import com.example.walletapp.data.JalaliCalendar
+import com.example.walletapp.loan.MatureColors
 import java.util.Calendar
 import java.util.UUID
 
-private val Purple = Color(0xFF6750A4)
-private val Blue = Color(0xFF3F7FEF)
-private val Green = Color(0xFF22A06B)
-private val Orange = Color(0xFFF59E0B)
-private val Red = Color(0xFFE05252)
-private val Background = Color(0xFFF7F7FB)
-private val TextDark = Color(0xFF202124)
-private val TextGray = Color(0xFF6B7280)
+private val Purple = MatureColors.Primary
+private val Blue = MatureColors.PrimaryLight
+private val Green = MatureColors.Success
+private val Orange = MatureColors.Secondary
+private val Red = MatureColors.PrimaryDark
+private val Background = MatureColors.Surface
+private val TextDark = MatureColors.TextPrimary
+private val TextGray = MatureColors.TextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -209,40 +211,35 @@ fun AddReminderScreen(
         containerColor = Background,
 
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text =
-                                if (existingReminder == null)
-                                    "افزودن یادآوری"
-                                else
-                                    "ویرایش یادآوری",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
-
-                        Text(
-                            text = "یادآوری‌های مالی خود را مدیریت کنید",
-                            fontSize = 11.sp,
-                            color = TextGray
-                        )
-                    }
-                },
-
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "بازگشت"
-                        )
-                    }
-                },
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Background
-                )
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(start = 20.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = if (existingReminder == null) "افزودن یادآوری" else "ویرایش یادآوری",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        text = "اطلاعات یادآوری را وارد کنید",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "بازگشت",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         }
     ) { paddingValues ->
 
@@ -252,7 +249,7 @@ fun AddReminderScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
             Spacer(modifier = Modifier.height(2.dp))
@@ -399,7 +396,7 @@ fun AddReminderScreen(
                     Text("مثلاً پرداخت قبض برق")
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(20.dp)
+                shape = MaterialTheme.shapes.medium
             )
 
             OutlinedTextField(
@@ -546,11 +543,11 @@ fun AddReminderScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(58.dp),
+                     .height(52.dp),
                 onClick = {
                     save()
                 },
-                shape = RoundedCornerShape(18.dp)
+                shape = MaterialTheme.shapes.large
             ) {
                 Icon(
                     imageVector = Icons.Default.Save,
