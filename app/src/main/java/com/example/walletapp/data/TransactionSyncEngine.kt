@@ -31,6 +31,9 @@ object TransactionSyncEngine {
                     .pendingTransactions()
                     .asSequence()
                     .filterNot { it.requiresCompletion }
+                    .filter { transaction ->
+                        TransactionSyncValidation.validateTransactionForSync(transaction)
+                    }
                     .sortedWith(
                         compareBy<Transaction> {
                             it.updatedAt
