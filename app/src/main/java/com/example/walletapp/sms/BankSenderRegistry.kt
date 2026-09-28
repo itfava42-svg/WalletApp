@@ -140,7 +140,7 @@ object BankSenderRegistry {
 
     /**
      * Exact lookup after safe sender normalization.
-     * No prefix or wildcard matching is performed.
+     * No prefix, suffix, or wildcard matching is performed.
      */
     fun lookup(sender: String?): String? {
         val normalized = normalizeSender(sender) ?: return null
@@ -153,23 +153,33 @@ object BankSenderRegistry {
     private fun normalizeSender(sender: String?): String? {
         if (sender.isNullOrBlank()) return null
 
-        val trimmed = sender.trim()
-        val compact = trimmed.replace(Regex("\\s+"), "")
-
-        val numeric = compact
-            .replace("+", "")
-            .let {
+        val normalizedDigits = sender
+            .trim()
+            .map { char ->
                 when {
-                    it.startsWith("0098") -> it.removePrefix("0098")
-                    it.startsWith("98") -> it.removePrefix("98")
-                    else -> it
+                    char in '۰'..'۹' -> ('0'.code + (char.code - '۰'.code)).toChar()
+                    char in '٠'..'٩' -> ('0'.code + (char.code - '٠'.code)).toChar()
+                    else -> char
                 }
             }
+            .joinToString("")
 
-        return if (numeric.all { it.isDigit() } && numeric.isNotEmpty()) {
+        val compact = normalizedDigits
+            .replace(Regex("[\\s\\-\\u2010\\u2011\\u2012\\u2013\\u2014]+"), "")
+            .replace("+", "")
+
+        val numeric = compact.let {
+            when {
+                it.startsWith("0098") -> it.removePrefix("0098")
+                it.startsWith("98") -> it.removePrefix("98")
+                else -> it
+            }
+        }
+
+        return if (numeric.isNotEmpty() && numeric.all { it in '0'..'9' }) {
             numeric
         } else {
-            trimmed.lowercase()
+            normalizedDigits.trim().lowercase()
         }
     }
 }
