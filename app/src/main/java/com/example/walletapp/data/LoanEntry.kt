@@ -44,6 +44,8 @@ data class LoanEntry(
     val firstInstallmentDay: Int?,
     val guaranteeNote: String,
     val reminderEnabled: Boolean,
+    /** Account/bank responsible for this loan. Nullable for legacy loans. */
+    val accountId: String? = null,
     val payments: List<LoanPayment>,
     val trackingMode: LoanTrackingMode = LoanTrackingMode.NEW,
     val historicalPaidInstallments: Int = 0,
@@ -144,6 +146,8 @@ object LoanStore {
                             item.optString("guaranteeNote", ""),
                         reminderEnabled =
                             item.optBoolean("reminderEnabled", false),
+                        accountId =
+                            item.optString("accountId").takeIf { it.isNotBlank() },
                         payments = payments,
                         trackingMode =
                             runCatching {
@@ -241,6 +245,7 @@ object LoanStore {
 
             item.put("guaranteeNote", loan.guaranteeNote)
             item.put("reminderEnabled", loan.reminderEnabled)
+            item.put("accountId", loan.accountId ?: JSONObject.NULL)
             item.put("trackingMode", loan.trackingMode.name)
             item.put(
                 "historicalPaidInstallments",
