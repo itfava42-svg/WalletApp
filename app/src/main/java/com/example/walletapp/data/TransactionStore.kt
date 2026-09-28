@@ -485,7 +485,7 @@ object TransactionStore {
                 amount = amount,
                 type = TransactionType.EXPENSE,
                     iconKey = "انتقال",
-                category = "انتقال داخلی",
+                category = null,
                 dateEpochMillis = dateEpochMillis ?: now,
                 note = note.trim(),
                 kind = TransactionKind.TRANSFER,
