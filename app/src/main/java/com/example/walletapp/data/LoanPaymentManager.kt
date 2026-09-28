@@ -27,7 +27,7 @@ object LoanPaymentManager {
         if (
             transaction.type != TransactionType.EXPENSE ||
             installmentNumber !in 1..loan.totalInstallments ||
-            loan.payments.any { it.installmentNumber == installmentNumber }
+            loan.isInstallmentPaid(installmentNumber)
         ) {
             return null
         }
@@ -88,11 +88,7 @@ object LoanPaymentManager {
             LoanStore.getById(loan.id)
                 ?: return false
 
-        if (
-            currentLoan.payments.any {
-                it.installmentNumber == installmentNumber
-            }
-        ) {
+        if (currentLoan.isInstallmentPaid(installmentNumber)) {
             return false
         }
 
