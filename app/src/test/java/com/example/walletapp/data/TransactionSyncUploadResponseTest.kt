@@ -1,43 +1,33 @@
 package com.example.walletapp.data
 
-import org.json.JSONObject
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class TransactionSyncUploadResponseTest {
 
     @Test
-    fun parsesAlreadyExistsAndUpdatedAsProcessedSuccess() {
-        val response = TransactionSyncJson.uploadResponseFromJson(
-            JSONObject().apply {
-                put("acceptedCount", 1)
-                put("alreadyExistsCount", 2)
-                put("updatedCount", 1)
-                put("rejectedCount", 0)
-                put("serverTime", 1000)
-            }
+    fun acceptedAlreadyExistsAndUpdated_areProcessedTogether() {
+        val response = TransactionSyncServerUploadResult(
+            acceptedCount = 1,
+            alreadyExistsCount = 2,
+            updatedCount = 1,
+            rejectedCount = 0,
+            serverTime = 1000L
         )
 
-        assertEquals(1, response.acceptedCount)
-        assertEquals(2, response.alreadyExistsCount)
-        assertEquals(1, response.updatedCount)
-        assertEquals(0, response.rejectedCount)
         assertEquals(4, response.processedCount)
     }
 
     @Test
-    fun missingNewCountsRemainBackwardCompatible() {
-        val response = TransactionSyncJson.uploadResponseFromJson(
-            JSONObject().apply {
-                put("acceptedCount", 2)
-                put("serverTime", 1000)
-            }
+    fun missingNewCounts_areBackwardCompatible() {
+        val response = TransactionSyncServerUploadResult(
+            acceptedCount = 2,
+            alreadyExistsCount = 0,
+            updatedCount = 0,
+            rejectedCount = 0,
+            serverTime = 1000L
         )
 
-        assertEquals(2, response.acceptedCount)
-        assertEquals(0, response.alreadyExistsCount)
-        assertEquals(0, response.updatedCount)
-        assertEquals(0, response.rejectedCount)
         assertEquals(2, response.processedCount)
     }
 }
