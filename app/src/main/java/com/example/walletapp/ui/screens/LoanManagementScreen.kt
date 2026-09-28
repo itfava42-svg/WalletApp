@@ -1743,13 +1743,13 @@ private fun LoanEditorFullScreen(
                     OutlinedButton(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(18.dp)
                     ) { Text("انصراف") }
 
                     Button(
                         onClick = ::saveLoan,
                         modifier = Modifier.weight(1.5f),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(18.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = MatureColors.Primary)
                     ) {
                         Icon(Icons.Filled.Save, contentDescription = null)
@@ -1765,7 +1765,7 @@ private fun LoanEditorFullScreen(
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(paddingValues),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+            contentPadding = PaddingValues(horizontal = 18.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             item {
@@ -1778,7 +1778,7 @@ private fun LoanEditorFullScreen(
                         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Surface(
                                 modifier = Modifier.size(48.dp),
-                                shape = RoundedCornerShape(16.dp),
+                                shape = RoundedCornerShape(18.dp),
                                 color = Color.White.copy(alpha = 0.12f)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
@@ -1848,7 +1848,7 @@ private fun LoanEditorFullScreen(
                         onValueChange = { title = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(18.dp),
                         label = { Text("نام وام") },
                         placeholder = { Text("مثلاً وام خرید") },                        leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                     )
@@ -1858,7 +1858,7 @@ private fun LoanEditorFullScreen(
                         onValueChange = { amountText = it.filter(Char::isDigit) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(18.dp),
                         label = { Text("مبلغ وام") },
                         placeholder = { Text("مبلغ را وارد کنید") },
                         suffix = { Text("ریال") },
@@ -1900,7 +1900,7 @@ private fun LoanEditorFullScreen(
                             onValueChange = { historicalPaidText = it.filter(Char::isDigit) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(18.dp),
                             label = { Text("تعداد اقساطی که قبلاً پرداخت شده") },
                             leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -1915,7 +1915,7 @@ private fun LoanEditorFullScreen(
                         Spacer(Modifier.height(10.dp))
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(18.dp),
                             color = MatureColors.SecondaryLight
                         ) {
                             Text(
@@ -1937,7 +1937,7 @@ private fun LoanEditorFullScreen(
                             onValueChange = { interestText = it },
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(18.dp),
                             label = { Text("درصد سود") },
                             suffix = { Text("%") },
                             leadingIcon = { Icon(Icons.Filled.Percent, contentDescription = null) },
@@ -1948,7 +1948,7 @@ private fun LoanEditorFullScreen(
                             onValueChange = { totalInstallmentsText = it.filter(Char::isDigit) },
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(18.dp),
                             label = { Text("تعداد اقساط") },
                             leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -1961,7 +1961,7 @@ private fun LoanEditorFullScreen(
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().clickable { expandedInterval = true },
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(18.dp),
                             label = { Text("فاصله اقساط") },
                             leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) }
                         )
@@ -1977,7 +1977,7 @@ private fun LoanEditorFullScreen(
                     Spacer(Modifier.height(10.dp))
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(18.dp),
                         color = MatureColors.Success.copy(alpha = 0.10f)
                     ) {
                         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -2003,7 +2003,7 @@ private fun LoanEditorFullScreen(
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().clickable { expandedType = true },
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(18.dp),
                             label = { Text("نوع وام") },
                             leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                         )
@@ -2045,14 +2045,14 @@ private fun LoanEditorFullScreen(
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 2,
                         maxLines = 4,
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(18.dp),
                         label = { Text("ضمانت و توضیحات") },
                         placeholder = { Text("توضیحات اختیاری") }
                     )
                     Spacer(Modifier.height(10.dp))
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(18.dp),
                         color = MatureColors.CardBackground
                     ) {
                         Row(
@@ -2081,8 +2081,8 @@ private fun LoanTrackingModeCard(
     onClick: () -> Unit
 ) {
     Surface(
-        modifier = modifier.clip(RoundedCornerShape(16.dp)).clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
+        modifier = modifier.clip(RoundedCornerShape(18.dp)).clickable(onClick = onClick),
+        shape = RoundedCornerShape(18.dp),
         color = if (selected) MatureColors.Primary.copy(alpha = 0.10f) else MatureColors.CardBackground
     ) {
         Row(
