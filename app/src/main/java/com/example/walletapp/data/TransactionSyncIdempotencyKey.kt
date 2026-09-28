@@ -40,8 +40,6 @@ object TransactionSyncIdempotencyKey {
                 append("|")
                 append(client.protocolVersion)
                 append("|")
-                append(generatedAt)
-                append("|")
 
                 transactions
                     .sortedWith(
