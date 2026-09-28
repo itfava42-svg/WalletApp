@@ -24,7 +24,7 @@ class TransactionSyncRetryPolicyTest {
         )
         assertTrue(
             isTransactionSyncRetryable(
-                TransactionSyncHttpStatusException(500, ""
+                TransactionSyncHttpStatusException(500, "")
             )
         )
         assertFalse(
