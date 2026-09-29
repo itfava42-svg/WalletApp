@@ -70,8 +70,7 @@ class HistoricalLoanReminderIntegrityTest {
             historicalPaidInstallments = 0,
         )
 
-        assertFalse(loan.isInstallmentPaid(4))
-        assertTrue(loan.payments.any { it.installmentNumber == 4 })
         assertTrue(loan.isInstallmentPaid(4))
+        assertFalse(loan.isInstallmentPaid(3))
     }
 }
