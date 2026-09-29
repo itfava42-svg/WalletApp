@@ -36,9 +36,6 @@ class TransactionSyncTestBackend :
             append("|")
             append(request.client.protocolVersion)
             append("|")
-            append(request.generatedAt)
-            append("|")
-
             request.transactions
                 .sortedWith(
                     compareBy<Transaction> {
