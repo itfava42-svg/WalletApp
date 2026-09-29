@@ -473,9 +473,18 @@ private val bankKeywords: List<Pair<String, String>> =
                 "\u067e\u0631\u06cc\u062f",
             )
 
+        val strongTransferKeywords =
+            listOf(
+                "\u0627\u0646\u062a\u0642\u0627\u0644 \u0648\u062c\u0647",
+                "\u0627\u0646\u062a\u0642\u0627\u0644 \u0627\u0632 \u06a9\u0627\u0631\u062a",
+                "\u06a9\u0627\u0631\u062a \u0628\u0647 \u06a9\u0627\u0631\u062a",
+            )
+
         return strongIncomeKeywords.any {
             normalizedBody.contains(it)
         } || strongExpenseKeywords.any {
+            normalizedBody.contains(it)
+        } || strongTransferKeywords.any {
             normalizedBody.contains(it)
         }
     }
