@@ -3,15 +3,22 @@ package com.example.walletapp.sms
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 class SmsCompletionCoordinatorTest {
 
+    @Before
+    fun setUp() {
+        SmsCompletionCoordinator.setDispatcherForTests { action -> action() }
+    }
+
     @After
     fun tearDown() {
         SmsCompletionCoordinator.reset()
+        SmsCompletionCoordinator.setDispatcherForTests(null)
     }
 
     @Test
