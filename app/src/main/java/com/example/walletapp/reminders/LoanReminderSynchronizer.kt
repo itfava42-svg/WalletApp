@@ -80,10 +80,8 @@ object LoanReminderSynchronizer {
         }
 
         val paid =
-            loan.payments
-                .map {
-                    it.installmentNumber
-                }
+            (1..loan.totalInstallments)
+                .filter { loan.isInstallmentPaid(it) }
                 .toSet()
 
         for (
