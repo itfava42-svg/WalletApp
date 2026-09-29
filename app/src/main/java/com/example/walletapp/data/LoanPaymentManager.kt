@@ -1,6 +1,7 @@
 ﻿package com.example.walletapp.data
 
 import android.content.Context
+import com.example.walletapp.reminders.LoanReminderSynchronizer
 import java.util.UUID
 
 object LoanPaymentManager {
@@ -52,6 +53,16 @@ object LoanPaymentManager {
 
         if (!added) {
             return null
+        }
+
+        val updatedLoan = LoanStore.getById(loan.id)
+        if (updatedLoan != null) {
+            runCatching {
+                LoanReminderSynchronizer.syncLoan(
+                    context = context,
+                    loan = updatedLoan,
+                )
+            }
         }
 
         return payment
@@ -132,6 +143,16 @@ object LoanPaymentManager {
         if (!added) {
             TransactionStore.remove(transaction.id)
             return false
+        }
+
+        val updatedLoan = LoanStore.getById(currentLoan.id)
+        if (updatedLoan != null) {
+            runCatching {
+                LoanReminderSynchronizer.syncLoan(
+                    context = context,
+                    loan = updatedLoan,
+                )
+            }
         }
 
         return true
