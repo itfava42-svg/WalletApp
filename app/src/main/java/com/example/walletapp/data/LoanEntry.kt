@@ -59,6 +59,45 @@ data class LoanEntry(
         return installmentNumber <= historicalPaidInstallments ||
             payments.any { it.installmentNumber == installmentNumber }
     }
+
+    /**
+     * Returns the Jalali due-date parts for an installment.
+     * Existing loans continue from the tracking start date after historical
+     * installments; new loans use the first-installment date.
+     */
+    fun installmentDueDateParts(installmentNumber: Int): Triple<Int, Int, Int>? {
+        if (installmentNumber !in 1..totalInstallments) return null
+
+        val historicalCount = historicalPaidInstallments
+            .coerceIn(0, totalInstallments)
+
+        if (
+            trackingMode == LoanTrackingMode.EXISTING &&
+            trackingStartYear != null &&
+            trackingStartMonth != null &&
+            trackingStartDay != null &&
+            installmentNumber > historicalCount
+        ) {
+            return calculateLoanInstallmentDateParts(
+                year = trackingStartYear,
+                month = trackingStartMonth,
+                day = trackingStartDay,
+                monthsToAdd =
+                    (installmentNumber - historicalCount - 1) * intervalMonths
+            )
+        }
+
+        val year = firstInstallmentYear ?: return null
+        val month = firstInstallmentMonth ?: return null
+        val day = firstInstallmentDay ?: return null
+
+        return calculateLoanInstallmentDateParts(
+            year = year,
+            month = month,
+            day = day,
+            monthsToAdd = (installmentNumber - 1) * intervalMonths
+        )
+    }
 }
 
 object LoanStore {
@@ -378,4 +417,21 @@ object LoanStore {
             )
         )
     }
+}
+
+private fun calculateLoanInstallmentDateParts(
+    year: Int,
+    month: Int,
+    day: Int,
+    monthsToAdd: Int
+): Triple<Int, Int, Int> {
+    val totalMonths =
+        (year * 12) + (month - 1) + monthsToAdd
+
+    val newYear = totalMonths / 12
+    val newMonth = (totalMonths % 12) + 1
+    val maxDay = if (newMonth <= 6) 31 else 30
+    val newDay = day.coerceAtMost(maxDay)
+
+    return Triple(newYear, newMonth, newDay)
 }

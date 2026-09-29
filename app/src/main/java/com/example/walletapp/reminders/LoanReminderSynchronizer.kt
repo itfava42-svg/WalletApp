@@ -105,8 +105,7 @@ object LoanReminderSynchronizer {
             }
 
             val dueDate =
-                calculateInstallmentDate(
-                    loan,
+                loan.installmentDueDateParts(
                     installmentNumber
                 ) ?: continue
 
@@ -354,60 +353,6 @@ object LoanReminderSynchronizer {
         installmentNumber: Int
     ): String =
         "loan_installment_${loanId}_$installmentNumber"
-
-    private fun calculateInstallmentDate(
-        loan: LoanEntry,
-        installmentNumber: Int
-    ): Triple<Int, Int, Int>? {
-
-        val year =
-            loan.firstInstallmentYear
-                ?: return null
-
-        val month =
-            loan.firstInstallmentMonth
-                ?: return null
-
-        val day =
-            loan.firstInstallmentDay
-                ?: return null
-
-        val monthsToAdd =
-            (
-                installmentNumber - 1
-            ) * loan.intervalMonths
-
-        val totalMonths =
-            (
-                year * 12
-            ) +
-                (month - 1) +
-                monthsToAdd
-
-        val newYear =
-            totalMonths / 12
-
-        val newMonth =
-            (totalMonths % 12) + 1
-
-        val maxDay =
-            if (newMonth <= 6) {
-                31
-            } else {
-                30
-            }
-
-        val newDay =
-            day.coerceAtMost(
-                maxDay
-            )
-
-        return Triple(
-            newYear,
-            newMonth,
-            newDay
-        )
-    }
 
     /**
      * Returns:
