@@ -537,6 +537,26 @@ object TransactionStore {
         kind: TransactionKind = TransactionKind.NORMAL,
     ): Transaction {
 
+        /*
+         * SMS ingestion is idempotent by source event. This protects the
+         * transaction store when an ingestion attempt fails after the
+         * transaction has already been persisted and the processed-SMS
+         * claim is released for retry.
+         */
+        val existingSourceId =
+            sourceId
+                ?.trim()
+                ?.takeIf { it.isNotBlank() }
+
+        if (existingSourceId != null) {
+            transactions.firstOrNull {
+                it.source == TransactionSource.SMS &&
+                    it.sourceId == existingSourceId
+            }?.let { existing ->
+                return existing
+            }
+        }
+
         val now = System.currentTimeMillis()
         val transaction =
             Transaction(
