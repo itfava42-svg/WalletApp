@@ -11,7 +11,11 @@ import android.os.Looper
  */
 object SmsCompletionCoordinator {
 
-    private val mainHandler = Handler(Looper.getMainLooper())
+    /**
+     * Optional synchronous dispatcher used only by JVM unit tests.
+     * Production delivery always falls back to the Android main looper.
+     */
+    private var testDispatcher: ((() -> Unit) -> Unit)? = null
 
     @Volatile
     private var host: ((String) -> Unit)? = null
@@ -23,6 +27,22 @@ object SmsCompletionCoordinator {
     private val pendingTransactionIds = LinkedHashSet<String>()
 
     /**
+     * Test-only seam for JVM unit tests. Production code leaves this unset.
+     */
+    internal fun setDispatcherForTests(dispatcher: ((() -> Unit) -> Unit)?) {
+        testDispatcher = dispatcher
+    }
+
+    private fun postToMain(action: () -> Unit) {
+        val dispatcher = testDispatcher
+        if (dispatcher != null) {
+            dispatcher(action)
+        } else {
+            Handler(Looper.getMainLooper()).post(action)
+        }
+    }
+
+    /**
      * Registers the foreground Compose host.
      *
      * If transactions are already waiting, the first one is delivered.
@@ -31,21 +51,14 @@ object SmsCompletionCoordinator {
     fun registerHost(callback: (String) -> Unit): String? {
         host = callback
 
-
         val next = pendingTransactionIds.firstOrNull()
 
         if (!next.isNullOrBlank()) {
-
             pendingTransactionIds.remove(next)
 
-            mainHandler.post {
-
-
+            postToMain {
                 runCatching {
                     callback(next)
-
-                }.onFailure {
-
                 }
             }
         }
@@ -78,31 +91,20 @@ object SmsCompletionCoordinator {
      */
     @Synchronized
     fun deliver(transactionId: String): Boolean {
-
         if (transactionId.isBlank()) {
             return false
         }
 
         val callback = host
 
-
-
         if (callback == null) {
-
             pendingTransactionIds.add(transactionId)
-
             return true
         }
 
-        mainHandler.post {
-
-
+        postToMain {
             runCatching {
                 callback(transactionId)
-
-
-            }.onFailure {
-
             }
         }
 
@@ -122,7 +124,6 @@ object SmsCompletionCoordinator {
      */
     @Synchronized
     fun clearPendingTransactionId() {
-
         val first = pendingTransactionIds.firstOrNull()
 
         if (first != null) {
@@ -143,11 +144,7 @@ object SmsCompletionCoordinator {
      */
     @Synchronized
     fun reset() {
-
         host = null
         pendingTransactionIds.clear()
     }
 }
-
-
-
