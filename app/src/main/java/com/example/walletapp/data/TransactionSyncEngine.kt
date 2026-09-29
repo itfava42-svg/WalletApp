@@ -47,6 +47,12 @@ object TransactionSyncEngine {
     }
 
     fun applyRemoteBatch(transactions: List<Transaction>): List<Transaction> {
+        require(
+            TransactionSyncValidation.validateBatch(transactions)
+        ) {
+            "Remote batch failed sync validation."
+        }
+
         return transactions.map { applyRemote(it) }
     }
 
