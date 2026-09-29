@@ -64,8 +64,16 @@ object TransactionStore {
      */
     fun addManual(transaction: Transaction) {
 
+        require(transaction.id.isNotBlank()) {
+            "Transaction id is required."
+        }
+
         require(transaction.amount > 0L) {
             "Transaction amount must be greater than zero."
+        }
+
+        require(transactions.none { it.id == transaction.id }) {
+            "A transaction with the same id already exists."
         }
 
         require(!transaction.requiresCompletion) {
