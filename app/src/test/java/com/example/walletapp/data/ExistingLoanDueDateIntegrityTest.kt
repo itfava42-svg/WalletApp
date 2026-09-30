@@ -8,14 +8,29 @@ class ExistingLoanDueDateIntegrityTest {
 
     @Test
     fun existingLoanContinuesFromTrackingStartAfterHistoricalPayments() {
-        val loan = loan(
+        val loan = LoanEntry(
+            id = "existing-loan",
+            title = "وام آزمایشی",
+            type = LoanType.PERSONAL,
+            totalAmount = 10_000_000L,
+            interestRatePercent = 0.0,
+            installmentAmount = 1_000_000L,
             totalInstallments = 12,
             intervalMonths = 1,
-            historicalPaidInstallments = 3,
+            startYear = 1403,
+            startMonth = 1,
+            startDay = 1,
+            firstInstallmentYear = 1403,
+            firstInstallmentMonth = 2,
+            firstInstallmentDay = 1,
+            guaranteeNote = "",
+            reminderEnabled = true,
+            payments = emptyList(),
             trackingMode = LoanTrackingMode.EXISTING,
+            historicalPaidInstallments = 3,
             trackingStartYear = 1403,
             trackingStartMonth = 5,
-            trackingStartDay = 1,
+            trackingStartDay = 1
         )
 
         assertEquals(Triple(1403, 5, 1), loan.installmentDueDateParts(4))
@@ -25,14 +40,29 @@ class ExistingLoanDueDateIntegrityTest {
 
     @Test
     fun existingLoanRespectsThreeMonthInterval() {
-        val loan = loan(
+        val loan = LoanEntry(
+            id = "existing-loan-3m",
+            title = "وام آزمایشی",
+            type = LoanType.PERSONAL,
+            totalAmount = 10_000_000L,
+            interestRatePercent = 0.0,
+            installmentAmount = 1_000_000L,
             totalInstallments = 8,
             intervalMonths = 3,
-            historicalPaidInstallments = 2,
+            startYear = 1404,
+            startMonth = 1,
+            startDay = 1,
+            firstInstallmentYear = 1404,
+            firstInstallmentMonth = 2,
+            firstInstallmentDay = 15,
+            guaranteeNote = "",
+            reminderEnabled = true,
+            payments = emptyList(),
             trackingMode = LoanTrackingMode.EXISTING,
+            historicalPaidInstallments = 2,
             trackingStartYear = 1404,
             trackingStartMonth = 10,
-            trackingStartDay = 15,
+            trackingStartDay = 15
         )
 
         assertEquals(Triple(1404, 10, 15), loan.installmentDueDateParts(3))
@@ -42,14 +72,26 @@ class ExistingLoanDueDateIntegrityTest {
 
     @Test
     fun newLoanUsesFirstInstallmentSchedule() {
-        val loan = loan(
+        val loan = LoanEntry(
+            id = "new-loan",
+            title = "وام آزمایشی",
+            type = LoanType.PERSONAL,
+            totalAmount = 10_000_000L,
+            interestRatePercent = 0.0,
+            installmentAmount = 1_000_000L,
             totalInstallments = 6,
             intervalMonths = 2,
-            historicalPaidInstallments = 0,
-            trackingMode = LoanTrackingMode.NEW,
+            startYear = 1405,
+            startMonth = 1,
+            startDay = 1,
             firstInstallmentYear = 1405,
             firstInstallmentMonth = 2,
             firstInstallmentDay = 30,
+            guaranteeNote = "",
+            reminderEnabled = true,
+            payments = emptyList(),
+            trackingMode = LoanTrackingMode.NEW,
+            historicalPaidInstallments = 0
         )
 
         assertEquals(Triple(1405, 2, 30), loan.installmentDueDateParts(1))
@@ -59,53 +101,32 @@ class ExistingLoanDueDateIntegrityTest {
 
     @Test
     fun invalidInstallmentNumberReturnsNull() {
-        val loan = loan(
+        val loan = LoanEntry(
+            id = "invalid-loan",
+            title = "وام آزمایشی",
+            type = LoanType.PERSONAL,
+            totalAmount = 10_000_000L,
+            interestRatePercent = 0.0,
+            installmentAmount = 1_000_000L,
             totalInstallments = 6,
             intervalMonths = 1,
-            historicalPaidInstallments = 2,
+            startYear = 1405,
+            startMonth = 1,
+            startDay = 1,
+            firstInstallmentYear = 1405,
+            firstInstallmentMonth = 2,
+            firstInstallmentDay = 1,
+            guaranteeNote = "",
+            reminderEnabled = true,
+            payments = emptyList(),
             trackingMode = LoanTrackingMode.EXISTING,
+            historicalPaidInstallments = 2,
             trackingStartYear = 1405,
             trackingStartMonth = 3,
-            trackingStartDay = 1,
+            trackingStartDay = 1
         )
 
         assertNull(loan.installmentDueDateParts(0))
         assertNull(loan.installmentDueDateParts(7))
     }
-
-    private fun loan(
-        totalInstallments: Int,
-        intervalMonths: Int,
-        historicalPaidInstallments: Int,
-        trackingMode: LoanTrackingMode,
-        firstInstallmentYear: Int = 1403,
-        firstInstallmentMonth: Int = 2,
-        firstInstallmentDay: Int = 1,
-        trackingStartYear: Int? = null,
-        trackingStartMonth: Int? = null,
-        trackingStartDay: Int? = null,
-    ) = LoanEntry(
-        id = "loan-test",
-        title = "وام آزمایشی",
-        type = LoanType.PERSONAL,
-        totalAmount = 10_000_000L,
-        interestRatePercent = 0.0,
-        installmentAmount = 1_000_000L,
-        totalInstallments = totalInstallments,
-        intervalMonths = intervalMonths,
-        startYear = 1403,
-        startMonth = 1,
-        startDay = 1,
-        firstInstallmentYear = firstInstallmentYear,
-        firstInstallmentMonth = firstInstallmentMonth,
-        firstInstallmentDay = firstInstallmentDay,
-        guaranteeNote = "",
-        reminderEnabled = true,
-        payments = emptyList(),
-        trackingMode = trackingMode,
-        historicalPaidInstallments = historicalPaidInstallments,
-        trackingStartYear = trackingStartYear,
-        trackingStartMonth = trackingStartMonth,
-        trackingStartDay = trackingStartDay,
-    )
 }
