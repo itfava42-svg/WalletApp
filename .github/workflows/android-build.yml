@@ -58,6 +58,17 @@ jobs:
       - name: CI-15A — Run Unit Tests
         run: ./gradlew test --stacktrace
 
+      - name: CI-31 — Preserve test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CI-31-test-diagnostics
+          path: |
+            app/build/test-results/**/*.xml
+            app/build/reports/tests/**
+          if-no-files-found: warn
+          retention-days: 7
+
       - name: CI-18 — Publish Debug APK
         uses: actions/upload-artifact@v4
         with:
