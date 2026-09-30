@@ -25,11 +25,22 @@ object TransactionSyncRepository {
         return TransactionStore.mergeOrApply(remote)
     }
 
-    fun markSynced(transactionId: String): Transaction? {
+    /**
+     * Marks an upload snapshot as synced only when the transaction has not
+     * changed locally while the upload was in flight.
+     *
+     * A local edit after the snapshot must remain pending so that the newer
+     * version is not accidentally hidden as SYNCED by an older upload result.
+     */
+    fun markSynced(uploadedSnapshot: Transaction): Boolean {
         val current =
             TransactionStore.transactions.firstOrNull {
-                it.id == transactionId
-            } ?: return null
+                it.id == uploadedSnapshot.id
+            } ?: return false
+
+        if (current != uploadedSnapshot) {
+            return false
+        }
 
         val synced =
             current.copy(
@@ -38,14 +49,25 @@ object TransactionSyncRepository {
 
         TransactionStore.applyRemote(synced)
 
-        return synced
+        return true
     }
 
-    fun markFailed(transactionId: String): Transaction? {
+    /**
+     * Marks an upload snapshot as failed only when the transaction has not
+     * changed locally while the upload was in flight.
+     *
+     * A newer local edit must remain in its current sync state rather than
+     * being overwritten by a failure result for an older snapshot.
+     */
+    fun markFailed(uploadedSnapshot: Transaction): Boolean {
         val current =
             TransactionStore.transactions.firstOrNull {
-                it.id == transactionId
-            } ?: return null
+                it.id == uploadedSnapshot.id
+            } ?: return false
+
+        if (current != uploadedSnapshot) {
+            return false
+        }
 
         val failed =
             current.copy(
@@ -54,7 +76,7 @@ object TransactionSyncRepository {
 
         TransactionStore.applyRemote(failed)
 
-        return failed
+        return true
     }
 
     fun containsEquivalent(transaction: Transaction): Boolean {
@@ -67,5 +89,3 @@ object TransactionSyncRepository {
         }
     }
 }
-
-
