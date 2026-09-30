@@ -11,10 +11,11 @@ class ExistingLoanDueDateIntegrityTest {
         val loan = loan(
             totalInstallments = 12,
             intervalMonths = 1,
-            trackingMode = LoanTrackingMode.EXISTING,
             historicalPaidInstallments = 3,
-            firstInstallment = Triple(1403, 2, 1),
-            trackingStart = Triple(1403, 5, 1),
+            trackingMode = LoanTrackingMode.EXISTING,
+            trackingStartYear = 1403,
+            trackingStartMonth = 5,
+            trackingStartDay = 1,
         )
 
         assertEquals(Triple(1403, 5, 1), loan.installmentDueDateParts(4))
@@ -23,14 +24,15 @@ class ExistingLoanDueDateIntegrityTest {
     }
 
     @Test
-    fun existingLoanRespectsInstallmentInterval() {
+    fun existingLoanRespectsThreeMonthInterval() {
         val loan = loan(
             totalInstallments = 8,
             intervalMonths = 3,
-            trackingMode = LoanTrackingMode.EXISTING,
             historicalPaidInstallments = 2,
-            firstInstallment = Triple(1403, 1, 1),
-            trackingStart = Triple(1404, 10, 15),
+            trackingMode = LoanTrackingMode.EXISTING,
+            trackingStartYear = 1404,
+            trackingStartMonth = 10,
+            trackingStartDay = 15,
         )
 
         assertEquals(Triple(1404, 10, 15), loan.installmentDueDateParts(3))
@@ -39,14 +41,15 @@ class ExistingLoanDueDateIntegrityTest {
     }
 
     @Test
-    fun newLoanKeepsFirstInstallmentSchedule() {
+    fun newLoanUsesFirstInstallmentSchedule() {
         val loan = loan(
             totalInstallments = 6,
             intervalMonths = 2,
-            trackingMode = LoanTrackingMode.NEW,
             historicalPaidInstallments = 0,
-            firstInstallment = Triple(1405, 2, 30),
-            trackingStart = null,
+            trackingMode = LoanTrackingMode.NEW,
+            firstInstallmentYear = 1405,
+            firstInstallmentMonth = 2,
+            firstInstallmentDay = 30,
         )
 
         assertEquals(Triple(1405, 2, 30), loan.installmentDueDateParts(1))
@@ -59,10 +62,11 @@ class ExistingLoanDueDateIntegrityTest {
         val loan = loan(
             totalInstallments = 6,
             intervalMonths = 1,
-            trackingMode = LoanTrackingMode.EXISTING,
             historicalPaidInstallments = 2,
-            firstInstallment = Triple(1405, 1, 1),
-            trackingStart = Triple(1405, 3, 1),
+            trackingMode = LoanTrackingMode.EXISTING,
+            trackingStartYear = 1405,
+            trackingStartMonth = 3,
+            trackingStartDay = 1,
         )
 
         assertNull(loan.installmentDueDateParts(0))
@@ -72,13 +76,17 @@ class ExistingLoanDueDateIntegrityTest {
     private fun loan(
         totalInstallments: Int,
         intervalMonths: Int,
-        trackingMode: LoanTrackingMode,
         historicalPaidInstallments: Int,
-        firstInstallment: Triple<Int, Int, Int>,
-        trackingStart: Triple<Int, Int, Int>?,
+        trackingMode: LoanTrackingMode,
+        firstInstallmentYear: Int = 1403,
+        firstInstallmentMonth: Int = 2,
+        firstInstallmentDay: Int = 1,
+        trackingStartYear: Int? = null,
+        trackingStartMonth: Int? = null,
+        trackingStartDay: Int? = null,
     ) = LoanEntry(
         id = "loan-test",
-        title = "تست",
+        title = "وام آزمایشی",
         type = LoanType.PERSONAL,
         totalAmount = 10_000_000L,
         interestRatePercent = 0.0,
@@ -88,16 +96,16 @@ class ExistingLoanDueDateIntegrityTest {
         startYear = 1403,
         startMonth = 1,
         startDay = 1,
-        firstInstallmentYear = firstInstallment.first,
-        firstInstallmentMonth = firstInstallment.second,
-        firstInstallmentDay = firstInstallment.third,
+        firstInstallmentYear = firstInstallmentYear,
+        firstInstallmentMonth = firstInstallmentMonth,
+        firstInstallmentDay = firstInstallmentDay,
         guaranteeNote = "",
         reminderEnabled = true,
         payments = emptyList(),
         trackingMode = trackingMode,
         historicalPaidInstallments = historicalPaidInstallments,
-        trackingStartYear = trackingStart?.first,
-        trackingStartMonth = trackingStart?.second,
-        trackingStartDay = trackingStart?.third,
+        trackingStartYear = trackingStartYear,
+        trackingStartMonth = trackingStartMonth,
+        trackingStartDay = trackingStartDay,
     )
 }
