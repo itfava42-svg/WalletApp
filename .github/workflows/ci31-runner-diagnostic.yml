@@ -1,0 +1,24 @@
+name: CI-31 Runner Diagnostic
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  runner-diagnostic:
+    name: CI-31 — Runner Diagnostic
+    runs-on: ubuntu-latest
+    steps:
+      - name: CI-31 — Diagnostic start
+        shell: bash
+        run: |
+          set -eux
+          echo "CI-31 runner diagnostic started"
+          echo "RUNNER_OS=$RUNNER_OS"
+          echo "RUNNER_ARCH=$RUNNER_ARCH"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "CI-31 runner diagnostic PASS"
