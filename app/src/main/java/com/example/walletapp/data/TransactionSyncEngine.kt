@@ -56,12 +56,22 @@ object TransactionSyncEngine {
         return transactions.map { applyRemote(it) }
     }
 
-    fun markUploadSuccess(transactionId: String): Transaction? {
-        return TransactionSyncRepository.markSynced(transactionId)
+    /**
+     * Finalizes an upload result against the exact transaction snapshot
+     * that was sent to the backend. A changed local transaction is left
+     * untouched and remains eligible for a later upload.
+     */
+    fun markUploadSuccess(transaction: Transaction): Boolean {
+        return TransactionSyncRepository.markSynced(transaction)
     }
 
-    fun markUploadFailure(transactionId: String): Transaction? {
-        return TransactionSyncRepository.markFailed(transactionId)
+    /**
+     * Finalizes an upload failure against the exact transaction snapshot
+     * that was sent to the backend. A changed local transaction is left
+     * untouched.
+     */
+    fun markUploadFailure(transaction: Transaction): Boolean {
+        return TransactionSyncRepository.markFailed(transaction)
     }
 
     fun isDuplicate(transaction: Transaction): Boolean {

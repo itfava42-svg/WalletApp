@@ -84,24 +84,24 @@ class TransactionSyncCoordinator(
 
                     chunk.forEach {
 
-                        TransactionSyncEngine
-                            .markUploadFailure(
-                                it.id
-                            )
-
-                        failedUploads++
+                        if (
+                            TransactionSyncEngine
+                                .markUploadFailure(it)
+                        ) {
+                            failedUploads++
+                        }
                     }
 
                 } else {
 
                     chunk.forEach {
 
-                        TransactionSyncEngine
-                            .markUploadSuccess(
-                                it.id
-                            )
-
-                        uploaded++
+                        if (
+                            TransactionSyncEngine
+                                .markUploadSuccess(it)
+                        ) {
+                            uploaded++
+                        }
                     }
                 }
 
@@ -109,12 +109,12 @@ class TransactionSyncCoordinator(
 
                 chunk.forEach {
 
-                    TransactionSyncEngine
-                        .markUploadFailure(
-                            it.id
-                        )
-
-                    failedUploads++
+                    if (
+                        TransactionSyncEngine
+                            .markUploadFailure(it)
+                    ) {
+                        failedUploads++
+                    }
                 }
             }
         }
@@ -275,5 +275,3 @@ class TransactionSyncCoordinator(
         )
     }
 }
-
-
