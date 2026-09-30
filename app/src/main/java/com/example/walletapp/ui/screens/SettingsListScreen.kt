@@ -36,6 +36,7 @@ fun SettingsListScreen(
     onOpenSmsLearning: () -> Unit,
     onOpenThemeBuilder: () -> Unit,
     onOpenTransactionSync: () -> Unit,
+    onOpenBankList: () -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -62,6 +63,10 @@ fun SettingsListScreen(
             }
             ToolAction.TRANSACTION_SYNC -> {
                 onOpenTransactionSync()
+            }
+
+            ToolAction.BANK_LIST -> {
+                onOpenBankList()
             }
 
 

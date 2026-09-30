@@ -400,6 +400,9 @@ class MainActivity : ComponentActivity() {
                                 onOpenTransactionSync = {
                                     currentScreen = AppScreen.TransactionSync
                                 },
+                                onOpenBankList = {
+                                    currentScreen = AppScreen.Accounts
+                                },
                             )
         is AppScreen.TransactionSync -> TransactionSyncScreen(
             viewModel =
