@@ -55,7 +55,28 @@ jobs:
       - name: CI-15A — Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: CI-15A — Run Unit Tests
+      - name: CI-31 — Run focused due-date test with diagnostics
+        shell: bash
+        run: |
+          set +e
+          ./gradlew test --tests com.example.walletapp.data.ExistingLoanDueDateIntegrityTest --stacktrace 2>&1 | tee ci31-test.log
+          status=${PIPESTATUS[0]}
+          {
+            echo "## CI-31 focused test result"
+            echo ""
+            if [ "$status" -eq 0 ]; then
+              echo "PASS — ExistingLoanDueDateIntegrityTest"
+            else
+              echo "FAIL — ExistingLoanDueDateIntegrityTest (exit code $status)"
+            fi
+            echo ""
+            echo '~~~text'
+            tail -n 120 ci31-test.log
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
+      - name: CI-31 — Run full unit-test regression
         run: ./gradlew test --stacktrace
 
       - name: CI-31 — Preserve test diagnostics
@@ -64,6 +85,7 @@ jobs:
         with:
           name: CI-31-test-diagnostics
           path: |
+            ci31-test.log
             app/build/test-results/**/*.xml
             app/build/reports/tests/**
           if-no-files-found: warn
