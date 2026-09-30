@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.compose.BackHandler
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -271,6 +272,68 @@ class MainActivity : ComponentActivity() {
 }
                         }
 
+                        // CI-57C — CENTRAL SYSTEM BACK HANDLER
+                        //
+                        // Child BackHandlers composed later retain priority.
+                        // The root Dashboard intentionally does not intercept
+                        // system Back so Android can finish the Activity.
+                        BackHandler(
+                            enabled = smsSheetTransaction == null &&
+                                !showAddBankAccountScreen &&
+                                currentScreen != AppScreen.Dashboard
+                        ) {
+                            currentScreen = when (currentScreen) {
+                                AppScreen.AddTransaction -> {
+                                    selectedNavIndex = 0
+                                    AppScreen.Dashboard
+                                }
+                                AppScreen.Transactions -> {
+                                    selectedNavIndex = 0
+                                    AppScreen.Dashboard
+                                }
+                                AppScreen.Accounts -> {
+                                    selectedNavIndex = 0
+                                    AppScreen.Dashboard
+                                }
+                                AppScreen.Tools -> {
+                                    selectedNavIndex = 0
+                                    AppScreen.Dashboard
+                                }
+                                AppScreen.Budget -> {
+                                    selectedNavIndex = 0
+                                    AppScreen.Dashboard
+                                }
+
+                                AppScreen.Reminder -> AppScreen.Tools
+                                AppScreen.AddReminder -> AppScreen.Reminder
+
+                                AppScreen.Transfer -> AppScreen.Operations
+                                AppScreen.Operations -> AppScreen.Tools
+
+                                AppScreen.Reports -> AppScreen.Tools
+
+                                AppScreen.SettingsList -> AppScreen.Tools
+                                AppScreen.SmsLearning -> AppScreen.SettingsList
+                                AppScreen.ThemeBuilder -> AppScreen.SettingsList
+
+                                // TransactionSyncScreen owns its system BackHandler.
+                                AppScreen.TransactionSync -> AppScreen.SettingsList
+
+                                AppScreen.LoanManagement -> AppScreen.Tools
+                                AppScreen.CheckManagement -> AppScreen.Tools
+
+                                AppScreen.Dashboard -> AppScreen.Dashboard
+                            }
+                        }
+
+                        // Add-bank-account is an overlay state rather than
+                        // an AppScreen, so system Back closes the overlay.
+                        BackHandler(
+                            enabled = showAddBankAccountScreen &&
+                                smsSheetTransaction == null
+                        ) {
+                            showAddBankAccountScreen = false
+                        }
                         when (currentScreen) {
                             is AppScreen.Accounts -> AccountsScreen(
                                 selectedNavIndex = selectedNavIndex,
