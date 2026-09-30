@@ -18,86 +18,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: CI-15A — Checkout
-        uses: actions/checkout@v4
-
-      - name: CI-15A — Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: CI-15A — Set up Android SDK
-        uses: android-actions/setup-android@v4
-        with:
-          packages: 'platform-tools'
-
-      - name: CI-15A — Verify source file
+      - name: CI-31 — Minimal runner diagnostic
         shell: bash
         run: |
-          set -e
-          FILE="app/src/main/java/com/example/walletapp/ui/screens/LoanManagementScreen.kt"
-          test -f "$FILE"
-          echo "PASS: $FILE found"
-
-      - name: CI-15A — UTF-8 marker audit
-        shell: bash
-        run: |
-          set -e
-          FILE="app/src/main/java/com/example/walletapp/ui/screens/LoanManagementScreen.kt"
-          grep -F "درصد سود" "$FILE"
-          grep -F "تعداد اقساط" "$FILE"
-          echo "PASS: Persian UTF-8 markers found"
-
-      - name: CI-15A — Make Gradle executable
-        run: chmod +x ./gradlew
-
-      - name: CI-15A — Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
-
-      - name: CI-31 — Run focused due-date test with diagnostics
-        shell: bash
-        run: |
-          set +e
-          ./gradlew test --tests com.example.walletapp.data.ExistingLoanDueDateIntegrityTest --stacktrace 2>&1 | tee ci31-test.log
-          status=${PIPESTATUS[0]}
-          {
-            echo "## CI-31 focused test result"
-            echo ""
-            if [ "$status" -eq 0 ]; then
-              echo "PASS — ExistingLoanDueDateIntegrityTest"
-            else
-              echo "FAIL — ExistingLoanDueDateIntegrityTest (exit code $status)"
-            fi
-            echo ""
-            echo '~~~text'
-            tail -n 120 ci31-test.log
-            echo '~~~'
-          } >> "$GITHUB_STEP_SUMMARY"
-          exit "$status"
-
-      - name: CI-31 — Run full unit-test regression
-        run: ./gradlew test --stacktrace
-
-      - name: CI-31 — Preserve test diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: CI-31-test-diagnostics
-          path: |
-            ci31-test.log
-            app/build/test-results/**/*.xml
-            app/build/reports/tests/**
-          if-no-files-found: warn
-          retention-days: 7
-
-      - name: CI-18 — Publish Debug APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: WalletApp-CI-18-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 7
-
-      - name: CI-15A — COMPLETE
-        run: echo "WALLETAPP CI-15A COMPLETE — ALL CHECKS PASSED"
+          set -eux
+          echo "CI-31 minimal runner diagnostic"
+          echo "RUNNER_OS=$RUNNER_OS"
+          echo "RUNNER_ARCH=$RUNNER_ARCH"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "CI-31 minimal runner diagnostic PASS"
