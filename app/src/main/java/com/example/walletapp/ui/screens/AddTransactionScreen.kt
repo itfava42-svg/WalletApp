@@ -38,6 +38,7 @@ import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionCategories
 import com.example.walletapp.data.TransactionCategory
 import com.example.walletapp.ui.components.resolveTransactionIcon
+import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.data.toPersianDigits
