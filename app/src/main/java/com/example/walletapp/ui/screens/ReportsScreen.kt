@@ -1420,8 +1420,6 @@ private fun HeroFinancialCard(
 ) {
     AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1712,7 +1710,6 @@ private fun FlowCard(
 ) {
     AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1968,7 +1965,6 @@ private fun CategoryGrowthCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
-        shape = RoundedCornerShape(18.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -2113,7 +2109,6 @@ private fun CategoryRow(
 ) {
     AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
     ) {
         Column(
             modifier = Modifier.padding(14.dp),
@@ -2153,7 +2148,6 @@ private fun AccountRow(
 ) {
     AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
     ) {
         Column(
             modifier = Modifier.padding(14.dp),
@@ -2214,7 +2208,6 @@ private fun EmptyCard(
 ) {
     AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
     ) {
         Text(
             text = message,
