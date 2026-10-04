@@ -359,6 +359,15 @@ object LoanStore {
     }
 
     fun remove(id: String) {
+        context?.let { ctx ->
+            runCatching {
+                LoanReminderSynchronizer.removeLoan(
+                    context = ctx,
+                    loanId = id
+                )
+            }
+        }
+
         loans.removeAll { it.id == id }
         save()
     }
