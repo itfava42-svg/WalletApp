@@ -337,7 +337,7 @@ fun AddTransactionScreen(
                 singleLine = true,
             )
 
-            Spacer(Modifier.height(20.dp))            Spacer(Modifier.height(20.dp))
+            androidx.compose.foundation.layout.Spacer(Modifier.height(20.dp))
 
             // Category grid
             Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
@@ -456,7 +456,7 @@ fun AddTransactionScreen(
                 singleLine = false,
             )
 
-            Spacer(Modifier.height(20.dp))            Spacer(Modifier.height(20.dp))
+            androidx.compose.foundation.layout.Spacer(Modifier.height(20.dp))
 
             // Recurring + attach receipt row
             Column(
