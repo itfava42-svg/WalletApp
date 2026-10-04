@@ -1,6 +1,9 @@
 package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.JalaliDatePickerDialog
+import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppTextField
 import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,14 +33,10 @@ import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.CallReceived
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -258,15 +257,8 @@ fun AddReminderScreen(
             /*
              * Preview card
              */
-            Card(
+            AppCard(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 2.dp
-                )
             ) {
                 Row(
                     modifier = Modifier
@@ -383,32 +375,21 @@ fun AddReminderScreen(
                 title = "اطلاعات یادآوری"
             )
 
-            OutlinedTextField(
+            AppTextField(
                 value = title,
                 onValueChange = {
                     title = it
                     errorMessage = null
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
-                label = {
-                    Text("عنوان یادآوری")
-                },
+                modifier = Modifier.fillMaxWidth(),
+                label = "عنوان یادآوری",
                 placeholder = {
                     Text("مثلاً پرداخت قبض برق")
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(18.dp),
-                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                )
             )
 
-            OutlinedTextField(
+            AppTextField(
                 value = amountText,
                 onValueChange = {
                     amountText = it.filter { ch ->
@@ -418,12 +399,8 @@ fun AddReminderScreen(
                             ch == '٬'
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
-                label = {
-                    Text("مبلغ")
-                },
+                modifier = Modifier.fillMaxWidth(),
+                label = "مبلغ",
                 placeholder = {
                     Text("مثلاً ۵,۰۰۰,۰۰۰")
                 },
@@ -431,16 +408,9 @@ fun AddReminderScreen(
                     Text("ریال")
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(18.dp),
-                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                )
             )
 
-            OutlinedTextField(
+            AppTextField(
                 value = description,
                 onValueChange = {
                     description = it
@@ -448,21 +418,13 @@ fun AddReminderScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 104.dp),
-                label = {
-                    Text("توضیحات")
-                },
+                label = "توضیحات",
                 placeholder = {
                     Text("توضیحات تکمیلی اختیاری")
                 },
+                singleLine = false,
                 minLines = 3,
                 maxLines = 5,
-                shape = RoundedCornerShape(18.dp),
-                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                )
             )
 
             SectionTitle(
@@ -546,51 +508,36 @@ fun AddReminderScreen(
             }
 
             errorMessage?.let { message ->
-                Card(
+                AppCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Red.copy(alpha = 0.10f)
-                    )
+                    containerColor = Red.copy(alpha = 0.10f),
                 ) {
                     Text(
                         text = message,
-                        modifier = Modifier.padding(14.dp),
                         color = Red,
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                     .height(52.dp),
-                onClick = {
-                    save()
+            AppPrimaryButton(
+                text =
+                    if (existingReminder == null)
+                        "ذخیره یادآوری"
+                    else
+                        "ذخیره تغییرات",
+                onClick = { save() },
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Save,
+                        contentDescription = null,
+                    )
                 },
-                shape = MaterialTheme.shapes.large
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Save,
-                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text =
-                        if (existingReminder == null)
-                            "ذخیره یادآوری"
-                        else
-                            "ذخیره تغییرات",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
         }
