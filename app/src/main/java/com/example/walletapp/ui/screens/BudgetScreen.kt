@@ -41,6 +41,7 @@ fun BudgetScreen(
     val totalSpent = budgets.sumOf { BudgetStore.spentFor(it) }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(title = { Text("بودجه‌بندی", fontWeight = FontWeight.Bold) })
         },
@@ -66,7 +67,7 @@ fun BudgetScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Primary)
-                    .padding(vertical = 16.dp),
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 SummaryStatColumn("بودجه کل", totalBudget)
@@ -101,7 +102,7 @@ fun BudgetScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 16.dp),
                     contentPadding = PaddingValues(vertical = 16.dp),
                 ) {
                     items(budgets, key = { it.id }) { budget ->
@@ -146,8 +147,8 @@ private fun BudgetCard(budget: Budget) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = SurfaceContainerLowest,
-        tonalElevation = 1.dp,
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 0.dp,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
