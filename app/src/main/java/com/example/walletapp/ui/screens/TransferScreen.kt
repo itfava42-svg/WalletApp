@@ -447,14 +447,11 @@ private fun AccountSelectorCard(
     account: Account?,
     onClick: () -> Unit,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                MaterialTheme.colorScheme.surfaceVariant,
-        ),
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         Row(
             modifier = Modifier
