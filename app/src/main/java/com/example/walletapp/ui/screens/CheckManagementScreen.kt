@@ -105,7 +105,7 @@ fun CheckManagementScreen(
                 onClick = {
                     editingCheck = null
                     showEditor = true
-                },
+                }
             ) {
                 Icon(
                     Icons.Filled.Add,
@@ -473,7 +473,7 @@ private fun CheckEditorDialog(
                         expanded = expandedType,
                         onExpandedChange = { expandedType = !expandedType }
                     ) {
-                        OutlinedTextField(
+                        AppTextField(
                             value = type.label,
                             onValueChange = {},
                             readOnly = true,
@@ -591,7 +591,9 @@ private fun CheckEditorDialog(
                         onValueChange = { description = it },
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 2,
-                        label = "توضیحات"
+                        label = "توضیحات",
+                        singleLine = false,
+                        maxLines = 5
                     )
                 }
             }
@@ -625,9 +627,7 @@ private fun CheckEditorDialog(
                     )
                     onSave(check)
                 }
-            ) {
-                Text(if (existingCheck == null) "ثبت چک" else "ذخیره تغییرات")
-            }
+            )
         },
         dismissButton = {
             AppOutlinedButton(text = "انصراف", onClick = onDismiss)
