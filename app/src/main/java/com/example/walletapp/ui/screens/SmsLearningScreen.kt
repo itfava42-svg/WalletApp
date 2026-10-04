@@ -42,8 +42,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import com.example.walletapp.sms.SmsIgnoreManager
+import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.sms.SmsLearningManager
 
 @OptIn(ExperimentalMaterial3Api::class)
