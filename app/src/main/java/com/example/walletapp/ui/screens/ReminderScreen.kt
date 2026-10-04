@@ -231,7 +231,7 @@ fun ReminderScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(start = 20.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
+                    .padding(start = 16.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
@@ -261,8 +261,8 @@ fun ReminderScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onAddReminder,
-                shape = RoundedCornerShape(20.dp),
-                containerColor = MatureColors.Primary
+                shape = RoundedCornerShape(16.dp),
+                containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -284,8 +284,8 @@ fun ReminderScreen(
 
             contentPadding =
                 androidx.compose.foundation.layout.PaddingValues(
-                    horizontal = 18.dp,
-                    vertical = 18.dp
+                    horizontal = 16.dp,
+                    vertical = 16.dp
                 ),
 
             verticalArrangement =
