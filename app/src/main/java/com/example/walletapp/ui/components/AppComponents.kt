@@ -164,6 +164,8 @@ fun AppTextField(
     placeholder: (@Composable () -> Unit)? = null,
     suffix: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
+    minLines: Int = 1,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
 ) {
     OutlinedTextField(
         value = value,
@@ -178,6 +180,8 @@ fun AppTextField(
         placeholder = placeholder,
         suffix = suffix,
         trailingIcon = trailingIcon,
+        minLines = minLines,
+        maxLines = maxLines,
         label = { Text(label) },
         shape = RoundedCornerShape(AppDimens.FieldRadius),
         textStyle = AppTextStyles.bodyMd,
