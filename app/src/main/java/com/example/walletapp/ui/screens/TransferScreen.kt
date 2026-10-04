@@ -16,14 +16,10 @@ import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -46,6 +42,8 @@ import com.example.walletapp.data.Account
 import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppTextField
 
 
 @Composable
@@ -337,7 +335,7 @@ fun TransferScreen(
                     },
                 )
 
-                OutlinedTextField(
+                AppTextField(
                     value = amountText,
                     onValueChange = { input ->
                         amountText =
@@ -348,12 +346,8 @@ fun TransferScreen(
                             }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("مبلغ انتقال")
-                    },
-                    placeholder = {
-                        Text("مثلاً 2,000,000")
-                    },
+                    label = "مبلغ انتقال",
+                    placeholder = { Text("مثلاً 2,000,000") },
                     singleLine = true,
                     keyboardOptions =
                         KeyboardOptions(
@@ -361,18 +355,13 @@ fun TransferScreen(
                         ),
                 )
 
-                OutlinedTextField(
+                AppTextField(
                     value = note,
-                    onValueChange = {
-                        note = it
-                    },
+                    onValueChange = { note = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("توضیحات")
-                    },
-                    placeholder = {
-                        Text("اختیاری")
-                    },
+                    label = "توضیحات",
+                    placeholder = { Text("اختیاری") },
+                    singleLine = false,
                     minLines = 2,
                     maxLines = 4,
                 )
@@ -381,10 +370,8 @@ fun TransferScreen(
                     modifier = Modifier.height(4.dp)
                 )
 
-                Button(
-                    onClick = {
-                        submitTransfer()
-                    },
+                AppPrimaryButton(
+                    onClick = { submitTransfer() },
                     modifier = Modifier.fillMaxWidth(),
                     enabled =
                         sourceAccountId != null &&
@@ -392,16 +379,13 @@ fun TransferScreen(
                             amount != null &&
                             amount > 0L &&
                             sourceAccountId != destinationAccountId,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.SwapHoriz,
+                            contentDescription = null,
+                        )
+                    },
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.SwapHoriz,
-                        contentDescription = null,
-                    )
-
-                    Spacer(
-                        modifier = Modifier.size(8.dp)
-                    )
-
                     Text("ثبت انتقال")
                 }
             }
