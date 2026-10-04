@@ -189,6 +189,7 @@ fun DashboardMonthlySummaryCard(
                     icon = Icons.Filled.TrendingUp,
                     iconColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f),
+                    contentColor = OnSurface,
                 )
 
                 SummaryStat(
@@ -197,6 +198,7 @@ fun DashboardMonthlySummaryCard(
                     icon = Icons.Filled.TrendingDown,
                     iconColor = MaterialTheme.colorScheme.error,
                     modifier = Modifier.weight(1f),
+                    contentColor = OnSurface,
                 )
             }
 
@@ -208,6 +210,7 @@ fun DashboardMonthlySummaryCard(
                 icon = Icons.Filled.AccountBalanceWallet,
                 iconColor = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.fillMaxWidth(),
+                contentColor = OnSurface,
             )
         }
     }
@@ -382,6 +385,7 @@ private fun SummaryStat(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     iconColor: Color,
     modifier: Modifier = Modifier,
+    contentColor: Color = OnPrimary,
 ) {
     Column(
         modifier = modifier,
@@ -409,7 +413,7 @@ private fun SummaryStat(
 
             Text(
                 text = label,
-                color = OnPrimary.copy(alpha = 0.78f),
+                color = contentColor.copy(alpha = 0.78f),
                 style = AppTextStyles.bodyMd.copy(
                     fontFamily = AppFontFamily,
                 ),
@@ -420,7 +424,7 @@ private fun SummaryStat(
 
         Text(
             text = amount.toPersianCurrency(),
-            color = OnPrimary,
+            color = contentColor,
             fontFamily = AppFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
