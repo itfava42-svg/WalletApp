@@ -166,3 +166,119 @@ fun AppTextField(
         ),
     )
 }
+
+
+@Composable
+fun AppListRow(
+    title: String,
+    subtitle: String? = null,
+    trailing: (@Composable () -> Unit)? = null,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(AppDimens.SmallCardRadius),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(AppDimens.CardPadding),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, style = AppTextStyles.headlineSm.copy(fontSize = 15.sp))
+                if (!subtitle.isNullOrBlank()) {
+                    Text(
+                        subtitle,
+                        style = AppTextStyles.bodyMd,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            trailing?.invoke()
+        }
+    }
+}
+
+@Composable
+fun AppStatCard(
+    title: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    supportingText: String? = null,
+) {
+    AppCard(modifier = modifier) {
+        Text(
+            title,
+            style = AppTextStyles.bodyMd,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            value,
+            style = AppTextStyles.numeralXl,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        if (!supportingText.isNullOrBlank()) {
+            Text(
+                supportingText,
+                style = AppTextStyles.labelMd,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+fun AppReportCard(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    AppCard(modifier = modifier) {
+        Text(title, style = AppTextStyles.headlineSm)
+        content()
+    }
+}
+
+@Composable
+fun AppTable(
+    headers: List<String>,
+    rows: List<List<String>>,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(1.dp),
+    ) {
+        AppTableRow(headers, header = true)
+        rows.forEach { row -> AppTableRow(row) }
+    }
+}
+
+@Composable
+private fun AppTableRow(
+    cells: List<String>,
+    header: Boolean = false,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                if (header) MaterialTheme.colorScheme.primaryContainer
+                else MaterialTheme.colorScheme.surface,
+            )
+            .padding(horizontal = AppDimens.CardPadding, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+    ) {
+        cells.forEach { cell ->
+            Text(
+                cell,
+                modifier = Modifier.weight(1f),
+                style = if (header) AppTextStyles.labelMd else AppTextStyles.bodyMd,
+                color = if (header) MaterialTheme.colorScheme.onPrimaryContainer
+                else MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
