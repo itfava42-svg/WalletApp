@@ -42,6 +42,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import com.example.walletapp.sms.SmsIgnoreManager
+import com.example.walletapp.ui.components.AppOutlinedButton
+import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.sms.SmsLearningManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,21 +99,19 @@ fun SmsLearningScreen(
         ) {
 
             item {
-                Button(
+                AppPrimaryButton(
+                    text = "یادگیری دستی پیامک",
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         showManualLearningDialog = true
-                    }
-                ) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = null
-                    )
-
-                    Spacer(Modifier.padding(horizontal = 4.dp))
-
-                    Text("یادگیری دستی پیامک")
-                }
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Filled.Add,
+                            contentDescription = null
+                        )
+                    },
+                )
             }
 
             item {
@@ -241,21 +241,19 @@ fun SmsLearningScreen(
             }
 
             item {
-                OutlinedButton(
+                AppOutlinedButton(
+                    text = "پاک کردن یادگیری",
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         showClearDialog = true
-                    }
-                ) {
-                    Icon(
-                        Icons.Filled.Delete,
-                        contentDescription = null
-                    )
-
-                    Spacer(Modifier.padding(horizontal = 4.dp))
-
-                    Text("پاک کردن یادگیری")
-                }
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Filled.Delete,
+                            contentDescription = null
+                        )
+                    },
+                )
             }
 
             item {
