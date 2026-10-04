@@ -8,6 +8,7 @@ import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.ui.components.JalaliDatePickerDialog
+import com.example.walletapp.ui.components.AppCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
