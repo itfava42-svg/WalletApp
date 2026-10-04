@@ -1,0 +1,167 @@
+package com.example.walletapp.ui.components
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
+
+@Composable
+fun AppCard(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(AppDimens.CardRadius),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        content = {
+            Column(
+                modifier = Modifier.padding(AppDimens.CardPadding),
+                content = content,
+            )
+        },
+    )
+}
+
+@Composable
+fun AppTile(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    content: @Composable RowScope.() -> Unit,
+) {
+    val shape = RoundedCornerShape(AppDimens.TileRadius)
+    if (onClick == null) {
+        Surface(
+            modifier = modifier.fillMaxWidth(),
+            shape = shape,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 0.dp,
+            content = {
+                Row(
+                    modifier = Modifier.padding(AppDimens.CompactPadding),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+                    content = content,
+                )
+            },
+        )
+    } else {
+        androidx.compose.material3.Surface(
+            onClick = onClick,
+            modifier = modifier.fillMaxWidth(),
+            shape = shape,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 0.dp,
+            content = {
+                Row(
+                    modifier = Modifier.padding(AppDimens.CompactPadding),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+                    content = content,
+                )
+            },
+        )
+    }
+}
+
+@Composable
+fun AppSectionHeader(
+    title: String,
+    modifier: Modifier = Modifier,
+    action: (@Composable () -> Unit)? = null,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(title, style = AppTextStyles.headlineSm)
+        action?.invoke()
+    }
+}
+
+@Composable
+fun AppPrimaryButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(AppDimens.ButtonHeight),
+        enabled = enabled,
+        shape = RoundedCornerShape(AppDimens.ButtonRadius),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+        ),
+    ) {
+        Text(text, style = AppTextStyles.headlineSm.copy(fontSize = 15.dp.value.sp))
+    }
+}
+
+@Composable
+fun AppOutlinedButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier.height(AppDimens.ButtonHeight),
+        enabled = enabled,
+        shape = RoundedCornerShape(AppDimens.ButtonRadius),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+    ) {
+        Text(text, style = AppTextStyles.headlineSm.copy(fontSize = 15.dp.value.sp))
+    }
+}
+
+@Composable
+fun AppTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    singleLine: Boolean = true,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(if (singleLine) AppDimens.InputHeight else androidx.compose.ui.unit.Dp.Unspecified),
+        enabled = enabled,
+        singleLine = singleLine,
+        label = { Text(label) },
+        shape = RoundedCornerShape(AppDimens.FieldRadius),
+        textStyle = AppTextStyles.bodyMd,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+        ),
+    )
+}
