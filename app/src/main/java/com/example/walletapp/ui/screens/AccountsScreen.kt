@@ -45,7 +45,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -70,6 +69,7 @@ import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.AccountType
 import com.example.walletapp.data.AccountLedger
 import com.example.walletapp.data.TransactionStore
+import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.ui.components.DashboardBottomBar
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.appNavItems
@@ -910,15 +910,11 @@ private fun AccountDialog(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
-                OutlinedTextField(
+                AppTextField(
                     value = name,
-                    onValueChange = {
-                        name = it
-                    },
+                    onValueChange = { name = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("نام حساب")
-                    },
+                    label = "نام حساب",
                     singleLine = true
                 )
 
@@ -959,31 +955,21 @@ private fun AccountDialog(
                     }
                 }
 
-                OutlinedTextField(
+                AppTextField(
                     value = bank,
-                    onValueChange = {
-                        bank = it
-                    },
+                    onValueChange = { bank = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("نام بانک")
-                    },
+                    label = "نام بانک",
                     singleLine = true
                 )
 
-                OutlinedTextField(
+                AppTextField(
                     value = accountNumber,
-                    onValueChange = {
-                        accountNumber = it
-                    },
+                    onValueChange = { accountNumber = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("شماره حساب")
-                    },
+                    label = "شماره حساب",
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    )
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
                 OutlinedTextField(
