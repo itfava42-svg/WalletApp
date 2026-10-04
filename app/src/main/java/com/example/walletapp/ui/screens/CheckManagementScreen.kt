@@ -100,8 +100,7 @@ fun CheckManagementScreen(
             )
         },
         floatingActionButton = {
-            AppFloatingActionAppPrimaryButton(
-                text = if (existingCheck == null) "ثبت چک" else "ذخیره تغییرات",
+            AppFloatingActionButton(
                 onClick = {
                     editingCheck = null
                     showEditor = true
@@ -599,7 +598,8 @@ private fun CheckEditorDialog(
             }
         },
         confirmButton = {
-            Button(
+            AppPrimaryButton(
+                text = if (existingCheck == null) "ثبت چک" else "ذخیره تغییرات",
                 onClick = {
                     val amountValue = amount.toLongOrNull() ?: 0L
                     val issueParts = parseJalaliDate(issueDate)
@@ -670,7 +670,8 @@ private fun CheckInputTile(
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                placeholder = { Text("وارد کنید") }
+                placeholder = { Text("وارد کنید") },
+                label = title
             )
         }
     }
