@@ -23,6 +23,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.AppTextStyles
 
@@ -117,7 +118,7 @@ fun AppPrimaryButton(
             containerColor = MaterialTheme.colorScheme.primary,
         ),
     ) {
-        Text(text, style = AppTextStyles.headlineSm.copy(fontSize = 15.dp.value.sp))
+        Text(text, style = AppTextStyles.bodyMd.copy(fontSize = 15.sp))
     }
 }
 
@@ -153,7 +154,7 @@ fun AppTextField(
         onValueChange = onValueChange,
         modifier = modifier
             .fillMaxWidth()
-            .height(if (singleLine) AppDimens.InputHeight else androidx.compose.ui.unit.Dp.Unspecified),
+            .then(if (singleLine) Modifier.height(AppDimens.InputHeight) else Modifier),
         enabled = enabled,
         singleLine = singleLine,
         label = { Text(label) },
