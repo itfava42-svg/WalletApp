@@ -72,7 +72,7 @@ fun AppCard(
             },
         )
     }
-
+}
 
 @Composable
 fun AppTile(
