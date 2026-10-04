@@ -335,7 +335,7 @@ fun AddReminderScreen(
                 }
             }
 
-            SectionTitle(
+            AppSectionHeader(
                 icon = Icons.Default.NotificationsActive,
                 title = "نوع یادآوری"
             )
@@ -368,7 +368,7 @@ fun AddReminderScreen(
                 }
             }
 
-            SectionTitle(
+            AppSectionHeader(
                 icon = Icons.Default.Description,
                 title = "اطلاعات یادآوری"
             )
@@ -425,7 +425,7 @@ fun AddReminderScreen(
                 maxLines = 5,
             )
 
-            SectionTitle(
+            AppSectionHeader(
                 icon = Icons.Default.CalendarMonth,
                 title = "زمان یادآوری"
             )
@@ -459,7 +459,7 @@ fun AddReminderScreen(
                 }
             }
 
-            SectionTitle(
+            AppSectionHeader(
                 icon = Icons.Default.Repeat,
                 title = "تکرار یادآوری"
             )
