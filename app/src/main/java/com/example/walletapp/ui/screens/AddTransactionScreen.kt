@@ -40,6 +40,8 @@ import com.example.walletapp.data.TransactionCategories
 import com.example.walletapp.data.TransactionCategory
 import com.example.walletapp.ui.components.resolveTransactionIcon
 import com.example.walletapp.ui.components.AppTextField
+import com.example.walletapp.ui.components.AppOutlinedButton
+import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.data.toPersianDigits
@@ -196,7 +198,8 @@ fun AddTransactionScreen(
         },
         bottomBar = {
             Surface(shadowElevation = 8.dp, color = SurfaceContainerLowest) {
-                Button(
+                AppPrimaryButton(
+                    text = if (type == TransactionType.EXPENSE) "ثبت هزینه" else "ثبت درآمد",
                     onClick = {
                         val normalizedAmount = amountDigits.map { ch ->
                             when {
@@ -208,11 +211,11 @@ fun AddTransactionScreen(
                         val amountLong = normalizedAmount.toLongOrNull()
                         if (amountLong == null || amountLong <= 0L || title.isBlank()) {
                             showValidationError = true
-                            return@Button
+                            return@AppPrimaryButton
                         }
                         if (selectedAccountId == null || activeAccounts.none { it.id == selectedAccountId }) {
                             showValidationError = true
-                            return@Button
+                            return@AppPrimaryButton
                         }
                         showValidationError = false
                         val category = selectedCategory
@@ -241,17 +244,10 @@ fun AddTransactionScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp)
-                        .height(54.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = accentColor, contentColor = OnPrimary),
-                ) {
-                    Text(
-                        if (type == TransactionType.EXPENSE) "ثبت هزینه" else "ثبت درآمد",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                    )
-                }
+                        .padding(20.dp),
+                    containerColor = accentColor,
+                    textStyle = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                )
             }
         },
     ) { innerPadding ->
@@ -293,7 +289,7 @@ fun AddTransactionScreen(
             // Amount
             Text("مبلغ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
-            OutlinedTextField(
+            AppTextField(
                 value = amountDigits,
                 onValueChange = { input ->
                     amountDigits = input.mapNotNull { ch ->
@@ -307,12 +303,12 @@ fun AddTransactionScreen(
                     showValidationError = false
                 },
                 modifier = Modifier.fillMaxWidth(),
+                label = "مبلغ",
                 placeholder = { Text("۰") },
                 suffix = { Text("تومان") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 textStyle = MaterialTheme.typography.headlineSmall,
                 singleLine = true,
-                shape = RoundedCornerShape(14.dp),
             )
             if (amountDigits.isNotEmpty()) {
                 Text(
@@ -381,14 +377,13 @@ fun AddTransactionScreen(
                     label = { Text("دیروز") },
                 )
                 Spacer(Modifier.width(8.dp))
-                OutlinedButton(
+                AppOutlinedButton(
+                    text = dateLabel,
                     onClick = { showDatePicker = true },
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Icon(Icons.Filled.CalendarToday, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text(dateLabel)
-                }
+                    leadingIcon = {
+                        Icon(Icons.Filled.CalendarToday, contentDescription = null, modifier = Modifier.size(16.dp))
+                    },
+                )
             }
 
             Spacer(Modifier.height(20.dp))
@@ -400,9 +395,10 @@ fun AddTransactionScreen(
                 expanded = accountMenuExpanded,
                 onExpandedChange = { accountMenuExpanded = it },
             ) {
-                OutlinedTextField(
+                AppTextField(
                     value = selectedAccountName,
                     onValueChange = {},
+                    label = "حساب",
                     readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -412,7 +408,6 @@ fun AddTransactionScreen(
                             expanded = accountMenuExpanded
                         )
                     },
-                    shape = RoundedCornerShape(14.dp),
                 )
 
                 ExposedDropdownMenu(
