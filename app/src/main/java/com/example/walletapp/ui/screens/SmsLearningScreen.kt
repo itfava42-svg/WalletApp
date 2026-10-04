@@ -351,12 +351,7 @@ private fun ManualLearningDialog(
                 // =========================================================
 
                 item {
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor =
-                                MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    ) {
+                    AppCard(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
                         Column(
                             modifier = Modifier.padding(14.dp)
                         ) {
@@ -419,7 +414,7 @@ private fun ManualLearningDialog(
                         modifier = Modifier.height(6.dp)
                     )
 
-                    OutlinedTextField(
+                    AppTextField(
                         value = bankName,
                         onValueChange = {
                             bankName = it
@@ -467,7 +462,7 @@ private fun ManualLearningDialog(
                         modifier = Modifier.height(6.dp)
                     )
 
-                    OutlinedTextField(
+                    AppTextField(
                         value = sender,
                         onValueChange = {
                             sender = it
@@ -515,12 +510,7 @@ private fun ManualLearningDialog(
                         modifier = Modifier.height(6.dp)
                     )
 
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor =
-                                MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    ) {
+                    AppCard(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
                         Column(
                             modifier = Modifier.padding(10.dp)
                         ) {
@@ -546,7 +536,7 @@ private fun ManualLearningDialog(
                         modifier = Modifier.height(6.dp)
                     )
 
-                    OutlinedTextField(
+                    AppTextField(
                         value = messageText,
                         onValueChange = {
                             messageText = it
@@ -599,7 +589,7 @@ private fun ManualLearningDialog(
                     )
 
                     if (transactionType == "INCOME") {
-                        Button(
+                        AppPrimaryButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 transactionType = "INCOME"
@@ -609,7 +599,7 @@ private fun ManualLearningDialog(
                             Text("🟢 واریز به حساب / درآمد")
                         }
                     } else {
-                        OutlinedButton(
+                        OutlinedAppPrimaryButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 transactionType = "INCOME"
@@ -625,7 +615,7 @@ private fun ManualLearningDialog(
                     )
 
                     if (transactionType == "EXPENSE") {
-                        Button(
+                        AppPrimaryButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 transactionType = "EXPENSE"
@@ -635,7 +625,7 @@ private fun ManualLearningDialog(
                             Text("🔴 برداشت از حساب / هزینه")
                         }
                     } else {
-                        OutlinedButton(
+                        OutlinedAppPrimaryButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 transactionType = "EXPENSE"
@@ -673,7 +663,7 @@ private fun ManualLearningDialog(
                         modifier = Modifier.height(6.dp)
                     )
 
-                    OutlinedTextField(
+                    AppTextField(
                         value = category,
                         onValueChange = {
                             category = it
@@ -699,12 +689,7 @@ private fun ManualLearningDialog(
                 // =========================================================
 
                 item {
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor =
-                                MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    ) {
+                    AppCard(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
                         Column(
                             modifier = Modifier.padding(14.dp)
                         ) {
@@ -771,7 +756,8 @@ private fun ManualLearningDialog(
         },
 
         confirmButton = {
-            Button(
+            AppPrimaryAppPrimaryButton(
+                text = "🧠 ذخیره و یادگیری",
                 onClick = {
 
                     when {
@@ -817,7 +803,7 @@ private fun ManualLearningDialog(
         },
 
         dismissButton = {
-            TextButton(
+            TextAppPrimaryButton(
                 onClick = onDismiss
             ) {
                 Text("انصراف")
