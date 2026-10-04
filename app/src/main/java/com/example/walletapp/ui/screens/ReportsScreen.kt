@@ -116,6 +116,7 @@ val p7ExpenseCategories = currentMonthCategories.filter { it.expense > 0 }
     val totalBalance = ReportCalculator.currentTotalBalance()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             DashboardBottomBar(
                 items = appNavItems,
@@ -125,7 +126,9 @@ val p7ExpenseCategories = currentMonthCategories.filter { it.expense > 0 }
         },
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
         Row(
             modifier = Modifier
@@ -179,7 +182,7 @@ Spacer(modifier = Modifier.weight(1f))
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 14.dp),
+                .padding(horizontal = 0.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
@@ -517,7 +520,7 @@ private fun FinancialHealthCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1502,7 +1505,7 @@ private fun MiniMetric(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         Column(
@@ -1668,7 +1671,7 @@ private fun SmartInsightCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(20.dp),
     ) {
         Column(
             modifier = Modifier.padding(18.dp),
