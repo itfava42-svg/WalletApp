@@ -751,8 +751,6 @@ private fun ManualLearningDialog(
             AppPrimaryButton(
                 text = "🧠 ذخیره و یادگیری",
                 onClick = {
-
-                    when {
                         bankName.isBlank() -> {
                             errorMessage =
                                 "لطفاً نام بانک را وارد کنید."
@@ -789,13 +787,11 @@ private fun ManualLearningDialog(
                         }
                     }
                 }
-            ) {
-                Text("🧠 ذخیره و یادگیری")
-            }
+            )
         },
 
         dismissButton = {
-            TextAppPrimaryButton(
+            TextButton(
                 onClick = onDismiss
             ) {
                 Text("انصراف")
