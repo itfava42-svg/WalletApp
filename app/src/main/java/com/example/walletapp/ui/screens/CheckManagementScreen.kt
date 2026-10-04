@@ -100,8 +100,7 @@ fun CheckManagementScreen(
             )
         },
         floatingActionButton = {
-            AppFloatingActionAppPrimaryButton(
-                text = if (existingCheck == null) "ثبت چک" else "ذخیره تغییرات",
+            AppFloatingActionButton(
                 onClick = {
                     editingCheck = null
                     showEditor = true
@@ -510,7 +509,7 @@ private fun CheckEditorDialog(
                     )
                 }
                 item {
-                    OutlinedTextField(
+                    AppTextField(
                         value = checkNumber,
                         onValueChange = { checkNumber = it },
                         modifier = Modifier.fillMaxWidth(),
@@ -520,7 +519,7 @@ private fun CheckEditorDialog(
                     )
                 }
                 item {
-                    OutlinedTextField(
+                    AppTextField(
                         value = bank,
                         onValueChange = { bank = it },
                         modifier = Modifier.fillMaxWidth(),
@@ -530,7 +529,7 @@ private fun CheckEditorDialog(
                     )
                 }
                 item {
-                    OutlinedTextField(
+                    AppTextField(
                         value = personName,
                         onValueChange = { personName = it },
                         modifier = Modifier.fillMaxWidth(),
@@ -559,7 +558,7 @@ private fun CheckEditorDialog(
                         expanded = expandedStatus,
                         onExpandedChange = { expandedStatus = !expandedStatus }
                     ) {
-                        OutlinedTextField(
+                        AppTextField(
                             value = status.label,
                             onValueChange = {},
                             readOnly = true,
@@ -586,7 +585,7 @@ private fun CheckEditorDialog(
                     }
                 }
                 item {
-                    OutlinedTextField(
+                    AppTextField(
                         value = description,
                         onValueChange = { description = it },
                         modifier = Modifier.fillMaxWidth(),
@@ -665,7 +664,7 @@ private fun CheckInputTile(
                 )
             }
             Spacer(Modifier.height(8.dp))
-            OutlinedTextField(
+            AppTextField(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth(),
@@ -685,7 +684,7 @@ private fun DateField(
 ) {
     var showPicker by remember { mutableStateOf(false) }
 
-    OutlinedTextField(
+    AppTextField(
         value = value,
         onValueChange = {},
         readOnly = true,
