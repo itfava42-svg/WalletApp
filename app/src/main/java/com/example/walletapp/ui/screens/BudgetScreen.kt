@@ -25,6 +25,7 @@ import com.example.walletapp.data.BudgetStore
 import com.example.walletapp.data.TransactionCategories
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.ui.components.DashboardBottomBar
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.appNavItems
 import com.example.walletapp.ui.theme.*
 
@@ -84,13 +85,13 @@ fun BudgetScreen(
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Text("هنوز بودجه‌ای تعریف نشده است", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     Text(
                         "برای هر دسته‌بندی سقف خرج تعیین کنید و مصرف خود را دنبال کنید.",
                         color = OnSurfaceVariant,
                         style = MaterialTheme.typography.bodyMedium,
                     )
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     Button(
                         onClick = { showAddDialog = true },
                         colors = ButtonDefaults.buttonColors(containerColor = Primary),
@@ -102,12 +103,12 @@ fun BudgetScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp),
+                        .padding(horizontal = AppDimens.PagePadding),
+                    contentPadding = PaddingValues(vertical = AppDimens.PagePadding),
                 ) {
                     items(budgets, key = { it.id }) { budget ->
                         BudgetCard(budget)
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(AppDimens.CardGap))
                     }
                 }
             }
@@ -172,7 +173,7 @@ private fun BudgetCard(budget: Budget) {
                 color = progressColor,
                 trackColor = SurfaceContainer,
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(
                     "${spent.toPersianCurrency()} تومان هزینه شده",
@@ -205,7 +206,7 @@ private fun AddBudgetDialog(
         text = {
             Column {
                 Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -220,9 +221,9 @@ private fun AddBudgetDialog(
                         )
                     }
                 }
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
                 Text("مبلغ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
                 OutlinedTextField(
                     value = amountDigits,
                     onValueChange = { input -> amountDigits = input.filter { it.isDigit() }.take(12) },
@@ -232,9 +233,9 @@ private fun AddBudgetDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
                 Text("دوره", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     BudgetPeriod.entries.forEach { period ->
                         FilterChip(
@@ -246,7 +247,7 @@ private fun AddBudgetDialog(
                     }
                 }
                 if (showError) {
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     Text("لطفاً مبلغ معتبری وارد کنید.", color = AppError, style = MaterialTheme.typography.labelMedium)
                 }
             }
