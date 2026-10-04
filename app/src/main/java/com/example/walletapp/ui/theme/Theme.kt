@@ -28,14 +28,14 @@ object WalletThemePreferences {
     private val colorMap = mutableStateMapOf<String, Color>()
 
     private val defaults = mapOf(
-        "pageBackground" to Color(0xFFF8F9FA),
+        "pageBackground" to Color(0xFFF5F6FA),
         "cardBackground" to Color(0xFFFFFFFF),
-        "primary" to Color(0xFF2E7D32),
-        "accent" to Color(0xFF66BB6A),
-        "primaryText" to Color(0xFF1A1A1A),
-        "secondaryText" to Color(0xFF666666),
-        "button" to Color(0xFF2E7D32),
-        "border" to Color(0xFFDDDDDD),
+        "primary" to Color(0xFF2563EB),
+        "accent" to Color(0xFF3B82F6),
+        "primaryText" to Color(0xFF0F172A),
+        "secondaryText" to Color(0xFF64748B),
+        "button" to Color(0xFF2563EB),
+        "border" to Color(0xFFE2E8F0),
     )
 
     fun initialize(context: Context) {
