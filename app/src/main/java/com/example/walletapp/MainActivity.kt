@@ -47,6 +47,7 @@ import com.example.walletapp.ui.screens.OperationsScreen
 import com.example.walletapp.ui.screens.TransferScreen
 import com.example.walletapp.ui.screens.TransactionsScreen
 import com.example.walletapp.ui.screens.AccountsScreen
+import com.example.walletapp.ui.components.AppScreenContainer
 import com.example.walletapp.ui.screens.AddBankAccountScreen
 import android.content.pm.PackageManager
 import android.widget.Toast
@@ -334,7 +335,8 @@ class MainActivity : ComponentActivity() {
                         ) {
                             showAddBankAccountScreen = false
                         }
-                        when (currentScreen) {
+                        AppScreenContainer {
+                            when (currentScreen) {
                             is AppScreen.Accounts -> AccountsScreen(
                                 selectedNavIndex = selectedNavIndex,
                                 onNavSelect = ::onNavSelect,
@@ -504,6 +506,7 @@ class MainActivity : ComponentActivity() {
                             is AppScreen.CheckManagement -> CheckManagementScreen(
                                 onBack = { currentScreen = AppScreen.Tools },
                             )
+                            }
                         }
 
         // SMS transaction completion sheet
