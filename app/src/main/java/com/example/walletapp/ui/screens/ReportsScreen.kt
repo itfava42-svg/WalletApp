@@ -18,9 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.ReportCalculator
+import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.DashboardBottomBar
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.appNavItems
@@ -516,12 +514,11 @@ private fun FinancialHealthCard(
             "خالص مالی نسبت به ماه قبل تغییر محسوسی نداشته است."
     }
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -569,8 +566,7 @@ private fun FinancialHealthCard(
 
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
             ) {
                 Text(
                     text = trendText,
@@ -653,12 +649,11 @@ private fun P7FinancialTrendChart(
     val valueRange =
         (maxValue - minValue).coerceAtLeast(1L)
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -879,12 +874,11 @@ private fun P7ExpenseDonutChart(
         MaterialTheme.colorScheme.surfaceVariant,
     )
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier
@@ -1050,12 +1044,11 @@ private fun P7AccountBalanceChart(
     val onSurfaceVariant = MaterialTheme.colorScheme.onSurfaceVariant
     val outlineColor = MaterialTheme.colorScheme.outlineVariant
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier
@@ -1253,12 +1246,11 @@ private fun AnalyticsCard(
         0.0
     }
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1426,7 +1418,7 @@ private fun HeroFinancialCard(
     expense: Long,
     net: Long,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -1506,7 +1498,6 @@ private fun MiniMetric(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         Column(
@@ -1537,12 +1528,11 @@ private fun SmartAlertsCard(
     val surfaceColor = MaterialTheme.colorScheme.surfaceVariant
     val onSurfaceVariant = MaterialTheme.colorScheme.onSurfaceVariant
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier
@@ -1582,8 +1572,7 @@ private fun SmartAlertsCard(
                         .fillMaxWidth()
                         .background(
                             color = backgroundColor,
-                            shape = RoundedCornerShape(20.dp),
-                        )
+                                            )
                         .padding(14.dp),
                     verticalAlignment = Alignment.Top,
                 ) {
@@ -1670,9 +1659,8 @@ private fun SmartInsightCard(
     val topCategory = categories
         .maxByOrNull { maxOf(it.income, it.expense) }
 
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
     ) {
         Column(
             modifier = Modifier.padding(18.dp),
@@ -1722,10 +1710,9 @@ private fun FlowCard(
     transferIn: Long,
     transferOut: Long,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1798,12 +1785,11 @@ private fun MonthComparisonCard(
             "وضعیت مالی این ماه نسبت به ماه قبل تغییر محسوسی ندارد."
     }
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1838,8 +1824,7 @@ private fun MonthComparisonCard(
 
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
             ) {
                 Text(
                     text = insight,
@@ -1978,12 +1963,12 @@ private fun CategoryGrowthCard(
             .filter { it.change < 0L }
             .minByOrNull { it.change }
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
         shape = RoundedCornerShape(18.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -2126,7 +2111,7 @@ private fun CategoryGrowthRow(
 private fun CategoryRow(
     item: ReportCalculator.CategorySummary,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
     ) {
@@ -2166,7 +2151,7 @@ private fun CategoryRow(
 private fun AccountRow(
     item: ReportCalculator.AccountSummary,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
     ) {
@@ -2227,7 +2212,7 @@ private fun SummaryLine(
 private fun EmptyCard(
     message: String,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
     ) {
