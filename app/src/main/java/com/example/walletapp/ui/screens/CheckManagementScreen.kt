@@ -100,7 +100,8 @@ fun CheckManagementScreen(
             )
         },
         floatingActionButton = {
-            AppFloatingActionButton(
+            AppFloatingActionAppPrimaryButton(
+                text = if (existingCheck == null) "ثبت چک" else "ذخیره تغییرات",
                 onClick = {
                     editingCheck = null
                     showEditor = true
