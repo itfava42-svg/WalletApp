@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,19 +19,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +36,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppOutlinedButton
+import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.ui.theme.WalletThemePreferences
 
 private data class ColorSetting(
@@ -153,18 +152,13 @@ fun ThemeBuilderScreen(
         ) {
 
             item {
-                Card(
+                AppCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor =
-                            MaterialTheme.colorScheme.primaryContainer
-                    )
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentPadding = PaddingValues(16.dp),
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
                         Row(
                             verticalAlignment =
                                 Alignment.CenterVertically
@@ -247,81 +241,57 @@ fun ThemeBuilderScreen(
                 ) {
 
                     if (mode == "light") {
-                        Button(
+                        AppPrimaryButton(
                             modifier = Modifier.weight(1f),
+                            text = "☀️ روشن",
                             onClick = {
-                                WalletThemePreferences.setMode(
-                                    context,
-                                    "light"
-                                )
+                                WalletThemePreferences.setMode(context, "light")
                             }
-                        ) {
-                            Text("☀️ روشن")
-                        }
+                        )
                     } else {
-                        OutlinedButton(
+                        AppOutlinedButton(
                             modifier = Modifier.weight(1f),
+                            text = "☀️ روشن",
                             onClick = {
-                                WalletThemePreferences.setMode(
-                                    context,
-                                    "light"
-                                )
+                                WalletThemePreferences.setMode(context, "light")
                             }
-                        ) {
-                            Text("☀️ روشن")
-                        }
+                        )
                     }
 
                     if (mode == "dark") {
-                        Button(
+                        AppPrimaryButton(
                             modifier = Modifier.weight(1f),
+                            text = "🌙 تاریک",
                             onClick = {
-                                WalletThemePreferences.setMode(
-                                    context,
-                                    "dark"
-                                )
+                                WalletThemePreferences.setMode(context, "dark")
                             }
-                        ) {
-                            Text("🌙 تاریک")
-                        }
+                        )
                     } else {
-                        OutlinedButton(
+                        AppOutlinedButton(
                             modifier = Modifier.weight(1f),
+                            text = "🌙 تاریک",
                             onClick = {
-                                WalletThemePreferences.setMode(
-                                    context,
-                                    "dark"
-                                )
+                                WalletThemePreferences.setMode(context, "dark")
                             }
-                        ) {
-                            Text("🌙 تاریک")
-                        }
+                        )
                     }
 
                     if (mode == "system") {
-                        Button(
+                        AppPrimaryButton(
                             modifier = Modifier.weight(1f),
+                            text = "📱 خودکار",
                             onClick = {
-                                WalletThemePreferences.setMode(
-                                    context,
-                                    "system"
-                                )
+                                WalletThemePreferences.setMode(context, "system")
                             }
-                        ) {
-                            Text("📱 خودکار")
-                        }
+                        )
                     } else {
-                        OutlinedButton(
+                        AppOutlinedButton(
                             modifier = Modifier.weight(1f),
+                            text = "📱 خودکار",
                             onClick = {
-                                WalletThemePreferences.setMode(
-                                    context,
-                                    "system"
-                                )
+                                WalletThemePreferences.setMode(context, "system")
                             }
-                        ) {
-                            Text("📱 خودکار")
-                        }
+                        )
                     }
                 }
             }
@@ -331,22 +301,16 @@ fun ThemeBuilderScreen(
             }
 
             item {
-                OutlinedButton(
+                AppOutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(
-                            horizontal = 16.dp,
-                            vertical = 8.dp
-                        ),
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    text = "بازگردانی رنگ‌ها",
                     onClick = {
-                        WalletThemePreferences.resetColors(
-                            context
-                        )
+                        WalletThemePreferences.resetColors(context)
                         refresh++
                     }
-                ) {
-                    Text("بازگردانی رنگ‌ها")
-                }
+                )
             }
 
             item {
@@ -380,18 +344,13 @@ private fun ColorSettingCard(
         )
     }
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                MaterialTheme.colorScheme.surface
-        )
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentPadding = PaddingValues(14.dp),
     ) {
-        Column(
-            modifier = Modifier.padding(14.dp)
-        ) {
 
             Row(
                 verticalAlignment =
@@ -475,16 +434,14 @@ private fun ColorSettingCard(
                 Modifier.height(10.dp)
             )
 
-            TextField(
+            AppTextField(
                 value = hexText,
                 onValueChange = {
                     hexText = it
                 },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                label = {
-                    Text("کد رنگ HEX")
-                },
+                label = "کد رنگ HEX",
                 placeholder = {
                     Text("#2E7D32")
                 },
@@ -580,14 +537,10 @@ private fun PreviewCard(
             Modifier.height(10.dp)
         )
 
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = card
-            )
+        AppCard(
+            containerColor = card,
+            contentPadding = PaddingValues(14.dp),
         ) {
-            Column(
-                modifier = Modifier.padding(14.dp)
-            ) {
 
                 Text(
                     "موجودی کل",
