@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.FactCheck
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -160,7 +159,7 @@ fun OperationsScreen(
                                         .size(28.dp),
                                     tint = MaterialTheme.colorScheme.primary,
                                 )
-                            )
+                            }
 
                             Column {
                                 Text(
