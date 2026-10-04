@@ -14,14 +14,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FactCheck
 import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +48,8 @@ fun OperationsScreen(
     onOpenLoanManagement: () -> Unit,
     onOpenTransfer: () -> Unit,
 ) {
-    val operations = listOf(        OperationItem(
+    val operations = listOf(
+        OperationItem(
             title = "انتقال بین حساب‌ها",
             description = "انتقال وجه بین حساب‌های خود",
             icon = Icons.Filled.AccountBalance,
@@ -66,15 +67,19 @@ fun OperationsScreen(
     )
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = {
-                    Text("عملیات")
+                    Text(
+                        "عملیات",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "بازگشت",
                         )
                     }
@@ -82,14 +87,12 @@ fun OperationsScreen(
             )
         },
     ) { innerPadding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp),
         ) {
-
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -116,16 +119,13 @@ fun OperationsScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(operations) { operation ->
-
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp)
                             .clickable {
-                                when (operation.title) { "انتقال بین حساب‌ها" -> {
-                                        onOpenTransfer()
-                                    }
-
+                                when (operation.title) {
+                                    "انتقال بین حساب‌ها" -> onOpenTransfer()
                                     "طلب و بدهی" -> {
                                         // Existing debt/credit action will be wired here.
                                     }
@@ -134,19 +134,20 @@ fun OperationsScreen(
                                     }
                                 }
                             },
+                        shape = MaterialTheme.shapes.large,
                         colors = CardDefaults.cardColors(
-                            containerColor =
-                                MaterialTheme.colorScheme.surfaceVariant,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 1.dp,
                         ),
                     ) {
-
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(16.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
                         ) {
-
                             Surface(
                                 shape = MaterialTheme.shapes.medium,
                                 color = MaterialTheme.colorScheme.primaryContainer,
@@ -157,13 +158,11 @@ fun OperationsScreen(
                                     modifier = Modifier
                                         .padding(10.dp)
                                         .size(28.dp),
-                                    tint =
-                                        MaterialTheme.colorScheme.onPrimaryContainer,
+                                    tint = MaterialTheme.colorScheme.primary,
                                 )
-                            }
+                            )
 
                             Column {
-
                                 Text(
                                     text = operation.title,
                                     style = MaterialTheme.typography.titleMedium,
@@ -175,8 +174,7 @@ fun OperationsScreen(
                                 Text(
                                     text = operation.description,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color =
-                                        MaterialTheme.colorScheme.onSurfaceVariant,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
                         }
