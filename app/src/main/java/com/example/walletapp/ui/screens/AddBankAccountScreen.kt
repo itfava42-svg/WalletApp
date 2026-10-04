@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.heightIn
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,9 +28,11 @@ import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Wallet
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.BorderStroke
+import com.example.walletapp.ui.theme.AppDimens
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,14 +43,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppOutlinedButton
+import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppSectionHeader
+import com.example.walletapp.ui.components.AppTextField
 
 private data class AddBankOption(
     val name: String,
@@ -247,66 +250,14 @@ fun AddBankAccountScreen(
             // ACCOUNT NUMBER
             // ---------------------------------------------------------
 
-            Text(
-                text = "شماره حساب",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1A1A1A),
+            AppTextField(
+                value = accountNumber,
+                onValueChange = { accountNumber = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = "شماره حساب",
+                placeholder = { Text("شماره حساب خود را وارد کنید") },
+                singleLine = true,
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xFFE0E0E0),
-                            shape = RoundedCornerShape(12.dp),
-                        )
-                        .background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(12.dp),
-                        )
-                        .padding(
-                            horizontal = 16.dp,
-                            vertical = 14.dp,
-                        ),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AccountBalance,
-                    contentDescription = null,
-                    tint = Color(0xFF777777),
-                    modifier = Modifier.size(20.dp),
-                )
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                BasicTextField(
-                    value = accountNumber,
-                    onValueChange = { accountNumber = it },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    textStyle =
-                        TextStyle(
-                            fontSize = 14.sp,
-                            color = Color(0xFF1A1A1A),
-                        ),
-                    decorationBox = { innerTextField ->
-                        if (accountNumber.isBlank()) {
-                            Text(
-                                text = "شماره حساب خود را وارد کنید",
-                                fontSize = 14.sp,
-                                color = Color(0xFF999999),
-                            )
-                        }
-
-                        innerTextField()
-                    },
-                )
-            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -314,82 +265,15 @@ fun AddBankAccountScreen(
             // CARD NUMBER
             // ---------------------------------------------------------
 
-            Row(
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                Text(
-                    text = "شماره کارت",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1A1A),
-                )
-
-                Spacer(modifier = Modifier.width(6.dp))
-
-                Text(
-                    text = "(اختیاری)",
-                    fontSize = 12.sp,
-                    color = Color(0xFF888888),
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xFFE0E0E0),
-                            shape = RoundedCornerShape(12.dp),
-                        )
-                        .background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(12.dp),
-                        )
-                        .padding(
-                            horizontal = 16.dp,
-                            vertical = 14.dp,
-                        ),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CreditCard,
-                    contentDescription = null,
-                    tint = Color(0xFF777777),
-                    modifier = Modifier.size(20.dp),
-                )
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                BasicTextField(
-                    value = cardNumber,
-                    onValueChange = { cardNumber = it },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                        ),
-                    textStyle =
-                        TextStyle(
-                            fontSize = 14.sp,
-                            color = Color(0xFF1A1A1A),
-                        ),
-                    decorationBox = { innerTextField ->
-                        if (cardNumber.isBlank()) {
-                            Text(
-                                text = "شماره کارت خود را وارد کنید",
-                                fontSize = 14.sp,
-                                color = Color(0xFF999999),
-                            )
-                        }
-
-                        innerTextField()
-                    },
-                )
-            }
+            AppTextField(
+                value = cardNumber,
+                onValueChange = { cardNumber = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = "شماره کارت (اختیاری)",
+                placeholder = { Text("شماره کارت خود را وارد کنید") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -434,50 +318,16 @@ fun AddBankAccountScreen(
                     )
                 }
 
-                Row(
+                AppTextField(
+                    value = balanceText,
+                    onValueChange = { balanceText = it },
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    BasicTextField(
-                        value = balanceText,
-                        onValueChange = { balanceText = it },
-                        modifier = Modifier.weight(0.7f),
-                        singleLine = true,
-                        keyboardOptions =
-                            KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                            ),
-                        textStyle =
-                            TextStyle(
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1A1A1A),
-                                textDirection = TextDirection.Ltr,
-                            ),
-                        decorationBox = { innerTextField ->
-                            if (balanceText.isBlank()) {
-                                Text(
-                                    text = "۰",
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF999999),
-                                    textAlign = TextAlign.Left,
-                                )
-                            }
-
-                            innerTextField()
-                        },
-                    )
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Text(
-                        text = "ریال",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1A1A1A),
-                    )
-                }
+                    label = "موجودی",
+                    placeholder = { Text("۰") },
+                    suffix = { Text("ریال") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                )
 
                 Text(
                     text =
@@ -513,54 +363,30 @@ fun AddBankAccountScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
 
-            Box(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(Color(0xFFF0F0F0))
-                        .clickable { onBack() }
-                        .padding(vertical = 14.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "انصراف",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1A1A),
-                )
-            }
+            AppOutlinedButton(
+                text = "انصراف",
+                onClick = onBack,
+                modifier = Modifier.weight(1f),
+            )
 
-            Box(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(Color(0xFF157A37))
-                        .clickable {
-                            val balance =
-                                balanceText
-                                    .replace(",", "")
-                                    .toLongOrNull()
-                                    ?: 0L
+            AppPrimaryButton(
+                text = "ذخیره",
+                onClick = {
+                    val balance =
+                        balanceText
+                            .replace(",", "")
+                            .toLongOrNull()
+                            ?: 0L
 
-                            onSave(
-                                selectedBank ?: "",
-                                accountNumber.trim(),
-                                cardNumber.trim(),
-                                balance,
-                            )
-                        }
-                        .padding(vertical = 14.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "ذخیره",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                )
-            }
+                    onSave(
+                        selectedBank ?: "",
+                        accountNumber.trim(),
+                        cardNumber.trim(),
+                        balance,
+                    )
+                },
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 }
@@ -572,72 +398,47 @@ private fun BankOptionCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier =
-            modifier
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color.White)
-                .border(
-                    width = 1.dp,
-                    color = Color(0xFFE0E0E0),
-                    shape = RoundedCornerShape(12.dp),
-                )
-                .clickable(onClick = onClick)
-                .padding(
-                    horizontal = 8.dp,
-                    vertical = 12.dp,
-                ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+    AppCard(
+        modifier = modifier,
+        containerColor = if (selected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        border = BorderStroke(
+            1.dp,
+            if (selected) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.outline.copy(alpha = 0.45f),
+        ),
+        onClick = onClick,
     ) {
-
-        Box(
-            modifier =
-                Modifier
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+        ) {
+            Box(
+                modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
                     .background(bank.color),
-            contentAlignment = Alignment.Center,
-        ) {
-            when (bank.iconType) {
-                1 -> {
-                    Icon(
-                        imageVector = Icons.Default.School,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-
-                2 -> {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-
-                else -> {
-                    Icon(
-                        imageVector = Icons.Default.Wallet,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp),
-                    )
+                contentAlignment = Alignment.Center,
+            ) {
+                when (bank.iconType) {
+                    1 -> Icon(Icons.Default.School, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                    2 -> Icon(Icons.Default.Info, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                    else -> Icon(Icons.Default.Wallet, null, tint = Color.White, modifier = Modifier.size(18.dp))
                 }
             }
-        }
 
-        Text(
-            text = bank.name,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color(0xFF333333),
-            maxLines = 2,
-        )
+            Text(
+                text = bank.name,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
-
-
-
