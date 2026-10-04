@@ -42,23 +42,37 @@ fun AppCard(
     onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(AppDimens.CardRadius),
-        colors = CardDefaults.cardColors(
-            containerColor = containerColor,
-        ),
-        border = border,
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        content = {
-            Column(
-                modifier = Modifier.padding(AppDimens.CardPadding),
-                content = content,
-            )
-        },
-    )
-}
+    if (onClick == null) {
+        Card(
+            modifier = modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(AppDimens.CardRadius),
+            colors = CardDefaults.cardColors(containerColor = containerColor),
+            border = border,
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            content = {
+                Column(
+                    modifier = Modifier.padding(AppDimens.CardPadding),
+                    content = content,
+                )
+            },
+        )
+    } else {
+        Card(
+            onClick = onClick,
+            modifier = modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(AppDimens.CardRadius),
+            colors = CardDefaults.cardColors(containerColor = containerColor),
+            border = border,
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            content = {
+                Column(
+                    modifier = Modifier.padding(AppDimens.CardPadding),
+                    content = content,
+                )
+            },
+        )
+    }
+
 
 @Composable
 fun AppTile(
