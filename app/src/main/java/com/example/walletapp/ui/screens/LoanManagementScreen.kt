@@ -41,8 +41,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.FloatingActionButton
@@ -178,12 +176,9 @@ fun LoanManagementScreen(
         ) {
 
             item {
-                Card(
+                AppCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(26.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MatureColors.Surface
-                    )
+                    containerColor = MatureColors.Surface
                 ) {
                     Column(
                         modifier = Modifier
@@ -687,12 +682,9 @@ private fun LoanCard(
         mutableStateOf(false)
     }
 
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MatureColors.Surface
-        )
+        containerColor = MatureColors.Surface
     ) {
 
         Column(
@@ -1772,10 +1764,9 @@ private fun LoanEditorFullScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             item {
-                Card(
+                AppCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = MatureColors.Primary)
+                    containerColor = MatureColors.Primary
                 ) {
                     Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -2188,11 +2179,9 @@ private fun LoanEditorDashboardCard(
     title: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MatureColors.Surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        containerColor = MatureColors.Surface
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
