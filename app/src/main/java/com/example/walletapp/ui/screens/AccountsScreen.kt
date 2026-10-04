@@ -58,6 +58,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -124,7 +125,7 @@ bottomBar = {
                 onClick = {
                     showAddDialog = true
                 },
-                shape = RoundedCornerShape(18.dp),
+                shape = RoundedCornerShape(16.dp),
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -138,7 +139,7 @@ bottomBar = {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 18.dp),
+                .padding(horizontal = 16.dp),
 
             contentPadding = PaddingValues(
                 top = 14.dp,
@@ -151,9 +152,9 @@ bottomBar = {
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(26.dp),
+                    shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF005663),
+                        containerColor = MaterialTheme.colorScheme.primary,
                     ),
                 ) {
                     Column(
@@ -287,7 +288,7 @@ bottomBar = {
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp),
+                        shape = RoundedCornerShape(20.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant,
                         ),
@@ -304,7 +305,7 @@ bottomBar = {
                                     .size(68.dp)
                                     .background(
                                         color = MaterialTheme.colorScheme.primaryContainer,
-                                        shape = RoundedCornerShape(22.dp),
+                                        shape = RoundedCornerShape(20.dp),
                                     ),
                                 contentAlignment = Alignment.Center,
                             ) {
@@ -571,10 +572,10 @@ private fun AccountCard(
 
                 Box(
                     modifier = Modifier
-                        .size(52.dp)
+                        .size(48.dp)
                         .background(
                             color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(17.dp),
+                            shape = RoundedCornerShape(16.dp),
                         ),
                     contentAlignment = Alignment.Center,
                 ) {
