@@ -590,24 +590,20 @@ private fun ManualLearningDialog(
 
                     if (transactionType == "INCOME") {
                         AppPrimaryButton(
-                            modifier = Modifier.fillMaxWidth(),
+                            text = "🟢 واریز به حساب / درآمد",
                             onClick = {
                                 transactionType = "INCOME"
                                 errorMessage = ""
                             }
-                        ) {
-                            Text("🟢 واریز به حساب / درآمد")
-                        }
+                        )
                     } else {
-                        OutlinedAppPrimaryButton(
-                            modifier = Modifier.fillMaxWidth(),
+                        AppOutlinedButton(
+                            text = "🟢 واریز به حساب / درآمد",
                             onClick = {
                                 transactionType = "INCOME"
                                 errorMessage = ""
                             }
-                        ) {
-                            Text("🟢 واریز به حساب / درآمد")
-                        }
+                        )
                     }
 
                     Spacer(
@@ -616,24 +612,20 @@ private fun ManualLearningDialog(
 
                     if (transactionType == "EXPENSE") {
                         AppPrimaryButton(
-                            modifier = Modifier.fillMaxWidth(),
+                            text = "🔴 برداشت از حساب / هزینه",
                             onClick = {
                                 transactionType = "EXPENSE"
                                 errorMessage = ""
                             }
-                        ) {
-                            Text("🔴 برداشت از حساب / هزینه")
-                        }
+                        )
                     } else {
-                        OutlinedAppPrimaryButton(
-                            modifier = Modifier.fillMaxWidth(),
+                        AppOutlinedButton(
+                            text = "🔴 برداشت از حساب / هزینه",
                             onClick = {
                                 transactionType = "EXPENSE"
                                 errorMessage = ""
                             }
-                        ) {
-                            Text("🔴 برداشت از حساب / هزینه")
-                        }
+                        )
                     }
                 }
 
@@ -756,7 +748,7 @@ private fun ManualLearningDialog(
         },
 
         confirmButton = {
-            AppPrimaryAppPrimaryButton(
+            AppPrimaryButton(
                 text = "🧠 ذخیره و یادگیری",
                 onClick = {
 
