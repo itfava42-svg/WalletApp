@@ -1,6 +1,5 @@
 ﻿package com.example.walletapp.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,14 +17,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import com.example.walletapp.ui.components.AppCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -118,28 +115,21 @@ fun OperationsScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(operations) { operation ->
-                    Card(
+                    AppCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(150.dp)
-                            .clickable {
-                                when (operation.title) {
-                                    "انتقال بین حساب‌ها" -> onOpenTransfer()
-                                    "طلب و بدهی" -> {
-                                        // Existing debt/credit action will be wired here.
-                                    }
-                                    "دُنگ" -> {
-                                        // Existing bill-split action will be wired here.
-                                    }
+                            .height(150.dp),
+                        onClick = {
+                            when (operation.title) {
+                                "انتقال بین حساب‌ها" -> onOpenTransfer()
+                                "طلب و بدهی" -> {
+                                    // Existing debt/credit action will be wired here.
                                 }
-                            },
-                        shape = MaterialTheme.shapes.large,
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                        ),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 1.dp,
-                        ),
+                                "دُنگ" -> {
+                                    // Existing bill-split action will be wired here.
+                                }
+                            }
+                        },
                     ) {
                         Column(
                             modifier = Modifier
@@ -147,7 +137,7 @@ fun OperationsScreen(
                                 .padding(16.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Surface(
+                            androidx.compose.material3.Surface(
                                 shape = MaterialTheme.shapes.medium,
                                 color = MaterialTheme.colorScheme.primaryContainer,
                             ) {
