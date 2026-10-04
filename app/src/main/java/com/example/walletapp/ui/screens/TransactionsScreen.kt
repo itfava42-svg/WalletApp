@@ -233,6 +233,7 @@ fun TransactionsScreen(
                 }
             )
         },
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             DashboardBottomBar(
                 items = appNavItems,
@@ -246,7 +247,7 @@ fun TransactionsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 18.dp)
+                .padding(horizontal = 16.dp)
         ) {
 
             Spacer(Modifier.height(10.dp))
@@ -257,7 +258,7 @@ fun TransactionsScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 singleLine = true,
-                shape = RoundedCornerShape(18.dp),
+                shape = RoundedCornerShape(16.dp),
                 leadingIcon = {
                     Icon(
                         Icons.Filled.Search,
@@ -272,7 +273,7 @@ fun TransactionsScreen(
                 }
             )
 
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(20.dp))
 
             Text(
                 text = "نوع تراکنش",
@@ -448,9 +449,9 @@ fun TransactionsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(9.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        bottom = 12.dp
+                        bottom = 16.dp
                     )
                 ) {
                     items(
@@ -570,12 +571,12 @@ private fun TransactionFullCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        color = SurfaceContainerHigh,
+        color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(20.dp),
         tonalElevation = 0.dp,
     ) {
         Column(
-            modifier = Modifier.padding(15.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
 
             Row(
