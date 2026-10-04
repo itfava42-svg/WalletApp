@@ -34,13 +34,10 @@ import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.AlertDialog
 import android.widget.Toast
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -70,6 +67,10 @@ import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.AccountType
 import com.example.walletapp.data.AccountLedger
 import com.example.walletapp.data.TransactionStore
+import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppFloatingActionButton
+import com.example.walletapp.ui.components.AppOutlinedButton
+import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.ui.components.DashboardBottomBar
 import com.example.walletapp.ui.theme.AppDimens
@@ -123,11 +124,8 @@ bottomBar = {
         },
 
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    showAddDialog = true
-                },
-                shape = RoundedCornerShape(AppDimens.SmallCardRadius),
+            AppFloatingActionButton(
+                onClick = { showAddDialog = true },
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -152,16 +150,9 @@ bottomBar = {
         ) {
 
             item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(AppDimens.CardRadius),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                    ),
+                AppCard(
+                    containerColor = MaterialTheme.colorScheme.primary,
                 ) {
-                    Column(
-                        modifier = Modifier.padding(22.dp),
-                    ) {
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -288,12 +279,8 @@ bottomBar = {
             if (accounts.isEmpty()) {
 
                 item {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(AppDimens.CardRadius),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        ),
+                    AppCard(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     ) {
                         Column(
                             modifier = Modifier
@@ -343,23 +330,16 @@ bottomBar = {
                                 Modifier.height(18.dp)
                             )
 
-                            Button(
-                                onClick = {
-                                    showAddDialog = true
+                            AppPrimaryButton(
+                                text = "افزودن حساب",
+                                onClick = { showAddDialog = true },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Add,
+                                        contentDescription = null,
+                                    )
                                 },
-                                shape = RoundedCornerShape(14.dp),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Add,
-                                    contentDescription = null,
-                                )
-
-                                Spacer(
-                                    Modifier.width(7.dp)
-                                )
-
-                                Text("افزودن حساب")
-                            }
+                            )
                         }
                     }
                 }
@@ -551,21 +531,14 @@ private fun AccountCard(
         transactions = TransactionStore.transactions,
     )
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                if (account.isActive) {
-                    MaterialTheme.colorScheme.surface
-                } else {
-                    MaterialTheme.colorScheme.surfaceVariant
-                }
-        ),
+    AppCard(
+        containerColor =
+            if (account.isActive) {
+                MaterialTheme.colorScheme.surface
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            },
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -921,16 +894,11 @@ private fun AccountDialog(
 
                 Box {
 
-                    OutlinedButton(
-                        onClick = {
-                            typeMenuExpanded = true
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            accountTypeTitle(selectedType)
-                        )
-                    }
+                    AppOutlinedButton(
+                        text = accountTypeTitle(selectedType),
+                        onClick = { typeMenuExpanded = true },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
 
                     DropdownMenu(
                         expanded = typeMenuExpanded,
@@ -973,7 +941,7 @@ private fun AccountDialog(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
-                OutlinedTextField(
+                AppTextField(
                     value = cardLast4,
                     onValueChange = {
                         if (it.length <= 4 && it.all(Char::isDigit)) {
@@ -981,28 +949,18 @@ private fun AccountDialog(
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("۴ رقم آخر کارت")
-                    },
+                    label = "۴ رقم آخر کارت",
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    )
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 )
 
-                OutlinedTextField(
+                AppTextField(
                     value = openingBalanceText,
-                    onValueChange = {
-                        openingBalanceText = it
-                    },
+                    onValueChange = { openingBalanceText = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("موجودی اولیه")
-                    },
+                    label = "موجودی اولیه",
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    )
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 )
 
                 Row(
