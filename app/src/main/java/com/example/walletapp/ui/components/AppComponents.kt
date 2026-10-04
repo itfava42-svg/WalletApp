@@ -160,6 +160,10 @@ fun AppTextField(
     enabled: Boolean = true,
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    readOnly: Boolean = false,
+    placeholder: (@Composable () -> Unit)? = null,
+    suffix: (@Composable () -> Unit)? = null,
+    trailingIcon: (@Composable () -> Unit)? = null,
 ) {
     OutlinedTextField(
         value = value,
@@ -170,6 +174,10 @@ fun AppTextField(
         enabled = enabled,
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
+        readOnly = readOnly,
+        placeholder = placeholder,
+        suffix = suffix,
+        trailingIcon = trailingIcon,
         label = { Text(label) },
         shape = RoundedCornerShape(AppDimens.FieldRadius),
         textStyle = AppTextStyles.bodyMd,
