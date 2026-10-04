@@ -258,12 +258,9 @@ fun TransferScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
 
-            Card(
+            AppCard(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor =
-                        MaterialTheme.colorScheme.primaryContainer,
-                ),
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Row(
                     modifier = Modifier
@@ -371,6 +368,7 @@ fun TransferScreen(
                 )
 
                 AppPrimaryButton(
+                    text = "ثبت انتقال",
                     onClick = { submitTransfer() },
                     modifier = Modifier.fillMaxWidth(),
                     enabled =
@@ -385,9 +383,7 @@ fun TransferScreen(
                             contentDescription = null,
                         )
                     },
-                ) {
-                    Text("ثبت انتقال")
-                }
+                )
             }
         }
     }
