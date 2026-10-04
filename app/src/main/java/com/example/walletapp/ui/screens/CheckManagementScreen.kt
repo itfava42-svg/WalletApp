@@ -16,15 +16,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FactCheck
-import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -63,120 +63,93 @@ import com.example.walletapp.data.CheckStore
 import com.example.walletapp.data.CheckType
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
-import java.util.Calendar
 import java.util.UUID
 
-private val CheckOrange = Color(0xFFFF8A00)
-private val CheckOrangeLight = Color(0xFFFFF1DD)
-private val CheckGreen = Color(0xFF16A34A)
-private val CheckGreenLight = Color(0xFFE8F7ED)
-private val CheckRed = Color(0xFFDC2626)
-private val CheckBlue = Color(0xFF2563EB)
+private val CheckOrange = Color(0xFFF97316)
+private val CheckOrangeLight = Color(0xFFFFF7ED)
+private val CheckGreen = Color(0xFF10B981)
+private val CheckGreenLight = Color(0xFFD1FAE5)
+private val CheckRed = Color(0xFFEF4444)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckManagementScreen(
     onBack: () -> Unit
 ) {
-
-    var showEditor by remember {
-        mutableStateOf(false)
-    }
-
-    var editingCheck by remember {
-        mutableStateOf<CheckEntry?>(null)
-    }
-
-    var deleteCheck by remember {
-        mutableStateOf<CheckEntry?>(null)
-    }
+    var showEditor by remember { mutableStateOf(false) }
+    var editingCheck by remember { mutableStateOf<CheckEntry?>(null) }
+    var deleteCheck by remember { mutableStateOf<CheckEntry?>(null) }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-
             TopAppBar(
                 title = {
                     Text(
-                        text = "\u0645\u062f\u06cc\u0631\u06cc\u062a \u0686\u06a9",
+                        text = "مدیریت چک",
                         fontWeight = FontWeight.Bold
                     )
                 },
                 navigationIcon = {
-
-                    IconButton(
-                        onClick = onBack
-                    ) {
+                    IconButton(onClick = onBack) {
                         Icon(
-                            Icons.Filled.ArrowBack,
-                            contentDescription =
-                                "\u0628\u0627\u0632\u06af\u0634\u062a"
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "بازگشت"
                         )
                     }
                 }
             )
         },
         floatingActionButton = {
-
             FloatingActionButton(
                 onClick = {
                     editingCheck = null
                     showEditor = true
                 },
-                containerColor = CheckOrange,
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                shape = RoundedCornerShape(16.dp)
             ) {
-
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription =
-                        "\u0627\u0641\u0632\u0648\u062f\u0646 \u0686\u06a9"
+                    contentDescription = "افزودن چک"
                 )
             }
         }
     ) { padding ->
-
         if (CheckStore.checks.isEmpty()) {
-
             EmptyCheckState(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding),
+                    .padding(padding)
+                    .padding(horizontal = 16.dp),
                 onAdd = {
                     editingCheck = null
                     showEditor = true
                 }
             )
-
         } else {
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentPadding =
-                    androidx.compose.foundation.layout
-                        .PaddingValues(
-                            horizontal = 16.dp,
-                            vertical = 16.dp
-                        ),
-                verticalArrangement =
-                    Arrangement.spacedBy(14.dp)
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    horizontal = 16.dp,
+                    vertical = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
                 items(
                     items = CheckStore.checks,
                     key = { it.id }
                 ) { check ->
-
                     CheckCard(
                         check = check,
                         onEdit = {
                             editingCheck = check
                             showEditor = true
                         },
-                        onDelete = {
-                            deleteCheck = check
-                        }
+                        onDelete = { deleteCheck = check }
                     )
                 }
             }
@@ -184,7 +157,6 @@ fun CheckManagementScreen(
     }
 
     if (showEditor) {
-
         CheckEditorDialog(
             existingCheck = editingCheck,
             onDismiss = {
@@ -192,13 +164,11 @@ fun CheckManagementScreen(
                 editingCheck = null
             },
             onSave = { check ->
-
                 if (editingCheck == null) {
                     CheckManager.add(check)
                 } else {
                     CheckManager.update(check)
                 }
-
                 showEditor = false
                 editingCheck = null
             }
@@ -206,42 +176,27 @@ fun CheckManagementScreen(
     }
 
     deleteCheck?.let { check ->
-
         AlertDialog(
-            onDismissRequest = {
-                deleteCheck = null
-            },
+            onDismissRequest = { deleteCheck = null },
             title = {
-                Text(
-                    text = "\u062d\u0630\u0641 \u0686\u06a9",
-                    fontWeight = FontWeight.Bold
-                )
+                Text("حذف چک", fontWeight = FontWeight.Bold)
             },
             text = {
-                Text(
-                    text =
-                        "\u0622\u06cc\u0627 \u0627\u0632 \u062d\u0630\u0641 \u0686\u06a9 \u00ab${check.title}\u00bb \u0645\u0637\u0645\u0626\u0646 \u0647\u0633\u062a\u06cc\u062f\u061f"
-                )
+                Text("آیا از حذف چک «${check.title}» مطمئن هستید؟")
             },
             confirmButton = {
-
                 Button(
                     onClick = {
                         CheckManager.remove(check.id)
                         deleteCheck = null
                     }
                 ) {
-                    Text("\u062d\u0630\u0641")
+                    Text("حذف")
                 }
             },
             dismissButton = {
-
-                OutlinedButton(
-                    onClick = {
-                        deleteCheck = null
-                    }
-                ) {
-                    Text("\u0627\u0646\u0635\u0631\u0627\u0641")
+                OutlinedButton(onClick = { deleteCheck = null }) {
+                    Text("انصراف")
                 }
             }
         )
@@ -253,67 +208,46 @@ private fun EmptyCheckState(
     modifier: Modifier,
     onAdd: () -> Unit
 ) {
-
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-
         Column(
-            horizontalAlignment =
-                Alignment.CenterHorizontally,
-            verticalArrangement =
-                Arrangement.spacedBy(14.dp)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
             Surface(
-                modifier = Modifier.size(82.dp),
-                shape = RoundedCornerShape(24.dp),
-                color = CheckOrangeLight
+                modifier = Modifier.size(72.dp),
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.primaryContainer
             ) {
-
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-
+                Box(contentAlignment = Alignment.Center) {
                     Icon(
                         Icons.Filled.FactCheck,
                         contentDescription = null,
-                        modifier = Modifier.size(42.dp),
-                        tint = CheckOrange
+                        modifier = Modifier.size(36.dp),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
 
             Text(
-                text =
-                    "\u0647\u0646\u0648\u0632 \u0686\u06a9\u06cc \u062b\u0628\u062a \u0646\u0634\u062f\u0647 \u0627\u0633\u062a",
+                text = "هنوز چکی ثبت نشده است",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
-                text =
-                    "\u0686\u06a9\u0647\u0627\u06cc \u062f\u0631\u06cc\u0627\u0641\u062a\u06cc \u0648 \u067e\u0631\u062f\u0627\u062e\u062a\u06cc \u062e\u0648\u062f \u0631\u0627 \u0645\u062f\u06cc\u0631\u06cc\u062a \u06a9\u0646\u06cc\u062f",
-                color =
-                    MaterialTheme.colorScheme
-                        .onSurfaceVariant
+                text = "چک‌های دریافتی و پرداختی خود را مدیریت کنید",
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Button(
-                onClick = onAdd
-            ) {
-
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = null
-                )
-
+            Button(onClick = onAdd) {
+                Icon(Icons.Filled.Add, contentDescription = null)
                 Spacer(Modifier.size(6.dp))
-
-                Text(
-                    "\u062b\u0628\u062a \u0686\u06a9 \u062c\u062f\u06cc\u062f"
-                )
+                Text("ثبت چک جدید")
             }
         }
     }
@@ -325,126 +259,78 @@ private fun CheckCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val statusColor = when (check.status) {
+        CheckStatus.PENDING -> CheckOrange
+        CheckStatus.RECEIVED, CheckStatus.PAID -> CheckGreen
+        CheckStatus.RETURNED -> CheckRed
+        CheckStatus.CANCELLED -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
 
-    val statusColor =
-        when (check.status) {
-
-            CheckStatus.PENDING ->
-                CheckOrange
-
-            CheckStatus.RECEIVED,
-            CheckStatus.PAID ->
-                CheckGreen
-
-            CheckStatus.RETURNED ->
-                CheckRed
-
-            CheckStatus.CANCELLED ->
-                Color.Gray
-        }
-
-    val statusBackground =
-        when (check.status) {
-
-            CheckStatus.PENDING ->
-                CheckOrangeLight
-
-            CheckStatus.RECEIVED,
-            CheckStatus.PAID ->
-                CheckGreenLight
-
-            CheckStatus.RETURNED ->
-                Color(0xFFFFE8E8)
-
-            CheckStatus.CANCELLED ->
-                Color.LightGray
-        }
+    val statusBackground = when (check.status) {
+        CheckStatus.PENDING -> CheckOrangeLight
+        CheckStatus.RECEIVED, CheckStatus.PAID -> CheckGreenLight
+        CheckStatus.RETURNED -> MaterialTheme.colorScheme.errorContainer
+        CheckStatus.CANCELLED -> MaterialTheme.colorScheme.surfaceVariant
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        elevation =
-            CardDefaults.cardElevation(
-                defaultElevation = 3.dp
-            )
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement =
-                Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment =
-                    Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Surface(
                     modifier = Modifier.size(48.dp),
                     shape = RoundedCornerShape(14.dp),
-                    color =
-                        if (check.type == CheckType.RECEIVED)
-                            CheckGreenLight
-                        else
-                            CheckOrangeLight
+                    color = MaterialTheme.colorScheme.primaryContainer
                 ) {
-
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ) {
-
+                    Box(contentAlignment = Alignment.Center) {
                         Icon(
                             Icons.Filled.FactCheck,
                             contentDescription = null,
-                            tint =
-                                if (check.type == CheckType.RECEIVED)
-                                    CheckGreen
-                                else
-                                    CheckOrange
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
 
                 Spacer(Modifier.size(12.dp))
 
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = check.title,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-
                     Text(
                         text = check.type.label,
                         fontSize = 13.sp,
-                        color =
-                            MaterialTheme.colorScheme
-                                .onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
-                IconButton(
-                    onClick = onEdit
-                ) {
+                IconButton(onClick = onEdit) {
                     Icon(
                         Icons.Filled.Edit,
-                        contentDescription =
-                            "\u0648\u06cc\u0631\u0627\u06cc\u0634"
+                        contentDescription = "ویرایش",
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
 
-                IconButton(
-                    onClick = onDelete
-                ) {
+                IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Filled.Delete,
-                        contentDescription =
-                            "\u062d\u0630\u0641",
+                        contentDescription = "حذف",
                         tint = CheckRed
                     )
                 }
@@ -452,37 +338,26 @@ private fun CheckCard(
 
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
+                shape = RoundedCornerShape(16.dp),
                 color = statusBackground
             ) {
-
-                Column(
-                    modifier = Modifier.padding(14.dp)
-                ) {
-
+                Column(modifier = Modifier.padding(14.dp)) {
                     Text(
-                        text = "\u0645\u0628\u0644\u063a \u0686\u06a9",
+                        text = "مبلغ چک",
                         fontSize = 12.sp,
-                        color = Color.DarkGray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-
                     Text(
-                        text =
-                            check.amount
-                                .toPersianCurrency(),
+                        text = check.amount.toPersianCurrency(),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = statusColor
                     )
-
-                    Spacer(
-                        Modifier.height(6.dp)
-                    )
-
+                    Spacer(Modifier.height(6.dp))
                     Text(
-                        text =
-                            "\u0648\u0636\u0639\u06cc\u062a: ${check.status.label}",
-                        fontWeight = FontWeight.Bold,
+                        text = "وضعیت: ${check.status.label}",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
                         color = statusColor
                     )
                 }
@@ -490,45 +365,30 @@ private fun CheckCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement =
-                    Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
                 CheckSmallInfo(
                     modifier = Modifier.weight(1f),
-                    title = "\u0628\u0627\u0646\u06a9",
-                    value =
-                        check.bank.ifBlank {
-                            "\u2014"
-                        }
+                    title = "بانک",
+                    value = check.bank.ifBlank { "—" }
                 )
-
                 CheckSmallInfo(
                     modifier = Modifier.weight(1f),
-                    title = "\u0634\u0645\u0627\u0631\u0647 \u0686\u06a9",
-                    value =
-                        check.checkNumber.ifBlank {
-                            "\u2014"
-                        }
+                    title = "شماره چک",
+                    value = check.checkNumber.ifBlank { "—" }
                 )
             }
 
             CheckSmallInfo(
                 modifier = Modifier.fillMaxWidth(),
-                title = "\u062a\u0627\u0631\u06cc\u062e \u0633\u0631\u0631\u0633\u06cc",
-                value =
-                    "${check.dueYear}/${check.dueMonth.toString().padStart(2, '0')}/${check.dueDay.toString().padStart(2, '0')}"
+                title = "تاریخ سررسید",
+                value = "${check.dueYear}/${check.dueMonth.toString().padStart(2, '0')}/${check.dueDay.toString().padStart(2, '0')}"
             )
 
             if (check.personName.isNotBlank()) {
-
                 CheckSmallInfo(
                     modifier = Modifier.fillMaxWidth(),
-                    title =
-                        if (check.type == CheckType.RECEIVED)
-                            "\u0635\u0627\u062f\u0631\u06a9\u0646\u0646\u062f\u0647"
-                        else
-                            "\u062f\u0631\u06cc\u0627\u0641\u062a\u200c\u06a9\u0646\u0646\u062f\u0647",
+                    title = if (check.type == CheckType.RECEIVED) "صادرکننده" else "دریافت‌کننده",
                     value = check.personName
                 )
             }
@@ -542,35 +402,23 @@ private fun CheckSmallInfo(
     title: String,
     value: String
 ) {
-
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(14.dp),
-        color =
-            MaterialTheme.colorScheme
-                .surfaceVariant
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
-
-        Column(
-            modifier = Modifier.padding(10.dp)
-        ) {
-
+        Column(modifier = Modifier.padding(10.dp)) {
             Text(
                 text = title,
                 fontSize = 11.sp,
-                color =
-                    MaterialTheme.colorScheme
-                        .onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-
-            Spacer(
-                Modifier.height(3.dp)
-            )
-
+            Spacer(Modifier.height(3.dp))
             Text(
                 text = value,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -583,470 +431,221 @@ private fun CheckEditorDialog(
     onDismiss: () -> Unit,
     onSave: (CheckEntry) -> Unit
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
 
-    val context = androidx.compose.ui.platform
-        .LocalContext.current
-
-    var title by remember {
-        mutableStateOf(
-            existingCheck?.title ?: ""
-        )
-    }
-
-    var type by remember {
-        mutableStateOf(
-            existingCheck?.type
-                ?: CheckType.RECEIVED
-        )
-    }
-
-    var checkNumber by remember {
-        mutableStateOf(
-            existingCheck?.checkNumber ?: ""
-        )
-    }
-
-    var bank by remember {
-        mutableStateOf(
-            existingCheck?.bank ?: ""
-        )
-    }
-
-    var amount by remember {
-        mutableStateOf(
-            existingCheck?.amount
-                ?.toString()
-                ?: ""
-        )
-    }
-
-    var personName by remember {
-        mutableStateOf(
-            existingCheck?.personName ?: ""
-        )
-    }
-
+    var title by remember { mutableStateOf(existingCheck?.title ?: "") }
+    var type by remember { mutableStateOf(existingCheck?.type ?: CheckType.RECEIVED) }
+    var checkNumber by remember { mutableStateOf(existingCheck?.checkNumber ?: "") }
+    var bank by remember { mutableStateOf(existingCheck?.bank ?: "") }
+    var amount by remember { mutableStateOf(existingCheck?.amount?.toString() ?: "") }
+    var personName by remember { mutableStateOf(existingCheck?.personName ?: "") }
     var issueDate by remember {
-
         mutableStateOf(
             existingCheck?.let {
                 "${it.issueYear}/${it.issueMonth.toString().padStart(2, '0')}/${it.issueDay.toString().padStart(2, '0')}"
             } ?: JalaliCalendar.todaySlashed()
         )
     }
-
     var dueDate by remember {
-
         mutableStateOf(
             existingCheck?.let {
                 "${it.dueYear}/${it.dueMonth.toString().padStart(2, '0')}/${it.dueDay.toString().padStart(2, '0')}"
             } ?: ""
         )
     }
-
-    var status by remember {
-        mutableStateOf(
-            existingCheck?.status
-                ?: CheckStatus.PENDING
-        )
-    }
-
-    var description by remember {
-        mutableStateOf(
-            existingCheck?.description ?: ""
-        )
-    }
-
-    var expandedType by remember {
-        mutableStateOf(false)
-    }
-
-    var expandedStatus by remember {
-        mutableStateOf(false)
-    }
+    var status by remember { mutableStateOf(existingCheck?.status ?: CheckStatus.PENDING) }
+    var description by remember { mutableStateOf(existingCheck?.description ?: "") }
+    var expandedType by remember { mutableStateOf(false) }
+    var expandedStatus by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier.fillMaxWidth(),
         title = {
-
             Text(
-                text =
-                    if (existingCheck == null)
-                        "\u062b\u0628\u062a \u0686\u06a9 \u062c\u062f\u06cc\u062f"
-                    else
-                        "\u0648\u06cc\u0631\u0627\u06cc\u0634 \u0686\u06a9",
+                text = if (existingCheck == null) "ثبت چک جدید" else "ویرایش چک",
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
-
             LazyColumn(
-                verticalArrangement =
-                    Arrangement.spacedBy(11.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
                 item {
-
                     OutlinedTextField(
                         value = title,
-                        onValueChange = {
-                            title = it
-                        },
-                        modifier =
-                            Modifier.fillMaxWidth(),
+                        onValueChange = { title = it },
+                        modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = {
-                            Text(
-                                "\u0639\u0646\u0648\u0627\u0646 \u0686\u06a9"
-                            )
-                        }
+                        label = { Text("عنوان چک") }
                     )
                 }
-
                 item {
-
                     ExposedDropdownMenuBox(
                         expanded = expandedType,
-                        onExpandedChange = {
-                            expandedType =
-                                !expandedType
-                        }
+                        onExpandedChange = { expandedType = !expandedType }
                     ) {
-
                         OutlinedTextField(
                             value = type.label,
                             onValueChange = {},
                             readOnly = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .menuAnchor(),
-                            label = {
-                                Text(
-                                    "\u0646\u0648\u0639 \u0686\u06a9"
-                                )
-                            },
+                            modifier = Modifier.fillMaxWidth().menuAnchor(),
+                            label = { Text("نوع چک") },
                             trailingIcon = {
-                                ExposedDropdownMenuDefaults
-                                    .TrailingIcon(
-                                        expanded =
-                                            expandedType
-                                    )
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedType)
                             }
                         )
-
                         ExposedDropdownMenu(
                             expanded = expandedType,
-                            onDismissRequest = {
-                                expandedType = false
-                            }
+                            onDismissRequest = { expandedType = false }
                         ) {
-
-                            CheckType.entries.forEach {
-                                itemType ->
-
+                            CheckType.entries.forEach { itemType ->
                                 DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            itemType.label
-                                        )
-                                    },
+                                    text = { Text(itemType.label) },
                                     onClick = {
                                         type = itemType
-                                        expandedType =
-                                            false
+                                        expandedType = false
                                     }
                                 )
                             }
                         }
                     }
                 }
-
                 item {
-
                     CheckInputTile(
-                        title =
-                            "\u0645\u0628\u0644\u063a \u0686\u06a9",
+                        title = "مبلغ چک",
                         value = amount,
-                        onValueChange = {
-                            amount =
-                                it.filter {
-                                    c -> c.isDigit()
-                                }
-                        },
-                        background =
-                            CheckOrangeLight,
+                        onValueChange = { amount = it.filter { c -> c.isDigit() } },
+                        background = CheckOrangeLight,
                         accent = CheckOrange,
-                        icon =
-                            Icons.Filled.Payments
+                        icon = Icons.Filled.Payments
                     )
                 }
-
                 item {
-
                     OutlinedTextField(
                         value = checkNumber,
-                        onValueChange = {
-                            checkNumber = it
-                        },
-                        modifier =
-                            Modifier.fillMaxWidth(),
+                        onValueChange = { checkNumber = it },
+                        modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = {
-                            Text(
-                                "\u0634\u0645\u0627\u0631\u0647 \u0686\u06a9"
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Filled.Numbers,
-                                contentDescription =
-                                    null
-                            )
-                        }
+                        label = { Text("شماره چک") },
+                        leadingIcon = { Icon(Icons.Filled.Numbers, contentDescription = null) }
                     )
                 }
-
                 item {
-
                     OutlinedTextField(
                         value = bank,
-                        onValueChange = {
-                            bank = it
-                        },
-                        modifier =
-                            Modifier.fillMaxWidth(),
+                        onValueChange = { bank = it },
+                        modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = {
-                            Text(
-                                "\u0646\u0627\u0645 \u0628\u0627\u0646\u06a9"
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Filled.AccountBalance,
-                                contentDescription =
-                                    null
-                            )
-                        }
+                        label = { Text("نام بانک") },
+                        leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                     )
                 }
-
                 item {
-
                     OutlinedTextField(
                         value = personName,
-                        onValueChange = {
-                            personName = it
-                        },
-                        modifier =
-                            Modifier.fillMaxWidth(),
+                        onValueChange = { personName = it },
+                        modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         label = {
-                            Text(
-                                if (type == CheckType.RECEIVED)
-                                    "\u0635\u0627\u062f\u0631\u06a9\u0646\u0646\u062f\u0647"
-                                else
-                                    "\u062f\u0631\u06cc\u0627\u0641\u062a\u200c\u06a9\u0646\u0646\u062f\u0647"
-                            )
+                            Text(if (type == CheckType.RECEIVED) "صادرکننده" else "دریافت‌کننده")
                         }
                     )
                 }
-
                 item {
-
                     DateField(
-                        label =
-                            "\u062a\u0627\u0631\u06cc\u062e \u0635\u062f\u0648\u0631",
+                        label = "تاریخ صدور",
                         value = issueDate,
-                        onDateSelected = {
-                            issueDate = it
-                        },
+                        onDateSelected = { issueDate = it },
                         context = context
                     )
                 }
-
                 item {
-
                     DateField(
-                        label =
-                            "\u062a\u0627\u0631\u06cc\u062e \u0633\u0631\u0631\u0633\u06cc",
+                        label = "تاریخ سررسید",
                         value = dueDate,
-                        onDateSelected = {
-                            dueDate = it
-                        },
+                        onDateSelected = { dueDate = it },
                         context = context
                     )
                 }
-
                 item {
-
                     ExposedDropdownMenuBox(
                         expanded = expandedStatus,
-                        onExpandedChange = {
-                            expandedStatus =
-                                !expandedStatus
-                        }
+                        onExpandedChange = { expandedStatus = !expandedStatus }
                     ) {
-
                         OutlinedTextField(
                             value = status.label,
                             onValueChange = {},
                             readOnly = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .menuAnchor(),
-                            label = {
-                                Text(
-                                    "\u0648\u0636\u0639\u06cc\u062a \u0686\u06a9"
-                                )
-                            },
+                            modifier = Modifier.fillMaxWidth().menuAnchor(),
+                            label = { Text("وضعیت چک") },
                             trailingIcon = {
-                                ExposedDropdownMenuDefaults
-                                    .TrailingIcon(
-                                        expanded =
-                                            expandedStatus
-                                    )
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedStatus)
                             }
                         )
-
                         ExposedDropdownMenu(
                             expanded = expandedStatus,
-                            onDismissRequest = {
-                                expandedStatus = false
-                            }
+                            onDismissRequest = { expandedStatus = false }
                         ) {
-
-                            CheckStatus.entries.forEach {
-                                itemStatus ->
-
+                            CheckStatus.entries.forEach { itemStatus ->
                                 DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            itemStatus.label
-                                        )
-                                    },
+                                    text = { Text(itemStatus.label) },
                                     onClick = {
-                                        status =
-                                            itemStatus
-                                        expandedStatus =
-                                            false
+                                        status = itemStatus
+                                        expandedStatus = false
                                     }
                                 )
                             }
                         }
                     }
                 }
-
                 item {
-
                     OutlinedTextField(
                         value = description,
-                        onValueChange = {
-                            description = it
-                        },
-                        modifier =
-                            Modifier.fillMaxWidth(),
+                        onValueChange = { description = it },
+                        modifier = Modifier.fillMaxWidth(),
                         minLines = 2,
-                        label = {
-                            Text(
-                                "\u062a\u0648\u0636\u06cc\u062d\u0627\u062a"
-                            )
-                        }
+                        label = { Text("توضیحات") }
                     )
                 }
             }
         },
         confirmButton = {
-
             Button(
                 onClick = {
-
-                    val amountValue =
-                        amount.toLongOrNull()
-                            ?: 0L
-
-                    val issueParts =
-                        parseJalaliDate(issueDate)
-
-                    val dueParts =
-                        parseJalaliDate(dueDate)
-
-                    if (
-                        title.isBlank() ||
-                        amountValue <= 0 ||
-                        issueParts == null ||
-                        dueParts == null
-                    ) {
+                    val amountValue = amount.toLongOrNull() ?: 0L
+                    val issueParts = parseJalaliDate(issueDate)
+                    val dueParts = parseJalaliDate(dueDate)
+                    if (title.isBlank() || amountValue <= 0 || issueParts == null || dueParts == null) {
                         return@Button
                     }
 
-                    val check =
-                        CheckEntry(
-                            id =
-                                existingCheck?.id
-                                    ?: UUID.randomUUID()
-                                        .toString(),
-
-                            title =
-                                title.trim(),
-
-                            type = type,
-
-                            checkNumber =
-                                checkNumber.trim(),
-
-                            bank =
-                                bank.trim(),
-
-                            amount =
-                                amountValue,
-
-                            personName =
-                                personName.trim(),
-
-                            issueYear =
-                                issueParts[0],
-
-                            issueMonth =
-                                issueParts[1],
-
-                            issueDay =
-                                issueParts[2],
-
-                            dueYear =
-                                dueParts[0],
-
-                            dueMonth =
-                                dueParts[1],
-
-                            dueDay =
-                                dueParts[2],
-
-                            status = status,
-
-                            description =
-                                description.trim()
-                        )
-
+                    val check = CheckEntry(
+                        id = existingCheck?.id ?: UUID.randomUUID().toString(),
+                        title = title.trim(),
+                        type = type,
+                        checkNumber = checkNumber.trim(),
+                        bank = bank.trim(),
+                        amount = amountValue,
+                        personName = personName.trim(),
+                        issueYear = issueParts[0],
+                        issueMonth = issueParts[1],
+                        issueDay = issueParts[2],
+                        dueYear = dueParts[0],
+                        dueMonth = dueParts[1],
+                        dueDay = dueParts[2],
+                        status = status,
+                        description = description.trim()
+                    )
                     onSave(check)
                 }
             ) {
-
-                Text(
-                    if (existingCheck == null)
-                        "\u062b\u0628\u062a \u0686\u06a9"
-                    else
-                        "\u0630\u062e\u06cc\u0631\u0647 \u062a\u063a\u06cc\u06cc\u0631\u0627\u062a"
-                )
+                Text(if (existingCheck == null) "ثبت چک" else "ذخیره تغییرات")
             }
         },
         dismissButton = {
-
-            OutlinedButton(
-                onClick = onDismiss
-            ) {
-                Text("\u0627\u0646\u0635\u0631\u0627\u0641")
+            OutlinedButton(onClick = onDismiss) {
+                Text("انصراف")
             }
         }
     )
@@ -1061,60 +660,34 @@ private fun CheckInputTile(
     accent: Color,
     icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
-
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(16.dp),
         color = background
     ) {
-
-        Column(
-            modifier = Modifier.padding(14.dp)
-        ) {
-
-            Row(
-                verticalAlignment =
-                    Alignment.CenterVertically
-            ) {
-
+        Column(modifier = Modifier.padding(14.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
                     tint = accent,
                     modifier = Modifier.size(24.dp)
                 )
-
-                Spacer(
-                    Modifier.size(8.dp)
-                )
-
+                Spacer(Modifier.size(8.dp))
                 Text(
                     text = title,
                     fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
-
-            Spacer(
-                Modifier.height(8.dp)
-            )
-
+            Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = value,
                 onValueChange = onValueChange,
-                modifier =
-                    Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType =
-                            KeyboardType.Number
-                    ),
-                placeholder = {
-                    Text(
-                        "\u0648\u0627\u0631\u062f \u06a9\u0646\u06cc\u062f"
-                    )
-                }
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                placeholder = { Text("وارد کنید") }
             )
         }
     }
@@ -1136,19 +709,11 @@ private fun DateField(
         modifier = Modifier.fillMaxWidth(),
         label = { Text(label) },
         leadingIcon = {
-            Icon(
-                Icons.Filled.CalendarMonth,
-                contentDescription = null
-            )
+            Icon(Icons.Filled.CalendarMonth, contentDescription = null)
         },
         trailingIcon = {
-            IconButton(
-                onClick = { showPicker = true }
-            ) {
-                Icon(
-                    Icons.Filled.CalendarMonth,
-                    contentDescription = "انتخاب تاریخ"
-                )
+            IconButton(onClick = { showPicker = true }) {
+                Icon(Icons.Filled.CalendarMonth, contentDescription = "انتخاب تاریخ")
             }
         }
     )
@@ -1165,42 +730,12 @@ private fun DateField(
     }
 }
 
-private fun parseJalaliDate(
-    value: String
-): IntArray? {
-
-    val parts =
-        value.split("/")
-
-    if (parts.size != 3) {
-        return null
-    }
-
-    val year =
-        parts[0].toIntOrNull()
-            ?: return null
-
-    val month =
-        parts[1].toIntOrNull()
-            ?: return null
-
-    val day =
-        parts[2].toIntOrNull()
-            ?: return null
-
-    if (
-        month !in 1..12 ||
-        day !in 1..31
-    ) {
-        return null
-    }
-
-    return intArrayOf(
-        year,
-        month,
-        day
-    )
+private fun parseJalaliDate(value: String): IntArray? {
+    val parts = value.split("/")
+    if (parts.size != 3) return null
+    val year = parts[0].toIntOrNull() ?: return null
+    val month = parts[1].toIntOrNull() ?: return null
+    val day = parts[2].toIntOrNull() ?: return null
+    if (month !in 1..12 || day !in 1..31) return null
+    return intArrayOf(year, month, day)
 }
-
-
-
