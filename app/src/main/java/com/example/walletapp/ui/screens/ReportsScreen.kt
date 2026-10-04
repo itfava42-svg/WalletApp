@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.ReportCalculator
 import com.example.walletapp.ui.components.DashboardBottomBar
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.appNavItems
 import java.util.Calendar
 private enum class ReportPeriod(
@@ -128,7 +129,7 @@ val p7ExpenseCategories = currentMonthCategories.filter { it.expense > 0 }
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = AppDimens.PagePadding)
         ) {
         Row(
             modifier = Modifier
