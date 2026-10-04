@@ -25,6 +25,8 @@ import com.example.walletapp.data.BudgetStore
 import com.example.walletapp.data.TransactionCategories
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.ui.components.DashboardBottomBar
+import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.appNavItems
 import com.example.walletapp.ui.theme.*
@@ -92,12 +94,10 @@ fun BudgetScreen(
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(AppDimens.ItemGap))
-                    Button(
-                        onClick = { showAddDialog = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Primary),
-                    ) {
-                        Text("ثبت اولین بودجه")
-                    }
+                    AppPrimaryButton(
+                        text = "ثبت اولین بودجه",
+                        onClick = { showAddDialog = true }
+                    )
                 }
             } else {
                 LazyColumn(
@@ -224,9 +224,10 @@ private fun AddBudgetDialog(
                 Spacer(Modifier.height(AppDimens.ItemGap))
                 Text("مبلغ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
                 Spacer(Modifier.height(AppDimens.ItemGap))
-                OutlinedTextField(
+                AppTextField(
                     value = amountDigits,
                     onValueChange = { input -> amountDigits = input.filter { it.isDigit() }.take(12) },
+                    label = "مبلغ",
                     placeholder = { Text("۰") },
                     suffix = { Text("تومان") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
