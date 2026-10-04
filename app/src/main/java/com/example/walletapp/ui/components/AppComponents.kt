@@ -41,7 +41,7 @@ fun AppCard(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = AppDimens.CardPadding,
+    contentPadding: PaddingValues = PaddingValues(AppDimens.CardPadding),
     onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -69,7 +69,7 @@ fun AppCard(
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             content = {
                 Column(
-                    modifier = Modifier.padding(AppDimens.CardPadding),
+                    modifier = Modifier.padding(contentPadding),
                     content = content,
                 )
             },
