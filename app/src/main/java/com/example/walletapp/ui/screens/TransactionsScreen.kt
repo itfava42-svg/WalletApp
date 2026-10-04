@@ -59,6 +59,7 @@ import com.example.walletapp.data.TransactionKind
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.ui.components.DashboardBottomBar
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.EditTransactionDialog
 import com.example.walletapp.ui.components.appNavItems
 import com.example.walletapp.ui.theme.AppError
@@ -247,7 +248,7 @@ fun TransactionsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = AppDimens.PagePadding)
         ) {
 
             Spacer(Modifier.height(10.dp))
@@ -258,7 +259,7 @@ fun TransactionsScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 singleLine = true,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(AppDimens.SmallCardRadius),
                 leadingIcon = {
                     Icon(
                         Icons.Filled.Search,
@@ -282,7 +283,7 @@ fun TransactionsScreen(
                 color = OnSurface,
             )
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -311,7 +312,7 @@ fun TransactionsScreen(
                     color = OnSurface,
                 )
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
 
                 LazyRow(
                     modifier = Modifier
@@ -356,7 +357,7 @@ fun TransactionsScreen(
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -390,7 +391,7 @@ fun TransactionsScreen(
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
 
             if (filteredTransactions.isEmpty()) {
 
@@ -418,7 +419,7 @@ fun TransactionsScreen(
                         )
                     }
 
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
 
                     Text(
                         text = if (transactions.isEmpty()) {
@@ -645,7 +646,7 @@ private fun TransactionFullCard(
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(AppDimens.CardGap))
 
             Surface(
                 color = accentColor.copy(alpha = 0.07f),
