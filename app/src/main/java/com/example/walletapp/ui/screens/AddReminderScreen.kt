@@ -3,10 +3,10 @@ package com.example.walletapp.ui.screens
 import com.example.walletapp.ui.components.JalaliDatePickerDialog
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppSectionHeader
 import com.example.walletapp.ui.components.AppTextField
 import android.app.TimePickerDialog
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -34,13 +33,10 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.CallReceived
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -579,36 +575,6 @@ fun AddReminderScreen(
 }
 
 @Composable
-private fun SectionTitle(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    title: String
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(
-            top = 4.dp,
-            bottom = 2.dp
-        )
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Purple,
-            modifier = Modifier.size(20.dp)
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Text(
-            text = title,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = TextDark
-        )
-    }
-}
-
-@Composable
 private fun ReminderTypeTile(
     modifier: Modifier,
     title: String,
@@ -618,49 +584,26 @@ private fun ReminderTypeTile(
     color: Color,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .height(112.dp)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                if (selected)
-                    color.copy(alpha = 0.12f)
-                else
-                    MaterialTheme.colorScheme.surface
-        ),
-        border =
-            if (selected)
-                androidx.compose.foundation.BorderStroke(
-                    1.5.dp,
-                    color
-                )
-            else
-                null
+    AppCard(
+        modifier = modifier.height(112.dp),
+        containerColor = if (selected) color.copy(alpha = 0.12f)
+        else MaterialTheme.colorScheme.surface,
+        border = if (selected) androidx.compose.foundation.BorderStroke(1.5.dp, color) else null,
+        onClick = onClick,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(14.dp),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .clip(RoundedCornerShape(13.dp))
+                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(13.dp))
                         .background(color.copy(alpha = 0.13f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = color
-                    )
+                    Icon(imageVector = icon, contentDescription = null, tint = color)
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -676,17 +619,8 @@ private fun ReminderTypeTile(
             }
 
             Column {
-                Text(
-                    text = title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp
-                )
-
-                Text(
-                    text = subtitle,
-                    color = TextGray,
-                    fontSize = 10.sp
-                )
+                Text(text = title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                Text(text = subtitle, color = TextGray, fontSize = 10.sp)
             }
         }
     }
@@ -701,47 +635,29 @@ private fun InfoTile(
     color: Color,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .height(92.dp)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+    AppCard(
+        modifier = modifier.height(92.dp),
+        onClick = onClick,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(13.dp),
+            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Box(
                 modifier = Modifier
                     .size(42.dp)
-                    .clip(RoundedCornerShape(13.dp))
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(13.dp))
                     .background(color.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = color
-                )
+                Icon(imageVector = icon, contentDescription = null, tint = color)
             }
 
             Spacer(modifier = Modifier.width(10.dp))
 
             Column {
-                Text(
-                    text = title,
-                    fontSize = 11.sp,
-                    color = TextGray
-                )
-
+                Text(text = title, fontSize = 11.sp, color = TextGray)
                 Spacer(modifier = Modifier.height(3.dp))
-
                 Text(
                     text = value,
                     fontSize = 14.sp,
@@ -761,64 +677,35 @@ private fun RepeatTile(
     color: Color,
     onClick: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(17.dp),
-        color =
-            if (selected)
-                color.copy(alpha = 0.10f)
-            else
-                MaterialTheme.colorScheme.surface,
-        border =
-            if (selected)
-                androidx.compose.foundation.BorderStroke(
-                    1.2.dp,
-                    color
-                )
-            else
-                androidx.compose.foundation.BorderStroke(
-                    1.dp,
-                    Color(0xFFE8E8EE)
-                )
+    AppCard(
+        modifier = Modifier.fillMaxWidth(),
+        containerColor = if (selected) color.copy(alpha = 0.10f)
+        else MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(
+            if (selected) 1.2.dp else 1.dp,
+            if (selected) color else MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)
+        ),
+        onClick = onClick,
     ) {
         Row(
-            modifier = Modifier.padding(
-                horizontal = 15.dp,
-                vertical = 12.dp
-            ),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Box(
                 modifier = Modifier
                     .size(10.dp)
-                    .clip(RoundedCornerShape(50))
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(50))
                     .background(
-                        if (selected)
-                            color
-                        else
-                            Color(0xFFD2D2DA)
+                        if (selected) color
+                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)
                     )
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
-
-                Text(
-                    text = subtitle,
-                    color = TextGray,
-                    fontSize = 10.sp
-                )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = title, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text(text = subtitle, color = TextGray, fontSize = 10.sp)
             }
 
             if (selected) {
@@ -832,13 +719,3 @@ private fun RepeatTile(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
