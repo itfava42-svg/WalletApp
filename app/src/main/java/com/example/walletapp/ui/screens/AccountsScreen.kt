@@ -71,6 +71,7 @@ import com.example.walletapp.data.AccountType
 import com.example.walletapp.data.AccountLedger
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.ui.components.DashboardBottomBar
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.appNavItems
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +126,7 @@ bottomBar = {
                 onClick = {
                     showAddDialog = true
                 },
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(AppDimens.SmallCardRadius),
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -139,7 +140,7 @@ bottomBar = {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = AppDimens.PagePadding),
 
             contentPadding = PaddingValues(
                 top = 14.dp,
@@ -152,7 +153,7 @@ bottomBar = {
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(AppDimens.CardRadius),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                     ),
@@ -205,7 +206,7 @@ bottomBar = {
                                         color = MaterialTheme.colorScheme.surface.copy(
                                             alpha = 0.55f
                                         ),
-                                        shape = RoundedCornerShape(16.dp),
+                                        shape = RoundedCornerShape(AppDimens.SmallCardRadius),
                                     ),
                                 contentAlignment = Alignment.Center,
                             ) {
@@ -288,7 +289,7 @@ bottomBar = {
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(AppDimens.CardRadius),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant,
                         ),
@@ -305,7 +306,7 @@ bottomBar = {
                                     .size(68.dp)
                                     .background(
                                         color = MaterialTheme.colorScheme.primaryContainer,
-                                        shape = RoundedCornerShape(20.dp),
+                                        shape = RoundedCornerShape(AppDimens.CardRadius),
                                     ),
                                 contentAlignment = Alignment.Center,
                             ) {
@@ -575,7 +576,7 @@ private fun AccountCard(
                         .size(48.dp)
                         .background(
                             color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(AppDimens.SmallCardRadius),
                         ),
                     contentAlignment = Alignment.Center,
                 ) {
