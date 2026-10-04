@@ -326,16 +326,16 @@ fun AddTransactionScreen(
             // Title
             Text("عنوان", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
-            OutlinedTextField(
+            AppTextField(
                 value = title,
                 onValueChange = { title = it },
                 modifier = Modifier.fillMaxWidth(),
+                label = "عنوان",
                 placeholder = { Text("مثلاً خرید سوپرمارکت") },
                 singleLine = true,
-                shape = RoundedCornerShape(14.dp),
             )
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))            Spacer(Modifier.height(20.dp))
 
             // Category grid
             Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
@@ -443,17 +443,18 @@ fun AddTransactionScreen(
             // Note
             Text("یادداشت (اختیاری)", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
-            OutlinedTextField(
+            AppTextField(
                 value = note,
                 onValueChange = { note = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(90.dp),
+                label = "توضیحات",
                 placeholder = { Text("توضیح بیشتر...") },
-                shape = RoundedCornerShape(14.dp),
+                singleLine = false,
             )
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))            Spacer(Modifier.height(20.dp))
 
             // Recurring + attach receipt row
             Column(
