@@ -45,6 +45,8 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.walletapp.data.Account
 import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.TransactionStore
+import com.example.walletapp.ui.components.AppCard
+
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -307,7 +309,7 @@ fun TransferScreen(
 
             if (accounts.isEmpty()) {
 
-                Card(
+                AppCard(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
