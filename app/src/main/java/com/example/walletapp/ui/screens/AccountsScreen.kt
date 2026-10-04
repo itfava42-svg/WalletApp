@@ -775,7 +775,6 @@ private fun AccountCard(
             }
         }
     }
-}
 
 @Composable
 private fun AccountBadge(
