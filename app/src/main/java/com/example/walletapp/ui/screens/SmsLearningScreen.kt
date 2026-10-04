@@ -17,9 +17,6 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -293,7 +290,8 @@ fun SmsLearningScreen(
                 )
             },
             confirmButton = {
-                Button(
+                AppPrimaryButton(
+                    text = "بله، پاک کن",
                     onClick = {
                         SmsLearningManager.clearAllLearning()
                         SmsIgnoreManager.clearAllIgnored()
@@ -301,9 +299,7 @@ fun SmsLearningScreen(
                         showClearDialog = false
                         refresh()
                     }
-                ) {
-                    Text("بله، پاک کن")
-                }
+                )
             },
             dismissButton = {
                 TextButton(
@@ -789,15 +785,10 @@ private fun LearningSummaryCard(
     ignoredPatternCount: Int,
     ignoredSenderCount: Int,
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+    AppCard(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -829,12 +820,10 @@ private fun LearnedBankRow(
     sender: String,
     bankName: String,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier.padding(14.dp)
-        ) {
+        Column {
             Text(
                 bankName,
                 fontWeight = FontWeight.Bold
@@ -866,12 +855,10 @@ private fun LearnedPatternCard(
     transactionType: String?,
     onDelete: () -> Unit,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier.padding(14.dp)
-        ) {
+        Column {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -933,12 +920,10 @@ private fun IgnoredPatternCard(
     pattern: String,
     onDelete: () -> Unit,
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier.padding(14.dp)
-        ) {
+        Column {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
