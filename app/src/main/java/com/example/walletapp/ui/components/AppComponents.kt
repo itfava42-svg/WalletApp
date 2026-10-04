@@ -26,6 +26,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.sp
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.AppTextStyles
@@ -158,6 +159,7 @@ fun AppTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     OutlinedTextField(
         value = value,
@@ -167,6 +169,7 @@ fun AppTextField(
             .then(if (singleLine) Modifier.height(AppDimens.InputHeight) else Modifier),
         enabled = enabled,
         singleLine = singleLine,
+        keyboardOptions = keyboardOptions,
         label = { Text(label) },
         shape = RoundedCornerShape(AppDimens.FieldRadius),
         textStyle = AppTextStyles.bodyMd,
