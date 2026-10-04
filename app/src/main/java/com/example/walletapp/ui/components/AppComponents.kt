@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.sp
@@ -149,6 +150,8 @@ fun AppPrimaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     leadingIcon: (@Composable () -> Unit)? = null,
+    containerColor: Color = MaterialTheme.colorScheme.primary,
+    textStyle: TextStyle = AppTextStyles.bodyMd.copy(fontSize = 15.sp),
 ) {
     Button(
         onClick = onClick,
@@ -156,12 +159,12 @@ fun AppPrimaryButton(
         enabled = enabled,
         shape = RoundedCornerShape(AppDimens.ButtonRadius),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = containerColor,
         ),
     ) {
         leadingIcon?.invoke()
         if (leadingIcon != null) Spacer(Modifier.width(AppDimens.ItemGap))
-        Text(text, style = AppTextStyles.bodyMd.copy(fontSize = 15.sp))
+        Text(text, style = textStyle)
     }
 }
 
@@ -199,6 +202,7 @@ fun AppTextField(
     placeholder: (@Composable () -> Unit)? = null,
     suffix: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
+    textStyle: TextStyle = AppTextStyles.bodyMd,
     minLines: Int = 1,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
 ) {
@@ -219,7 +223,7 @@ fun AppTextField(
         maxLines = maxLines,
         label = { Text(label) },
         shape = RoundedCornerShape(AppDimens.FieldRadius),
-        textStyle = AppTextStyles.bodyMd,
+        textStyle = textStyle,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surface,
             unfocusedContainerColor = MaterialTheme.colorScheme.surface,
