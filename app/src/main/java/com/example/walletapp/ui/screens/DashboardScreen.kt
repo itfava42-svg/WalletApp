@@ -22,6 +22,7 @@ import com.example.walletapp.data.ReportCalculator
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.ui.components.resolveTransactionIcon
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.*
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.Outline
@@ -446,8 +447,8 @@ bottomBar = {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 18.dp),
-            contentPadding = PaddingValues(vertical = 18.dp),
+                .padding(horizontal = AppDimens.PagePadding),
+            contentPadding = PaddingValues(vertical = AppDimens.PagePadding),
         ) {
             item {
                 BalanceHeroCard(
@@ -455,7 +456,7 @@ bottomBar = {
                     income = totalIncome,
                     expense = totalExpense,
                 )
-                Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
             }
 
             item {
@@ -512,7 +513,7 @@ bottomBar = {
                         syncViewModel.sync()
                     },
                 )
-                Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
             }
 
             item {
@@ -539,12 +540,12 @@ bottomBar = {
                         Text("مشاهده همه", color = Primary, fontWeight = FontWeight.Bold)
                     }
                 }
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
             }
 
             items(filteredTransactions, key = { it.id }) { tx ->
                 TransactionRow(tx, onClick = { editingTransaction = tx })
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
             }
 
             if (transactions.isEmpty()) {
@@ -561,7 +562,7 @@ bottomBar = {
                             tint = Outline,
                             modifier = Modifier.size(36.dp),
                         )
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(AppDimens.ItemGap))
                         Text(
                             "هنوز تراکنشی ثبت نشده",
                             color = OnSurfaceVariant,
