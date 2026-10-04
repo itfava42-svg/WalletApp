@@ -45,16 +45,16 @@ fun BalanceHeroCard(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
                     Brush.linearGradient(
-                        listOf(Color(0xFF004F5A), Color(0xFF008F83))
+                        listOf(Color(0xFF1E3A8A), Color(0xFF3B5FDB))
                     )
                 )
                 .padding(20.dp)
@@ -163,8 +163,10 @@ fun DashboardMonthlySummaryCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+             .padding(horizontal = 0.dp, vertical = 6.dp),
         shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -441,11 +443,11 @@ fun QuickAction(
     ) {
         Surface(
             onClick = onClick,
-            shape = RoundedCornerShape(18.dp),
+            shape = RoundedCornerShape(16.dp),
             color = containerColor,
             tonalElevation = 0.dp,
             shadowElevation = 1.dp,
-            modifier = Modifier.size(58.dp),
+            modifier = Modifier.size(52.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -485,10 +487,10 @@ fun TransactionRow(
     Surface(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(16.dp),
         color = SurfaceContainerLowest,
         tonalElevation = 0.dp,
-        shadowElevation = 0.dp,
+        shadowElevation = 1.dp,
     ) {
         Row(
             modifier = Modifier
