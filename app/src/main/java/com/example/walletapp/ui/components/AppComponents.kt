@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -40,6 +41,7 @@ fun AppCard(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     border: BorderStroke? = null,
+    contentPadding: PaddingValues = AppDimens.CardPadding,
     onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -52,7 +54,7 @@ fun AppCard(
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             content = {
                 Column(
-                    modifier = Modifier.padding(AppDimens.CardPadding),
+                    modifier = Modifier.padding(contentPadding),
                     content = content,
                 )
             },
