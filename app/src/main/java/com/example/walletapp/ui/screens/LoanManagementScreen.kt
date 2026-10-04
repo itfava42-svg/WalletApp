@@ -37,20 +37,13 @@ import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
@@ -82,6 +75,11 @@ import com.example.walletapp.data.LoanType
 import com.example.walletapp.data.LoanTrackingMode
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.loan.MatureColors
+import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppFloatingActionButton
+import com.example.walletapp.ui.components.AppOutlinedButton
+import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.reminders.LoanReminderSynchronizer
 import java.util.Calendar
 import java.util.UUID
@@ -149,12 +147,10 @@ fun LoanManagementScreen(
         },
 
         floatingActionButton = {
-            FloatingActionButton(
+            AppFloatingActionButton(
                 onClick = {
                     showAddDialog = true
                 },
-                shape = RoundedCornerShape(20.dp),
-                containerColor = MatureColors.Primary
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -178,12 +174,10 @@ fun LoanManagementScreen(
         ) {
 
             item {
-                Card(
+                AppCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(26.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MatureColors.Surface
-                    )
+
+                    containerColor = MatureColors.Surface
                 ) {
                     Column(
                         modifier = Modifier
@@ -407,14 +401,13 @@ fun LoanManagementScreen(
                 )
             },
             confirmButton = {
-                Button(
+                AppPrimaryButton(
+                    text = "حذف",
                     onClick = {
                         LoanManager.remove(loan.id)
                         deleteLoan = null
                     }
-                ) {
-                    Text("حذف")
-                }
+                )
             },
             dismissButton = {
                 TextButton(
@@ -628,26 +621,13 @@ private fun EmptyLoanState(
                 color = MatureColors.TextSecondary
             )
 
-            Button(
-                onClick = onAdd,
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MatureColors.Primary
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = null,
-                    modifier = Modifier.size(19.dp)
-                )
-
-                Spacer(Modifier.size(7.dp))
-
-                Text(
+            AppPrimaryButton(
                     text = "ثبت وام جدید",
-                    fontWeight = FontWeight.Bold
+                    onClick = onAdd,
+                    leadingIcon = {
+                        Icon(Icons.Filled.Add, contentDescription = null)
+                    }
                 )
-            }
         }
     }
 }
@@ -687,12 +667,10 @@ private fun LoanCard(
         mutableStateOf(false)
     }
 
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MatureColors.Surface
-        )
+
+        containerColor = MatureColors.Surface
     ) {
 
         Column(
@@ -894,19 +872,10 @@ private fun LoanCard(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            OutlinedButton(
-                onClick = onInstallments,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Payments,                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("مشاهده و مدیریت اقساط")
-            }
+            AppOutlinedButton(
+                text = "مشاهده و مدیریت اقساط",
+                onClick = onInstallments
+            )
         }
     }
 }
@@ -1296,8 +1265,9 @@ private fun LoanInstallmentsDialog(
                                                 MatureColors.Success
                                         )
                                     } else {
-                                        Button(
-                                            onClick = {
+                                        AppPrimaryButton(
+                    text = "ثبت پرداخت",
+                    onClick = {
                                                 val alreadyPaid =
                                                     LoanStore
                                                         .getById(
@@ -1307,26 +1277,8 @@ private fun LoanInstallmentsDialog(
                                                         ?.any {
                                                             it.installmentNumber ==
                                                                 number
-                                                        } == true
-
-                                                if (!alreadyPaid) {
-                                                    selectedInstallmentNumber = number
-                                                    selectedAccountId = null
-                                                }
-                                            },
-                                            colors =
-                                                ButtonDefaults.buttonColors(
-                                                    containerColor =
-                                                        MatureColors.Primary
-                                                ),
-                                            shape =
-                                                RoundedCornerShape(11.dp)
-                                        ) {
-                                            Text(
-                                                text = "ثبت پرداخت",
-                                                fontSize = 13.sp
-                                            )
-                                        }
+                                                        }
+                )
                                     }
                                 }
                             }
@@ -1336,12 +1288,10 @@ private fun LoanInstallmentsDialog(
             }
         },
         confirmButton = {
-            OutlinedButton(
-                onClick = onDismiss,
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Text("بستن")
-            }
+            AppOutlinedButton(
+                text = "بستن",
+                onClick = onDismiss
+            )
         }
     )
 
@@ -1459,12 +1409,13 @@ private fun LoanInstallmentsDialog(
             },
             confirmButton = {
 
-                Button(
+                AppPrimaryButton(
+                    text = "ثبت پرداخت",
                     onClick = {
 
                         val accountId =
                             selectedAccountId
-                                ?: return@Button
+                                ?: return@AppPrimaryButton
 
                         val alreadyPaid =
                             LoanStore
@@ -1473,71 +1424,21 @@ private fun LoanInstallmentsDialog(
                                 ?.any {
                                     it.installmentNumber ==
                                         installmentNumber
-                                } == true
-
-                        if (!alreadyPaid) {
-
-                            val now =
-                                System.currentTimeMillis()
-
-                            if (!LoanPaymentDateValidator.isPaymentDateValid(currentLoan, now)) {
-                                loanPaymentError = LoanPaymentDateValidator.ERROR_MESSAGE
-                                return@Button
-                            }
-
-                            val today =
-                                JalaliCalendar
-                                    .fromEpochMillisSlashed(
-                                        now
-                                    )
-
-                            val recorded =
-                                LoanPaymentManager.recordManualInstallmentPayment(
-                                    context = context,
-                                    loan = currentLoan,
-                                    installmentNumber = installmentNumber,
-                                    accountId = accountId,
-                                    paymentDateEpochMillis = now
-                                )
-
-                            if (recorded) {
-                                selectedInstallmentNumber = null
-                                selectedAccountId = null
-                            } else {
-                                loanPaymentError =
-                                    "ثبت پرداخت قسط انجام نشد."
-                            }
-                        }
-                    },
+                                },
                     enabled =
                         selectedAccountId != null &&
-                            activeAccounts.isNotEmpty(),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor =
-                                MatureColors.Primary
-                        ),
-                    shape =
-                        RoundedCornerShape(11.dp)
-                ) {
-                    Text(
-                        text = "ثبت پرداخت",
-                        fontSize = 13.sp
-                    )
-                }
+                            activeAccounts.isNotEmpty()
+                )
             },
             dismissButton = {
 
-                OutlinedButton(
-                    onClick = {
+                AppOutlinedButton(
+                text = "انصراف",
+                onClick = {
                         selectedInstallmentNumber = null
                         selectedAccountId = null
-                    },
-                    shape =
-                        RoundedCornerShape(11.dp)
-                ) {
-                    Text("انصراف")
-                }
+                    }
+            )
             }
         )
     }}
@@ -1743,25 +1644,18 @@ private fun LoanEditorFullScreen(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    OutlinedButton(
-                        onClick = onDismiss,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(18.dp)
-                    ) { Text("انصراف") }
+                    AppOutlinedButton(
+                text = "انصراف",
+                onClick = onDismiss
+            )
 
-                    Button(
-                        onClick = ::saveLoan,
-                        modifier = Modifier.weight(1.5f),
-                        shape = RoundedCornerShape(18.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MatureColors.Primary)
-                    ) {
+                    AppPrimaryButton(
+                    text = if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
+                    onClick = ::saveLoan,
+                    leadingIcon = {
                         Icon(Icons.Filled.Save, contentDescription = null)
-                        Spacer(Modifier.width(7.dp))
-                        Text(
-                            text = if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
-                            fontWeight = FontWeight.Bold
-                        )
                     }
+                )
                 }
             }
         }
@@ -1772,16 +1666,16 @@ private fun LoanEditorFullScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             item {
-                Card(
+                AppCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = MatureColors.Primary)
+
+                    containerColor = MatureColors.Primary
                 ) {
                     Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Surface(
                                 modifier = Modifier.size(48.dp),
-                                shape = RoundedCornerShape(18.dp),
+
                                 color = Color.White.copy(alpha = 0.12f)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
@@ -1846,23 +1740,23 @@ private fun LoanEditorFullScreen(
 
             item {
                 LoanEditorDashboardCard(title = "اطلاعات اصلی") {
-                    OutlinedTextField(
+                    AppTextField(
                         value = title,
                         onValueChange = { title = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        shape = RoundedCornerShape(18.dp),
-                        label = { Text("نام وام") },
+
+                        label = "نام وام",
                         placeholder = { Text("مثلاً وام خرید") },                        leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                     )
                     Spacer(Modifier.height(10.dp))
-                    OutlinedTextField(
+                    AppTextField(
                         value = amountText,
                         onValueChange = { amountText = it.filter(Char::isDigit) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        shape = RoundedCornerShape(18.dp),
-                        label = { Text("مبلغ وام") },
+
+                        label = "مبلغ وام",
                         placeholder = { Text("مبلغ را وارد کنید") },
                         suffix = { Text("ریال") },
                         leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
@@ -1898,13 +1792,13 @@ private fun LoanEditorFullScreen(
                     }
                     if (trackingMode == LoanTrackingMode.EXISTING) {
                         Spacer(Modifier.height(12.dp))
-                        OutlinedTextField(
+                        AppTextField(
                             value = historicalPaidText,
                             onValueChange = { historicalPaidText = it.filter(Char::isDigit) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            shape = RoundedCornerShape(18.dp),
-                            label = { Text("تعداد اقساطی که قبلاً پرداخت شده") },
+
+                            label = "تعداد اقساطی که قبلاً پرداخت شده",
                             leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
@@ -1935,37 +1829,37 @@ private fun LoanEditorFullScreen(
             item {
                 LoanEditorDashboardCard(title = "شرایط بازپرداخت") {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        OutlinedTextField(
+                        AppTextField(
                             value = interestText,
                             onValueChange = { interestText = it },
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            shape = RoundedCornerShape(18.dp),
-                            label = { Text("درصد سود") },
+
+                            label = "درصد سود",
                             suffix = { Text("%") },
                             leadingIcon = { Icon(Icons.Filled.Percent, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
-                        OutlinedTextField(
+                        AppTextField(
                             value = totalInstallmentsText,
                             onValueChange = { totalInstallmentsText = it.filter(Char::isDigit) },
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            shape = RoundedCornerShape(18.dp),
-                            label = { Text("تعداد اقساط") },
+
+                            label = "تعداد اقساط",
                             leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                     }
                     Spacer(Modifier.height(10.dp))
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        OutlinedTextField(
+                        AppTextField(
                             value = "هر $intervalMonths ماه",
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().clickable { expandedInterval = true },
-                            shape = RoundedCornerShape(18.dp),
-                            label = { Text("فاصله اقساط") },
+
+                            label = "فاصله اقساط",
                             leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) }
                         )
                         DropdownMenu(expanded = expandedInterval, onDismissRequest = { expandedInterval = false }) {
@@ -2001,13 +1895,13 @@ private fun LoanEditorFullScreen(
                     }
                     Spacer(Modifier.height(10.dp))
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        OutlinedTextField(
+                        AppTextField(
                             value = loanType.label,
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().clickable { expandedType = true },
-                            shape = RoundedCornerShape(18.dp),
-                            label = { Text("نوع وام") },
+
+                            label = "نوع وام",
                             leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                         )
                         DropdownMenu(expanded = expandedType, onDismissRequest = { expandedType = false }) {
@@ -2053,14 +1947,14 @@ private fun LoanEditorFullScreen(
                 } ?: "بدون حساب مشخص"
                 var expandedAccount by remember { mutableStateOf(false) }
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = accountLabel,
                         onValueChange = {},
                         readOnly = true,
                         modifier = Modifier.fillMaxWidth().clickable { expandedAccount = true },
                         singleLine = true,
-                        shape = RoundedCornerShape(18.dp),
-                        label = { Text("حساب / بانک وام") },
+
+                        label = "حساب / بانک وام",
                         trailingIcon = {
                             Icon(Icons.Filled.AccountBalance, contentDescription = null)
                         }
@@ -2091,20 +1985,20 @@ private fun LoanEditorFullScreen(
             }
 
             LoanEditorDashboardCard(title = "ضمانت و یادآوری") {
-                    OutlinedTextField(
+                    AppTextField(
                         value = guaranteeNote,
                         onValueChange = { guaranteeNote = it },
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 2,
                         maxLines = 4,
-                        shape = RoundedCornerShape(18.dp),
-                        label = { Text("ضمانت و توضیحات") },
+
+                        label = "ضمانت و توضیحات",
                         placeholder = { Text("توضیحات اختیاری") }
                     )
                     Spacer(Modifier.height(10.dp))
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp),
+
                         color = MatureColors.CardBackground
                     ) {
                         Row(
@@ -2188,11 +2082,11 @@ private fun LoanEditorDashboardCard(
     title: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Card(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MatureColors.Surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+
+        containerColor = MatureColors.Surface,
+
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
@@ -2299,13 +2193,13 @@ private fun LoanEditorDialog(
                     item { LoanEditorSectionTitle(title = "اطلاعات وام") }
 
                     item {
-                        OutlinedTextField(
+                        AppTextField(
                             value = title,
                             onValueChange = { title = it },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            shape = RoundedCornerShape(14.dp),
-                            label = { Text("نام وام") },
+
+                            label = "نام وام",
                             placeholder = { Text("مثلاً وام خرید") },
                             leadingIcon = {
                                 Icon(
@@ -2318,13 +2212,13 @@ private fun LoanEditorDialog(
                     }
 
                     item {
-                        OutlinedTextField(
+                        AppTextField(
                             value = amountText,
                             onValueChange = { amountText = it.filter(Char::isDigit) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            shape = RoundedCornerShape(14.dp),
-                            label = { Text("مبلغ وام") },
+
+                            label = "مبلغ وام",
                             placeholder = { Text("مبلغ را وارد کنید") },
                             suffix = { Text("ریال") },
                             leadingIcon = {
@@ -2345,13 +2239,13 @@ private fun LoanEditorDialog(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            OutlinedTextField(
+                            AppTextField(
                                 value = interestText,
                                 onValueChange = { interestText = it },
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
-                                shape = RoundedCornerShape(14.dp),
-                                label = { Text("درصد سود") },
+
+                                label = "درصد سود",
                                 placeholder = { Text("۰") },
                                 suffix = { Text("%") },
                                 leadingIcon = {
@@ -2366,15 +2260,15 @@ private fun LoanEditorDialog(
                                 )
                             )
 
-                            OutlinedTextField(
+                            AppTextField(
                                 value = totalInstallmentsText,
                                 onValueChange = {
                                     totalInstallmentsText = it.filter(Char::isDigit)
                                 },
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
-                                shape = RoundedCornerShape(14.dp),
-                                label = { Text("تعداد اقساط") },
+
+                                label = "تعداد اقساط",
                                 placeholder = { Text("۱۲") },
                                 leadingIcon = {
                                     Icon(
@@ -2394,15 +2288,15 @@ private fun LoanEditorDialog(
 
                     item {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            OutlinedTextField(
+                            AppTextField(
                                 value = "هر $intervalMonths ماه",
                                 onValueChange = {},
                                 readOnly = true,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { expandedInterval = true },
-                                shape = RoundedCornerShape(14.dp),
-                                label = { Text("فاصله اقساط") },
+
+                                label = "فاصله اقساط",
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Filled.Schedule,
@@ -2473,15 +2367,15 @@ private fun LoanEditorDialog(
 
                     item {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            OutlinedTextField(
+                            AppTextField(
                                 value = loanType.label,
                                 onValueChange = {},
                                 readOnly = true,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { expandedType = true },
-                                shape = RoundedCornerShape(14.dp),
-                                label = { Text("نوع وام") },
+
+                                label = "نوع وام",
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Filled.AccountBalance,
@@ -2531,14 +2425,14 @@ private fun LoanEditorDialog(
                     item { LoanEditorSectionTitle(title = "ضمانت و توضیحات") }
 
                     item {
-                        OutlinedTextField(
+                        AppTextField(
                             value = guaranteeNote,
                             onValueChange = { guaranteeNote = it },
                             modifier = Modifier.fillMaxWidth(),
                             minLines = 2,
                             maxLines = 4,
-                            shape = RoundedCornerShape(14.dp),
-                            label = { Text("ضمانت و توضیحات") },
+
+                            label = "ضمانت و توضیحات",
                             placeholder = { Text("توضیحات اختیاری") }
                         )
                     }
@@ -2546,8 +2440,9 @@ private fun LoanEditorDialog(
             }
         },
         confirmButton = {
-            Button(
-                onClick = {
+            AppPrimaryButton(
+                    text = if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
+                    onClick = {
                     val amount = amountText.toLongOrNull() ?: 0L
                     val interest = interestText.toDoubleOrNull() ?: 0.0
                     val installments = totalInstallmentsText.toIntOrNull() ?: 0
@@ -2560,61 +2455,15 @@ private fun LoanEditorDialog(
                         installments <= 0 ||
                         startParts == null
                     ) {
-                        return@Button
+                        return@AppPrimaryButton
                     }
-
-                    val paidInstallmentCount = existingLoan?.payments?.size ?: 0
-
-                    if (existingLoan != null && installments < paidInstallmentCount) {
-                        return@Button
-                    }
-
-                    val finalInstallment = if (calculatedInstallment > 0) {
-                        calculatedInstallment
-                    } else {
-                        installmentText.toLongOrNull() ?: 0L
-                    }
-
-                    val loan = LoanEntry(
-                        id = existingLoan?.id ?: UUID.randomUUID().toString(),
-                        title = title.trim(),
-                        type = loanType,
-                        totalAmount = amount,
-                        interestRatePercent = interest,
-                        installmentAmount = finalInstallment,
-                        totalInstallments = installments,
-                        intervalMonths = intervalMonths,
-                        startYear = startParts[0],
-                        startMonth = startParts[1],
-                        startDay = startParts[2],
-                        firstInstallmentYear = firstParts?.get(0),
-                        firstInstallmentMonth = firstParts?.get(1),
-                        firstInstallmentDay = firstParts?.get(2),
-                        guaranteeNote = guaranteeNote.trim(),
-                        reminderEnabled = reminderEnabled,
-                        payments = existingLoan?.payments ?: emptyList()
-                    )
-
-                    onSave(loan)
-                },
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MatureColors.Primary
                 )
-            ) {
-                Text(
-                    if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
-                    fontWeight = FontWeight.Bold
-                )
-            }
         },
         dismissButton = {
-            OutlinedButton(
-                onClick = onDismiss,
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Text("انصراف")
-            }
+            AppOutlinedButton(
+                text = "انصراف",
+                onClick = onDismiss
+            )
         }
     )
 }
@@ -2690,15 +2539,13 @@ private fun DateField(
 ) {
     var showPicker by remember { mutableStateOf(false) }
 
-    OutlinedTextField(
+    AppTextField(
         value = value,
         onValueChange = {},
         readOnly = true,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        label = {
-            Text(label)
-        },
+
+        label = label,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.CalendarMonth,
