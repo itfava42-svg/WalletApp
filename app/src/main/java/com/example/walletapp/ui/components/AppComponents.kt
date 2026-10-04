@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -25,6 +26,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.sp
@@ -34,15 +37,19 @@ import com.example.walletapp.ui.theme.AppTextStyles
 @Composable
 fun AppCard(
     modifier: Modifier = Modifier,
-    containerColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    border: BorderStroke? = null,
+    onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
+        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(AppDimens.CardRadius),
         colors = CardDefaults.cardColors(
             containerColor = containerColor,
         ),
+        border = border,
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         content = {
             Column(
@@ -96,13 +103,27 @@ fun AppTile(
 fun AppSectionHeader(
     title: String,
     modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
     action: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
     ) {
-        Text(title, style = AppTextStyles.headlineSm)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            icon?.let {
+                Icon(
+                    imageVector = it,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+            Text(title, style = AppTextStyles.headlineSm)
+        }
         action?.invoke()
     }
 }
