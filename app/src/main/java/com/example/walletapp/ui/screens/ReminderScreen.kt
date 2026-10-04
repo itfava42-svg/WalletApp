@@ -157,7 +157,8 @@ fun ReminderScreen(
     val dueAmount =
         activeReminders
             .filter {
-                it.triggerAtMillis < threeDaysEnd
+                it.triggerAtMillis >= todayStart &&
+                    it.triggerAtMillis < threeDaysEnd
             }
             .sumOf {
                 it.amount
