@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -109,6 +111,7 @@ fun AppPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    leadingIcon: (@Composable () -> Unit)? = null,
 ) {
     Button(
         onClick = onClick,
@@ -119,6 +122,8 @@ fun AppPrimaryButton(
             containerColor = MaterialTheme.colorScheme.primary,
         ),
     ) {
+        leadingIcon?.invoke()
+        if (leadingIcon != null) Spacer(Modifier.width(AppDimens.ItemGap))
         Text(text, style = AppTextStyles.bodyMd.copy(fontSize = 15.sp))
     }
 }
@@ -129,6 +134,7 @@ fun AppOutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    leadingIcon: (@Composable () -> Unit)? = null,
 ) {
     OutlinedButton(
         onClick = onClick,
@@ -137,6 +143,8 @@ fun AppOutlinedButton(
         shape = RoundedCornerShape(AppDimens.ButtonRadius),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
     ) {
+        leadingIcon?.invoke()
+        if (leadingIcon != null) Spacer(Modifier.width(AppDimens.ItemGap))
         Text(text, style = AppTextStyles.headlineSm.copy(fontSize = 15.dp.value.sp))
     }
 }
