@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,6 @@ import androidx.compose.ui.unit.sp
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
-import com.example.walletapp.ui.components.AppSectionHeader
 import com.example.walletapp.ui.components.AppTextField
 
 private data class AddBankOption(
