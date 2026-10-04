@@ -26,19 +26,13 @@ import androidx.compose.material.icons.filled.FactCheck
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -63,6 +57,11 @@ import com.example.walletapp.data.CheckStore
 import com.example.walletapp.data.CheckType
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
+import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppFloatingActionButton
+import com.example.walletapp.ui.components.AppOutlinedButton
+import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppTextField
 import java.util.UUID
 
 private val CheckOrange = Color(0xFFF97316)
@@ -101,14 +100,12 @@ fun CheckManagementScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            AppFloatingActionAppPrimaryButton(
+                text = if (existingCheck == null) "ثبت چک" else "ذخیره تغییرات",
                 onClick = {
                     editingCheck = null
                     showEditor = true
                 },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(
                     Icons.Filled.Add,
@@ -185,19 +182,16 @@ fun CheckManagementScreen(
                 Text("آیا از حذف چک «${check.title}» مطمئن هستید؟")
             },
             confirmButton = {
-                Button(
+                AppPrimaryButton(
+                    text = "حذف",
                     onClick = {
                         CheckManager.remove(check.id)
                         deleteCheck = null
                     }
-                ) {
-                    Text("حذف")
-                }
+                )
             },
             dismissButton = {
-                OutlinedButton(onClick = { deleteCheck = null }) {
-                    Text("انصراف")
-                }
+                AppOutlinedButton(text = "انصراف", onClick = { deleteCheck = null })
             }
         )
     }
@@ -244,11 +238,11 @@ private fun EmptyCheckState(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Button(onClick = onAdd) {
-                Icon(Icons.Filled.Add, contentDescription = null)
-                Spacer(Modifier.size(6.dp))
-                Text("ثبت چک جدید")
-            }
+            AppPrimaryButton(
+                text = "ثبت چک جدید",
+                onClick = onAdd,
+                leadingIcon = { Icon(Icons.Filled.Add, contentDescription = null) }
+            )
         }
     }
 }
@@ -273,16 +267,10 @@ private fun CheckCard(
         CheckStatus.CANCELLED -> MaterialTheme.colorScheme.surfaceVariant
     }
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    AppCard(
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
@@ -472,12 +460,12 @@ private fun CheckEditorDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
-                    OutlinedTextField(
+                    AppTextField(
                         value = title,
                         onValueChange = { title = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = { Text("عنوان چک") }
+                        label = "عنوان چک"
                     )
                 }
                 item {
@@ -490,7 +478,7 @@ private fun CheckEditorDialog(
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().menuAnchor(),
-                            label = { Text("نوع چک") },
+                            label = "نوع چک",
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedType)
                             }
@@ -527,7 +515,7 @@ private fun CheckEditorDialog(
                         onValueChange = { checkNumber = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = { Text("شماره چک") },
+                        label = "شماره چک",
                         leadingIcon = { Icon(Icons.Filled.Numbers, contentDescription = null) }
                     )
                 }
@@ -537,7 +525,7 @@ private fun CheckEditorDialog(
                         onValueChange = { bank = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = { Text("نام بانک") },
+                        label = "نام بانک",
                         leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                     )
                 }
@@ -547,9 +535,7 @@ private fun CheckEditorDialog(
                         onValueChange = { personName = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = {
-                            Text(if (type == CheckType.RECEIVED) "صادرکننده" else "دریافت‌کننده")
-                        }
+                        label = if (type == CheckType.RECEIVED) "صادرکننده" else "دریافت‌کننده"
                     )
                 }
                 item {
@@ -578,7 +564,7 @@ private fun CheckEditorDialog(
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().menuAnchor(),
-                            label = { Text("وضعیت چک") },
+                            label = "وضعیت چک",
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedStatus)
                             }
@@ -605,7 +591,7 @@ private fun CheckEditorDialog(
                         onValueChange = { description = it },
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 2,
-                        label = { Text("توضیحات") }
+                        label = "توضیحات"
                     )
                 }
             }
@@ -617,7 +603,7 @@ private fun CheckEditorDialog(
                     val issueParts = parseJalaliDate(issueDate)
                     val dueParts = parseJalaliDate(dueDate)
                     if (title.isBlank() || amountValue <= 0 || issueParts == null || dueParts == null) {
-                        return@Button
+                        return@AppPrimaryButton
                     }
 
                     val check = CheckEntry(
@@ -644,9 +630,7 @@ private fun CheckEditorDialog(
             }
         },
         dismissButton = {
-            OutlinedButton(onClick = onDismiss) {
-                Text("انصراف")
-            }
+            AppOutlinedButton(text = "انصراف", onClick = onDismiss)
         }
     )
 }
@@ -685,7 +669,6 @@ private fun CheckInputTile(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 placeholder = { Text("وارد کنید") }
             )
@@ -707,7 +690,7 @@ private fun DateField(
         onValueChange = {},
         readOnly = true,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(label) },
+        label = label,
         leadingIcon = {
             Icon(Icons.Filled.CalendarMonth, contentDescription = null)
         },
