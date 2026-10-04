@@ -423,9 +423,7 @@ private fun ManualLearningDialog(
                             errorMessage = ""
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        label = {
-                            Text("نام بانک")
-                        },
+                        label = "نام بانک",
                         placeholder = {
                             Text("مثال: بانک شهر")
                         },
@@ -471,9 +469,7 @@ private fun ManualLearningDialog(
                             errorMessage = ""
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        label = {
-                            Text("شماره سامانه یا نام فرستنده")
-                        },
+                        label = "شماره سامانه یا نام فرستنده",
                         placeholder = {
                             Text("+989999987641")
                         },
@@ -545,9 +541,7 @@ private fun ManualLearningDialog(
                             errorMessage = ""
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        label = {
-                            Text("متن کامل پیامک")
-                        },
+                        label = "متن کامل پیامک",
                         placeholder = {
                             Text(
                                 "اینجا متن کامل پیامک را قرار دهید..."
@@ -663,9 +657,7 @@ private fun ManualLearningDialog(
                             category = it
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        label = {
-                            Text("دسته‌بندی")
-                        },
+                        label = "دسته‌بندی",
                         placeholder = {
                             Text("مثال: خرید")
                         },
