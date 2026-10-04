@@ -751,38 +751,27 @@ private fun ManualLearningDialog(
             AppPrimaryButton(
                 text = "🧠 ذخیره و یادگیری",
                 onClick = {
+                    when {
                         bankName.isBlank() -> {
-                            errorMessage =
-                                "لطفاً نام بانک را وارد کنید."
+                            errorMessage = "لطفاً نام بانک را وارد کنید."
                         }
-
                         sender.isBlank() -> {
-                            errorMessage =
-                                "لطفاً شماره سامانه یا نام فرستنده را وارد کنید."
+                            errorMessage = "لطفاً شماره سامانه یا نام فرستنده را وارد کنید."
                         }
-
                         messageText.isBlank() -> {
-                            errorMessage =
-                                "لطفاً یک نمونه کامل از پیامک را وارد کنید."
+                            errorMessage = "لطفاً یک نمونه کامل از پیامک را وارد کنید."
                         }
-
                         transactionType.isBlank() -> {
-                            errorMessage =
-                                "لطفاً نوع تراکنش را انتخاب کنید."
+                            errorMessage = "لطفاً نوع تراکنش را انتخاب کنید."
                         }
-
                         else -> {
-
                             SmsLearningManager.savePatternRule(
                                 sender = sender.trim(),
                                 pattern = messageText.trim(),
                                 bankName = bankName.trim(),
-                                category = category
-                                    .trim()
-                                    .ifBlank { null },
+                                category = category.trim().ifBlank { null },
                                 transactionType = transactionType
                             )
-
                             onSaved()
                         }
                     }
