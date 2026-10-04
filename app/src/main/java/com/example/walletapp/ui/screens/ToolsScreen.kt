@@ -28,30 +28,6 @@ import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.Primary
 import kotlinx.coroutines.launch
 
-private val toolCardPalette = listOf(
-    Color(0xFFDCEBFB),
-    Color(0xFFDBF3EA),
-    Color(0xFFDFF3E3),
-    Color(0xFFE1F3E6),
-    Color(0xFFD9E9FB),
-    Color(0xFFE7DEF6),
-    Color(0xFFF1E0F3),
-    Color(0xFFE3DFF6),
-    Color(0xFFFBEAD2),
-)
-
-private val toolIconPalette = listOf(
-    Color(0xFF3A7CC7),
-    Color(0xFF2FA37E),
-    Color(0xFF3FA85C),
-    Color(0xFF3FA173),
-    Color(0xFF3A7CC7),
-    Color(0xFF7C5CC4),
-    Color(0xFFB2529C),
-    Color(0xFF6B5CC4),
-    Color(0xFFC48A2F),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToolsScreen(
@@ -75,51 +51,24 @@ fun ToolsScreen(
 
     fun handleClick(action: ToolAction, title: String) {
         when (action) {
-
-            ToolAction.OPEN_SETTINGS_LIST ->
-                onOpenSettingsList()
-
-            ToolAction.REMINDER ->
-                onOpenReminder()
-
-            ToolAction.LOAN_MANAGEMENT ->
-                onOpenLoanManagement()
-
-            ToolAction.CHECK_MANAGEMENT ->
-                onOpenCheckManagement()
-
-            ToolAction.OPERATIONS ->
-                onOpenOperations()
-
-            ToolAction.REPORTS ->
-                onOpenReports()
-
-            ToolAction.PROFILE ->
-                showMessage("صفحه پروفایل هنوز فعال نشده است.")
-
-            ToolAction.PERSONALIZATION ->
-                showMessage("شخصی‌سازی هنوز فعال نشده است.")
-
-
-            ToolAction.SAVINGS ->
-                showMessage("بخش پس‌انداز هنوز فعال نشده است.")
-
-
-            ToolAction.PRICES ->
-                showMessage("بخش قیمت‌ها هنوز فعال نشده است.")
-
-            ToolAction.FINANCIAL_CALENDAR ->
-                showMessage("تقویم مالی هنوز فعال نشده است.")
-
-            else ->
-                showMessage(title)
+            ToolAction.OPEN_SETTINGS_LIST -> onOpenSettingsList()
+            ToolAction.REMINDER -> onOpenReminder()
+            ToolAction.LOAN_MANAGEMENT -> onOpenLoanManagement()
+            ToolAction.CHECK_MANAGEMENT -> onOpenCheckManagement()
+            ToolAction.OPERATIONS -> onOpenOperations()
+            ToolAction.REPORTS -> onOpenReports()
+            ToolAction.PROFILE -> showMessage("صفحه پروفایل هنوز فعال نشده است.")
+            ToolAction.PERSONALIZATION -> showMessage("شخصی‌سازی هنوز فعال نشده است.")
+            ToolAction.SAVINGS -> showMessage("بخش پس‌انداز هنوز فعال نشده است.")
+            ToolAction.PRICES -> showMessage("بخش قیمت‌ها هنوز فعال نشده است.")
+            ToolAction.FINANCIAL_CALENDAR -> showMessage("تقویم مالی هنوز فعال نشده است.")
+            else -> showMessage(title)
         }
     }
 
     Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbarHostState)
-        },
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             DashboardBottomBar(
                 items = appNavItems,
@@ -128,36 +77,23 @@ fun ToolsScreen(
             )
         },
     ) { innerPadding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp),
         ) {
-
             Spacer(Modifier.height(16.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-
-                toolsTopRow.forEachIndexed { index, item ->
-
+                toolsTopRow.forEach { item ->
                     TopIconButton(
                         item = item,
-                        background = toolCardPalette[
-                            index % toolCardPalette.size
-                        ],
-                        tint = toolIconPalette[
-                            index % toolIconPalette.size
-                        ],
                         onClick = {
-                            handleClick(
-                                item.action,
-                                item.title
-                            )
+                            handleClick(item.action, item.title)
                         },
                     )
                 }
@@ -170,11 +106,9 @@ fun ToolsScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
                     Text(
                         "ابزارها",
                         fontWeight = FontWeight.Bold,
@@ -209,40 +143,21 @@ fun ToolsScreen(
                 contentPadding = PaddingValues(bottom = 24.dp),
                 modifier = Modifier.fillMaxSize(),
             ) {
-
-                toolsGrid.forEachIndexed { index, item ->
-
-                    val fullWidth =
-                        item.action == ToolAction.PRICES
+                toolsGrid.forEach { item ->
+                    val fullWidth = item.action == ToolAction.PRICES
 
                     item(
                         span = {
-                            GridItemSpan(
-                                if (fullWidth) {
-                                    maxLineSpan
-                                } else {
-                                    1
-                                }
-                            )
+                            GridItemSpan(if (fullWidth) maxLineSpan else 1)
                         },
                     ) {
-
                         ToolGridCard(
                             item = item,
-                            background = toolCardPalette[
-                                index % toolCardPalette.size
-                            ],
-                            iconTint = toolIconPalette[
-                                index % toolIconPalette.size
-                            ],
                             onClick = {
                                 if (item.action == ToolAction.REPORTS) {
                                     onOpenReports()
                                 } else {
-                                    handleClick(
-                                        item.action,
-                                        item.title
-                                    )
+                                    handleClick(item.action, item.title)
                                 }
                             },
                         )
@@ -256,30 +171,23 @@ fun ToolsScreen(
 @Composable
 private fun TopIconButton(
     item: ToolItem,
-    background: Color,
-    tint: Color,
     onClick: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Surface(
             onClick = onClick,
-            shape = RoundedCornerShape(22.dp),
-            color = background,
-            modifier = Modifier.size(64.dp),
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.primaryContainer,
+            modifier = Modifier.size(52.dp),
         ) {
-
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-
+            Box(contentAlignment = Alignment.Center) {
                 Icon(
                     item.icon,
                     contentDescription = item.title,
-                    tint = tint,
-                    modifier = Modifier.size(26.dp)
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -290,7 +198,7 @@ private fun TopIconButton(
             item.title,
             style = MaterialTheme.typography.labelMedium,
             color = OnSurface,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -298,45 +206,40 @@ private fun TopIconButton(
 @Composable
 private fun ToolGridCard(
     item: ToolItem,
-    background: Color,
-    iconTint: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(22.dp),
-        color = background,
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 0.dp,
+        shadowElevation = 1.dp,
         modifier = modifier
             .fillMaxWidth()
             .height(132.dp),
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-
             Icon(
                 item.icon,
                 contentDescription = null,
-                tint = iconTint,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .size(28.dp),
             )
 
             Column(
-                modifier = Modifier.align(
-                    Alignment.BottomStart
-                )
+                modifier = Modifier.align(Alignment.BottomStart)
             ) {
-
                 Text(
                     item.title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 15.sp,
                     color = OnSurface,
                 )
 
@@ -352,11 +255,3 @@ private fun ToolGridCard(
         }
     }
 }
-
-
-
-
-
-
-
-
