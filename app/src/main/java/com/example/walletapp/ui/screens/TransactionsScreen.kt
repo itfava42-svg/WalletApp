@@ -1,6 +1,7 @@
 package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppTextButton
+import com.example.walletapp.ui.components.AppFilterChip
 
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
@@ -323,7 +324,7 @@ fun TransactionsScreen(
                     )
                 ) {
                     item {
-                        FilterChip(
+                        AppFilterChip(
                             selected = selectedAccountId == null,
                             onClick = {
                                 selectedAccountId = null
@@ -338,7 +339,7 @@ fun TransactionsScreen(
                         AccountStore.accounts.filter { it.isActive },
                         key = { it.id }
                     ) { account ->
-                        FilterChip(
+                        AppFilterChip(
                             selected = selectedAccountId == account.id,
                             onClick = {
                                 selectedAccountId =
