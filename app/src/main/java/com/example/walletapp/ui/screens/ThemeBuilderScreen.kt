@@ -187,7 +187,6 @@ fun ThemeBuilderScreen(
                         )
                     }
                 }
-            }
 
             item {
                 Text(
