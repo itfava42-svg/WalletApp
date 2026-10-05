@@ -30,8 +30,6 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -56,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.Reminder
+import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.loan.MatureColors
 import com.example.walletapp.data.ReminderKind
 import com.example.walletapp.data.ReminderStore
@@ -424,17 +423,8 @@ private fun ReminderHeader(
 
     Column {
 
-        Card(
-            modifier =
-                Modifier.fillMaxWidth(),
-            shape =
-                RoundedCornerShape(
-                    22.dp
-                ),
-            elevation =
-                CardDefaults.cardElevation(
-                    defaultElevation = 2.dp
-                )
+        AppCard(
+            modifier = Modifier.fillMaxWidth()
         ) {
 
             Column(
@@ -718,15 +708,9 @@ private fun NextReminderCard(
     now: Long
 ) {
 
-    Card(
-        modifier =
-            Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(26.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor =
-                    MaterialTheme.colorScheme.primaryContainer
-            )
+    AppCard(
+        modifier = Modifier.fillMaxWidth(),
+        containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
 
         Column(
@@ -895,10 +879,8 @@ private fun ReminderItemCard(
             )
         }
 
-    Card(
-        modifier =
-            Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp)
+    AppCard(
+        modifier = Modifier.fillMaxWidth()
     ) {
 
         Column(
@@ -1156,18 +1138,9 @@ private fun EmptyReminderCard(
     onAddReminder: () -> Unit
 ) {
 
-    Card(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .clickable(
-                    onClick =
-                        onAddReminder
-                ),
-        shape =
-            RoundedCornerShape(
-                20.dp
-            )
+    AppCard(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onAddReminder
     ) {
 
         Column(
