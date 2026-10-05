@@ -815,6 +815,7 @@ fun DashboardTrendChart(
     }
 }
 @Composable
+// Shared account carousel entry point.
 fun DashboardAccountsCard(
     accounts: List<ReportCalculator.AccountSummary>,
 ) {
