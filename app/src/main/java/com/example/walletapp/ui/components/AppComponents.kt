@@ -184,6 +184,23 @@ fun AppPrimaryButton(
 }
 
 @Composable
+fun AppTextButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    contentColor: Color = MaterialTheme.colorScheme.primary,
+    content: @Composable RowScope.() -> Unit,
+) {
+    androidx.compose.material3.TextButton(
+        onClick = onClick,
+        modifier = modifier.height(AppDimens.ButtonHeight),
+        enabled = enabled,
+        colors = androidx.compose.material3.ButtonDefaults.textButtonColors(contentColor = contentColor),
+        content = content,
+    )
+}
+
+@Composable
 fun AppOutlinedButton(
     text: String,
     onClick: () -> Unit,
