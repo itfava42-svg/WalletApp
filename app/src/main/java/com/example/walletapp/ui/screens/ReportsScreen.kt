@@ -22,9 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.ReportCalculator
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppOutlinedButton
+import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.ui.components.DashboardBottomBar
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.appNavItems
@@ -160,20 +160,17 @@ Spacer(modifier = Modifier.weight(1f))
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             ReportPeriod.entries.forEach { period ->
-                TextButton(
-                    onClick = { selectedPeriod = period }
-                ) {
-                    Text(
-                        text = if (period == selectedPeriod) {
-                            "● ${period.title}"
-                        } else {
-                            period.title
-                        },
-                        fontWeight = if (period == selectedPeriod) {
-                            FontWeight.Bold
-                        } else {
-                            FontWeight.Normal
-                        },
+                if (period == selectedPeriod) {
+                    AppPrimaryButton(
+                        modifier = Modifier.weight(1f),
+                        text = "● ${period.title}",
+                        onClick = { selectedPeriod = period },
+                    )
+                } else {
+                    AppOutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        text = period.title,
+                        onClick = { selectedPeriod = period },
                     )
                 }
             }
@@ -565,9 +562,10 @@ private fun FinancialHealthCard(
                 style = MaterialTheme.typography.bodyMedium,
             )
 
-            Surface(
+            AppCard(
                 modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
             ) {
                 Text(
                     text = trendText,
@@ -1332,10 +1330,10 @@ private fun MetricBox(
     value: String,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
+    AppCard(
         modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier.padding(13.dp),
@@ -1495,9 +1493,10 @@ private fun MiniMetric(
     title: String,
     value: String,
 ) {
-    Surface(
+    AppCard(
         modifier = modifier,
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier.padding(14.dp),
@@ -1820,9 +1819,10 @@ private fun MonthComparisonCard(
                 change = netChange,
             )
 
-            Surface(
+            AppCard(
                 modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
             ) {
                 Text(
                     text = insight,
@@ -1991,10 +1991,10 @@ private fun CategoryGrowthCard(
             } else {
 
                 biggestIncrease?.let { item ->
-                    Surface(
+                    AppCard(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                     ) {
                         Column(
                             modifier = Modifier.padding(12.dp),
