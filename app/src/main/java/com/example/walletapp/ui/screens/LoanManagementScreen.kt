@@ -625,26 +625,18 @@ private fun EmptyLoanState(
                 color = MatureColors.TextSecondary
             )
 
-            Button(
+            AppPrimaryButton(
+                text = "ثبت وام جدید",
                 onClick = onAdd,
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MatureColors.Primary
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = null,
-                    modifier = Modifier.size(19.dp)
-                )
-
-                Spacer(Modifier.size(7.dp))
-
-                Text(
-                    text = "ثبت وام جدید",
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                containerColor = MatureColors.Primary,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(19.dp)
+                    )
+                }
+            )
         }
     }
 }
@@ -1285,7 +1277,8 @@ private fun LoanInstallmentsDialog(
                                                 MatureColors.Success
                                         )
                                     } else {
-                                        Button(
+                                        AppPrimaryButton(
+                                            text = "ثبت پرداخت",
                                             onClick = {
                                                 val alreadyPaid =
                                                     LoanStore
@@ -1303,19 +1296,8 @@ private fun LoanInstallmentsDialog(
                                                     selectedAccountId = null
                                                 }
                                             },
-                                            colors =
-                                                ButtonDefaults.buttonColors(
-                                                    containerColor =
-                                                        MatureColors.Primary
-                                                ),
-                                            shape =
-                                                RoundedCornerShape(11.dp)
-                                        ) {
-                                            Text(
-                                                text = "ثبت پرداخت",
-                                                fontSize = 13.sp
-                                            )
-                                        }
+                                            containerColor = MatureColors.Primary
+                                        )
                                     }
                                 }
                             }
@@ -1515,16 +1497,13 @@ private fun LoanInstallmentsDialog(
             },
             dismissButton = {
 
-                OutlinedButton(
+                AppOutlinedButton(
+                    text = "انصراف",
                     onClick = {
                         selectedInstallmentNumber = null
                         selectedAccountId = null
-                    },
-                    shape =
-                        RoundedCornerShape(11.dp)
-                ) {
-                    Text("انصراف")
-                }
+                    }
+                )
             }
         )
     }}
@@ -2589,12 +2568,10 @@ private fun LoanEditorDialog(
             }
         },
         dismissButton = {
-            OutlinedButton(
-                onClick = onDismiss,
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Text("انصراف")
-            }
+            AppOutlinedButton(
+                text = "انصراف",
+                onClick = onDismiss
+            )
         }
     )
 }
