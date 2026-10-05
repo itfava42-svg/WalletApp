@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -25,7 +29,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -254,6 +265,116 @@ fun AppTextField(
     )
 }
 
+
+data class AppBankCardItem(
+    val title: String,
+    val subtitle: String,
+    val balance: String,
+    val icon: ImageVector,
+)
+
+@Composable
+fun AppBankCardCarousel(
+    items: List<AppBankCardItem>,
+    modifier: Modifier = Modifier,
+    onCardSelected: ((Int) -> Unit)? = null,
+) {
+    if (items.isEmpty()) return
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    val listState = rememberLazyListState()
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text("حساب‌های من", style = AppTextStyles.headlineSm)
+
+            Row {
+                IconButton(
+                    onClick = {
+                        if (selectedIndex > 0) {
+                            selectedIndex--
+                            listState.animateScrollToItem(selectedIndex)
+                            onCardSelected?.invoke(selectedIndex)
+                        }
+                    },
+                    enabled = selectedIndex > 0,
+                ) {
+                    Icon(Icons.Filled.ChevronRight, contentDescription = "حساب قبلی")
+                }
+                IconButton(
+                    onClick = {
+                        if (selectedIndex < items.lastIndex) {
+                            selectedIndex++
+                            listState.animateScrollToItem(selectedIndex)
+                            onCardSelected?.invoke(selectedIndex)
+                        }
+                    },
+                    enabled = selectedIndex < items.lastIndex,
+                ) {
+                    Icon(Icons.Filled.ChevronLeft, contentDescription = "حساب بعدی")
+                }
+            }
+        }
+
+        Spacer(Modifier.height(AppDimens.ItemGap))
+
+        LazyRow(
+            state = listState,
+            horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+        ) {
+            itemsIndexed(items) { index, item ->
+                AppCard(
+                    modifier = Modifier.width(292.dp),
+                    containerColor = if (index == selectedIndex) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
+                    border = if (index == selectedIndex) {
+                        BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                    } else null,
+                    onClick = {
+                        selectedIndex = index
+                        onCardSelected?.invoke(index)
+                    },
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                        Text(
+                            item.title,
+                            style = AppTextStyles.headlineSm,
+                            modifier = Modifier.weight(1f).padding(start = AppDimens.ItemGap),
+                        )
+                    }
+                    Spacer(Modifier.height(AppDimens.ItemGap))
+                    Text(
+                        item.subtitle,
+                        style = AppTextStyles.bodyMd,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(AppDimens.CompactPadding))
+                    Text(
+                        item.balance,
+                        style = AppTextStyles.numeralXl,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun AppListRow(
