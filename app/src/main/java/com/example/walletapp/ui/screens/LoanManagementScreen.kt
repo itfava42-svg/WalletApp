@@ -1922,7 +1922,7 @@ private fun LoanEditorFullScreen(
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().clickable { expandedInterval = true },
                             shape = RoundedCornerShape(18.dp),
-                            label = { Text("فاصله اقساط") },
+                            label = "فاصله اقساط",
                             leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) }
                         )
                         DropdownMenu(expanded = expandedInterval, onDismissRequest = { expandedInterval = false }) {
@@ -1964,7 +1964,7 @@ private fun LoanEditorFullScreen(
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().clickable { expandedType = true },
                             shape = RoundedCornerShape(18.dp),
-                            label = { Text("نوع وام") },
+                            label = "نوع وام",
                             leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                         )
                         DropdownMenu(expanded = expandedType, onDismissRequest = { expandedType = false }) {
@@ -2048,14 +2048,14 @@ private fun LoanEditorFullScreen(
             }
 
             LoanEditorDashboardCard(title = "ضمانت و یادآوری") {
-                    OutlinedTextField(
+                    AppTextField(
                         value = guaranteeNote,
                         onValueChange = { guaranteeNote = it },
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 2,
                         maxLines = 4,
                         shape = RoundedCornerShape(18.dp),
-                        label = { Text("ضمانت و توضیحات") },
+                        label = "ضمانت و توضیحات",
                         placeholder = { Text("توضیحات اختیاری") }
                     )
                     Spacer(Modifier.height(10.dp))
@@ -2345,14 +2345,13 @@ private fun LoanEditorDialog(
 
                     item {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            OutlinedTextField(
+                            AppTextField(
                                 value = "هر $intervalMonths ماه",
                                 onValueChange = {},
                                 readOnly = true,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { expandedInterval = true },
-                                shape = RoundedCornerShape(14.dp),
                                 label = { Text("فاصله اقساط") },
                                 leadingIcon = {
                                     Icon(
@@ -2383,7 +2382,6 @@ private fun LoanEditorDialog(
                     item {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(14.dp),
                             color = LoanGreenLight
                         ) {
                             Row(
@@ -2424,14 +2422,13 @@ private fun LoanEditorDialog(
 
                     item {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            OutlinedTextField(
+                            AppTextField(
                                 value = loanType.label,
                                 onValueChange = {},
                                 readOnly = true,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { expandedType = true },
-                                shape = RoundedCornerShape(14.dp),
                                 label = { Text("نوع وام") },
                                 leadingIcon = {
                                     Icon(
@@ -2488,7 +2485,6 @@ private fun LoanEditorDialog(
                             modifier = Modifier.fillMaxWidth(),
                             minLines = 2,
                             maxLines = 4,
-                            shape = RoundedCornerShape(14.dp),
                             label = { Text("ضمانت و توضیحات") },
                             placeholder = { Text("توضیحات اختیاری") }
                         )
@@ -2639,15 +2635,12 @@ private fun DateField(
 ) {
     var showPicker by remember { mutableStateOf(false) }
 
-    OutlinedTextField(
+    AppTextField(
         value = value,
         onValueChange = {},
         readOnly = true,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        label = {
-            Text(label)
-        },
+        label = label,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.CalendarMonth,
