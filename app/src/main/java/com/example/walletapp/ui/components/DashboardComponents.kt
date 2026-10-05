@@ -307,15 +307,11 @@ fun DashboardCategorySummaryCard(
     val visibleCategories = categories.take(6)
     val displayedTotal = visibleCategories.sumOf { it.expense }
 
-    Card(
+    AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(20.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.CardGap),
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
             Text(
                 text = "هزینه‌ها بر اساس دسته‌بندی",
                 style = MaterialTheme.typography.titleMedium,
@@ -363,7 +359,6 @@ fun DashboardCategorySummaryCard(
                     )
                 }
             }
-        }
     }
 }
 
@@ -434,15 +429,14 @@ fun QuickAction(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Surface(
-            onClick = onClick,
-            shape = RoundedCornerShape(16.dp),
-            color = containerColor,
-            tonalElevation = 0.dp,
-            shadowElevation = 1.dp,
+        AppCard(
             modifier = Modifier.size(52.dp),
+            containerColor = containerColor,
+            contentPadding = PaddingValues(0.dp),
+            onClick = onClick,
         ) {
             Box(
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -477,18 +471,14 @@ fun TransactionRow(
     val amountColor = if (isExpense) AppError else Primary
     val sign = if (isExpense) "-" else "+"
 
-    Surface(
+    AppCard(
+        modifier = modifier,
+        containerColor = SurfaceContainerLowest,
+        contentPadding = PaddingValues(horizontal = AppDimens.CardPadding, vertical = AppDimens.CompactPadding),
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        color = SurfaceContainerLowest,
-        tonalElevation = 0.dp,
-        shadowElevation = 1.dp,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 13.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -615,23 +605,10 @@ fun DashboardBottomBar(
                             .fillMaxHeight(),
                         contentAlignment = Alignment.Center,
                     ) {
-                        FloatingActionButton(
+                        DashboardFab(
                             onClick = { onSelect(2) },
                             modifier = Modifier.size(54.dp),
-                            shape = CircleShape,
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
-                            elevation = FloatingActionButtonDefaults.elevation(
-                                defaultElevation = 5.dp,
-                                pressedElevation = 2.dp,
-                            ),
-                        ) {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = "ثبت تراکنش",
-                                modifier = Modifier.size(27.dp),
-                            )
-                        }
+                        )
                     }
                 } else {
                     NavigationBarItem(
