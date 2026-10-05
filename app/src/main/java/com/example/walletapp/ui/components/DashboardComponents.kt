@@ -365,6 +365,8 @@ fun DashboardCategorySummaryCard(
             }
         }
     }
+}
+
 @Composable
 private fun SummaryStat(
     label: String,
