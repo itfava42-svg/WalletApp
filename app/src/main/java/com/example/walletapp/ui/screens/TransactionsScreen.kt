@@ -33,7 +33,6 @@ import androidx.compose.material.icons.outlined.HistoryToggleOff
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -290,7 +289,7 @@ fun TransactionsScreen(
                 horizontalArrangement = Arrangement.spacedBy(7.dp),
             ) {
                 TransactionFilter.entries.forEach { filter ->
-                    FilterChip(
+                    AppFilterChip(
                         selected = selectedFilter == filter,
                         onClick = {
                             selectedFilter = filter
