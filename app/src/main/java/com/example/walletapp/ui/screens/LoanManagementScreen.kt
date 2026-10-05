@@ -1429,12 +1429,13 @@ private fun LoanInstallmentsDialog(
             },
             confirmButton = {
 
-                Button(
+                AppPrimaryButton(
+                    text = "ثبت پرداخت",
                     onClick = {
 
                         val accountId =
                             selectedAccountId
-                                ?: return@Button
+                                ?: return@AppPrimaryButton
 
                         val alreadyPaid =
                             LoanStore
@@ -1452,14 +1453,8 @@ private fun LoanInstallmentsDialog(
 
                             if (!LoanPaymentDateValidator.isPaymentDateValid(currentLoan, now)) {
                                 loanPaymentError = LoanPaymentDateValidator.ERROR_MESSAGE
-                                return@Button
+                                return@AppPrimaryButton
                             }
-
-                            val today =
-                                JalaliCalendar
-                                    .fromEpochMillisSlashed(
-                                        now
-                                    )
 
                             val recorded =
                                 LoanPaymentManager.recordManualInstallmentPayment(
@@ -1481,20 +1476,8 @@ private fun LoanInstallmentsDialog(
                     },
                     enabled =
                         selectedAccountId != null &&
-                            activeAccounts.isNotEmpty(),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor =
-                                MatureColors.Primary
-                        ),
-                    shape =
-                        RoundedCornerShape(11.dp)
-                ) {
-                    Text(
-                        text = "ثبت پرداخت",
-                        fontSize = 13.sp
-                    )
-                }
+                            activeAccounts.isNotEmpty()
+                )
             },
             dismissButton = {
 
