@@ -1,6 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppFloatingActionButton
+import com.example.walletapp.ui.components.AppFilterChip
 
 import com.example.walletapp.reminders.ReminderManager
 import androidx.compose.foundation.background
@@ -33,7 +34,6 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -834,7 +834,7 @@ private fun LazyFilterRow(
             ReminderFilter.entries
         ) { filter ->
 
-            FilterChip(
+            AppFilterChip(
                 selected =
                     selectedFilter == filter,
 
