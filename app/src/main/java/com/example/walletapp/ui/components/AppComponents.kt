@@ -456,24 +456,57 @@ fun AppStatCard(
     value: String,
     modifier: Modifier = Modifier,
     supportingText: String? = null,
+    onClick: (() -> Unit)? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
 ) {
-    AppCard(modifier = modifier) {
-        Text(
-            title,
-            style = AppTextStyles.bodyMd,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(
-            value,
-            style = AppTextStyles.numeralXl,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        if (!supportingText.isNullOrBlank()) {
+    AppCard(
+        modifier = modifier,
+        onClick = onClick,
+    ) {
+        if (leadingIcon != null) {
+            Row(
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+            ) {
+                leadingIcon()
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        title,
+                        style = AppTextStyles.bodyMd,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        value,
+                        style = AppTextStyles.numeralXl,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    if (!supportingText.isNullOrBlank()) {
+                        Text(
+                            supportingText,
+                            style = AppTextStyles.labelMd,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+        } else {
             Text(
-                supportingText,
-                style = AppTextStyles.labelMd,
+                title,
+                style = AppTextStyles.bodyMd,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Text(
+                value,
+                style = AppTextStyles.numeralXl,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            if (!supportingText.isNullOrBlank()) {
+                Text(
+                    supportingText,
+                    style = AppTextStyles.labelMd,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }
