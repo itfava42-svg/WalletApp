@@ -1,5 +1,7 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppFloatingActionButton
+
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.RadioButton
 import com.example.walletapp.data.AccountStore
@@ -45,7 +47,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -146,7 +147,7 @@ fun LoanManagementScreen(
         },
 
         floatingActionButton = {
-            FloatingActionButton(
+            AppFloatingActionButton(
                 onClick = {
                     showAddDialog = true
                 },

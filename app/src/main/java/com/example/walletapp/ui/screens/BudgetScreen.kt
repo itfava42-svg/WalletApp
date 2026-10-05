@@ -1,5 +1,9 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppFloatingActionButton
+
+import com.example.walletapp.ui.components.AppTextButton
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -52,7 +56,7 @@ fun BudgetScreen(
             DashboardBottomBar(items = appNavItems, selectedIndex = selectedNavIndex, onSelect = onNavSelect)
         },
         floatingActionButton = {
-            FloatingActionButton(
+            AppFloatingActionButton(
                 onClick = { showAddDialog = true },
                 containerColor = Primary,
                 contentColor = OnPrimary,
@@ -254,7 +258,7 @@ private fun AddBudgetDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = {
+            AppTextButton(onClick = {
                 val amount = amountDigits.toLongOrNull()
                 if (amount == null || amount <= 0) {
                     showError = true
@@ -264,7 +268,7 @@ private fun AddBudgetDialog(
             }) { Text("ذخیره") }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("انصراف") }
+            AppTextButton(onClick = onDismiss) { Text("انصراف") }
         },
     )
 }

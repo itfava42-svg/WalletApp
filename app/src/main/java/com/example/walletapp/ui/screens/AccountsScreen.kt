@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTextButton
+
 import com.example.walletapp.data.toPersianCurrency
 
 import androidx.compose.foundation.background
@@ -45,7 +47,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -391,7 +392,7 @@ bottomBar = {
                 )
             },
             confirmButton = {
-                TextButton(
+                AppTextButton(
                     onClick = {
 
                         val deleted =
@@ -413,7 +414,7 @@ bottomBar = {
                 }
             },
             dismissButton = {
-                TextButton(
+                AppTextButton(
                     onClick = {
                         accountPendingDelete = null
                     }
@@ -986,7 +987,7 @@ private fun AccountDialog(
 
         confirmButton = {
 
-            TextButton(
+            AppTextButton(
                 enabled = name.isNotBlank(),
                 onClick = {
 
@@ -1012,7 +1013,7 @@ private fun AccountDialog(
 
         dismissButton = {
 
-            TextButton(
+            AppTextButton(
                 onClick = onDismiss
             ) {
                 Text("انصراف")

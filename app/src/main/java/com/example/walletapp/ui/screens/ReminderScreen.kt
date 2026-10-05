@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppFloatingActionButton
+
 import com.example.walletapp.reminders.ReminderManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +34,6 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -258,7 +259,7 @@ fun ReminderScreen(
         },
 
         floatingActionButton = {
-            FloatingActionButton(
+            AppFloatingActionButton(
                 onClick = onAddReminder,
                 shape = RoundedCornerShape(16.dp),
                 containerColor = MaterialTheme.colorScheme.primary

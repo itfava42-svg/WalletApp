@@ -1,5 +1,7 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTextButton
+
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.data.toPersianDigits
@@ -38,7 +40,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -373,7 +374,7 @@ fun TransactionsScreen(
                     fontWeight = FontWeight.Bold,
                 )
 
-                TextButton(
+                AppTextButton(
                     onClick = {
                         newestFirst = !newestFirst
                     }

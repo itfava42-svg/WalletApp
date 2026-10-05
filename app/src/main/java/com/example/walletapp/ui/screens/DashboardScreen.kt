@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTextButton
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -536,7 +538,7 @@ bottomBar = {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text("آخرین تراکنش‌ها", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
-                    TextButton(onClick = onOpenTransactions) {
+                    AppTextButton(onClick = onOpenTransactions) {
                         Text("مشاهده همه", color = Primary, fontWeight = FontWeight.Bold)
                     }
                 }

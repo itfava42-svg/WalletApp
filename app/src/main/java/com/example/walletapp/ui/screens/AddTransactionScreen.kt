@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTextButton
+
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -460,7 +462,7 @@ fun AddTransactionScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextButton(
+                    AppTextButton(
                         onClick = {
                             galleryLauncher.launch(
                                 arrayOf(
@@ -488,7 +490,7 @@ fun AddTransactionScreen(
                         )
                     }
 
-                    TextButton(
+                    AppTextButton(
                         onClick = {
                             cameraPermissionLauncher.launch(
                                 Manifest.permission.CAMERA,
@@ -499,7 +501,7 @@ fun AddTransactionScreen(
                     }
 
                     if (selectedReceiptUri != null) {
-                        TextButton(
+                        AppTextButton(
                             onClick = {
                                 selectedReceiptUri = null
                                 cameraUri = null
