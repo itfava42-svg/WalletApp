@@ -243,6 +243,23 @@ fun AppFloatingActionButton(
 }
 
 @Composable
+fun AppFilterChip(
+    selected: Boolean,
+    onClick: () -> Unit,
+    label: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    androidx.compose.material3.FilterChip(
+        selected = selected,
+        onClick = onClick,
+        modifier = modifier.height(AppDimens.ButtonHeight),
+        enabled = enabled,
+        label = label,
+    )
+}
+
+@Composable
 fun AppTextField(
     value: String,
     onValueChange: (String) -> Unit,
