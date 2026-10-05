@@ -212,7 +212,7 @@ fun AppFloatingActionButton(
 fun AppTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String,
+    label: String = "",
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     singleLine: Boolean = true,
@@ -244,7 +244,7 @@ fun AppTextField(
         supportingText = supportingText,
         minLines = minLines,
         maxLines = maxLines,
-        label = { Text(label) },
+        label = if (label.isBlank()) null else ({ Text(label) }),
         shape = RoundedCornerShape(AppDimens.FieldRadius),
         textStyle = textStyle,
         colors = TextFieldDefaults.colors(
