@@ -244,7 +244,7 @@ private fun AddBudgetDialog(
                 Spacer(Modifier.height(AppDimens.ItemGap))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     BudgetPeriod.entries.forEach { period ->
-                        FilterChip(
+                        AppFilterChip(
                             selected = selectedPeriod == period,
                             onClick = { selectedPeriod = period },
                             label = { Text(period.label) },
