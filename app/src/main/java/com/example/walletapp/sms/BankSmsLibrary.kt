@@ -30,6 +30,8 @@ data class BankSmsSender(
 )
 
 /**
+ * CI-121 sender registry foundation.
+ *
  * Central bank-SMS sender registry.
  *
  * Sender identity is deliberately separated from message classification.
