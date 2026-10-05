@@ -568,17 +568,11 @@ private fun TransactionFullCard(
             else -> "-"
         }
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        color = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(20.dp),
-        tonalElevation = 0.dp,
+    AppCard(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(16.dp),
+        onClick = onClick,
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
