@@ -209,15 +209,12 @@ private fun ToolGridCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
+    AppCard(
         onClick = onClick,
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 0.dp,
-        shadowElevation = 1.dp,
         modifier = modifier
             .fillMaxWidth()
             .height(132.dp),
+        contentPadding = PaddingValues(16.dp),
     ) {
         Box(
             modifier = Modifier
