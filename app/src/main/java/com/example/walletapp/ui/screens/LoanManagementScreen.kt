@@ -2472,7 +2472,9 @@ private fun LoanEditorDialog(
             }
         },
         confirmButton = {
-            Button(
+            AppPrimaryButton(
+                text = if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
+
                 onClick = {
                     val amount = amountText.toLongOrNull() ?: 0L
                     val interest = interestText.toDoubleOrNull() ?: 0.0
@@ -2486,13 +2488,13 @@ private fun LoanEditorDialog(
                         installments <= 0 ||
                         startParts == null
                     ) {
-                        return@Button
+                        return@AppPrimaryButton
                     }
 
                     val paidInstallmentCount = existingLoan?.payments?.size ?: 0
 
                     if (existingLoan != null && installments < paidInstallmentCount) {
-                        return@Button
+                        return@AppPrimaryButton
                     }
 
                     val finalInstallment = if (calculatedInstallment > 0) {
@@ -2522,17 +2524,8 @@ private fun LoanEditorDialog(
                     )
 
                     onSave(loan)
-                },
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MatureColors.Primary
-                )
-            ) {
-                Text(
-                    if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                }
+            )
         },
         dismissButton = {
             AppOutlinedButton(
