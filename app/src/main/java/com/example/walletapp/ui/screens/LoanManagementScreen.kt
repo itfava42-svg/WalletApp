@@ -1807,22 +1807,20 @@ private fun LoanEditorFullScreen(
 
             item {
                 LoanEditorDashboardCard(title = "اطلاعات اصلی") {
-                    OutlinedTextField(
+                    AppTextField(
                         value = title,
                         onValueChange = { title = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        shape = RoundedCornerShape(18.dp),
                         label = { Text("نام وام") },
                         placeholder = { Text("مثلاً وام خرید") },                        leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                     )
                     Spacer(Modifier.height(10.dp))
-                    OutlinedTextField(
+                    AppTextField(
                         value = amountText,
                         onValueChange = { amountText = it.filter(Char::isDigit) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        shape = RoundedCornerShape(18.dp),
                         label = { Text("مبلغ وام") },
                         placeholder = { Text("مبلغ را وارد کنید") },
                         suffix = { Text("ریال") },
@@ -1859,12 +1857,11 @@ private fun LoanEditorFullScreen(
                     }
                     if (trackingMode == LoanTrackingMode.EXISTING) {
                         Spacer(Modifier.height(12.dp))
-                        OutlinedTextField(
+                        AppTextField(
                             value = historicalPaidText,
                             onValueChange = { historicalPaidText = it.filter(Char::isDigit) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            shape = RoundedCornerShape(18.dp),
                             label = { Text("تعداد اقساطی که قبلاً پرداخت شده") },
                             leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -1896,23 +1893,21 @@ private fun LoanEditorFullScreen(
             item {
                 LoanEditorDashboardCard(title = "شرایط بازپرداخت") {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        OutlinedTextField(
+                        AppTextField(
                             value = interestText,
                             onValueChange = { interestText = it },
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            shape = RoundedCornerShape(18.dp),
                             label = { Text("درصد سود") },
                             suffix = { Text("%") },
                             leadingIcon = { Icon(Icons.Filled.Percent, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
-                        OutlinedTextField(
+                        AppTextField(
                             value = totalInstallmentsText,
                             onValueChange = { totalInstallmentsText = it.filter(Char::isDigit) },
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            shape = RoundedCornerShape(18.dp),
                             label = { Text("تعداد اقساط") },
                             leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
