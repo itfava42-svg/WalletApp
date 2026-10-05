@@ -2,6 +2,7 @@
 
 import com.example.walletapp.ui.components.AppFloatingActionButton
 import com.example.walletapp.ui.components.AppFilterChip
+import com.example.walletapp.ui.components.AppStatCard
 
 import com.example.walletapp.reminders.ReminderManager
 import androidx.compose.foundation.background
