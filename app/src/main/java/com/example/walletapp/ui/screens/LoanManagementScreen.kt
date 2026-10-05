@@ -890,154 +890,43 @@ private fun LoanCard(
 
 
 @Composable
-private fun LoanInfoTile(
-    modifier: Modifier,
-    title: String,
-    value: String,
-    background: Color,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    iconTint: Color
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(18.dp),
-        color = background
-    ) {
-        Column(
-            modifier = Modifier.padding(13.dp),
-            verticalArrangement = Arrangement.spacedBy(7.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = iconTint,
-                modifier = Modifier.size(23.dp)
-            )
-
-            Text(
-                text = title,
-                fontSize = 11.sp,
-                color = MatureColors.TextSecondary
-            )
-
-            Text(
-                text = value,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = MatureColors.TextPrimary
-            )
+private fun LoanInfoTile(modifier: Modifier,title: String,value: String,background: Color,icon: androidx.compose.ui.graphics.vector.ImageVector,iconTint: Color) {
+    AppCard(modifier = modifier, containerColor = background, contentPadding = PaddingValues(13.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+            Icon(imageVector = icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(23.dp))
+            Text(text = title, fontSize = 11.sp, color = MatureColors.TextSecondary)
+            Text(text = value, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
         }
     }
 }
 
 @Composable
-private fun LoanSummaryTile(
-    modifier: Modifier,
-    title: String,
-    value: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    background: Color,
-    iconTint: Color
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
-        color = background
-    ) {
-        Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(7.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = iconTint,
-                modifier = Modifier.size(23.dp)
-            )
-
-            Text(
-                text = title,
-                fontSize = 11.sp,
-                color = MatureColors.TextSecondary
-            )
-
-            Text(
-                text = value,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = MatureColors.TextPrimary
-            )
+private fun LoanSummaryTile(modifier: Modifier,title: String,value: String,icon: androidx.compose.ui.graphics.vector.ImageVector,background: Color,iconTint: Color) {
+    AppCard(modifier = modifier, containerColor = background, contentPadding = PaddingValues(14.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+            Icon(imageVector = icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(23.dp))
+            Text(text = title, fontSize = 11.sp, color = MatureColors.TextSecondary)
+            Text(text = value, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
         }
     }
 }
 
 @Composable
-private fun LoanMiniSummary(
-    modifier: Modifier,
-    title: String,
-    value: String
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(14.dp),
-        color = MatureColors.Surface
-    ) {
-        Column(
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(
-                text = title,
-                fontSize = 10.sp,
-                color = MatureColors.TextSecondary
-            )
-
-            Spacer(Modifier.height(3.dp))
-
-            Text(
-                text = value,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = MatureColors.Primary
-            )
-        }
+private fun LoanMiniSummary(modifier: Modifier,title: String,value: String) {
+    AppCard(modifier = modifier, containerColor = MatureColors.Surface, contentPadding = PaddingValues(10.dp)) {
+        Text(text = title, fontSize = 10.sp, color = MatureColors.TextSecondary)
+        Spacer(Modifier.height(3.dp))
+        Text(text = value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MatureColors.Primary)
     }
 }
 
 @Composable
-private fun LoanDetailChip(
-    modifier: Modifier,
-    title: String,
-    value: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(14.dp),
-        color = MatureColors.Surface
-    ) {
-        Column(
-            modifier = Modifier.padding(9.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MatureColors.PrimaryLight,
-                modifier = Modifier.size(17.dp)
-            )
-
-            Text(
-                text = title,
-                fontSize = 10.sp,
-                color = MatureColors.TextSecondary
-            )
-
-            Text(
-                text = value,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
-                color = MatureColors.TextPrimary
-            )
+private fun LoanDetailChip(modifier: Modifier,title: String,value: String,icon: androidx.compose.ui.graphics.vector.ImageVector) {
+    AppCard(modifier = modifier, containerColor = MatureColors.Surface, contentPadding = PaddingValues(9.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Icon(imageVector = icon, contentDescription = null, tint = MatureColors.PrimaryLight, modifier = Modifier.size(17.dp))
+            Text(text = title, fontSize = 10.sp, color = MatureColors.TextSecondary)
+            Text(text = value, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MatureColors.TextPrimary)
         }
     }
 }
@@ -2561,34 +2450,11 @@ private fun LoanEditorSectionTitle(
 }
 
 @Composable
-private fun SmallLoanInfo(
-    modifier: Modifier,
-    title: String,
-    value: String
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(14.dp),
-        color = MatureColors.Surface
-    ) {
-        Column(
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(
-                text = title,
-                fontSize = 10.sp,
-                color = MatureColors.TextSecondary
-            )
-
-            Spacer(Modifier.height(3.dp))
-
-            Text(
-                text = value,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = MatureColors.TextPrimary
-            )
-        }
+private fun SmallLoanInfo(modifier: Modifier,title: String,value: String) {
+    AppCard(modifier = modifier, containerColor = MatureColors.Surface, contentPadding = PaddingValues(10.dp)) {
+        Text(text = title, fontSize = 10.sp, color = MatureColors.TextSecondary)
+        Spacer(Modifier.height(3.dp))
+        Text(text = value, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
     }
 }
 
