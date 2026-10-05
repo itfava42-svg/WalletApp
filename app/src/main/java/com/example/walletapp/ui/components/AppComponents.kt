@@ -311,7 +311,7 @@ fun AppBankCardCarousel(
                     onClick = {
                         if (selectedIndex < items.lastIndex) {
                             selectedIndex++
-                            listState.animateScrollToItem(selectedIndex)
+                            coroutineScope.launch { listState.animateScrollToItem(selectedIndex) }
                             onCardSelected?.invoke(selectedIndex)
                         }
                     },
