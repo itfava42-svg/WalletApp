@@ -2254,13 +2254,12 @@ private fun LoanEditorDialog(
                     item { LoanEditorSectionTitle(title = "اطلاعات وام") }
 
                     item {
-                        OutlinedTextField(
+                        AppTextField(
                             value = title,
                             onValueChange = { title = it },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            shape = RoundedCornerShape(14.dp),
-                            label = { Text("نام وام") },
+                            label = "نام وام",
                             placeholder = { Text("مثلاً وام خرید") },
                             leadingIcon = {
                                 Icon(
@@ -2273,13 +2272,12 @@ private fun LoanEditorDialog(
                     }
 
                     item {
-                        OutlinedTextField(
+                        AppTextField(
                             value = amountText,
                             onValueChange = { amountText = it.filter(Char::isDigit) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            shape = RoundedCornerShape(14.dp),
-                            label = { Text("مبلغ وام") },
+                            label = "مبلغ وام",
                             placeholder = { Text("مبلغ را وارد کنید") },
                             suffix = { Text("ریال") },
                             leadingIcon = {
@@ -2300,13 +2298,12 @@ private fun LoanEditorDialog(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            OutlinedTextField(
+                            AppTextField(
                                 value = interestText,
                                 onValueChange = { interestText = it },
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
-                                shape = RoundedCornerShape(14.dp),
-                                label = { Text("درصد سود") },
+                                label = "درصد سود",
                                 placeholder = { Text("۰") },
                                 suffix = { Text("%") },
                                 leadingIcon = {
@@ -2321,15 +2318,14 @@ private fun LoanEditorDialog(
                                 )
                             )
 
-                            OutlinedTextField(
+                            AppTextField(
                                 value = totalInstallmentsText,
                                 onValueChange = {
                                     totalInstallmentsText = it.filter(Char::isDigit)
                                 },
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
-                                shape = RoundedCornerShape(14.dp),
-                                label = { Text("تعداد اقساط") },
+                                label = "تعداد اقساط",
                                 placeholder = { Text("۱۲") },
                                 leadingIcon = {
                                     Icon(
