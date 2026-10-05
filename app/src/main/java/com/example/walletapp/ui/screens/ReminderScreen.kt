@@ -648,59 +648,19 @@ private fun SummaryBox(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit
 ) {
-
-    Surface(
-        modifier =
-            modifier.clickable(
-                onClick = onClick
-            ),
-        shape =
-            RoundedCornerShape(
-                14.dp
-            ),
-        tonalElevation = 1.dp
-    ) {
-
-        Column(
-            modifier =
-                Modifier.padding(
-                    10.dp
-                ),
-            horizontalAlignment =
-                Alignment.CenterHorizontally
-        ) {
-
+    AppStatCard(
+        title = title,
+        value = value,
+        modifier = modifier,
+        onClick = onClick,
+        leadingIcon = {
             Icon(
-                imageVector =
-                    icon,
-                contentDescription =
-                    null,
-                modifier =
-                    Modifier.size(
-                        20.dp
-                    )
-            )
-
-            Spacer(
-                modifier =
-                    Modifier.height(
-                        4.dp
-                    )
-            )
-
-            Text(
-                text = value,
-                fontWeight =
-                    FontWeight.Bold
-            )
-
-            Text(
-                text = title,
-                style =
-                    MaterialTheme.typography.labelSmall
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
             )
         }
-    }
+    )
 }
 
 @androidx.compose.runtime.Composable
