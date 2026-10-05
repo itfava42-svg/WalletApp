@@ -1813,7 +1813,7 @@ private fun LoanEditorFullScreen(
                         onValueChange = { title = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = { Text("نام وام") },
+                        label = "نام وام",
                         placeholder = { Text("مثلاً وام خرید") },                        leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                     )
                     Spacer(Modifier.height(10.dp))
@@ -1822,7 +1822,7 @@ private fun LoanEditorFullScreen(
                         onValueChange = { amountText = it.filter(Char::isDigit) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = { Text("مبلغ وام") },
+                        label = "مبلغ وام",
                         placeholder = { Text("مبلغ را وارد کنید") },
                         suffix = { Text("ریال") },
                         leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
@@ -1863,7 +1863,7 @@ private fun LoanEditorFullScreen(
                             onValueChange = { historicalPaidText = it.filter(Char::isDigit) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            label = { Text("تعداد اقساطی که قبلاً پرداخت شده") },
+                            label = "تعداد اقساطی که قبلاً پرداخت شده",
                             leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
@@ -1899,7 +1899,7 @@ private fun LoanEditorFullScreen(
                             onValueChange = { interestText = it },
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            label = { Text("درصد سود") },
+                            label = "درصد سود",
                             suffix = { Text("%") },
                             leadingIcon = { Icon(Icons.Filled.Percent, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -1909,7 +1909,7 @@ private fun LoanEditorFullScreen(
                             onValueChange = { totalInstallmentsText = it.filter(Char::isDigit) },
                             modifier = Modifier.weight(1f),
                             singleLine = true,
-                            label = { Text("تعداد اقساط") },
+                            label = "تعداد اقساط",
                             leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
