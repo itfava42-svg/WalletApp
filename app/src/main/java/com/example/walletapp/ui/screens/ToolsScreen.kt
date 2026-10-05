@@ -22,6 +22,7 @@ import com.example.walletapp.ui.models.ToolItem
 import com.example.walletapp.ui.models.toolsGrid
 import com.example.walletapp.ui.models.toolsTopRow
 import com.example.walletapp.ui.components.DashboardBottomBar
+import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.appNavItems
 import com.example.walletapp.ui.theme.OnSurface
 import com.example.walletapp.ui.theme.OnSurfaceVariant

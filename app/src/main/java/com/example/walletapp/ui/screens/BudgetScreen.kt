@@ -2,6 +2,7 @@ package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppFloatingActionButton
 import com.example.walletapp.ui.components.AppFilterChip
+import com.example.walletapp.ui.components.AppCard
 
 import com.example.walletapp.ui.components.AppTextButton
 
@@ -189,7 +190,6 @@ private fun BudgetCard(budget: Budget) {
                 )
             }
         }
-    }
 }
 
 @Composable

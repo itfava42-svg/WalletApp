@@ -1,6 +1,7 @@
 package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppTextButton
+import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppFilterChip
 
 import com.example.walletapp.data.JalaliCalendar
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -725,7 +727,6 @@ private fun TransactionFullCard(
                 )
             }
         }
-    }
 }
 
 private fun formatTransactionAmount(
