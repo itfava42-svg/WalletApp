@@ -150,13 +150,10 @@ private fun BudgetCard(budget: Budget) {
         else -> Primary
     }
 
-    Surface(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 0.dp,
+        contentPadding = PaddingValues(16.dp),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text(budget.category, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
