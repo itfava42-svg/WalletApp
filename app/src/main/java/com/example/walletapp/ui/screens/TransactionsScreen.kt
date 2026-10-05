@@ -35,7 +35,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -59,6 +58,7 @@ import com.example.walletapp.data.TransactionKind
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.ui.components.DashboardBottomBar
+import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.EditTransactionDialog
 import com.example.walletapp.ui.components.appNavItems
@@ -253,13 +253,12 @@ fun TransactionsScreen(
 
             Spacer(Modifier.height(10.dp))
 
-            OutlinedTextField(
+            AppTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
+                label = "جستجو",
                 singleLine = true,
-                shape = RoundedCornerShape(AppDimens.SmallCardRadius),
                 leadingIcon = {
                     Icon(
                         Icons.Filled.Search,
@@ -269,7 +268,7 @@ fun TransactionsScreen(
                 },
                 placeholder = {
                     Text(
-                        "جستجوی تراکنش، حساب یا دسته‌بندی"
+                        "تراکنش، حساب یا دسته‌بندی"
                     )
                 }
             )
