@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -283,6 +284,7 @@ fun AppBankCardCarousel(
 
     var selectedIndex by remember { mutableIntStateOf(0) }
     val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -297,7 +299,7 @@ fun AppBankCardCarousel(
                     onClick = {
                         if (selectedIndex > 0) {
                             selectedIndex--
-                            listState.animateScrollToItem(selectedIndex)
+                            coroutineScope.launch { listState.animateScrollToItem(selectedIndex) }
                             onCardSelected?.invoke(selectedIndex)
                         }
                     },
