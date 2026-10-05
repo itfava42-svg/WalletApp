@@ -475,7 +475,6 @@ private fun ColorSettingCard(
             )
         }
     }
-}
 
 @Composable
 private fun PreviewCard(
