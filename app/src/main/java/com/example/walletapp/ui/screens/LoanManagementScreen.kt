@@ -9,6 +9,8 @@ import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.ui.components.JalaliDatePickerDialog
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppPrimaryButton
+import com.example.walletapp.ui.components.AppOutlinedButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -403,14 +405,13 @@ fun LoanManagementScreen(
                 )
             },
             confirmButton = {
-                Button(
+                AppPrimaryButton(
+                    text = "حذف",
                     onClick = {
                         LoanManager.remove(loan.id)
                         deleteLoan = null
                     }
-                ) {
-                    Text("حذف")
-                }
+                )
             },
             dismissButton = {
                 TextButton(
@@ -887,19 +888,14 @@ private fun LoanCard(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            OutlinedButton(
+            AppOutlinedButton(
+                text = "مشاهده و مدیریت اقساط",
                 onClick = onInstallments,
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Payments,                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("مشاهده و مدیریت اقساط")
-            }
+                leadingIcon = {
+                    Icon(Icons.Filled.Payments, contentDescription = null)
+                }
+            )
         }
     }
 }
@@ -1329,12 +1325,10 @@ private fun LoanInstallmentsDialog(
             }
         },
         confirmButton = {
-            OutlinedButton(
-                onClick = onDismiss,
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Text("بستن")
-            }
+            AppOutlinedButton(
+                text = "بستن",
+                onClick = onDismiss
+            )
         }
     )
 
@@ -1736,25 +1730,21 @@ private fun LoanEditorFullScreen(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    OutlinedButton(
+                    AppOutlinedButton(
+                        text = "انصراف",
                         onClick = onDismiss,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(18.dp)
-                    ) { Text("انصراف") }
+                        modifier = Modifier.weight(1f)
+                    )
 
-                    Button(
+                    AppPrimaryButton(
+                        text = if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
                         onClick = ::saveLoan,
                         modifier = Modifier.weight(1.5f),
-                        shape = RoundedCornerShape(18.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MatureColors.Primary)
-                    ) {
-                        Icon(Icons.Filled.Save, contentDescription = null)
-                        Spacer(Modifier.width(7.dp))
-                        Text(
-                            text = if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                        containerColor = MatureColors.Primary,
+                        leadingIcon = {
+                            Icon(Icons.Filled.Save, contentDescription = null)
+                        }
+                    )
                 }
             }
         }
