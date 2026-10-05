@@ -578,7 +578,6 @@ private fun PreviewCard(
                 )
             }
         }
-    }
 }
 
 private fun parseHexColor(
