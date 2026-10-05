@@ -1,6 +1,8 @@
 package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppFloatingActionButton
+import com.example.walletapp.ui.components.AppIconBadge
+import com.example.walletapp.ui.theme.AppDimens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.RadioButton
@@ -429,55 +431,44 @@ private fun LoanHeader(
     totalRemainingAmount: Long,
     onBack: () -> Unit
 ) {
+    // The gradient is intentionally retained as a hero treatment; all reusable
+    // inner visual primitives use the shared design system.
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(27.dp),
+        shape = RoundedCornerShape(AppDimens.CardRadius),
         color = MatureColors.Primary
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MatureColors.PrimaryGradient)
-                .padding(20.dp)
+                .padding(AppDimens.CardPadding)
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(15.dp)
+                verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Surface(
-                        modifier = Modifier.size(48.dp),
-                        shape = RoundedCornerShape(15.dp),
-                        color = Color.White.copy(alpha = 0.12f)
-                    ) {
-                        Box(
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.AccountBalance,
-                                contentDescription = null,
-                                tint = MatureColors.Secondary,
-                                modifier = Modifier.size(26.dp)
-                            )
-                        }
-                    }
+                    AppIconBadge(
+                        icon = Icons.Filled.AccountBalance,
+                        contentDescription = null,
+                        containerColor = Color.White.copy(alpha = 0.12f),
+                        iconTint = MatureColors.Secondary,
+                        size = 48.dp,
+                        iconSize = 26.dp
+                    )
 
-                    Spacer(Modifier.size(12.dp))
+                    Spacer(Modifier.size(AppDimens.ItemGap))
 
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "مدیریت وام‌ها",
                             fontSize = 23.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
-
-                        Spacer(Modifier.height(3.dp))
-
                         Text(
                             text = "مدیریت و پیگیری تعهدات مالی",
                             fontSize = 12.sp,
@@ -485,9 +476,7 @@ private fun LoanHeader(
                         )
                     }
 
-                    IconButton(
-                        onClick = onBack
-                    ) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "بازگشت",
@@ -496,26 +485,21 @@ private fun LoanHeader(
                     }
                 }
 
-                Surface(
+                AppCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(17.dp),
-                    color = Color.White.copy(alpha = 0.10f)
+                    containerColor = Color.White.copy(alpha = 0.10f),
+                    contentPadding = PaddingValues(AppDimens.CompactPadding)
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(14.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "تعداد وام",
                                 fontSize = 11.sp,
                                 color = Color.White.copy(alpha = 0.68f)
                             )
-
                             Text(
                                 text = totalLoans.toString(),
                                 fontSize = 20.sp,
@@ -523,16 +507,12 @@ private fun LoanHeader(
                                 color = Color.White
                             )
                         }
-
-                        Column(
-                            modifier = Modifier.weight(2f)
-                        ) {
+                        Column(modifier = Modifier.weight(2f)) {
                             Text(
                                 text = "مانده تعهدات",
                                 fontSize = 11.sp,
                                 color = Color.White.copy(alpha = 0.68f)
                             )
-
                             Text(
                                 text = totalRemainingAmount.toPersianCurrency(),
                                 fontSize = 16.sp,
@@ -579,48 +559,35 @@ private fun LoanSectionTitle(
 private fun EmptyLoanState(
     onAdd: () -> Unit
 ) {
-    Surface(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(25.dp),
-        color = MatureColors.CardBackground
+        containerColor = MatureColors.CardBackground,
+        contentPadding = PaddingValues(30.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
         ) {
-            Surface(
-                modifier = Modifier.size(76.dp),
-                shape = RoundedCornerShape(23.dp),
-                color = MatureColors.SecondaryLight
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.AccountBalance,
-                        contentDescription = null,
-                        tint = MatureColors.Primary,
-                        modifier = Modifier.size(36.dp)
-                    )
-                }
-            }
-
+            AppIconBadge(
+                icon = Icons.Filled.AccountBalance,
+                contentDescription = null,
+                containerColor = MatureColors.SecondaryLight,
+                iconTint = MatureColors.Primary,
+                size = 76.dp,
+                iconSize = 36.dp
+            )
             Text(
                 text = "هنوز وامی ثبت نشده است",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MatureColors.TextPrimary
             )
-
             Text(
                 text = "برای شروع، اولین وام خود را ثبت کنید.",
                 fontSize = 13.sp,
                 color = MatureColors.TextSecondary
             )
-
             AppPrimaryButton(
                 text = "ثبت وام جدید",
                 onClick = onAdd,
@@ -1951,54 +1918,50 @@ private fun LoanTrackingModeCard(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    Surface(
-        modifier = modifier
-            .heightIn(min = 92.dp)
-            .clip(RoundedCornerShape(18.dp))
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(18.dp),
-        color = if (selected) {
+    AppCard(
+        modifier = modifier.heightIn(min = 92.dp),
+        containerColor = if (selected) {
             MatureColors.Primary.copy(alpha = 0.10f)
         } else {
             MatureColors.CardBackground
-        }
+        },
+        border = if (selected) {
+            androidx.compose.foundation.BorderStroke(
+                1.dp,
+                MatureColors.Primary.copy(alpha = 0.35f)
+            )
+        } else {
+            null
+        },
+        onClick = onClick,
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 9.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 9.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = selected,
-                    onClick = onClick
-                )
-                Spacer(Modifier.width(2.dp))
-                Text(
-                    text = mode.label,
-                    modifier = Modifier.weight(1f),
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MatureColors.TextPrimary,
-                    maxLines = 1
-                )
-            }
+            RadioButton(selected = selected, onClick = onClick)
+            Spacer(Modifier.width(2.dp))
             Text(
-                text = if (mode == LoanTrackingMode.NEW) {
-                    "شروع از قسط اول"
-                } else {
-                    "ادامه از وضعیت فعلی"
-                },
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 10.sp,
-                color = MatureColors.TextSecondary,
+                text = mode.label,
+                modifier = Modifier.weight(1f),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = MatureColors.TextPrimary,
                 maxLines = 1
             )
         }
+        Text(
+            text = if (mode == LoanTrackingMode.NEW) {
+                "شروع از قسط اول"
+            } else {
+                "ادامه از وضعیت فعلی"
+            },
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 10.sp,
+            color = MatureColors.TextSecondary,
+            maxLines = 1
+        )
     }
 }
 
@@ -2429,17 +2392,13 @@ private fun LoanEditorSectionTitle(
             .padding(top = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Surface(
-            modifier = Modifier.size(
-                width = 4.dp,
-                height = 20.dp
-            ),
-            shape = RoundedCornerShape(8.dp),
-            color = MatureColors.Secondary
-        ) {}
-
-        Spacer(Modifier.size(8.dp))
-
+        Box(
+            modifier = Modifier
+                .size(width = 4.dp, height = 20.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MatureColors.Secondary)
+        )
+        Spacer(Modifier.size(AppDimens.ItemGap))
         Text(
             text = title,
             fontSize = 14.sp,
