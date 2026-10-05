@@ -1,5 +1,4 @@
 package com.example.walletapp.ui.screens
-
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.RadioButton
 import com.example.walletapp.data.AccountStore
@@ -91,54 +90,43 @@ import kotlin.math.pow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.filled.MoreVert
-
 private val LoanOrange = MatureColors.Secondary
 private val LoanOrangeLight = MatureColors.SecondaryLight
 private val LoanGreen = MatureColors.Success
 private val LoanGreenLight = MatureColors.Surface
 private val LoanBlue = MatureColors.PrimaryLight
 private val LoanRed = MatureColors.PrimaryDark
-
 @Composable
 fun LoanManagementScreen(
     onNavigate: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
-
     var editingLoan by remember { mutableStateOf<LoanEntry?>(null) }
     var deleteLoan by remember { mutableStateOf<LoanEntry?>(null) }
     var installmentsLoan by remember { mutableStateOf<LoanEntry?>(null) }
     var showAddDialog by remember { mutableStateOf(false) }
-
     val totalLoans = LoanStore.loans.size
-
     val totalPrincipal =
         LoanStore.loans.sumOf { it.totalAmount }
-
     val totalPaid =
         LoanStore.loans.sumOf { loan ->
             loan.payments.sumOf { it.amount }
         }
-
     val totalPlanned =
         LoanStore.loans.sumOf { loan ->
             loan.installmentAmount *
                 loan.totalInstallments.toLong()
         }
-
     val totalPaidInstallments =
         LoanStore.loans.sumOf { loan ->
             loan.paidInstallmentNumbers().size
         }
-
     val totalInstallments =
         LoanStore.loans.sumOf {
             it.totalInstallments
         }
-
     val totalRemainingAmount =
         (totalPlanned - totalPaid).coerceAtLeast(0L)
-
     Scaffold(
         topBar = {
             LoanHeader(
@@ -149,7 +137,6 @@ fun LoanManagementScreen(
                 }
             )
         },
-
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -165,7 +152,6 @@ fun LoanManagementScreen(
             }
         }
     ) { paddingValues ->
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -178,7 +164,6 @@ fun LoanManagementScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-
             item {
                 AppCard(
                     modifier = Modifier.fillMaxWidth(),
@@ -189,29 +174,23 @@ fun LoanManagementScreen(
                             .fillMaxWidth()
                             .padding(20.dp)
                     ) {
-
                         Text(
                             text = "وضعیت وام‌ها",
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold,
                             color = MatureColors.TextPrimary
                         )
-
                         Spacer(modifier = Modifier.height(6.dp))
-
                         Text(
                             text = "نمای کلی تعهدات و پرداخت‌های شما",
                             fontSize = 12.sp,
                             color = MatureColors.TextPrimary.copy(alpha = 0.62f)
                         )
-
                         Spacer(modifier = Modifier.height(18.dp))
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-
                             LoanSummaryTile(
                                 modifier = Modifier.weight(1f),
                                 title = "تعداد وام",
@@ -220,7 +199,6 @@ fun LoanManagementScreen(
                                 background = MatureColors.SecondaryLight,
                                 iconTint = MatureColors.Secondary
                             )
-
                             LoanSummaryTile(
                                 modifier = Modifier.weight(1f),
                                 title = "پرداخت شده",
@@ -230,14 +208,11 @@ fun LoanManagementScreen(
                                 iconTint = MatureColors.Success
                             )
                         }
-
                         Spacer(modifier = Modifier.height(10.dp))
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-
                             LoanSummaryTile(
                                 modifier = Modifier.weight(1f),
                                 title = "کل تعهد",
@@ -246,7 +221,6 @@ fun LoanManagementScreen(
                                 background = MatureColors.CardBackground,
                                 iconTint = MatureColors.Primary
                             )
-
                             LoanSummaryTile(
                                 modifier = Modifier.weight(1f),
                                 title = "اقساط",
@@ -256,17 +230,13 @@ fun LoanManagementScreen(
                                 iconTint = MatureColors.Secondary
                             )
                         }
-
                         if (totalInstallments > 0) {
-
                             Spacer(modifier = Modifier.height(18.dp))
-
                             val progress =
                                 (
                                     totalPaidInstallments.toFloat() /
                                         totalInstallments.toFloat()
                                 ).coerceIn(0f, 1f)
-
                             LinearProgressIndicator(
                                 progress = { progress },
                                 modifier = Modifier
@@ -276,9 +246,7 @@ fun LoanManagementScreen(
                                 color = MatureColors.Primary,
                                 trackColor = MatureColors.CardBackground
                             )
-
                             Spacer(modifier = Modifier.height(7.dp))
-
                             Text(
                                 text =
                                     "${(progress * 100).toInt()}٪ از اقساط کل پرداخت شده",
@@ -289,7 +257,6 @@ fun LoanManagementScreen(
                     }
                 }
             }
-
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -304,14 +271,12 @@ fun LoanManagementScreen(
                             fontWeight = FontWeight.Bold,
                             color = MatureColors.TextPrimary
                         )
-
                         Text(
                             text = "برای مشاهده جزئیات و اقساط انتخاب کنید",
                             fontSize = 12.sp,
                             color = MatureColors.TextPrimary.copy(alpha = 0.58f)
                         )
                     }
-
                     Text(
                         text = "$totalLoans مورد",
                         fontSize = 12.sp,
@@ -320,9 +285,7 @@ fun LoanManagementScreen(
                     )
                 }
             }
-
             if (LoanStore.loans.isEmpty()) {
-
                 item {
                     EmptyLoanState(
                         onAdd = {
@@ -330,14 +293,11 @@ fun LoanManagementScreen(
                         }
                     )
                 }
-
             } else {
-
                 items(
                     items = LoanStore.loans,
                     key = { it.id }
                 ) { loan ->
-
                     LoanCard(
                         loan = loan,
                         onEdit = {
@@ -354,7 +314,6 @@ fun LoanManagementScreen(
             }
         }
     }
-
     if (showAddDialog) {
         LoanEditorFullScreen(
             existingLoan = null,
@@ -368,7 +327,6 @@ fun LoanManagementScreen(
             }
         )
     }
-
     editingLoan?.let { loan ->
         LoanEditorFullScreen(
             existingLoan = loan,
@@ -382,7 +340,6 @@ fun LoanManagementScreen(
             }
         )
     }
-
     installmentsLoan?.let { loan ->
         LoanInstallmentsDialog(
             loan = loan,
@@ -391,7 +348,6 @@ fun LoanManagementScreen(
             }
         )
     }
-
     deleteLoan?.let { loan ->
         AlertDialog(
             onDismissRequest = {
@@ -426,8 +382,6 @@ fun LoanManagementScreen(
         )
     }
 }
-
-
 @Composable
 private fun LoanHeader(
     totalLoans: Int,
@@ -468,9 +422,7 @@ private fun LoanHeader(
                             )
                         }
                     }
-
                     Spacer(Modifier.size(12.dp))
-
                     Column(
                         modifier = Modifier.weight(1f)
                     ) {
@@ -480,16 +432,13 @@ private fun LoanHeader(
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
-
                         Spacer(Modifier.height(3.dp))
-
                         Text(
                             text = "مدیریت و پیگیری تعهدات مالی",
                             fontSize = 12.sp,
                             color = Color.White.copy(alpha = 0.76f)
                         )
                     }
-
                     IconButton(
                         onClick = onBack
                     ) {
@@ -500,7 +449,6 @@ private fun LoanHeader(
                         )
                     }
                 }
-
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(17.dp),
@@ -520,7 +468,6 @@ private fun LoanHeader(
                                 fontSize = 11.sp,
                                 color = Color.White.copy(alpha = 0.68f)
                             )
-
                             Text(
                                 text = totalLoans.toString(),
                                 fontSize = 20.sp,
@@ -528,7 +475,6 @@ private fun LoanHeader(
                                 color = Color.White
                             )
                         }
-
                         Column(
                             modifier = Modifier.weight(2f)
                         ) {
@@ -537,7 +483,6 @@ private fun LoanHeader(
                                 fontSize = 11.sp,
                                 color = Color.White.copy(alpha = 0.68f)
                             )
-
                             Text(
                                 text = totalRemainingAmount.toPersianCurrency(),
                                 fontSize = 16.sp,
@@ -551,7 +496,6 @@ private fun LoanHeader(
         }
     }
 }
-
 @Composable
 private fun LoanSectionTitle(
     title: String,
@@ -571,7 +515,6 @@ private fun LoanSectionTitle(
             fontWeight = FontWeight.Bold,
             color = MatureColors.TextPrimary
         )
-
         Text(
             text = subtitle,
             fontSize = 11.sp,
@@ -579,7 +522,6 @@ private fun LoanSectionTitle(
         )
     }
 }
-
 @Composable
 private fun EmptyLoanState(
     onAdd: () -> Unit
@@ -612,20 +554,17 @@ private fun EmptyLoanState(
                     )
                 }
             }
-
             Text(
                 text = "هنوز وامی ثبت نشده است",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MatureColors.TextPrimary
             )
-
             Text(
                 text = "برای شروع، اولین وام خود را ثبت کنید.",
                 fontSize = 13.sp,
                 color = MatureColors.TextSecondary
             )
-
             AppPrimaryButton(
                 text = "ثبت وام جدید",
                 onClick = onAdd,
@@ -641,7 +580,6 @@ private fun EmptyLoanState(
         }
     }
 }
-
 @Composable
 private fun LoanCard(
     loan: LoanEntry,
@@ -651,18 +589,14 @@ private fun LoanCard(
 ) {
     val paidCount =
         loan.paidInstallmentNumbers().size
-
     val remainingCount =
         (loan.totalInstallments - paidCount)
             .coerceAtLeast(0)
-
     val paidAmount =
         loan.payments.sumOf { it.amount }
-
     val totalPlanned =
         loan.installmentAmount *
             loan.totalInstallments.toLong()
-
     val progress =
         if (loan.totalInstallments > 0) {
             (
@@ -672,27 +606,22 @@ private fun LoanCard(
         } else {
             0f
         }
-
     var menuExpanded by remember {
         mutableStateOf(false)
     }
-
     AppCard(
         modifier = Modifier.fillMaxWidth(),
         containerColor = MatureColors.Surface
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(18.dp)
         ) {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -708,29 +637,23 @@ private fun LoanCard(
                         tint = MatureColors.Primary
                     )
                 }
-
                 Spacer(modifier = Modifier.width(12.dp))
-
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-
                     Text(
                         text = loan.title,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = MatureColors.TextPrimary
                     )
-
                     Spacer(modifier = Modifier.height(3.dp))
-
                     Text(
                         text = loan.type.label,
                         fontSize = 12.sp,
                         color = MatureColors.TextPrimary.copy(alpha = 0.58f)
                     )
                 }
-
                 Box {
                     IconButton(
                         onClick = {
@@ -742,14 +665,12 @@ private fun LoanCard(
                             contentDescription = "گزینه‌ها"
                         )
                     }
-
                     DropdownMenu(
                         expanded = menuExpanded,
                         onDismissRequest = {
                             menuExpanded = false
                         }
                     ) {
-
                         DropdownMenuItem(
                             text = {
                                 Text("ویرایش")
@@ -765,7 +686,6 @@ private fun LoanCard(
                                 )
                             }
                         )
-
                         DropdownMenuItem(
                             text = {
                                 Text("اقساط")
@@ -781,7 +701,6 @@ private fun LoanCard(
                                 )
                             }
                         )
-
                         DropdownMenuItem(
                             text = {
                                 Text("حذف")
@@ -800,57 +719,45 @@ private fun LoanCard(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.height(18.dp))
-
             Text(
                 text = "مبلغ وام",
                 fontSize = 11.sp,
                 color = MatureColors.TextPrimary.copy(alpha = 0.55f)
             )
-
             Spacer(modifier = Modifier.height(4.dp))
-
             Text(
                 text = loan.totalAmount.toPersianCurrency(),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = MatureColors.TextPrimary
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-
                 LoanMiniSummary(
                     modifier = Modifier.weight(1f),
                     title = "قسط ماهانه",
                     value = loan.installmentAmount.toPersianCurrency()
                 )
-
                 LoanMiniSummary(
                     modifier = Modifier.weight(1f),
                     title = "پرداخت شده",
                     value = paidAmount.toPersianCurrency()
                 )
-
                 LoanMiniSummary(
                     modifier = Modifier.weight(1f),
                     title = "باقی‌مانده",
                     value = remainingCount.toString()
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
                     text = "$paidCount از ${loan.totalInstallments} قسط",
                     fontSize = 12.sp,
@@ -858,7 +765,6 @@ private fun LoanCard(
                     color = MatureColors.TextPrimary.copy(alpha = 0.68f),
                     modifier = Modifier.weight(1f)
                 )
-
                 Text(
                     text = "${(progress * 100).toInt()}٪",
                     fontSize = 12.sp,
@@ -866,9 +772,7 @@ private fun LoanCard(
                     color = MatureColors.Primary
                 )
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier
@@ -878,9 +782,7 @@ private fun LoanCard(
                 color = MatureColors.Primary,
                 trackColor = MatureColors.CardBackground
             )
-
             Spacer(modifier = Modifier.height(14.dp))
-
             AppOutlinedButton(
                 text = "مشاهده و مدیریت اقساط",
                 onClick = onInstallments,
@@ -892,8 +794,6 @@ private fun LoanCard(
         }
     }
 }
-
-
 @Composable
 private fun LoanInfoTile(
     modifier: Modifier,
@@ -918,13 +818,11 @@ private fun LoanInfoTile(
                 tint = iconTint,
                 modifier = Modifier.size(23.dp)
             )
-
             Text(
                 text = title,
                 fontSize = 11.sp,
                 color = MatureColors.TextSecondary
             )
-
             Text(
                 text = value,
                 fontSize = 14.sp,
@@ -934,7 +832,6 @@ private fun LoanInfoTile(
         }
     }
 }
-
 @Composable
 private fun LoanSummaryTile(
     modifier: Modifier,
@@ -959,13 +856,11 @@ private fun LoanSummaryTile(
                 tint = iconTint,
                 modifier = Modifier.size(23.dp)
             )
-
             Text(
                 text = title,
                 fontSize = 11.sp,
                 color = MatureColors.TextSecondary
             )
-
             Text(
                 text = value,
                 fontSize = 14.sp,
@@ -975,7 +870,6 @@ private fun LoanSummaryTile(
         }
     }
 }
-
 @Composable
 private fun LoanMiniSummary(
     modifier: Modifier,
@@ -995,9 +889,7 @@ private fun LoanMiniSummary(
                 fontSize = 10.sp,
                 color = MatureColors.TextSecondary
             )
-
             Spacer(Modifier.height(3.dp))
-
             Text(
                 text = value,
                 fontSize = 15.sp,
@@ -1007,7 +899,6 @@ private fun LoanMiniSummary(
         }
     }
 }
-
 @Composable
 private fun LoanDetailChip(
     modifier: Modifier,
@@ -1030,13 +921,11 @@ private fun LoanDetailChip(
                 tint = MatureColors.PrimaryLight,
                 modifier = Modifier.size(17.dp)
             )
-
             Text(
                 text = title,
                 fontSize = 10.sp,
                 color = MatureColors.TextSecondary
             )
-
             Text(
                 text = value,
                 fontSize = 13.sp,
@@ -1046,51 +935,38 @@ private fun LoanDetailChip(
         }
     }
 }
-
 @Composable
 private fun LoanInstallmentsDialog(
     loan: LoanEntry,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-
     AccountStore.attachContext(context)
     TransactionStore.attachContext(context)
-
     var selectedInstallmentNumber by remember {
         mutableStateOf<Int?>(null)
     }
-
     var selectedAccountId by remember {
         mutableStateOf<String?>(null)
     }
     var loanPaymentError by remember { mutableStateOf<String?>(null) }
-
     val activeAccounts =
         AccountStore.accounts.filter { it.isActive }
-
     val currentLoan =
         LoanStore.getById(loan.id) ?: loan
-
     val firstYear =
         currentLoan.firstInstallmentYear
-
     val firstMonth =
         currentLoan.firstInstallmentMonth
-
     val firstDay =
         currentLoan.firstInstallmentDay
-
     val paidInstallments =
         currentLoan.paidInstallmentNumbers()
-
     val paidCount =
         paidInstallments.size
-
     val remainingCount =
         (currentLoan.totalInstallments - paidCount)
             .coerceAtLeast(0)
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -1102,7 +978,6 @@ private fun LoanInstallmentsDialog(
                     fontWeight = FontWeight.Bold,
                     color = MatureColors.TextPrimary
                 )
-
                 Text(
                     text = currentLoan.title,
                     fontSize = 13.sp,
@@ -1114,7 +989,6 @@ private fun LoanInstallmentsDialog(
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(17.dp),
@@ -1133,13 +1007,11 @@ private fun LoanInstallmentsDialog(
                                 currentLoan.totalInstallments
                                     .toString()
                         )
-
                         SmallLoanInfo(
                             modifier = Modifier.weight(1f),
                             title = "پرداخت‌شده",
                             value = paidCount.toString()
                         )
-
                         SmallLoanInfo(
                             modifier = Modifier.weight(1f),
                             title = "باقی‌مانده",
@@ -1147,7 +1019,6 @@ private fun LoanInstallmentsDialog(
                         )
                     }
                 }
-
                 val hasDueDateBase =
                     (firstYear != null && firstMonth != null && firstDay != null) ||
                         (
@@ -1156,7 +1027,6 @@ private fun LoanInstallmentsDialog(
                                 currentLoan.trackingStartMonth != null &&
                                 currentLoan.trackingStartDay != null
                             )
-
                 if (!hasDueDateBase) {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
@@ -1183,14 +1053,11 @@ private fun LoanInstallmentsDialog(
                             ).toList(),
                             key = { it }
                         ) { number ->
-
                             val isPaid =
                                 paidInstallments
                                     .contains(number)
-
                             val dueDate =
                                 currentLoan.installmentDueDate(number)
-
                             Surface(
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(20.dp),
@@ -1232,9 +1099,7 @@ private fun LoanInstallmentsDialog(
                                             )
                                         }
                                     }
-
                                     Spacer(Modifier.size(10.dp))
-
                                     Column(
                                         modifier = Modifier.weight(1f),
                                         verticalArrangement =
@@ -1247,14 +1112,12 @@ private fun LoanInstallmentsDialog(
                                             color =
                                                 MatureColors.TextPrimary
                                         )
-
                                         Text(
                                             text = "سررسید: $dueDate",
                                             fontSize = 12.sp,
                                             color =
                                                 MatureColors.TextSecondary
                                         )
-
                                         Text(
                                             text =
                                                 currentLoan
@@ -1267,7 +1130,6 @@ private fun LoanInstallmentsDialog(
                                                 MatureColors.Primary
                                         )
                                     }
-
                                     if (isPaid) {
                                         Text(
                                             text = "پرداخت شده",
@@ -1291,7 +1153,6 @@ private fun LoanInstallmentsDialog(
                                                             it.installmentNumber ==
                                                                 number
                                                         } == true
-
                                                 if (!alreadyPaid) {
                                                     selectedInstallmentNumber = number
                                                     selectedAccountId = null
@@ -1314,7 +1175,6 @@ private fun LoanInstallmentsDialog(
             )
         }
     )
-
     loanPaymentError?.let { message ->
         AlertDialog(
             onDismissRequest = { loanPaymentError = null },
@@ -1341,7 +1201,6 @@ private fun LoanInstallmentsDialog(
         )
     }
     selectedInstallmentNumber?.let { installmentNumber ->
-
         AlertDialog(
             onDismissRequest = {
                 selectedInstallmentNumber = null
@@ -1356,21 +1215,16 @@ private fun LoanInstallmentsDialog(
             },
             text = {
                 if (activeAccounts.isEmpty()) {
-
                     Text(
                         text = "هیچ حساب فعالی برای ثبت پرداخت وجود ندارد.",
                         color = MatureColors.TextSecondary
                     )
-
                 } else {
-
                     Column(
                         verticalArrangement =
                             Arrangement.spacedBy(6.dp)
                     ) {
-
                         activeAccounts.forEach { account ->
-
                             Row(
                                 modifier =
                                     Modifier
@@ -1386,7 +1240,6 @@ private fun LoanInstallmentsDialog(
                                 verticalAlignment =
                                     Alignment.CenterVertically
                             ) {
-
                                 RadioButton(
                                     selected =
                                         selectedAccountId ==
@@ -1396,13 +1249,10 @@ private fun LoanInstallmentsDialog(
                                             account.id
                                     }
                                 )
-
                                 Spacer(
                                     Modifier.size(8.dp)
                                 )
-
                                 Column {
-
                                     Text(
                                         text = account.name,
                                         fontWeight =
@@ -1410,7 +1260,6 @@ private fun LoanInstallmentsDialog(
                                         color =
                                             MatureColors.TextPrimary
                                     )
-
                                     if (
                                         account.bankName.isNotBlank()
                                     ) {
@@ -1428,14 +1277,11 @@ private fun LoanInstallmentsDialog(
                 }
             },
             confirmButton = {
-
                 Button(
                     onClick = {
-
                         val accountId =
                             selectedAccountId
                                 ?: return@Button
-
                         val alreadyPaid =
                             LoanStore
                                 .getById(currentLoan.id)
@@ -1444,23 +1290,18 @@ private fun LoanInstallmentsDialog(
                                     it.installmentNumber ==
                                         installmentNumber
                                 } == true
-
                         if (!alreadyPaid) {
-
                             val now =
                                 System.currentTimeMillis()
-
                             if (!LoanPaymentDateValidator.isPaymentDateValid(currentLoan, now)) {
                                 loanPaymentError = LoanPaymentDateValidator.ERROR_MESSAGE
                                 return@Button
                             }
-
                             val today =
                                 JalaliCalendar
                                     .fromEpochMillisSlashed(
                                         now
                                     )
-
                             val recorded =
                                 LoanPaymentManager.recordManualInstallmentPayment(
                                     context = context,
@@ -1469,7 +1310,6 @@ private fun LoanInstallmentsDialog(
                                     accountId = accountId,
                                     paymentDateEpochMillis = now
                                 )
-
                             if (recorded) {
                                 selectedInstallmentNumber = null
                                 selectedAccountId = null
@@ -1497,7 +1337,6 @@ private fun LoanInstallmentsDialog(
                 }
             },
             dismissButton = {
-
                 AppOutlinedButton(
                     text = "انصراف",
                     onClick = {
@@ -1508,7 +1347,6 @@ private fun LoanInstallmentsDialog(
             }
         )
     }}
-
 private fun LoanEntry.paidInstallmentNumbers(): Set<Int> {
     val historical = if (trackingMode == LoanTrackingMode.EXISTING) {
         (1..historicalPaidInstallments.coerceAtMost(totalInstallments)).toSet()
@@ -1517,7 +1355,6 @@ private fun LoanEntry.paidInstallmentNumbers(): Set<Int> {
         .filter { it in 1..totalInstallments }.toSet()
     return historical + recorded
 }
-
 private fun LoanEntry.installmentDueDate(installmentNumber: Int): String {
     if (trackingMode == LoanTrackingMode.EXISTING &&
         trackingStartYear != null && trackingStartMonth != null && trackingStartDay != null &&
@@ -1541,7 +1378,6 @@ private fun LoanEntry.installmentDueDate(installmentNumber: Int): String {
         monthsToAdd = (installmentNumber - 1) * intervalMonths
     )
 }
-
 private fun calculateLoanInstallmentDate(
     year: Int,
     month: Int,
@@ -1552,27 +1388,20 @@ private fun calculateLoanInstallmentDate(
         (year * 12) +
             (month - 1) +
             monthsToAdd
-
     val newYear =
         totalMonths / 12
-
     val newMonth =
         (totalMonths % 12) + 1
-
     val maxDay =
         if (newMonth <= 6) {
             31
         } else {
             30
         }
-
     val newDay =
         day.coerceAtMost(maxDay)
-
     return "$newYear/${newMonth.toString().padStart(2, '0')}/${newDay.toString().padStart(2, '0')}"
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoanEditorFullScreen(
@@ -1620,7 +1449,6 @@ private fun LoanEditorFullScreen(
     }
     var expandedType by remember { mutableStateOf(false) }
     var expandedInterval by remember { mutableStateOf(false) }
-
     val calculatedInstallment = remember(amountText, interestText, totalInstallmentsText) {
         calculateMonthlyInstallment(
             principal = amountText.toLongOrNull() ?: 0L,
@@ -1628,7 +1456,6 @@ private fun LoanEditorFullScreen(
             numberOfPayments = totalInstallmentsText.toIntOrNull() ?: 0
         )
     }
-
     fun saveLoan() {
         val amount = amountText.toLongOrNull() ?: 0L
         val interest = interestText.toDoubleOrNull() ?: 0.0
@@ -1643,15 +1470,12 @@ private fun LoanEditorFullScreen(
             ?.toSet()
             ?.size ?: 0
         val totalPaidCount = if (trackingMode == LoanTrackingMode.EXISTING) historicalPaid + actualPaidInstallmentCount else actualPaidInstallmentCount
-
         if (title.isBlank() || amount <= 0 || installments <= 0 || startParts == null) return
         if (historicalPaid !in 0..installments) return
         if (trackingMode == LoanTrackingMode.EXISTING && trackingParts == null) return
         if (installments < totalPaidCount) return
-
         val finalInstallment = if (calculatedInstallment > 0) calculatedInstallment
         else installmentText.toLongOrNull() ?: 0L
-
         onSave(
             LoanEntry(
                 id = existingLoan?.id ?: UUID.randomUUID().toString(),
@@ -1680,7 +1504,6 @@ private fun LoanEditorFullScreen(
             )
         )
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -1715,7 +1538,6 @@ private fun LoanEditorFullScreen(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f)
                     )
-
                     AppPrimaryButton(
                         text = if (existingLoan == null) "ثبت وام" else "ذخیره تغییرات",
                         onClick = ::saveLoan,
@@ -1805,7 +1627,6 @@ private fun LoanEditorFullScreen(
                     }
                 }
             }
-
             item {
                 LoanEditorDashboardCard(title = "اطلاعات اصلی") {
                     AppTextField(
@@ -1830,7 +1651,6 @@ private fun LoanEditorFullScreen(
                     )
                 }
             }
-
             item {
                 LoanEditorDashboardCard(title = "وضعیت وام") {
                     Text(
@@ -1877,7 +1697,6 @@ private fun LoanEditorFullScreen(
                         Spacer(Modifier.height(10.dp))
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(18.dp),
                             color = MatureColors.SecondaryLight
                         ) {
                             Text(
@@ -1890,7 +1709,6 @@ private fun LoanEditorFullScreen(
                     }
                 }
             }
-
             item {
                 LoanEditorDashboardCard(title = "شرایط بازپرداخت") {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1921,7 +1739,6 @@ private fun LoanEditorFullScreen(
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().clickable { expandedInterval = true },
-                            shape = RoundedCornerShape(18.dp),
                             label = "فاصله اقساط",
                             leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) }
                         )
@@ -1937,7 +1754,6 @@ private fun LoanEditorFullScreen(
                     Spacer(Modifier.height(10.dp))
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp),
                         color = MatureColors.Success.copy(alpha = 0.10f)
                     ) {
                         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -1963,7 +1779,6 @@ private fun LoanEditorFullScreen(
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth().clickable { expandedType = true },
-                            shape = RoundedCornerShape(18.dp),
                             label = "نوع وام",
                             leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                         )
@@ -1978,7 +1793,6 @@ private fun LoanEditorFullScreen(
                     }
                 }
             }
-
             item {
                 LoanEditorDashboardCard(title = "تاریخ‌ها") {
                     DateField(
@@ -1996,7 +1810,6 @@ private fun LoanEditorFullScreen(
                     )
                 }
             }
-
             item {
                 LoanEditorDashboardCard(title = "حساب بانکی وام") {
                 Text(
@@ -2016,7 +1829,6 @@ private fun LoanEditorFullScreen(
                         readOnly = true,
                         modifier = Modifier.fillMaxWidth().clickable { expandedAccount = true },
                         singleLine = true,
-                        shape = RoundedCornerShape(18.dp),
                         label = { Text("حساب / بانک وام") },
                         trailingIcon = {
                             Icon(Icons.Filled.AccountBalance, contentDescription = null)
@@ -2046,7 +1858,6 @@ private fun LoanEditorFullScreen(
                 }
                 Spacer(Modifier.height(14.dp))
             }
-
             LoanEditorDashboardCard(title = "ضمانت و یادآوری") {
                     AppTextField(
                         value = guaranteeNote,
@@ -2054,14 +1865,12 @@ private fun LoanEditorFullScreen(
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 2,
                         maxLines = 4,
-                        shape = RoundedCornerShape(18.dp),
                         label = "ضمانت و توضیحات",
                         placeholder = { Text("توضیحات اختیاری") }
                     )
                     Spacer(Modifier.height(10.dp))
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp),
                         color = MatureColors.CardBackground
                     ) {
                         Row(
@@ -2081,7 +1890,6 @@ private fun LoanEditorFullScreen(
         }
     }
 }
-
 @Composable
 private fun LoanTrackingModeCard(
     modifier: Modifier,
@@ -2094,7 +1902,6 @@ private fun LoanTrackingModeCard(
             .heightIn(min = 92.dp)
             .clip(RoundedCornerShape(18.dp))
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(18.dp),
         color = if (selected) {
             MatureColors.Primary.copy(alpha = 0.10f)
         } else {
@@ -2139,7 +1946,6 @@ private fun LoanTrackingModeCard(
         }
     }
 }
-
 @Composable
 private fun LoanEditorDashboardCard(
     title: String,
@@ -2156,7 +1962,6 @@ private fun LoanEditorDashboardCard(
         }
     }
 }
-
 @Composable
 private fun LoanEditorDialog(
     existingLoan: LoanEntry?,
@@ -2164,7 +1969,6 @@ private fun LoanEditorDialog(
     onSave: (LoanEntry) -> Unit
 ) {
     val context = LocalContext.current
-
     var title by remember { mutableStateOf(existingLoan?.title ?: "") }
     var loanType by remember { mutableStateOf(existingLoan?.type ?: LoanType.PERSONAL) }
     var amountText by remember { mutableStateOf(existingLoan?.totalAmount?.toString() ?: "") }
@@ -2174,7 +1978,6 @@ private fun LoanEditorDialog(
         mutableStateOf(existingLoan?.totalInstallments?.toString() ?: "")
     }
     var intervalMonths by remember { mutableStateOf(existingLoan?.intervalMonths ?: 1) }
-
     var startDate by remember {
         mutableStateOf(
             existingLoan?.let {
@@ -2182,7 +1985,6 @@ private fun LoanEditorDialog(
             } ?: JalaliCalendar.todaySlashed()
         )
     }
-
     var firstInstallmentDate by remember {
         mutableStateOf(
             existingLoan?.let {
@@ -2198,12 +2000,10 @@ private fun LoanEditorDialog(
             } ?: ""
         )
     }
-
     var guaranteeNote by remember { mutableStateOf(existingLoan?.guaranteeNote ?: "") }
     var reminderEnabled by remember { mutableStateOf(existingLoan?.reminderEnabled ?: false) }
     var expandedType by remember { mutableStateOf(false) }
     var expandedInterval by remember { mutableStateOf(false) }
-
     val calculatedInstallment = remember(
         amountText,
         interestText,
@@ -2215,7 +2015,6 @@ private fun LoanEditorDialog(
             numberOfPayments = totalInstallmentsText.toIntOrNull() ?: 0
         )
     }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier.fillMaxWidth(0.94f),
@@ -2252,7 +2051,6 @@ private fun LoanEditorDialog(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     item { LoanEditorSectionTitle(title = "اطلاعات وام") }
-
                     item {
                         AppTextField(
                             value = title,
@@ -2270,7 +2068,6 @@ private fun LoanEditorDialog(
                             }
                         )
                     }
-
                     item {
                         AppTextField(
                             value = amountText,
@@ -2292,7 +2089,6 @@ private fun LoanEditorDialog(
                             )
                         )
                     }
-
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -2317,7 +2113,6 @@ private fun LoanEditorDialog(
                                     keyboardType = KeyboardType.Decimal
                                 )
                             )
-
                             AppTextField(
                                 value = totalInstallmentsText,
                                 onValueChange = {
@@ -2340,9 +2135,7 @@ private fun LoanEditorDialog(
                             )
                         }
                     }
-
                     item { LoanEditorSectionTitle(title = "تنظیمات اقساط") }
-
                     item {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             AppTextField(
@@ -2352,7 +2145,7 @@ private fun LoanEditorDialog(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { expandedInterval = true },
-                                label = { Text("فاصله اقساط") },
+                                label = "فاصله اقساط",
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Filled.Schedule,
@@ -2361,7 +2154,6 @@ private fun LoanEditorDialog(
                                     )
                                 }
                             )
-
                             DropdownMenu(
                                 expanded = expandedInterval,
                                 onDismissRequest = { expandedInterval = false }
@@ -2378,7 +2170,6 @@ private fun LoanEditorDialog(
                             }
                         }
                     }
-
                     item {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
@@ -2419,7 +2210,6 @@ private fun LoanEditorDialog(
                             }
                         }
                     }
-
                     item {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             AppTextField(
@@ -2429,7 +2219,7 @@ private fun LoanEditorDialog(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { expandedType = true },
-                                label = { Text("نوع وام") },
+                                label = "نوع وام",
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Filled.AccountBalance,
@@ -2438,7 +2228,6 @@ private fun LoanEditorDialog(
                                     )
                                 }
                             )
-
                             DropdownMenu(
                                 expanded = expandedType,
                                 onDismissRequest = { expandedType = false }
@@ -2455,9 +2244,7 @@ private fun LoanEditorDialog(
                             }
                         }
                     }
-
                     item { LoanEditorSectionTitle(title = "تاریخ‌ها") }
-
                     item {
                         DateField(
                             label = "تاریخ وام",
@@ -2466,7 +2253,6 @@ private fun LoanEditorDialog(
                             context = context
                         )
                     }
-
                     item {
                         DateField(
                             label = "تاریخ اولین قسط",
@@ -2475,17 +2261,15 @@ private fun LoanEditorDialog(
                             context = context
                         )
                     }
-
                     item { LoanEditorSectionTitle(title = "ضمانت و توضیحات") }
-
                     item {
-                        OutlinedTextField(
+                        AppTextField(
                             value = guaranteeNote,
                             onValueChange = { guaranteeNote = it },
                             modifier = Modifier.fillMaxWidth(),
                             minLines = 2,
                             maxLines = 4,
-                            label = { Text("ضمانت و توضیحات") },
+                            label = "ضمانت و توضیحات",
                             placeholder = { Text("توضیحات اختیاری") }
                         )
                     }
@@ -2500,7 +2284,6 @@ private fun LoanEditorDialog(
                     val installments = totalInstallmentsText.toIntOrNull() ?: 0
                     val startParts = parseJalaliDate(startDate)
                     val firstParts = parseJalaliDate(firstInstallmentDate)
-
                     if (
                         title.isBlank() ||
                         amount <= 0 ||
@@ -2509,19 +2292,15 @@ private fun LoanEditorDialog(
                     ) {
                         return@Button
                     }
-
                     val paidInstallmentCount = existingLoan?.payments?.size ?: 0
-
                     if (existingLoan != null && installments < paidInstallmentCount) {
                         return@Button
                     }
-
                     val finalInstallment = if (calculatedInstallment > 0) {
                         calculatedInstallment
                     } else {
                         installmentText.toLongOrNull() ?: 0L
                     }
-
                     val loan = LoanEntry(
                         id = existingLoan?.id ?: UUID.randomUUID().toString(),
                         title = title.trim(),
@@ -2541,7 +2320,6 @@ private fun LoanEditorDialog(
                         reminderEnabled = reminderEnabled,
                         payments = existingLoan?.payments ?: emptyList()
                     )
-
                     onSave(loan)
                 },
                 shape = RoundedCornerShape(14.dp),
@@ -2563,7 +2341,6 @@ private fun LoanEditorDialog(
         }
     )
 }
-
 @Composable
 private fun LoanEditorSectionTitle(
     title: String
@@ -2582,9 +2359,7 @@ private fun LoanEditorSectionTitle(
             shape = RoundedCornerShape(8.dp),
             color = MatureColors.Secondary
         ) {}
-
         Spacer(Modifier.size(8.dp))
-
         Text(
             text = title,
             fontSize = 14.sp,
@@ -2593,7 +2368,6 @@ private fun LoanEditorSectionTitle(
         )
     }
 }
-
 @Composable
 private fun SmallLoanInfo(
     modifier: Modifier,
@@ -2613,9 +2387,7 @@ private fun SmallLoanInfo(
                 fontSize = 10.sp,
                 color = MatureColors.TextSecondary
             )
-
             Spacer(Modifier.height(3.dp))
-
             Text(
                 text = value,
                 fontWeight = FontWeight.Bold,
@@ -2625,7 +2397,6 @@ private fun SmallLoanInfo(
         }
     }
 }
-
 @Composable
 private fun DateField(
     label: String,
@@ -2634,7 +2405,6 @@ private fun DateField(
     context: android.content.Context
 ) {
     var showPicker by remember { mutableStateOf(false) }
-
     AppTextField(
         value = value,
         onValueChange = {},
@@ -2664,7 +2434,6 @@ private fun DateField(
             }
         }
     )
-
     if (showPicker) {
         JalaliDatePickerDialog(
             initialDate = value,
@@ -2678,42 +2447,34 @@ private fun DateField(
         )
     }
 }
-
 private fun parseJalaliDate(
     value: String
 ): IntArray? {
     val parts = value.split("/")
-
     if (parts.size != 3) {
         return null
     }
-
     val year =
         parts[0].toIntOrNull()
             ?: return null
-
     val month =
         parts[1].toIntOrNull()
             ?: return null
-
     val day =
         parts[2].toIntOrNull()
             ?: return null
-
     if (
         month !in 1..12 ||
         day !in 1..31
     ) {
         return null
     }
-
     return intArrayOf(
         year,
         month,
         day
     )
 }
-
 private fun calculateMonthlyInstallment(
     principal: Long,
     annualInterestPercent: Double,
@@ -2725,48 +2486,19 @@ private fun calculateMonthlyInstallment(
     ) {
         return 0L
     }
-
     if (annualInterestPercent <= 0.0) {
         return principal / numberOfPayments
     }
-
     val monthlyRate =
         annualInterestPercent /
             100.0 /
             12.0
-
     val power =
         (1.0 + monthlyRate)
             .pow(numberOfPayments)
-
     val payment =
         principal *
             (monthlyRate * power) /
             (power - 1.0)
-
     return payment.toLong()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
