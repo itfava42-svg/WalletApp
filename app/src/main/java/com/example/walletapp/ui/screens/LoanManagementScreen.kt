@@ -41,8 +41,6 @@ import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.DropdownMenuItem
@@ -51,8 +49,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
@@ -415,13 +411,12 @@ fun LoanManagementScreen(
                 )
             },
             dismissButton = {
-                TextButton(
+                AppOutlinedButton(
+                    text = "انصراف",
                     onClick = {
                         deleteLoan = null
                     }
-                ) {
-                    Text("انصراف")
-                }
+                )
             }
         )
     }
