@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "policy": {
+    "green": "NEXT",
+    "red": "STOP_AND_FIX",
+    "unknown": "STOP"
+  },
+  "stages": [
+    {
+      "id": "CI-126",
+      "title": "Centralize reminder summary cards",
+      "commit": "c3e57cd9908a6641ef9faefcd15675c4c236bbf2",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "active",
+      "next": "CI-127 — Continue shared UI primitive audit"
+    }
+  ]
+}

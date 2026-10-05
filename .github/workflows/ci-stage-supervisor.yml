@@ -1,0 +1,53 @@
+name: CI Stage Supervisor
+
+on:
+  workflow_run:
+    workflows:
+      - "WalletApp CI Pipeline"
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "GitHub Actions run ID to evaluate"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  supervise:
+    name: CI Stage Supervisor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate CI result and stage
+        uses: actions/github-script@v7
+        env:
+          MANIFEST_PATH: ".github/ci/stages.json"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const runId = Number(context.eventName === "workflow_dispatch" ? core.getInput("run_id") : context.payload.workflow_run.id);
+            const { data: run } = await github.rest.actions.getWorkflowRun({ owner: context.repo.owner, repo: context.repo.repo, run_id: runId });
+            const headSha = run.head_sha;
+            const headBranch = run.head_branch || "unknown";
+            const { data: manifest } = await github.rest.repos.getContent({ owner: context.repo.owner, repo: context.repo.repo, path: process.env.MANIFEST_PATH, ref: headSha });
+            const stages = JSON.parse(Buffer.from(manifest.content, "base64").toString("utf8"));
+            const stage = stages.stages.find(s => headSha === s.commit || (s.branch === headBranch && s.status === "active"));
+            const conclusion = run.conclusion || "unknown";
+            const green = conclusion === "success";
+            core.notice("CI run " + runId + ": " + conclusion + "; branch=" + headBranch + "; sha=" + headSha);
+            if (!stage) { core.notice("No registered active stage matched this run. No progression requested."); return; }
+            const decision = green ? "NEXT" : "STOP_AND_FIX";
+            let body = "## CI Stage Supervisor — " + stage.id + "\n\n";
+            body += "**Result:** " + (green ? "🟢 GREEN" : "🔴 RED") + "\n\n";
+            body += "**CI run:** " + runId + "\n";
+            body += "**Commit:** " + headSha + "\n";
+            body += "**Decision:** `" + decision + "`\n\n";
+            if (green) { body += "**Next stage:** " + (stage.next || "UI COMPLETE / MANUAL REVIEW") + "\n\n"; body += "Progression is permitted. The next code change must be created and tested before another stage is accepted."; }
+            else { body += "Progression is blocked. Diagnose the actual GitHub Actions failure, fix it, and rerun CI before starting another stage."; }
+            for (const pr of (run.pull_requests || [])) { await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body }); }
+            if (!green) core.setFailed("Stage " + stage.id + " is RED; progression blocked.");
