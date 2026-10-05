@@ -815,108 +815,37 @@ fun DashboardTrendChart(
     }
 }
 @Composable
+@Composable
 fun DashboardAccountsCard(
     accounts: List<ReportCalculator.AccountSummary>,
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(20.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
-            Text(
-                text = "حساب‌های من",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            if (accounts.isEmpty()) {
-                Text(
-                    text = "هنوز حساب فعالی ثبت نشده است",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            } else {
-                accounts.forEachIndexed { index, summary ->
-
-                    val account = summary.account
-
-                    val accountType =
-                        when (account.type) {
-                            com.example.walletapp.data.AccountType.BANK -> "بانکی"
-                            com.example.walletapp.data.AccountType.CASH -> "نقدی"
-                            com.example.walletapp.data.AccountType.CARD -> "کارت"
-                            com.example.walletapp.data.AccountType.SAVINGS -> "پس‌انداز"
-                            com.example.walletapp.data.AccountType.WALLET -> "کیف پول"
-                        }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            imageVector =
-                                when (account.type) {
-                                    com.example.walletapp.data.AccountType.BANK ->
-                                        Icons.Filled.AccountBalance
-                                    com.example.walletapp.data.AccountType.CASH ->
-                                        Icons.Filled.Payments
-                                    com.example.walletapp.data.AccountType.CARD ->
-                                        Icons.Filled.CreditCard
-                                    com.example.walletapp.data.AccountType.SAVINGS ->
-                                        Icons.Filled.Savings
-                                    com.example.walletapp.data.AccountType.WALLET ->
-                                        Icons.Filled.AccountBalanceWallet
-                                },
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(28.dp),
-                        )
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        Column(
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text(
-                                text = account.name,
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold,
-                            )
-
-                            Text(
-                                text = listOfNotNull(
-                                    account.bankName
-                                        .trim()
-                                        .takeIf { it.isNotBlank() },
-                                    accountType,
-                                ).joinToString(" • "),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-
-                        Text(
-                            text = summary.balance.toPersianCurrency(),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
-
-                    if (index < accounts.lastIndex) {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = 12.dp),
-                        )
-                    }
-                }
+    val items = accounts.map { summary ->
+        val account = summary.account
+        val accountType =
+            when (account.type) {
+                com.example.walletapp.data.AccountType.BANK -> "بانکی"
+                com.example.walletapp.data.AccountType.CASH -> "نقدی"
+                com.example.walletapp.data.AccountType.CARD -> "کارت"
+                com.example.walletapp.data.AccountType.SAVINGS -> "پس‌انداز"
+                com.example.walletapp.data.AccountType.WALLET -> "کیف پول"
             }
-        }
+        AppBankCardItem(
+            title = account.name,
+            subtitle = listOfNotNull(
+                account.bankName.trim().takeIf { it.isNotBlank() },
+                accountType,
+            ).joinToString(" • "),
+            balance = summary.balance.toPersianCurrency(),
+            icon = when (account.type) {
+                com.example.walletapp.data.AccountType.BANK -> Icons.Filled.AccountBalance
+                com.example.walletapp.data.AccountType.CASH -> Icons.Filled.Payments
+                com.example.walletapp.data.AccountType.CARD -> Icons.Filled.CreditCard
+                com.example.walletapp.data.AccountType.SAVINGS -> Icons.Filled.Savings
+                com.example.walletapp.data.AccountType.WALLET -> Icons.Filled.AccountBalanceWallet
+            },
+        )
     }
+    AppBankCardCarousel(items = items)
 }
 @Composable
 fun DashboardFab(
