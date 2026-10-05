@@ -2,6 +2,7 @@
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -43,11 +44,10 @@ fun BalanceHeroCard(
         .filter { it.kind == TransactionKind.TRANSFER }
         .sumOf { it.amount }
 
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    AppCard(
+        modifier = modifier,
+        containerColor = Color.Transparent,
+        contentPadding = PaddingValues(0.dp),
     ) {
         Box(
             modifier = Modifier
@@ -160,17 +160,10 @@ fun DashboardMonthlySummaryCard(
     expense: Long,
     cashFlow: Long,
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-             .padding(horizontal = 0.dp, vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    AppCard(
+        modifier = Modifier.padding(vertical = AppDimens.CardGap),
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
@@ -248,15 +241,12 @@ fun DashboardPeriodComparisonCard(
             previous = previousExpense,
         )
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(20.dp),
+    AppCard(
+        modifier = Modifier.padding(
+            horizontal = AppDimens.PagePadding,
+            vertical = AppDimens.ItemGap,
+        ),
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
             Text(
                 text = "مقایسه با دوره قبل",
                 style = MaterialTheme.typography.titleMedium,
@@ -697,15 +687,9 @@ fun DashboardTrendChart(
     val incomeColor = MaterialTheme.colorScheme.primary
     val expenseColor = MaterialTheme.colorScheme.error
 
-    Card(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+    AppCard(
+        modifier = Modifier.padding(horizontal = AppDimens.PagePadding),
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
             Text(
                 text = "روند درآمد و هزینه",
                 style = MaterialTheme.typography.titleMedium,
