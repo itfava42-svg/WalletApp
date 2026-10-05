@@ -1,6 +1,7 @@
 package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppFloatingActionButton
+import com.example.walletapp.ui.components.AppFilterChip
 
 import com.example.walletapp.ui.components.AppTextButton
 
@@ -217,7 +218,7 @@ private fun AddBudgetDialog(
                         .horizontalScroll(rememberScrollState()),
                 ) {
                     TransactionCategories.expense.forEach { cat ->
-                        FilterChip(
+                        AppFilterChip(
                             selected = selectedCategory == cat.label,
                             onClick = { selectedCategory = cat.label },
                             label = { Text(cat.label) },
