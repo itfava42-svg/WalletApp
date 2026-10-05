@@ -7,12 +7,12 @@
   },
   "stages": [
     {
-      "id": "CI-126",
-      "title": "Centralize reminder summary cards",
-      "commit": "c3e57cd9908a6641ef9faefcd15675c4c236bbf2",
+      "id": "CI-128",
+      "title": "ادامه ممیزی و یکپارچه‌سازی Shared UI",
+      "commit": "423e31835a0d8e4e50d6cb2855c0cec92054454a",
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "active",
-      "next": "CI-127 — Continue shared UI primitive audit"
+      "next": "CI-129 — ادامه ممیزی primitiveهای UI"
     }
   ]
 }

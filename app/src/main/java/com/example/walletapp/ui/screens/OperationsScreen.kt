@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppIconBadge
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -137,19 +138,7 @@ fun OperationsScreen(
                                 .padding(16.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            androidx.compose.material3.Surface(
-                                shape = MaterialTheme.shapes.medium,
-                                color = MaterialTheme.colorScheme.primaryContainer,
-                            ) {
-                                Icon(
-                                    imageVector = operation.icon,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(10.dp)
-                                        .size(28.dp),
-                                    tint = MaterialTheme.colorScheme.primary,
-                                )
-                            }
+                            AppIconBadge(icon = operation.icon, size = 48.dp, iconSize = 28.dp)
 
                             Column {
                                 Text(

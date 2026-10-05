@@ -23,6 +23,7 @@ import com.example.walletapp.ui.models.toolsGrid
 import com.example.walletapp.ui.models.toolsTopRow
 import com.example.walletapp.ui.components.DashboardBottomBar
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.components.appNavItems
 import com.example.walletapp.ui.theme.OnSurface
 import com.example.walletapp.ui.theme.OnSurfaceVariant
@@ -177,21 +178,7 @@ private fun TopIconButton(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Surface(
-            onClick = onClick,
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier.size(52.dp),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    item.icon,
-                    contentDescription = item.title,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
+        AppIconBadge(icon = item.icon, contentDescription = item.title, onClick = onClick, size = 52.dp, iconSize = 24.dp)
 
         Spacer(Modifier.height(6.dp))
 

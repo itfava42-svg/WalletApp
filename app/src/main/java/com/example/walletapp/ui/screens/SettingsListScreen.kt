@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.models.SettingsMenu
 import com.example.walletapp.ui.models.ToolAction
 import com.example.walletapp.ui.models.ToolItem
@@ -131,19 +132,7 @@ private fun SettingsRow(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Surface(
-                modifier = Modifier.size(40.dp),
-                shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.primaryContainer,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        item.icon,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
+            AppIconBadge(icon = item.icon, size = 40.dp, iconSize = 22.dp)
 
             Spacer(Modifier.width(12.dp))
 

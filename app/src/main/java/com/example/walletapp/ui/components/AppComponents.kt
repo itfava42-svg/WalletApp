@@ -564,3 +564,10 @@ private fun AppTableRow(
         }
     }
 }
+
+
+@Composable
+fun AppIconBadge(icon: ImageVector, contentDescription: String? = null, modifier: Modifier = Modifier, containerColor: Color = MaterialTheme.colorScheme.primaryContainer, iconTint: Color = MaterialTheme.colorScheme.primary, onClick: (() -> Unit)? = null, size: Dp = 40.dp, iconSize: Dp = 22.dp) {
+    val content: @Composable () -> Unit = { Box(contentAlignment = androidx.compose.ui.Alignment.Center) { Icon(icon, contentDescription, tint = iconTint, modifier = Modifier.size(iconSize)) } }
+    if (onClick == null) Surface(modifier = modifier.size(size), shape = MaterialTheme.shapes.medium, color = containerColor, content = content) else Surface(onClick = onClick, modifier = modifier.size(size), shape = MaterialTheme.shapes.medium, color = containerColor, content = content)
+}
