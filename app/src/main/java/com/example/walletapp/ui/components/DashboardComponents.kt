@@ -815,7 +815,6 @@ fun DashboardTrendChart(
     }
 }
 @Composable
-@Composable
 fun DashboardAccountsCard(
     accounts: List<ReportCalculator.AccountSummary>,
 ) {
