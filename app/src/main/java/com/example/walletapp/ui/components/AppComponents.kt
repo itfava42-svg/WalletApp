@@ -226,6 +226,9 @@ fun AppOutlinedButton(
 fun AppFloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(AppDimens.SmallCardRadius),
+    containerColor: Color = MaterialTheme.colorScheme.primary,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
     content: @Composable () -> Unit,
 ) {
     androidx.compose.material3.FloatingActionButton(
