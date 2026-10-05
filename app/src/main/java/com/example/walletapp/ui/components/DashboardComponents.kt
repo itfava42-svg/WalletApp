@@ -207,7 +207,6 @@ fun DashboardMonthlySummaryCard(
             )
         }
     }
-}
 
 @Composable
 fun DashboardPeriodComparisonCard(
@@ -268,7 +267,6 @@ fun DashboardPeriodComparisonCard(
             )
         }
     }
-}
 
 @Composable
 private fun ComparisonRow(
@@ -367,7 +365,6 @@ fun DashboardCategorySummaryCard(
             }
         }
     }
-}
 @Composable
 private fun SummaryStat(
     label: String,
@@ -797,7 +794,6 @@ fun DashboardTrendChart(
             }
         }
     }
-}
 @Composable
 // Shared account carousel entry point.
 fun DashboardAccountsCard(
