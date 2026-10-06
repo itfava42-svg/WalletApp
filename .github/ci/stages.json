@@ -1,18 +1,5 @@
 {
-  "version": 1,
-  "policy": {
-    "green": "NEXT",
-    "red": "STOP_AND_FIX",
-    "unknown": "STOP"
-  },
-  "stages": [
-    {
-      "id": "CI-135",
-      "title": "ممیزی نهایی تایپوگرافی و RTL",
-      "commit": null,
-      "branch": "ci/ci-46-navigation-entry-audit",
-      "status": "active",
-      "next": "CI-136 — ممیزی نهایی کامپوننت‌های تعاملی و وضعیت‌ها"
-    }
-  ]
+  "version":1,
+  "policy":{"green":"NEXT","red":"STOP_AND_FIX","unknown":"STOP"},
+  "stages":[{"id":"CI-136","title":"ممیزی نهایی کامپوننت‌های تعاملی و وضعیت‌ها","commit":null,"branch":"ci/ci-46-navigation-entry-audit","status":"active","next":"CI-137 — ممیزی نهایی حالات خالی، بارگذاری و خطا"}]
 }

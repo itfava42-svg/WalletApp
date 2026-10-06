@@ -1,6 +1,8 @@
 ﻿package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppTextButton
+import com.example.walletapp.ui.components.AppSegmentedButton
+import com.example.walletapp.ui.components.AppSelectionTile
 
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -270,14 +272,14 @@ fun AddTransactionScreen(
                     .background(SurfaceContainer)
                     .padding(4.dp),
             ) {
-                SegmentButton(
+                AppSegmentedButton(
                     label = "هزینه",
                     selected = type == TransactionType.EXPENSE,
                     selectedColor = AppError,
                     onClick = { type = TransactionType.EXPENSE },
                     modifier = Modifier.weight(1f),
                 )
-                SegmentButton(
+                AppSegmentedButton(
                     label = "درآمد",
                     selected = type == TransactionType.INCOME,
                     selectedColor = Primary,
@@ -348,12 +350,16 @@ fun AddTransactionScreen(
                 userScrollEnabled = false,
             ) {
                 items(categories) { category ->
-                    CategoryChip(
-                        category = category,
-                        selected = category == selectedCategory,
-                        accentColor = accentColor,
-                        onClick = { selectedCategory = category },
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                        AppSelectionTile(selected = category == selectedCategory, selectedColor = accentColor,
+                            onClick = { selectedCategory = category }, modifier = Modifier.fillMaxWidth()) {
+                            Icon(resolveTransactionIcon(category.iconKey), contentDescription = category.label,
+                                tint = if (category == selectedCategory) accentColor else OnSurfaceVariant)
+                        }
+                        Spacer(Modifier.height(4.dp))
+                        Text(category.label, style = MaterialTheme.typography.labelMedium,
+                            color = if (category == selectedCategory) accentColor else OnSurfaceVariant, maxLines = 1)
+                    }
                 }
             }
 
@@ -578,73 +584,3 @@ fun AddTransactionScreen(
         )
     }
 }
-
-@Composable
-private fun SegmentButton(
-    label: String,
-    selected: Boolean,
-    selectedColor: androidx.compose.ui.graphics.Color,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier.height(44.dp),
-        shape = RoundedCornerShape(14.dp),
-        color = if (selected) selectedColor else androidx.compose.ui.graphics.Color.Transparent,
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                label,
-                color = if (selected) OnPrimary else OnSurfaceVariant,
-                fontWeight = FontWeight.Bold,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CategoryChip(
-    category: TransactionCategory,
-    selected: Boolean,
-    accentColor: androidx.compose.ui.graphics.Color,
-    onClick: () -> Unit,
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Surface(
-            onClick = onClick,
-            shape = RoundedCornerShape(14.dp),
-            color = if (selected) accentColor.copy(alpha = 0.12f) else SurfaceContainer,
-            border = if (selected) androidx.compose.foundation.BorderStroke(1.5.dp, accentColor) else null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(54.dp),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    resolveTransactionIcon(category.iconKey),
-                    contentDescription = category.label,
-                    tint = if (selected) accentColor else OnSurfaceVariant,
-                )
-            }
-        }
-        Spacer(Modifier.height(4.dp))
-        Text(
-            category.label,
-            style = MaterialTheme.typography.labelMedium,
-            color = if (selected) accentColor else OnSurfaceVariant,
-            maxLines = 1,
-        )
-    }
-}
-
-
-
-
-
-
-
-

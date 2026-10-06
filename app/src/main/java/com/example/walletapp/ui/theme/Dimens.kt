@@ -14,6 +14,7 @@ object AppDimens {
     val ButtonHeight = 52.dp
     val InputHeight = 56.dp
     val TabHeight = 44.dp
+    val SelectionTileHeight = 54.dp
 
     val IconBox = 40.dp
     val IconSmall = 18.dp

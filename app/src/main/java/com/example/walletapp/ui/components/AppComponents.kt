@@ -262,6 +262,34 @@ fun AppFilterChip(
     )
 }
 
+
+@Composable
+fun AppSegmentedButton(
+    label: String, selected: Boolean, selectedColor: Color, onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(onClick = onClick, modifier = modifier.height(AppDimens.TabHeight),
+        shape = RoundedCornerShape(AppDimens.SmallCardRadius),
+        color = if (selected) selectedColor else Color.Transparent,
+        contentColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant) {
+        Box(contentAlignment = androidx.compose.ui.Alignment.Center) { Text(label, style = AppTextStyles.titleSm) }
+    }
+}
+
+@Composable
+fun AppSelectionTile(
+    selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier,
+    selectedColor: Color = MaterialTheme.colorScheme.primary,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    Surface(onClick = onClick, shape = RoundedCornerShape(AppDimens.SmallCardRadius),
+        color = if (selected) selectedColor.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceContainer,
+        border = if (selected) BorderStroke(1.5.dp, selectedColor) else null,
+        modifier = modifier.height(AppDimens.SelectionTileHeight)) {
+        Box(contentAlignment = androidx.compose.ui.Alignment.Center, content = content)
+    }
+}
+
 @Composable
 fun AppTextField(
     value: String,
