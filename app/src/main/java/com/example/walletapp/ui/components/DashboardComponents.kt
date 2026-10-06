@@ -811,7 +811,7 @@ fun DashboardFab(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    FloatingActionButton(
+    AppFloatingActionButton(
         onClick = onClick,
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,

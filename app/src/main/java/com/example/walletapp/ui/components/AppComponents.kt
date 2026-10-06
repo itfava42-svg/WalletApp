@@ -574,3 +574,27 @@ fun AppIconBadge(icon: ImageVector, contentDescription: String? = null, modifier
     val content: @Composable () -> Unit = { Box(contentAlignment = androidx.compose.ui.Alignment.Center) { Icon(icon, contentDescription, tint = iconTint, modifier = Modifier.size(iconSize)) } }
     if (onClick == null) Surface(modifier = modifier.size(size), shape = MaterialTheme.shapes.medium, color = containerColor, content = content) else Surface(onClick = onClick, modifier = modifier.size(size), shape = MaterialTheme.shapes.medium, color = containerColor, content = content)
 }
+
+
+@Composable
+fun AppStatusPill(
+    text: String,
+    accentColor: Color,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(AppDimens.SmallCardRadius),
+        color = accentColor.copy(alpha = 0.08f),
+    ) {
+        Box(
+            modifier = Modifier.padding(
+                horizontal = AppDimens.CompactPadding,
+                vertical = 8.dp,
+            ),
+            contentAlignment = androidx.compose.ui.Alignment.CenterStart,
+        ) {
+            Text(text, style = AppTextStyles.labelMd, color = accentColor)
+        }
+    }
+}

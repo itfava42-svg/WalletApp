@@ -571,21 +571,10 @@ private fun ReminderHeader(
                             )
                     )
 
-                    Surface(
-                        shape =
-                            RoundedCornerShape(
-                                14.dp
-                            ),
-                        tonalElevation =
-                            2.dp,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    onSelectFilter(
-                                        ReminderFilter.NEXT_THREE_DAYS
-                                    )
-                                }
+                    AppCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onSelectFilter(ReminderFilter.NEXT_THREE_DAYS) },
+                        contentPadding = PaddingValues(12.dp),
                     ) {
 
                         Row(

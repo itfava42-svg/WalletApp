@@ -209,20 +209,7 @@ private fun EmptyCheckState(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Surface(
-                modifier = Modifier.size(72.dp),
-                shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        Icons.Filled.FactCheck,
-                        contentDescription = null,
-                        modifier = Modifier.size(36.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
+            AppIconBadge(icon = Icons.Filled.FactCheck, size = 72.dp, iconSize = 36.dp)
 
             Text(
                 text = "هنوز چکی ثبت نشده است",
@@ -276,19 +263,7 @@ private fun CheckCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Surface(
-                    modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            Icons.Filled.FactCheck,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
+                AppIconBadge(icon = Icons.Filled.FactCheck, size = 48.dp, iconSize = 24.dp)
 
                 Spacer(Modifier.size(12.dp))
 
@@ -323,12 +298,7 @@ private fun CheckCard(
                 }
             }
 
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                color = statusBackground
-            ) {
-                Column(modifier = Modifier.padding(14.dp)) {
+            AppCard(modifier = Modifier.fillMaxWidth(), containerColor = statusBackground, contentPadding = PaddingValues(14.dp)) { {
                     Text(
                         text = "مبلغ چک",
                         fontSize = 12.sp,
@@ -389,12 +359,7 @@ private fun CheckSmallInfo(
     title: String,
     value: String
 ) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant
-    ) {
-        Column(modifier = Modifier.padding(10.dp)) {
+    AppCard(modifier = modifier, containerColor = MaterialTheme.colorScheme.surfaceVariant, contentPadding = PaddingValues(10.dp)) { {
             Text(
                 text = title,
                 fontSize = 11.sp,
@@ -644,12 +609,7 @@ private fun CheckInputTile(
     accent: Color,
     icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        color = background
-    ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+    AppCard(modifier = Modifier.fillMaxWidth(), containerColor = background, contentPadding = PaddingValues(14.dp)) { {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = icon,
