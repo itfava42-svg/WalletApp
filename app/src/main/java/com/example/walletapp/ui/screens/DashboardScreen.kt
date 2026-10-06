@@ -1,4 +1,3 @@
-import com.example.walletapp.ui.components.AppIconButton
 ﻿package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppTextButton
@@ -412,7 +411,7 @@ val dashboardMonthCategories =
             }
         },
         actions = {
-            IconButton(onClick = { showDashboardFilter = true }) {
+            AppIconButton(onClick = { showDashboardFilter = true }) {
                 Icon(Icons.Filled.NotificationsNone, contentDescription = "اعلان‌ها")
             }
             DropdownMenu(

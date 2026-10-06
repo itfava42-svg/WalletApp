@@ -612,7 +612,7 @@ private fun AccountCard(
 
                 Box {
 
-                    IconButton(
+                    AppIconButton(
                         onClick = {
                             menuExpanded = true
                         }

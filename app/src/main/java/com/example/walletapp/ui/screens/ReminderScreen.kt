@@ -250,7 +250,7 @@ fun ReminderScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                AppIconButton(onClick = onBack) {
+                AppAppIconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "بازگشت",
@@ -1019,7 +1019,7 @@ private fun ReminderItemCard(
                     Alignment.CenterVertically
             ) {
 
-                IconButton(
+                AppIconButton(
                     onClick =
                         onComplete
                 ) {
@@ -1038,7 +1038,7 @@ private fun ReminderItemCard(
                     )
                 }
 
-                IconButton(
+                AppIconButton(
                     onClick =
                         onEdit
                 ) {
@@ -1051,7 +1051,7 @@ private fun ReminderItemCard(
                     )
                 }
 
-                IconButton(
+                AppIconButton(
                     onClick =
                         onDelete
                 ) {
