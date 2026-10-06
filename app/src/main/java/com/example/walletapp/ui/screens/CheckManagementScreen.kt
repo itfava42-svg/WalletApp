@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -58,6 +59,7 @@ import com.example.walletapp.data.CheckType
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.components.AppFloatingActionButton
 import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
@@ -298,7 +300,7 @@ private fun CheckCard(
                 }
             }
 
-            AppCard(modifier = Modifier.fillMaxWidth(), containerColor = statusBackground, contentPadding = PaddingValues(14.dp)) { {
+            AppCard(modifier = Modifier.fillMaxWidth(), containerColor = statusBackground, contentPadding = PaddingValues(14.dp)) {
                     Text(
                         text = "مبلغ چک",
                         fontSize = 12.sp,
@@ -317,7 +319,6 @@ private fun CheckCard(
                         fontWeight = FontWeight.SemiBold,
                         color = statusColor
                     )
-                }
             }
 
             Row(
@@ -359,7 +360,7 @@ private fun CheckSmallInfo(
     title: String,
     value: String
 ) {
-    AppCard(modifier = modifier, containerColor = MaterialTheme.colorScheme.surfaceVariant, contentPadding = PaddingValues(10.dp)) { {
+    AppCard(modifier = modifier, containerColor = MaterialTheme.colorScheme.surfaceVariant, contentPadding = PaddingValues(10.dp)) {
             Text(
                 text = title,
                 fontSize = 11.sp,
