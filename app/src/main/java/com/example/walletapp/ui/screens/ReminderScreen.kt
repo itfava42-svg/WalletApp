@@ -250,7 +250,7 @@ fun ReminderScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                AppAppIconButton(onClick = onBack) {
+                AppIconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "بازگشت",
