@@ -635,7 +635,6 @@ private fun CheckInputTile(
             )
         }
     }
-}
 
 @Composable
 private fun DateField(
