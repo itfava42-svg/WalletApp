@@ -58,6 +58,7 @@ import com.example.walletapp.data.CheckType
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppEmptyState
 import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.components.AppFloatingActionButton
 import com.example.walletapp.ui.components.AppOutlinedButton

@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.ReportCalculator
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppEmptyState
 import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.ui.components.DashboardBottomBar
