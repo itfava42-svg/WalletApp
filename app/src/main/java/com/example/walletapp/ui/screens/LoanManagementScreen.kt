@@ -2441,7 +2441,7 @@ private fun DateField(
             )
         },
         trailingIcon = {
-            IconButton(
+            AppIconButton(
                 onClick = {
                     showPicker = true
                 }
