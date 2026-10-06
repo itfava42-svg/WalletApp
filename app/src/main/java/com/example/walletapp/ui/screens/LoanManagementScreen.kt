@@ -966,10 +966,10 @@ private fun LoanInstallmentsDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
-                Surface(
+                AppCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(17.dp),
-                    color = MatureColors.Surface
+                    containerColor = MatureColors.Surface,
+                    contentPadding = PaddingValues(0.dp),
                 ) {
                     Row(
                         modifier = Modifier
@@ -1042,14 +1042,14 @@ private fun LoanInstallmentsDialog(
                             val dueDate =
                                 currentLoan.installmentDueDate(number)
 
-                            Surface(
+                            AppCard(
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(20.dp),
-                                color = if (isPaid) {
+                                containerColor = if (isPaid) {
                                     MatureColors.Surface
                                 } else {
                                     MatureColors.CardBackground
-                                }
+                                },
+                                contentPadding = PaddingValues(0.dp),
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -1708,10 +1708,10 @@ private fun LoanEditorFullScreen(
                             context = context
                         )
                         Spacer(Modifier.height(10.dp))
-                        Surface(
+                        AppCard(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(18.dp),
-                            color = MatureColors.SecondaryLight
+                            containerColor = MatureColors.SecondaryLight,
+                            contentPadding = PaddingValues(0.dp),
                         ) {
                             Text(
                                 text = "اقساط قبلی فقط به‌عنوان سابقه پرداخت در نظر گرفته می‌شوند و برای آن‌ها تراکنش مالی جدید ساخته نمی‌شود. از تاریخ شروع پیگیری، فقط اقساط باقی‌مانده مدیریت و یادآوری خواهند شد.",
@@ -1767,10 +1767,10 @@ private fun LoanEditorFullScreen(
                         }
                     }
                     Spacer(Modifier.height(10.dp))
-                    Surface(
+                    AppCard(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp),
-                        color = MatureColors.Success.copy(alpha = 0.10f)
+                        containerColor = MatureColors.Success.copy(alpha = 0.10f),
+                        contentPadding = PaddingValues(0.dp),
                     ) {
                         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Filled.Calculate, contentDescription = null, tint = MatureColors.Success, modifier = Modifier.size(23.dp))
@@ -1888,10 +1888,10 @@ private fun LoanEditorFullScreen(
                         placeholder = { Text("توضیحات اختیاری") }
                     )
                     Spacer(Modifier.height(10.dp))
-                    Surface(
+                    AppCard(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp),
-                        color = MatureColors.CardBackground
+                        containerColor = MatureColors.CardBackground,
+                        contentPadding = PaddingValues(0.dp),
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
@@ -2205,9 +2205,10 @@ private fun LoanEditorDialog(
                     }
 
                     item {
-                        Surface(
+                        AppCard(
                             modifier = Modifier.fillMaxWidth(),
-                            color = LoanGreenLight
+                            containerColor = LoanGreenLight,
+                            contentPadding = PaddingValues(0.dp),
                         ) {
                             Row(
                                 modifier = Modifier.padding(
