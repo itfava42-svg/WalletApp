@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.ui.models.ToolAction
 import com.example.walletapp.ui.models.ToolItem
 import com.example.walletapp.ui.models.toolsGrid
@@ -224,7 +223,7 @@ private fun ToolGridCard(
                 Text(
                     item.title,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 15.sp,
+                    style = com.example.walletapp.ui.theme.AppTextStyles.titleSm,
                     color = OnSurface,
                 )
 

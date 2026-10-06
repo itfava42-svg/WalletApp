@@ -54,7 +54,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionKind
@@ -66,7 +65,6 @@ import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.components.EditTransactionDialog
 import com.example.walletapp.ui.components.appNavItems
 import com.example.walletapp.ui.theme.AppError
-import com.example.walletapp.ui.theme.AppFontFamily
 import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.ui.theme.OnPrimary
 import com.example.walletapp.ui.theme.OnPrimaryContainer
@@ -626,10 +624,8 @@ private fun TransactionFullCard(
                 ) {
                     Text(
                         text = "$sign${formatTransactionAmount(transaction.amount)}",
-                        fontWeight = FontWeight.Bold,
+                        style = AppTextStyles.titleSm.copy(fontWeight = FontWeight.Bold),
                         color = accentColor,
-                        fontFamily = AppFontFamily,
-                        fontSize = 15.sp,
                     )
 
                     Spacer(Modifier.height(2.dp))

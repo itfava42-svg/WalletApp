@@ -42,6 +42,27 @@ object AppTextStyles {
         lineHeight = 30.sp
     )
 
+    val titleLg = TextStyle(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 22.sp,
+        lineHeight = 30.sp
+    )
+
+    val titleMd = TextStyle(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp
+    )
+
+    val titleSm = TextStyle(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
+        lineHeight = 22.sp
+    )
+
     val bodyLg = TextStyle(
         fontFamily = AppFontFamily,
         fontWeight = FontWeight.Normal,
@@ -75,15 +96,17 @@ val AppTypography = Typography(
     displayLarge = AppTextStyles.displayLg,
     headlineMedium = AppTextStyles.headlineMd,
     headlineSmall = AppTextStyles.headlineSm,
-    titleMedium = AppTextStyles.headlineSm.copy(
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-    ),
+    titleLarge = AppTextStyles.titleLg,
+    titleMedium = AppTextStyles.titleMd,
+    titleSmall = AppTextStyles.titleSm,
     bodyLarge = AppTextStyles.bodyLg,
     bodyMedium = AppTextStyles.bodyMd,
     bodySmall = AppTextStyles.labelMd.copy(
         fontSize = 13.sp,
         lineHeight = 20.sp,
+    ),
+    labelLarge = AppTextStyles.bodyMd.copy(
+        fontWeight = FontWeight.Medium,
     ),
     labelMedium = AppTextStyles.labelMd,
     labelSmall = AppTextStyles.labelMd.copy(

@@ -7,12 +7,12 @@
   },
   "stages": [
     {
-      "id": "CI-134",
-      "title": "یکسان‌سازی نهایی ابعاد و فاصله‌گذاری صفحات UI",
+      "id": "CI-135",
+      "title": "ممیزی نهایی تایپوگرافی و RTL",
       "commit": null,
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "active",
-      "next": "CI-135 — ممیزی نهایی تایپوگرافی و RTL"
+      "next": "CI-136 — ممیزی نهایی کامپوننت‌های تعاملی و وضعیت‌ها"
     }
   ]
 }
