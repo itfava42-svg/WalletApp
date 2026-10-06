@@ -30,7 +30,6 @@ fun TransactionSyncCard(
     AppCard(modifier = modifier) {
 
         Column(
-            modifier = Modifier.padding(AppDimens.CardPadding),
             verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
         ) {
 
