@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppIconBadge
+import com.example.walletapp.ui.theme.AppDimens
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -88,9 +89,9 @@ fun OperationsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = AppDimens.PagePadding),
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             Text(
                 text = "عملیات مالی",
@@ -111,9 +112,9 @@ fun OperationsScreen(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 24.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(bottom = AppDimens.SectionGap),
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
+                verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
             ) {
                 items(operations) { operation ->
                     AppCard(
@@ -135,7 +136,7 @@ fun OperationsScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(16.dp),
+                                .padding(AppDimens.CardPadding),
                             verticalArrangement = Arrangement.SpaceBetween,
                         ) {
                             AppIconBadge(icon = operation.icon, size = 48.dp, iconSize = 28.dp)

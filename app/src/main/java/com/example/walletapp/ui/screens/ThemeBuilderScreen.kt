@@ -40,6 +40,7 @@ import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.ui.components.AppTextField
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.WalletThemePreferences
 
 private data class ColorSetting(
@@ -148,16 +149,16 @@ fun ThemeBuilderScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
             verticalArrangement =
-                Arrangement.spacedBy(12.dp)
+                Arrangement.spacedBy(AppDimens.CardGap)
         ) {
 
             item {
                 AppCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                         .padding(horizontal = AppDimens.PagePadding),
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(AppDimens.CardPadding),
                 ) {
                         Row(
                             verticalAlignment =
@@ -236,7 +237,7 @@ fun ThemeBuilderScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     horizontalArrangement =
-                        Arrangement.spacedBy(8.dp)
+                        Arrangement.spacedBy(AppDimens.ItemGap)
                 ) {
 
                     if (mode == "light") {
@@ -303,7 +304,7 @@ fun ThemeBuilderScreen(
                 AppOutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                         .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
                     text = "بازگردانی رنگ‌ها",
                     onClick = {
                         WalletThemePreferences.resetColors(context)
@@ -314,7 +315,7 @@ fun ThemeBuilderScreen(
 
             item {
                 Spacer(
-                    Modifier.height(24.dp)
+                    Modifier.height(AppDimens.SectionGap)
                 )
             }
         }

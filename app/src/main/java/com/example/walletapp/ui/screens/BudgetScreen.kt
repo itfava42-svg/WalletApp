@@ -76,7 +76,7 @@ fun BudgetScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Primary)
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                     .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.PagePadding),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 SummaryStatColumn("بودجه کل", totalBudget)
@@ -153,7 +153,7 @@ private fun BudgetCard(budget: Budget) {
 
     AppCard(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(AppDimens.CardPadding),
     ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {

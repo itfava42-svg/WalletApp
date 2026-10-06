@@ -18,6 +18,7 @@ import com.example.walletapp.ui.models.SettingsMenu
 import com.example.walletapp.ui.models.ToolAction
 import com.example.walletapp.ui.models.ToolItem
 import com.example.walletapp.ui.models.ToolSection
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.OnSurface
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import kotlinx.coroutines.launch
@@ -92,16 +93,16 @@ fun SettingsListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            contentPadding = PaddingValues(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+                .padding(horizontal = AppDimens.PagePadding),
+            contentPadding = PaddingValues(vertical = AppDimens.PagePadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
         ) {
             SettingsMenu.sections.forEach { section ->
                 item { SettingsSectionHeader(section) }
                 items(section.items) { toolItem ->
                     SettingsRow(toolItem, onClick = { handleClick(toolItem) })
                 }
-                item { Spacer(Modifier.height(16.dp)) }
+                item { Spacer(Modifier.height(AppDimens.CardGap)) }
             }
         }
     }

@@ -1,1 +1,1 @@
-{"version":1,"policy":{"green":"NEXT","red":"STOP_AND_FIX","unknown":"STOP"},"stages":[{"id":"CI-136","title":"ممیزی نهایی کامپوننت‌های تعاملی و وضعیت‌ها","commit":null,"branch":"ci/ci-46-navigation-entry-audit","status":"active","next":"CI-138 — ممیزی نهایی هماهنگی بصری صفحات"}]}
+{"version":1,"policy":{"green":"NEXT","red":"STOP_AND_FIX","unknown":"STOP"},"stages":[{"id":"CI-138","title":"ممیزی نهایی هماهنگی بصری صفحات","commit":null,"branch":"ci/ci-46-navigation-entry-audit","status":"active","next":"CI-139 — ممیزی فرم‌ها و ورودی‌های مشترک"}]}
