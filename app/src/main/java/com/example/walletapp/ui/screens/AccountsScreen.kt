@@ -41,7 +41,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -69,6 +68,7 @@ import com.example.walletapp.data.AccountType
 import com.example.walletapp.data.AccountLedger
 import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppIconButton
 import com.example.walletapp.ui.components.AppFloatingActionButton
 import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
@@ -109,7 +109,7 @@ fun AccountsScreen(
     CenterAlignedTopAppBar(
         title = { Text("حساب‌ها", fontWeight = FontWeight.Bold) },
         actions = {
-            IconButton(onClick = { showAddDialog = true }) {
+            AppIconButton(onClick = { showAddDialog = true }) {
                 Icon(Icons.Filled.Add, contentDescription = "افزودن حساب", tint = MaterialTheme.colorScheme.primary)
             }
         },

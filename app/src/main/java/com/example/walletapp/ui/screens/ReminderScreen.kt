@@ -38,7 +38,6 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
@@ -57,6 +56,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.Reminder
 import com.example.walletapp.ui.components.AppCard
+import com.example.walletapp.ui.components.AppIconButton
 import com.example.walletapp.ui.components.AppEmptyState
 import com.example.walletapp.loan.MatureColors
 import com.example.walletapp.data.ReminderKind
@@ -250,7 +250,7 @@ fun ReminderScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(onClick = onBack) {
+                AppIconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "بازگشت",

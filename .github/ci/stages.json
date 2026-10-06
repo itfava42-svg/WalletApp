@@ -1,1 +1,1 @@
-{"version":1,"policy":{"green":"NEXT","red":"STOP_AND_FIX","unknown":"STOP"},"stages":[{"id":"CI-139","title":"یکپارچه‌سازی فرم‌ها و ورودی‌های مشترک","commit":null,"branch":"ci/ci-46-navigation-entry-audit","status":"active","next":"CI-140 — ممیزی تعاملات و بازخوردهای کاربر"}]}
+{"version":1,"policy":{"green":"NEXT","red":"STOP_AND_FIX","unknown":"STOP"},"stages":[{"id":"CI-140","title":"ممیزی تعاملات و بازخوردهای کاربر","commit":null,"branch":"ci/ci-46-navigation-entry-audit","status":"active","next":"CI-141 — یکپارچه‌سازی جدول‌ها و لیست‌ها"}]}

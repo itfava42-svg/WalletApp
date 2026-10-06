@@ -165,6 +165,21 @@ fun AppSectionHeader(
 }
 
 @Composable
+fun AppIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit,
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier.size(AppDimens.IconBox),
+        enabled = enabled,
+        content = content,
+    )
+}
+
+@Composable
 fun AppPrimaryButton(
     text: String,
     onClick: () -> Unit,

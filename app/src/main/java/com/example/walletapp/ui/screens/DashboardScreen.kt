@@ -1,3 +1,4 @@
+import com.example.walletapp.ui.components.AppIconButton
 ﻿package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppTextButton
@@ -406,7 +407,7 @@ val dashboardMonthCategories =
             }
         },
         navigationIcon = {
-            IconButton(onClick = { showDashboardMenu = true }) {
+            AppIconButton(onClick = { showDashboardMenu = true }) {
                 Icon(Icons.Filled.AccountCircle, contentDescription = "پروفایل", tint = MaterialTheme.colorScheme.primary)
             }
         },
