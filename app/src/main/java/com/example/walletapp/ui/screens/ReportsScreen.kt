@@ -2029,9 +2029,23 @@ private fun CategoryGrowthCard(
                     }
                 }
 
-                growthItems.forEach { item ->
-                    CategoryGrowthRow(item)
-                }
+                AppTable(
+                    headers = listOf("دسته", "ماه جاری", "ماه قبل", "تغییر"),
+                    rows = growthItems.map { item ->
+                        listOf(
+                            item.category,
+                            formatMoney(item.currentExpense),
+                            formatMoney(item.previousExpense),
+                            when {
+                                item.change > 0L ->
+                                    "+" + (item.percent?.let { formatPercent(it) } ?: "جدید")
+                                item.change < 0L ->
+                                    "-" + formatPercent(kotlin.math.abs(item.percent ?: 0.0))
+                                else -> "بدون تغییر"
+                            }
+                        )
+                    },
+                )
 
                 biggestDecrease?.let { item ->
                     Text(
