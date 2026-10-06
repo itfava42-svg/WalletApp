@@ -1104,6 +1104,8 @@ private fun EmptyReminderCard(
     )
 }
 
+private const val DAY_MILLIS = 24L * 60L * 60L * 1000L
+
 private fun startOfDay(
     millis: Long
 ): Long {
