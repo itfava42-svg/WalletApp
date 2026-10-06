@@ -375,7 +375,6 @@ private fun CheckSmallInfo(
             )
         }
     }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -610,7 +609,7 @@ private fun CheckInputTile(
     accent: Color,
     icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
-    AppCard(modifier = Modifier.fillMaxWidth(), containerColor = background, contentPadding = PaddingValues(14.dp)) { {
+    AppCard(modifier = Modifier.fillMaxWidth(), containerColor = background, contentPadding = PaddingValues(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = icon,
