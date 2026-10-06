@@ -433,10 +433,10 @@ private fun LoanHeader(
 ) {
     // The gradient is intentionally retained as a hero treatment; all reusable
     // inner visual primitives use the shared design system.
-    Surface(
+    AppCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(AppDimens.CardRadius),
-        color = MatureColors.Primary
+        containerColor = MatureColors.Primary,
+        contentPadding = PaddingValues(0.dp),
     ) {
         Box(
             modifier = Modifier
@@ -1009,10 +1009,10 @@ private fun LoanInstallmentsDialog(
                             )
 
                 if (!hasDueDateBase) {
-                    Surface(
+                    AppCard(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp),
-                        color = MatureColors.SecondaryLight
+                        containerColor = MatureColors.SecondaryLight,
+                        contentPadding = PaddingValues(0.dp),
                     ) {
                         Text(
                             text = "تاریخ اولین قسط برای این وام ثبت نشده است. برای نمایش سررسید اقساط، ابتدا تاریخ اولین قسط را در ویرایش وام وارد کنید.",

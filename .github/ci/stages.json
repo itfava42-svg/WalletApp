@@ -7,12 +7,12 @@
   },
   "stages": [
     {
-      "id": "CI-132",
-      "title": "یکپارچه‌سازی باقی‌مانده کارت‌ها و اطلاع‌رسانی‌های Loan UI",
+      "id": "CI-133",
+      "title": "ممیزی نهایی primitiveهای UI و تثبیت استثناهای ساختاری",
       "commit": null,
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "active",
-      "next": "CI-133 — ممیزی نهایی primitiveهای UI"
+      "next": "CI-134 — ممیزی نهایی صفحات UI و یکنواختی ابعاد"
     }
   ]
 }
