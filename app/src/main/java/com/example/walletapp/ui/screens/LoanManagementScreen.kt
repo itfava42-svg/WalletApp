@@ -50,7 +50,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import com.example.walletapp.ui.components.AppIconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -476,7 +476,7 @@ private fun LoanHeader(
                         )
                     }
 
-                    IconButton(onClick = onBack) {
+                    AppIconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "بازگشت",
@@ -694,7 +694,7 @@ private fun LoanCard(
                 }
 
                 Box {
-                    IconButton(
+                    AppIconButton(
                         onClick = {
                             menuExpanded = true
                         }
@@ -1531,7 +1531,7 @@ private fun LoanEditorFullScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onDismiss) {
+                    AppIconButton(onClick = onDismiss) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "بازگشت")
                     }
                 }
