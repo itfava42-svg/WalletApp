@@ -3,6 +3,8 @@
 import com.example.walletapp.ui.components.AppTextButton
 
 import android.widget.Toast
+import com.example.walletapp.ui.theme.AppDimens
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -255,8 +257,8 @@ fun TransferScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+                .padding(AppDimens.PagePadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
         ) {
 
             AppCard(
@@ -266,7 +268,7 @@ fun TransferScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(AppDimens.PagePadding),
                 ) {
                     Icon(
                         imageVector = Icons.Filled.SwapHoriz,
@@ -310,7 +312,7 @@ fun TransferScreen(
                 ) {
                     Text(
                         "برای انتقال، حداقل دو حساب فعال ثبت کنید.",
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(AppDimens.PagePadding),
                         color = MaterialTheme.colorScheme.error,
                     )
                 }
@@ -437,7 +439,7 @@ private fun AccountSelectorCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(AppDimens.PagePadding),
         ) {
             Icon(
                 imageVector = Icons.Filled.AccountBalance,

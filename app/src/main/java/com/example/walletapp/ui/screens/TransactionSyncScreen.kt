@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.theme.AppDimens
+
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -67,7 +69,7 @@ fun TransactionSyncScreen(
                 Modifier
                     .fillMaxWidth()
                     .padding(innerPadding)
-                    .padding(16.dp)
+                    .padding(AppDimens.PagePadding)
         ) {
 
             TransactionSyncCard(

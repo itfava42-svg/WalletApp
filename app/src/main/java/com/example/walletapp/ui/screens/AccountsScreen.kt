@@ -143,11 +143,11 @@ bottomBar = {
                 .padding(horizontal = AppDimens.PagePadding),
 
             contentPadding = PaddingValues(
-                top = 14.dp,
+                top = AppDimens.PagePadding,
                 bottom = 100.dp,
             ),
 
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
         ) {
 
             item {
