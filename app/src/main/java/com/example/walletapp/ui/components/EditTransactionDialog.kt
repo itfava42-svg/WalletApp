@@ -21,6 +21,7 @@ import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.suggestCategoryFromTitle
 import com.example.walletapp.ui.theme.AppError
 import com.example.walletapp.ui.theme.OnSurfaceVariant
+import com.example.walletapp.ui.theme.AppTextStyles
 
 @Composable
 fun EditTransactionDialog(
@@ -74,7 +75,7 @@ fun EditTransactionDialog(
                         .horizontalScroll(rememberScrollState()),
                 ) {
                     categories.forEach { cat ->
-                        FilterChip(
+                        AppFilterChip(
                             selected = selectedCategory == cat.label,
                             onClick = {
                                 selectedCategory = cat.label
@@ -89,7 +90,7 @@ fun EditTransactionDialog(
                 Spacer(Modifier.height(16.dp))
                 Text("هشتگ‌ها", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
-                OutlinedTextField(
+                AppTextField(
                     value = tagInput,
                     onValueChange = { tagInput = it },
                     placeholder = { Text("مثلاً سفر — اینتر بزنید تا اضافه شود") },
@@ -124,7 +125,7 @@ fun EditTransactionDialog(
                 }
 
                 Spacer(Modifier.height(16.dp))
-                TextButton(onClick = { showDeleteConfirm = true }) {
+                AppTextButton(onClick = { showDeleteConfirm = true }) {
                     Icon(Icons.Filled.Delete, contentDescription = null, tint = AppError, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
                     Text("حذف تراکنش", color = AppError)
@@ -132,7 +133,7 @@ fun EditTransactionDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = {
+            AppTextButton(onClick = {
                 addTagFromInput()
                 onSave(
                     transaction.copy(
@@ -146,7 +147,7 @@ fun EditTransactionDialog(
             }) { Text("ذخیره") }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("انصراف") }
+            AppTextButton(onClick = onDismiss) { Text("انصراف") }
         },
     )
 
@@ -156,13 +157,13 @@ fun EditTransactionDialog(
             title = { Text("حذف تراکنش؟") },
             text = { Text("این عمل قابل بازگشت نیست.") },
             confirmButton = {
-                TextButton(onClick = {
+                AppTextButton(onClick = {
                     showDeleteConfirm = false
                     onDelete(transaction)
                 }) { Text("حذف", color = AppError) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteConfirm = false }) { Text("انصراف") }
+                AppTextButton(onClick = { showDeleteConfirm = false }) { Text("انصراف") }
             },
         )
     }

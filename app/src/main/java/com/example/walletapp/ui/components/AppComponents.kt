@@ -51,7 +51,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.AppTextStyles
 
@@ -172,7 +171,7 @@ fun AppPrimaryButton(
     enabled: Boolean = true,
     leadingIcon: (@Composable () -> Unit)? = null,
     containerColor: Color = MaterialTheme.colorScheme.primary,
-    textStyle: TextStyle = AppTextStyles.bodyMd.copy(fontSize = 15.sp),
+    textStyle: TextStyle = AppTextStyles.titleMd,
 ) {
     Button(
         onClick = onClick,
@@ -223,7 +222,7 @@ fun AppOutlinedButton(
     ) {
         leadingIcon?.invoke()
         if (leadingIcon != null) Spacer(Modifier.width(AppDimens.ItemGap))
-        Text(text, style = AppTextStyles.headlineSm.copy(fontSize = 15.dp.value.sp))
+        Text(text, style = AppTextStyles.titleMd)
     }
 }
 
@@ -469,7 +468,7 @@ fun AppListRow(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, style = AppTextStyles.headlineSm.copy(fontSize = 15.sp))
+                Text(title, style = AppTextStyles.titleMd)
                 if (!subtitle.isNullOrBlank()) {
                     Text(
                         subtitle,
