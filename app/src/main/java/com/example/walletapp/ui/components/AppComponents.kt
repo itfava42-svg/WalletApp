@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.AppTextStyles
@@ -300,6 +301,7 @@ fun AppTextField(
     enabled: Boolean = true,
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     readOnly: Boolean = false,
     placeholder: (@Composable () -> Unit)? = null,
     suffix: (@Composable () -> Unit)? = null,
