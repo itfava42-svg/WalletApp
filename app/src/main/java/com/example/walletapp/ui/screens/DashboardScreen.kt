@@ -528,20 +528,18 @@ bottomBar = {
                     QuickAction("بودجه", Icons.Filled.Analytics, SurfaceContainerHigh, Primary, onClick = onOpenBudgetClick)
                     QuickAction("بیشتر", Icons.Filled.MoreHoriz, SurfaceContainerHigh, Outline, onClick = onOpenMoreClick)
                 }
-                Spacer(Modifier.height(26.dp))
+                Spacer(Modifier.height(AppDimens.SectionGap))
             }
 
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("آخرین تراکنش‌ها", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
-                    AppTextButton(onClick = onOpenTransactions) {
-                        Text("مشاهده همه", color = Primary, fontWeight = FontWeight.Bold)
-                    }
-                }
+                AppSectionHeader(
+                    title = "آخرین تراکنش‌ها",
+                    action = {
+                        AppTextButton(onClick = onOpenTransactions) {
+                            Text("مشاهده همه")
+                        }
+                    },
+                )
                 Spacer(Modifier.height(AppDimens.ItemGap))
             }
 
@@ -552,25 +550,10 @@ bottomBar = {
 
             if (transactions.isEmpty()) {
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 40.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Icon(
-                            Icons.Outlined.HistoryToggleOff,
-                            contentDescription = null,
-                            tint = Outline,
-                            modifier = Modifier.size(36.dp),
-                        )
-                        Spacer(Modifier.height(AppDimens.ItemGap))
-                        Text(
-                            "هنوز تراکنشی ثبت نشده",
-                            color = OnSurfaceVariant,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
+                    AppEmptyState(
+                        title = "هنوز تراکنشی ثبت نشده",
+                        icon = Icons.Outlined.HistoryToggleOff,
+                    )
                 }
             }
 
