@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -604,6 +605,69 @@ fun AppIconBadge(icon: ImageVector, contentDescription: String? = null, modifier
     if (onClick == null) Surface(modifier = modifier.size(size), shape = MaterialTheme.shapes.medium, color = containerColor, content = content) else Surface(onClick = onClick, modifier = modifier.size(size), shape = MaterialTheme.shapes.medium, color = containerColor, content = content)
 }
 
+
+@Composable
+fun AppEmptyState(
+    title: String,
+    modifier: Modifier = Modifier,
+    supportingText: String? = null,
+    icon: ImageVector? = null,
+    action: (@Composable () -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
+) {
+    val content: @Composable () -> Unit = {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(AppDimens.CardPadding),
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+        ) {
+            if (icon != null) {
+                AppIconBadge(icon = icon, size = AppDimens.IconBox, iconSize = AppDimens.Icon)
+            }
+            Text(title, style = AppTextStyles.titleMd)
+            if (!supportingText.isNullOrBlank()) {
+                Text(
+                    supportingText,
+                    style = AppTextStyles.bodyMd,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            action?.invoke()
+        }
+    }
+    if (onClick != null) {
+        AppCard(modifier = modifier, onClick = onClick, content = { content() })
+    } else {
+        AppCard(modifier = modifier, content = { content() })
+    }
+}
+
+@Composable
+fun AppLoadingState(
+    message: String = "در حال بارگذاری…",
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth().padding(AppDimens.CardPadding),
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+    ) {
+        CircularProgressIndicator()
+        Text(message, style = AppTextStyles.bodyMd, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+fun AppErrorState(
+    message: String,
+    modifier: Modifier = Modifier,
+    action: (@Composable () -> Unit)? = null,
+) {
+    AppCard(modifier = modifier, containerColor = MaterialTheme.colorScheme.errorContainer) {
+        Text(message, style = AppTextStyles.bodyMd, color = MaterialTheme.colorScheme.onErrorContainer)
+        action?.invoke()
+    }
+}
 
 @Composable
 fun AppStatusPill(

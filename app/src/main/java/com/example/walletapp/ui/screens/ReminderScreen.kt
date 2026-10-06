@@ -1086,87 +1086,22 @@ private fun ReminderItemCard(
 @androidx.compose.runtime.Composable
 private fun EmptyReminderCard(
     filter: ReminderFilter,
-    onAddReminder: () -> Unit
+    onAddReminder: () -> Unit,
 ) {
-
-    AppCard(
+    AppEmptyState(
         modifier = Modifier.fillMaxWidth(),
-        onClick = onAddReminder
-    ) {
-
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        28.dp
-                    ),
-            horizontalAlignment =
-                Alignment.CenterHorizontally
-        ) {
-
-            Icon(
-                imageVector =
-                    Icons.Default.Notifications,
-                contentDescription =
-                    null,
-                modifier =
-                    Modifier.size(
-                        42.dp
-                    )
-            )
-
-            Spacer(
-                modifier =
-                    Modifier.height(
-                        10.dp
-                    )
-            )
-
-            Text(
-                text =
-                    when (filter) {
-                        ReminderFilter.ALL ->
-                            "هنوز یادآوری‌ای ثبت نشده است"
-
-                        ReminderFilter.TODAY ->
-                            "برای امروز یادآوری‌ای ندارید"
-
-                        ReminderFilter.NEXT_THREE_DAYS ->
-                            "در سه روز آینده موردی ندارید"
-
-                        ReminderFilter.THIS_WEEK ->
-                            "برای این هفته موردی ندارید"
-
-                        ReminderFilter.OVERDUE ->
-                            "یادآوری عقب‌افتاده‌ای ندارید"
-
-                        ReminderFilter.COMPLETED ->
-                            "مورد انجام‌شده‌ای وجود ندارد"
-                    },
-                fontWeight =
-                    FontWeight.Bold
-            )
-
-            Spacer(
-                modifier =
-                    Modifier.height(
-                        6.dp
-                    )
-            )
-
-            Text(
-                text =
-                    "برای افزودن یادآوری جدید لمس کنید",
-                style =
-                    MaterialTheme.typography.bodySmall
-            )
-        }
-    }
+        title = when (filter) {
+            ReminderFilter.ALL -> "هنوز یادآوری‌ای ثبت نشده است"
+            ReminderFilter.TODAY -> "برای امروز یادآوری‌ای ندارید"
+            ReminderFilter.NEXT_THREE_DAYS -> "در سه روز آینده موردی ندارید"
+            ReminderFilter.THIS_WEEK -> "برای این هفته موردی ندارید"
+            ReminderFilter.OVERDUE -> "یادآوری عقب‌افتاده‌ای ندارید"
+            ReminderFilter.COMPLETED -> "مورد انجام‌شده‌ای وجود ندارد"
+        },
+        icon = Icons.Default.Notifications,
+        onClick = onAddReminder,
+    )
 }
-
-private const val DAY_MILLIS =
-    24L * 60L * 60L * 1000L
 
 private fun startOfDay(
     millis: Long

@@ -200,38 +200,21 @@ fun CheckManagementScreen(
 @Composable
 private fun EmptyCheckState(
     modifier: Modifier,
-    onAdd: () -> Unit
+    onAdd: () -> Unit,
 ) {
-    Box(
+    AppEmptyState(
         modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            AppIconBadge(icon = Icons.Filled.FactCheck, size = 72.dp, iconSize = 36.dp)
-
-            Text(
-                text = "هنوز چکی ثبت نشده است",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Text(
-                text = "چک‌های دریافتی و پرداختی خود را مدیریت کنید",
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
+        title = "هنوز چکی ثبت نشده است",
+        supportingText = "چک‌های دریافتی و پرداختی خود را مدیریت کنید",
+        icon = Icons.Filled.FactCheck,
+        action = {
             AppPrimaryButton(
                 text = "ثبت چک جدید",
                 onClick = onAdd,
-                leadingIcon = { Icon(Icons.Filled.Add, contentDescription = null) }
+                leadingIcon = { Icon(Icons.Filled.Add, contentDescription = null) },
             )
-        }
-    }
+        },
+    )
 }
 
 @Composable

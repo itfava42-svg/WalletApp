@@ -2204,18 +2204,11 @@ private fun SummaryLine(
 }
 
 @Composable
-private fun EmptyCard(
-    message: String,
-) {
-    AppCard(
+private fun EmptyCard(message: String) {
+    AppEmptyState(
         modifier = Modifier.fillMaxWidth(),
-    ) {
-        Text(
-            text = message,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium,
-        )
-    }
+        title = message,
+    )
 }
 
 private fun calculateRange(
