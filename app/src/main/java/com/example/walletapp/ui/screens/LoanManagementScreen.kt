@@ -2493,3 +2493,17 @@ private fun calculateMonthlyInstallment(
 
     val monthlyRate =
         annualInterestPercent /
+            100.0 /
+            12.0
+
+    val power =
+        (1.0 + monthlyRate)
+            .pow(numberOfPayments)
+
+    val payment =
+        principal *
+            (monthlyRate * power) /
+            (power - 1.0)
+
+    return payment.toLong()
+}
