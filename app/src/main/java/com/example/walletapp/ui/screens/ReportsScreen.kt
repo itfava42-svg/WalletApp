@@ -296,7 +296,7 @@ Spacer(modifier = Modifier.weight(1f))
             }
 
             item {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(AppDimens.SectionGap))
             }
         }
     }
@@ -777,10 +777,10 @@ private fun P7FinancialTrendChart(
                         color = incomeColor,
                         fontWeight = FontWeight.Bold,
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(AppDimens.TightGap))
                     Text(
                         text = "درآمد",
-                        style = MaterialTheme.typography.labelSmall,
+                        style = AppTextStyles.labelSmall,
                     )
                 }
 
@@ -792,10 +792,10 @@ private fun P7FinancialTrendChart(
                         color = expenseColor,
                         fontWeight = FontWeight.Bold,
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(AppDimens.TightGap))
                     Text(
                         text = "هزینه",
-                        style = MaterialTheme.typography.labelSmall,
+                        style = AppTextStyles.labelSmall,
                     )
                 }
 
@@ -807,10 +807,10 @@ private fun P7FinancialTrendChart(
                         color = netColor,
                         fontWeight = FontWeight.Bold,
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(AppDimens.TightGap))
                     Text(
                         text = "خالص",
-                        style = MaterialTheme.typography.labelSmall,
+                        style = AppTextStyles.labelSmall,
                     )
                 }
             }
@@ -822,7 +822,7 @@ private fun P7FinancialTrendChart(
                 data.forEach { item ->
                     Text(
                         text = item.label,
-                        style = MaterialTheme.typography.labelSmall,
+                        style = AppTextStyles.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -893,7 +893,7 @@ private fun P7ExpenseDonutChart(
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AppDimens.TightGap))
 
             Text(
                 text = "سهم هر دسته از هزینه‌های این ماه",
@@ -901,7 +901,7 @@ private fun P7ExpenseDonutChart(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -965,7 +965,7 @@ private fun P7ExpenseDonutChart(
                     }
                 }
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(AppDimens.CardGap))
 
                 Column(
                     modifier = Modifier.weight(1f),
@@ -988,7 +988,7 @@ private fun P7ExpenseDonutChart(
                                     ),
                             )
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(AppDimens.ItemGap))
 
                             Column(
                                 modifier = Modifier.weight(1f),
@@ -1008,7 +1008,7 @@ private fun P7ExpenseDonutChart(
 
                             Text(
                                 text = "${formatPercent(percent)}٪",
-                                style = MaterialTheme.typography.labelLarge,
+                                style = AppTextStyles.labelMd,
                                 fontWeight = FontWeight.Bold,
                             )
                         }
@@ -1063,7 +1063,7 @@ private fun P7AccountBalanceChart(
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AppDimens.TightGap))
 
             Text(
                 text = "توزیع موجودی فعلی بین حساب‌های شما",
@@ -1071,7 +1071,7 @@ private fun P7AccountBalanceChart(
                 color = onSurfaceVariant,
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             sortedAccounts.forEachIndexed { index, account ->
                 val balance = account.balance
@@ -1114,13 +1114,13 @@ private fun P7AccountBalanceChart(
                         ) {
                             Text(
                                 text = "${index + 1}",
-                                style = MaterialTheme.typography.labelMedium,
+                                style = AppTextStyles.labelMd,
                                 fontWeight = FontWeight.Bold,
                                 color = barColor,
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Spacer(modifier = Modifier.width(AppDimens.ItemGap))
 
                         Column(
                             modifier = Modifier.weight(1f),
@@ -1135,21 +1135,21 @@ private fun P7AccountBalanceChart(
                             if (account.account.bankName.isNotBlank()) {
                                 Text(
                                     text = account.account.bankName,
-                                    style = MaterialTheme.typography.labelSmall,
+                                    style = AppTextStyles.labelSmall,
                                     color = onSurfaceVariant,
                                     maxLines = 1,
                                 )
                             }
                         }
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(AppDimens.ItemGap))
 
                         Column(
                             horizontalAlignment = Alignment.End,
                         ) {
                             Text(
                                 text = formatMoney(balance),
-                                style = MaterialTheme.typography.labelLarge,
+                                style = AppTextStyles.labelMd,
                                 fontWeight = FontWeight.Bold,
                                 color = barColor,
                             )
@@ -1157,13 +1157,13 @@ private fun P7AccountBalanceChart(
                             if (share > 0.0) {
                                 Text(
                                     text = "${formatPercent(share)}٪",
-                                    style = MaterialTheme.typography.labelSmall,
+                                    style = AppTextStyles.labelSmall,
                                     color = onSurfaceVariant,
                                 )
                             } else if (balance < 0L) {
                                 Text(
                                     text = "منفی",
-                                    style = MaterialTheme.typography.labelSmall,
+                                    style = AppTextStyles.labelSmall,
                                     color = errorColor,
                                 )
                             }
@@ -1211,7 +1211,7 @@ private fun P7AccountBalanceChart(
             }
 
             if (accounts.size > 6) {
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(AppDimens.TightGap))
 
                 Text(
                     text = "۶ حساب با بیشترین موجودی نمایش داده شده‌اند.",
@@ -1344,7 +1344,7 @@ private fun MetricBox(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelMedium,
+                style = AppTextStyles.labelMd,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
@@ -1435,7 +1435,7 @@ private fun HeroFinancialCard(
 
             Text(
                 text = formatMoney(totalBalance),
-                style = MaterialTheme.typography.headlineMedium,
+                style = AppTextStyles.headlineMd,
                 fontWeight = FontWeight.ExtraBold,
             )
 
@@ -1546,7 +1546,7 @@ private fun SmartAlertsCard(
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AppDimens.TightGap))
 
             Text(
                 text = "تحلیل خودکار وضعیت مالی این ماه",
@@ -1554,7 +1554,7 @@ private fun SmartAlertsCard(
                 color = onSurfaceVariant,
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             alerts.forEachIndexed { index, alert ->
 
@@ -1599,7 +1599,7 @@ private fun SmartAlertsCard(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(AppDimens.CardGap))
 
                     Column(
                         modifier = Modifier.weight(1f),
