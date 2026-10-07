@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.TransactionKind
@@ -69,23 +68,23 @@ fun BalanceHeroCard(
                         Text(
                             "موجودی",
                             color = Color.White.copy(alpha = .78f),
-                            fontSize = 13.sp,
+                            style = AppTextStyles.labelMd,
                         )
-                        Spacer(Modifier.height(6.dp))
+                        Spacer(Modifier.height(AppDimens.IntroGap))
                         Row(verticalAlignment = Alignment.Bottom) {
                             Text(
                                 totalBalance.toPersianCurrency(),
                                 color = Color.White,
                                 fontFamily = AppFontFamily,
                                 fontWeight = FontWeight.ExtraBold,
-                                fontSize = 28.sp,
+                                style = AppTextStyles.numeralXl,
                             )
-                            Spacer(Modifier.width(6.dp))
+                            Spacer(Modifier.width(AppDimens.TightGap))
                             Text(
                                  "تومان",
                                  color = Color.White.copy(alpha = .75f),
                                  fontFamily = AppFontFamily,
-                                 fontSize = 12.sp,
+                                 style = AppTextStyles.labelSmall,
                              )
                         }
                     }
@@ -106,7 +105,7 @@ fun BalanceHeroCard(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
                 ) {
                     SummaryStat("درآمد", income, Icons.Filled.ArrowDownward, Color(0xFFB8F2D5), Modifier.weight(1f))
                     SummaryStat("هزینه", expense, Icons.Filled.ArrowUpward, Color(0xFFFFB7C0), Modifier.weight(1f))
@@ -137,7 +136,7 @@ fun DashboardPeriodSelector(
                 horizontal = 16.dp,
                 vertical = 4.dp,
             ),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
     ) {
         periods.forEach { period ->
 
@@ -166,15 +165,15 @@ fun DashboardMonthlySummaryCard(
     ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
             ) {
                 SummaryStat(
                     label = "درآمد",
@@ -195,7 +194,7 @@ fun DashboardMonthlySummaryCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AppDimens.ItemGap))
 
             SummaryStat(
                 label = "جریان نقدی",
@@ -248,18 +247,18 @@ fun DashboardPeriodComparisonCard(
     ) {
             Text(
                 text = "مقایسه با دوره قبل",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             ComparisonRow(
                 title = "درآمد",
                 changePercent = incomeChange,
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AppDimens.ItemGap))
 
             ComparisonRow(
                 title = "هزینه",
@@ -279,7 +278,7 @@ private fun ComparisonRow(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyLarge,
+            style = AppTextStyles.bodyLg,
         )
 
         Text(
@@ -291,7 +290,7 @@ private fun ComparisonRow(
                         "$it٪"
                     }
                 } ?: "—",
-            style = MaterialTheme.typography.bodyLarge,
+            style = AppTextStyles.bodyLg,
             fontWeight = FontWeight.Bold,
         )
     }
@@ -314,11 +313,11 @@ fun DashboardCategorySummaryCard(
     ) {
             Text(
                 text = "هزینه‌ها بر اساس دسته‌بندی",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             visibleCategories.forEach { item ->
 
@@ -335,18 +334,18 @@ fun DashboardCategorySummaryCard(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 6.dp),
+                        .padding(vertical = AppDimens.ItemGap),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = item.category,
                         modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppTextStyles.bodyMd,
                     )
 
                     Text(
                         text = item.expense.toPersianCurrency(),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppTextStyles.bodyMd,
                         fontWeight = FontWeight.SemiBold,
                     )
 
@@ -354,7 +353,7 @@ fun DashboardCategorySummaryCard(
 
                     Text(
                         text = "%",
-                        style = MaterialTheme.typography.labelMedium,
+                        style = AppTextStyles.labelMd,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -393,7 +392,7 @@ private fun SummaryStat(
                 )
             }
 
-            Spacer(Modifier.width(7.dp))
+            Spacer(Modifier.width(AppDimens.TightGap))
 
             Text(
                 text = label,
@@ -404,14 +403,14 @@ private fun SummaryStat(
             )
         }
 
-        Spacer(Modifier.height(5.dp))
+        Spacer(Modifier.height(AppDimens.TightGap))
 
         Text(
             text = amount.toPersianCurrency(),
             color = contentColor,
             fontFamily = AppFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
+                style = AppTextStyles.titleMd,
         )
     }
 }
@@ -448,7 +447,7 @@ fun QuickAction(
             }
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(AppDimens.ItemGap))
 
         Text(
             text = label,
@@ -507,7 +506,7 @@ fun TransactionRow(
                     )
                 }
 
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(AppDimens.CardGap))
 
                 Column(
                     modifier = Modifier.weight(1f)
@@ -521,7 +520,7 @@ fun TransactionRow(
                     )
 
                     if (transaction.subtitle.isNotBlank()) {
-                        Spacer(Modifier.height(2.dp))
+                        Spacer(Modifier.height(AppDimens.TightGap))
 
                         Text(
                             text = transaction.subtitle,
@@ -532,7 +531,7 @@ fun TransactionRow(
                     }
 
                     if (transaction.tags.isNotEmpty()) {
-                        Spacer(Modifier.height(3.dp))
+                        Spacer(Modifier.height(AppDimens.TightGap))
 
                         Text(
                             text = transaction.tags.joinToString(" ") { "#$it" },
@@ -546,7 +545,7 @@ fun TransactionRow(
                 }
             }
 
-            Spacer(Modifier.width(10.dp))
+            Spacer(Modifier.width(AppDimens.ItemGap))
 
             Column(
                 horizontalAlignment = Alignment.End
@@ -558,7 +557,7 @@ fun TransactionRow(
                     style = AppTextStyles.bodyLg,
                 )
 
-                Spacer(Modifier.height(2.dp))
+                Spacer(Modifier.height(AppDimens.TightGap))
 
                 Text(
                     text = "تومان",
@@ -668,10 +667,10 @@ fun DashboardTrendChart(
     ) {
             Text(
                 text = "روند درآمد و هزینه",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             Canvas(
                 modifier =
@@ -751,7 +750,7 @@ fun DashboardTrendChart(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AppDimens.ItemGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -759,15 +758,15 @@ fun DashboardTrendChart(
             ) {
                 Text(
                     text = "● درآمد",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTextStyles.labelMd,
                     color = incomeColor,
                 )
 
-                Spacer(modifier = Modifier.width(20.dp))
+                Spacer(modifier = Modifier.width(AppDimens.SectionGap))
 
                 Text(
                     text = "● هزینه",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTextStyles.labelMd,
                     color = expenseColor,
                 )
             }
