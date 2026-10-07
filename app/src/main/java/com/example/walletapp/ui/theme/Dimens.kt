@@ -18,6 +18,9 @@ object AppDimens {
     val TabHeight = 44.dp
     val OperationCardHeight = 150.dp
     val SelectionTileHeight = 54.dp
+    val BankCardWidth = 292.dp
+    val TableRowVerticalPadding = 12.dp
+    val StatusPillVerticalPadding = 8.dp
 
     val IconBox = 40.dp
     val IconSmall = 18.dp
@@ -25,6 +28,8 @@ object AppDimens {
     val IconLarge = 28.dp
     val FeatureIconBox = 48.dp
     val FeatureIcon = 28.dp
+    val BadgeSize = 40.dp
+    val BadgeIconSize = 22.dp
 
     val CardRadius = 20.dp
     val SmallCardRadius = 16.dp
