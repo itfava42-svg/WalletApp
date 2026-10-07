@@ -1,6 +1,7 @@
 package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppIconButton
+import com.example.walletapp.ui.components.AppTopBar
 
 import com.example.walletapp.ui.components.JalaliDatePickerDialog
 
@@ -38,7 +39,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,7 +86,7 @@ fun CheckManagementScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
+            AppTopBar(
                 title = {
                     Text(
                         text = "مدیریت چک",

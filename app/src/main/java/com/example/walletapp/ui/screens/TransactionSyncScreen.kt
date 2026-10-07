@@ -1,6 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppIconButton
+import com.example.walletapp.ui.components.AppTopBar
 
 import com.example.walletapp.ui.theme.AppDimens
 
@@ -14,7 +15,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,7 +48,7 @@ fun TransactionSyncScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            AppTopBar(
                 title = {
                     Text("همگام‌سازی")
                 },
