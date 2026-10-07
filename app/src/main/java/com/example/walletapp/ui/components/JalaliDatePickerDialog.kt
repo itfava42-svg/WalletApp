@@ -117,7 +117,7 @@ fun JalaliDatePickerDialog(
                         Alignment.CenterVertically
                 ) {
 
-                    AppIconButton(
+                    AppAppIconButton(
                         onClick = {
                             if (displayMonth == 1) {
                                 displayMonth = 12
@@ -145,8 +145,6 @@ fun JalaliDatePickerDialog(
                                 displayYear
                                     .toString()
                                     .toPersianDigits(),
-                        fontWeight =
-                            FontWeight.Bold,
                         style = AppTextStyles.titleMd
                     )
 
@@ -266,8 +264,6 @@ fun JalaliDatePickerDialog(
                         ) {
                             Text(
                                 text = dayName,
-                                fontWeight =
-                                    FontWeight.Bold,
                                 style = AppTextStyles.labelMd
                             )
                         }
@@ -326,7 +322,7 @@ fun JalaliDatePickerDialog(
                                     Box(
                                         modifier =
                                             Modifier
-                                                .size(38.dp)
+                                                .size(AppDimens.IconBox)
                                                 .background(
                                                     color =
                                                         if (isSelected) {
@@ -357,16 +353,7 @@ fun JalaliDatePickerDialog(
                                                 day
                                                     .toString()
                                                     .toPersianDigits(),
-                                            fontSize =
-                                                14.sp,
-                                            fontWeight =
-                                                if (
-                                                    isSelected
-                                                ) {
-                                                    FontWeight.Bold
-                                                } else {
-                                                    FontWeight.Normal
-                                                }
+                                            style = if (isSelected) AppTextStyles.bodyMd.copy(fontWeight = AppTextStyles.titleMd.fontWeight) else AppTextStyles.bodyMd
                                         )
                                     }
 
@@ -375,7 +362,7 @@ fun JalaliDatePickerDialog(
                                     Spacer(
                                         modifier =
                                             Modifier.size(
-                                                38.dp
+                                                AppDimens.IconBox
                                             )
                                     )
                                 }
@@ -396,8 +383,6 @@ fun JalaliDatePickerDialog(
                             selectedMonth,
                             selectedDay
                         ),
-                    fontWeight =
-                        FontWeight.Bold,
                     style = AppTextStyles.titleSm
                 )
             }
