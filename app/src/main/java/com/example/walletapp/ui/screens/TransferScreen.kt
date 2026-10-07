@@ -5,6 +5,7 @@ import com.example.walletapp.ui.components.AppTopBar
 import com.example.walletapp.ui.components.AppIconButton
 
 import com.example.walletapp.ui.components.AppTextButton
+import com.example.walletapp.ui.theme.AppTextStyles
 
 import android.widget.Toast
 import com.example.walletapp.ui.theme.AppDimens
@@ -26,16 +27,13 @@ import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -270,26 +268,24 @@ fun TransferScreen(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(AppDimens.PagePadding),
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Icon(
                         imageVector = Icons.Filled.SwapHoriz,
                         contentDescription = null,
-                        modifier = Modifier.size(34.dp),
+                        modifier = Modifier.size(AppDimens.IconLarge),
                         tint =
                             MaterialTheme.colorScheme.onPrimaryContainer,
                     )
 
                     Spacer(
-                        modifier = Modifier.size(12.dp)
+                        modifier = Modifier.size(AppDimens.CardGap)
                     )
 
                     Column {
                         Text(
                             "انتقال داخلی",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = AppTextStyles.titleMd,
                             fontWeight = FontWeight.Bold,
                             color =
                                 MaterialTheme.colorScheme.onPrimaryContainer,
@@ -301,7 +297,7 @@ fun TransferScreen(
 
                         Text(
                             "انتقال وجه بین حساب‌های خودتان بدون ثبت به‌عنوان هزینه",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = AppTextStyles.bodyMd,
                             color =
                                 MaterialTheme.colorScheme.onPrimaryContainer,
                         )
@@ -316,7 +312,7 @@ fun TransferScreen(
                 ) {
                     Text(
                         "برای انتقال، حداقل دو حساب فعال ثبت کنید.",
-                        modifier = Modifier.padding(AppDimens.PagePadding),
+                        modifier = Modifier,
                         color = MaterialTheme.colorScheme.error,
                     )
                 }
@@ -441,24 +437,22 @@ private fun AccountSelectorCard(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(AppDimens.PagePadding),
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Icon(
                 imageVector = Icons.Filled.AccountBalance,
                 contentDescription = null,
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier.size(AppDimens.IconLarge),
             )
 
             Spacer(
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier.size(AppDimens.CardGap)
             )
 
             Column {
                 Text(
                     title,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTextStyles.labelMd,
                     color =
                         MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -469,7 +463,7 @@ private fun AccountSelectorCard(
 
                 Text(
                     account?.name ?: "انتخاب نشده",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = AppTextStyles.titleMd,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -506,7 +500,7 @@ private fun AccountSelectionDialog(
                                 .clickable {
                                     onSelect(account.id)
                                 }
-                                .padding(vertical = 8.dp),
+                                .padding(vertical = AppDimens.ItemGap),
                         ) {
                             RadioButton(
                                 selected =
@@ -522,7 +516,7 @@ private fun AccountSelectionDialog(
 
                             Text(
                                 account.name,
-                                modifier = Modifier.padding(top = 12.dp),
+                                modifier = Modifier.padding(top = AppDimens.CardGap),
                             )
                         }
                     }
