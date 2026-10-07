@@ -22,10 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.School
@@ -208,11 +205,11 @@ fun AddBankAccountScreen(
                         .border(
                             width = 1.dp,
                             color = Color(0xFFF0F0F0),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(AppDimens.SmallCardRadius),
                         )
                         .background(
                             color = Color(0xFFFAFAFA),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(AppDimens.SmallCardRadius),
                         )
                         .padding(6.dp)
                         .verticalScroll(rememberScrollState()),
@@ -290,11 +287,11 @@ fun AddBankAccountScreen(
                         .border(
                             width = 1.dp,
                             color = Color(0xFFD1E7DD),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(AppDimens.SmallCardRadius),
                         )
                         .background(
                             Color(0xFFF0FDF4),
-                            RoundedCornerShape(16.dp),
+                            RoundedCornerShape(AppDimens.SmallCardRadius),
                         )
                         .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
