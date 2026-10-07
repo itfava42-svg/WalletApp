@@ -30,8 +30,8 @@ import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.BorderStroke
 import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,12 +42,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppOutlinedButton
@@ -111,10 +109,10 @@ fun AddBankAccountScreen(
                     .background(Color.White)
                     .verticalScroll(scrollState)
                     .padding(
-                        start = 20.dp,
-                        top = 20.dp,
-                        end = 20.dp,
-                        bottom = 100.dp,
+                        start = AppDimens.PagePadding,
+                        top = AppDimens.PagePadding,
+                        end = AppDimens.PagePadding,
+                        bottom = AppDimens.BottomBarHeight + AppDimens.PagePadding,
                     ),
         ) {
 
@@ -130,7 +128,7 @@ fun AddBankAccountScreen(
                     onClick = onBack,
                     modifier =
                         Modifier
-                            .size(40.dp)
+                            .size(AppDimens.IconBox)
                             .clip(CircleShape)
                             .background(Color(0xFFE8F5E9)),
                 ) {
@@ -138,16 +136,15 @@ fun AddBankAccountScreen(
                         imageVector = Icons.Default.AccountBalance,
                         contentDescription = null,
                         tint = Color(0xFF157A37),
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(AppDimens.IconSmall),
                     )
                 }
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(AppDimens.CardGap))
 
                 Text(
                     text = "افزودن حساب بانکی",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = AppTextStyles.titleLg,
                     color = Color(0xFF1A1A1A),
                 )
 
@@ -155,17 +152,17 @@ fun AddBankAccountScreen(
 
                 AppIconButton(
                     onClick = onBack,
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(AppDimens.IconBox),
                 ) {
                     Text(
                         text = "×",
-                        fontSize = 24.sp,
+                        style = AppTextStyles.titleLg,
                         color = Color(0xFF555555),
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(AppDimens.SectionGap))
 
             // ---------------------------------------------------------
             // BANK SELECTION TITLE
@@ -178,20 +175,19 @@ fun AddBankAccountScreen(
                     imageVector = Icons.Default.GridView,
                     contentDescription = null,
                     tint = Color(0xFF157A37),
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(AppDimens.IconSmall),
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(AppDimens.ItemGap))
 
                 Text(
                     text = "انتخاب بانک",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = AppTextStyles.titleMd,
                     color = Color(0xFF1A1A1A),
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             // ---------------------------------------------------------
             // BANK GRID
@@ -211,14 +207,14 @@ fun AddBankAccountScreen(
                             color = Color(0xFFFAFAFA),
                             shape = RoundedCornerShape(AppDimens.SmallCardRadius),
                         )
-                        .padding(6.dp)
+                        .padding(AppDimens.TightGap)
                         .verticalScroll(rememberScrollState()),
             ) {
                 banks.chunked(3).forEach { rowBanks ->
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
                     ) {
                         rowBanks.forEach { bank ->
 
@@ -239,11 +235,11 @@ fun AddBankAccountScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(AppDimens.CardGap))
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(AppDimens.SectionGap))
 
             // ---------------------------------------------------------
             // ACCOUNT NUMBER
@@ -258,7 +254,7 @@ fun AddBankAccountScreen(
                 singleLine = true,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AppDimens.ItemGap))
 
             // ---------------------------------------------------------
             // CARD NUMBER
@@ -274,7 +270,7 @@ fun AddBankAccountScreen(
                 singleLine = true,
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(AppDimens.SectionGap))
 
             // ---------------------------------------------------------
             // BALANCE
@@ -293,8 +289,8 @@ fun AddBankAccountScreen(
                             Color(0xFFF0FDF4),
                             RoundedCornerShape(AppDimens.SmallCardRadius),
                         )
-                        .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                        .padding(AppDimens.CardPadding),
+                verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
             ) {
 
                 Row(
@@ -304,15 +300,14 @@ fun AddBankAccountScreen(
                         imageVector = Icons.Default.Wallet,
                         contentDescription = null,
                         tint = Color(0xFF157A37),
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(AppDimens.IconSmall),
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(AppDimens.ItemGap))
 
                     Text(
                         text = "موجودی",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = AppTextStyles.titleSm,
                         color = Color(0xFF157A37),
                     )
                 }
@@ -335,7 +330,7 @@ fun AddBankAccountScreen(
                         } else {
                             "۰ تومان"
                         },
-                    fontSize = 12.sp,
+                    style = AppTextStyles.labelMd,
                     color = Color(0xFF888888),
                 )
             }
@@ -356,10 +351,10 @@ fun AddBankAccountScreen(
                         color = Color(0xFFF0F0F0),
                     )
                     .padding(
-                        horizontal = 20.dp,
-                        vertical = 16.dp,
+                        horizontal = AppDimens.PagePadding,
+                        vertical = AppDimens.CardPadding,
                     ),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
         ) {
 
             AppOutlinedButton(
@@ -418,22 +413,21 @@ private fun BankOptionCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(AppDimens.IconBox)
                     .clip(CircleShape)
                     .background(bank.color),
                 contentAlignment = Alignment.Center,
             ) {
                 when (bank.iconType) {
-                    1 -> Icon(Icons.Default.School, null, tint = Color.White, modifier = Modifier.size(18.dp))
-                    2 -> Icon(Icons.Default.Info, null, tint = Color.White, modifier = Modifier.size(18.dp))
-                    else -> Icon(Icons.Default.Wallet, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                    1 -> Icon(Icons.Default.School, null, tint = Color.White, modifier = Modifier.size(AppDimens.IconSmall))
+                    2 -> Icon(Icons.Default.Info, null, tint = Color.White, modifier = Modifier.size(AppDimens.IconSmall))
+                    else -> Icon(Icons.Default.Wallet, null, tint = Color.White, modifier = Modifier.size(AppDimens.IconSmall))
                 }
             }
 
             Text(
                 text = bank.name,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
+                style = AppTextStyles.labelMd,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 2,
                 textAlign = TextAlign.Center,
