@@ -40,7 +40,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.AccountStore
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.Transaction
@@ -252,9 +251,9 @@ fun AddTransactionScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
+                         .padding(AppDimens.PagePadding),
                     containerColor = accentColor,
-                    textStyle = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                    textStyle = AppTextStyles.labelMd.copy(fontWeight = FontWeight.Bold),
                 )
             }
         },
@@ -263,10 +262,10 @@ fun AddTransactionScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                 .padding(horizontal = AppDimens.PagePadding)
                 .verticalScroll(rememberScrollState()),
         ) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
 
             // Expense / Income segmented toggle
             Row(
@@ -292,11 +291,11 @@ fun AddTransactionScreen(
                 )
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(AppDimens.SectionGap))
 
             // Amount
-            Text("مبلغ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-            Spacer(Modifier.height(8.dp))
+            Text("مبلغ", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
+            Spacer(Modifier.height(AppDimens.ItemGap))
             AppTextField(
                 value = amountDigits,
                 onValueChange = { input ->
@@ -315,23 +314,23 @@ fun AddTransactionScreen(
                 placeholder = { Text("۰") },
                 suffix = { Text("تومان") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = MaterialTheme.typography.headlineSmall,
+                textStyle = AppTextStyles.headlineSm,
                 singleLine = true,
             )
             if (amountDigits.isNotEmpty()) {
                 Text(
                     (amountDigits.toLongOrNull() ?: 0L).toPersianCurrency() + " تومان",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTextStyles.labelMd,
                     color = accentColor,
                     modifier = Modifier.padding(top = 4.dp),
                 )
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(AppDimens.CardGap))
 
             // Title
-            Text("عنوان", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-            Spacer(Modifier.height(8.dp))
+            Text("عنوان", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
+            Spacer(Modifier.height(AppDimens.ItemGap))
             AppTextField(
                 value = title,
                 onValueChange = { title = it },
@@ -341,11 +340,11 @@ fun AddTransactionScreen(
                 singleLine = true,
             )
 
-            androidx.compose.foundation.layout.Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(AppDimens.CardGap))
 
             // Category grid
-            Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-            Spacer(Modifier.height(8.dp))
+            Text("دسته‌بندی", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
+            Spacer(Modifier.height(AppDimens.ItemGap))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
                 modifier = Modifier.height(if (categories.size > 4) 176.dp else 88.dp),
@@ -360,18 +359,18 @@ fun AddTransactionScreen(
                             Icon(resolveTransactionIcon(category.iconKey), contentDescription = category.label,
                                 tint = if (category == selectedCategory) accentColor else OnSurfaceVariant)
                         }
-                        Spacer(Modifier.height(4.dp))
-                        Text(category.label, style = MaterialTheme.typography.labelMedium,
+                        Spacer(Modifier.height(AppDimens.TightGap))
+                        Text(category.label, style = AppTextStyles.labelMd,
                             color = if (category == selectedCategory) accentColor else OnSurfaceVariant, maxLines = 1)
                     }
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(AppDimens.CardGap))
 
             // Date
-            Text("تاریخ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-            Spacer(Modifier.height(8.dp))
+            Text("تاریخ", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
+            Spacer(Modifier.height(AppDimens.ItemGap))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AppAssistChip(
                     onClick = {
@@ -380,7 +379,7 @@ fun AddTransactionScreen(
                     },
                     label = { Text("امروز") },
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(AppDimens.ItemGap))
                 AppAssistChip(
                     onClick = {
                         dateLabel = JalaliCalendar.daysAgoSlashed(1)
@@ -388,7 +387,7 @@ fun AddTransactionScreen(
                     },
                     label = { Text("دیروز") },
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(AppDimens.ItemGap))
                 AppOutlinedButton(
                     text = dateLabel,
                     onClick = { showDatePicker = true },
@@ -398,11 +397,11 @@ fun AddTransactionScreen(
                 )
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(AppDimens.CardGap))
 
             // Account
-            Text("حساب", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-            Spacer(Modifier.height(8.dp))
+            Text("حساب", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
+            Spacer(Modifier.height(AppDimens.ItemGap))
             ExposedDropdownMenuBox(
                 expanded = accountMenuExpanded,
                 onExpandedChange = { accountMenuExpanded = it },
@@ -447,11 +446,11 @@ fun AddTransactionScreen(
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(AppDimens.CardGap))
 
             // Note
-            Text("یادداشت (اختیاری)", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-            Spacer(Modifier.height(8.dp))
+            Text("یادداشت (اختیاری)", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
+            Spacer(Modifier.height(AppDimens.ItemGap))
             AppTextField(
                 value = note,
                 onValueChange = { note = it },
@@ -463,7 +462,7 @@ fun AddTransactionScreen(
                 singleLine = false,
             )
 
-            androidx.compose.foundation.layout.Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(AppDimens.CardGap))
 
             // Recurring + attach receipt row
             Column(
@@ -524,7 +523,7 @@ fun AddTransactionScreen(
                 }
 
                 receiptPreviewBitmap?.let { previewBitmap ->
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
 
                     Image(
                         bitmap = previewBitmap.asImageBitmap(),
@@ -543,11 +542,11 @@ fun AddTransactionScreen(
                 Text(
                     "لطفاً مبلغ، عنوان و یک حساب فعال را بررسی کنید.",
                     color = AppError,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = AppTextStyles.bodyMd,
                 )
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(AppDimens.SectionGap))
         }
     }
 
