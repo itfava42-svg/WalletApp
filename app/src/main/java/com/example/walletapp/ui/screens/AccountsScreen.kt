@@ -48,7 +48,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -168,28 +167,28 @@ bottomBar = {
                             ) {
                                 Text(
                                     text = "موجودی کل",
-                                    style = MaterialTheme.typography.labelLarge,
+                                    style = AppTextStyles.labelMd,
                                     color = Color.White,
                                 )
 
                                 Spacer(
-                                    Modifier.height(7.dp)
+                                    Modifier.height(AppDimens.ItemGap)
                                 )
 
                                 Text(
                                     text = formatAmount(totalBalance),
-                                    style = MaterialTheme.typography.headlineMedium,
+                                    style = AppTextStyles.headlineMd,
                                     fontWeight = FontWeight.ExtraBold,
                                     color = Color.White,
                                 )
 
                                 Spacer(
-                                    Modifier.height(2.dp)
+                                    Modifier.height(AppDimens.TightGap)
                                 )
 
                                 Text(
                                     text = "ریال",
-                                    style = MaterialTheme.typography.labelSmall,
+                                    style = AppTextStyles.labelSmall,
                                     color = Color.White,
                                 )
                             }
@@ -214,12 +213,12 @@ bottomBar = {
                         }
 
                         Spacer(
-                            Modifier.height(18.dp)
+                            Modifier.height(AppDimens.ItemGap)
                         )
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
                         ) {
 
                             AccountSummaryStat(
@@ -247,31 +246,31 @@ bottomBar = {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 2.dp),
+                        .padding(top = AppDimens.TightGap),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column {
                         Text(
                             text = "حساب‌های من",
-                            style = MaterialTheme.typography.titleLarge,
+                            style = AppTextStyles.titleLg,
                             fontWeight = FontWeight.Bold,
                         )
 
                         Spacer(
-                            Modifier.height(2.dp)
+                            Modifier.height(AppDimens.TightGap)
                         )
 
                         Text(
                             text = "حساب‌های بانکی و مالی شما",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = AppTextStyles.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
 
                     Text(
                         text = "${accounts.size} حساب",
-                        style = MaterialTheme.typography.labelLarge,
+                        style = AppTextStyles.labelMd,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary,
                     )
@@ -287,13 +286,13 @@ bottomBar = {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(30.dp),
+                                .padding(AppDimens.CardPadding),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
 
                             Box(
                                 modifier = Modifier
-                                    .size(68.dp)
+                                    .size(AppDimens.FeatureIconBox)
                                     .background(
                                         color = MaterialTheme.colorScheme.primaryContainer,
                                         shape = RoundedCornerShape(AppDimens.CardRadius),
@@ -303,33 +302,33 @@ bottomBar = {
                                 Icon(
                                     imageVector = Icons.Filled.AccountBalance,
                                     contentDescription = null,
-                                    modifier = Modifier.size(32.dp),
+                                    modifier = Modifier.size(AppDimens.FeatureIcon),
                                     tint = MaterialTheme.colorScheme.primary,
                                 )
                             }
 
                             Spacer(
-                                Modifier.height(16.dp)
+                                Modifier.height(AppDimens.ItemGap)
                             )
 
                             Text(
                                 text = "هنوز حسابی ثبت نشده است",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = AppTextStyles.titleMd,
                                 fontWeight = FontWeight.Bold,
                             )
 
                             Spacer(
-                                Modifier.height(6.dp)
+                                Modifier.height(AppDimens.IntroGap)
                             )
 
                             Text(
                                 text = "اولین حساب مالی خود را اضافه کنید.",
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = AppTextStyles.bodyMd,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
 
                             Spacer(
-                                Modifier.height(18.dp)
+                                Modifier.height(AppDimens.ItemGap)
                             )
 
                             AppPrimaryButton(
@@ -500,18 +499,18 @@ private fun AccountSummaryStat(
     ) {
         Text(
             text = value,
-            style = MaterialTheme.typography.titleMedium,
+            style = AppTextStyles.titleMd,
             fontWeight = FontWeight.Bold,
             color = Color.White,
         )
 
         Spacer(
-            Modifier.height(2.dp)
+            Modifier.height(AppDimens.TightGap)
         )
 
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall,
+            style = AppTextStyles.labelSmall,
             color = Color.White,
         )
     }
@@ -573,7 +572,7 @@ private fun AccountCard(
 
                     Text(
                         text = account.name,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = AppTextStyles.titleMd,
                         fontWeight = FontWeight.Bold,
                     )
 
@@ -588,7 +587,7 @@ private fun AccountCard(
                         if (account.bankName.isNotBlank()) {
                             Text(
                                 text = account.bankName,
-                                style = MaterialTheme.typography.bodySmall,
+                                style = AppTextStyles.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
@@ -598,14 +597,14 @@ private fun AccountCard(
                             if (account.bankName.isNotBlank()) {
                                 Text(
                                     text = "  •  ",
-                                    style = MaterialTheme.typography.bodySmall,
+                                    style = AppTextStyles.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
 
                             Text(
                                 text = "•••• ${account.cardLast4}",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = AppTextStyles.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
@@ -742,12 +741,12 @@ private fun AccountCard(
 
                     if (account.accountNumber.isNotBlank()) {
                         Spacer(
-                            Modifier.height(7.dp)
+                            Modifier.height(AppDimens.ItemGap)
                         )
 
                         Text(
                             text = "شماره حساب: ${account.accountNumber}",
-                            style = MaterialTheme.typography.labelSmall,
+                            style = AppTextStyles.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
@@ -759,7 +758,7 @@ private fun AccountCard(
 
                     Text(
                         text = formatAmount(balance),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = AppTextStyles.titleLg,
                         fontWeight = FontWeight.ExtraBold,
                         color =
                             if (account.isActive) {
@@ -771,7 +770,7 @@ private fun AccountCard(
 
                     Text(
                         text = "ریال",
-                        style = MaterialTheme.typography.labelSmall,
+                        style = AppTextStyles.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -809,7 +808,7 @@ private fun AccountBadge(
 
         Text(
             text = text,
-            style = MaterialTheme.typography.labelSmall,
+            style = AppTextStyles.labelSmall,
             fontWeight = FontWeight.SemiBold,
             color = Color.White,
         )
@@ -882,7 +881,7 @@ private fun AccountDialog(
         text = {
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
             ) {
 
                 AppTextField(
