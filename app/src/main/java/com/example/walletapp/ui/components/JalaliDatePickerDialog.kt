@@ -19,8 +19,8 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,10 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.JalaliCalendar
+import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
+import com.example.walletapp.ui.components.AppIconButton
 
 @Composable
 fun JalaliDatePickerDialog(
@@ -94,7 +95,7 @@ fun JalaliDatePickerDialog(
         title = {
             Text(
                 text = "انتخاب تاریخ",
-                fontWeight = FontWeight.Bold
+                style = AppTextStyles.titleMd
             )
         },
         text = {
@@ -109,14 +110,14 @@ fun JalaliDatePickerDialog(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 8.dp),
+                            .padding(bottom = AppDimens.ItemGap),
                     horizontalArrangement =
                         Arrangement.SpaceBetween,
                     verticalAlignment =
                         Alignment.CenterVertically
                 ) {
 
-                    IconButton(
+                    AppIconButton(
                         onClick = {
                             if (displayMonth == 1) {
                                 displayMonth = 12
@@ -146,7 +147,7 @@ fun JalaliDatePickerDialog(
                                     .toPersianDigits(),
                         fontWeight =
                             FontWeight.Bold,
-                        fontSize = 17.sp
+                        style = AppTextStyles.titleMd
                     )
 
                     IconButton(
@@ -259,7 +260,7 @@ fun JalaliDatePickerDialog(
 
                         Box(
                             modifier =
-                                Modifier.size(38.dp),
+                                Modifier.size(AppDimens.IconBox),
                             contentAlignment =
                                 Alignment.Center
                         ) {
@@ -267,7 +268,7 @@ fun JalaliDatePickerDialog(
                                 text = dayName,
                                 fontWeight =
                                     FontWeight.Bold,
-                                fontSize = 13.sp
+                                style = AppTextStyles.labelMd
                             )
                         }
                     }
@@ -275,7 +276,7 @@ fun JalaliDatePickerDialog(
 
                 Spacer(
                     modifier =
-                        Modifier.height(6.dp)
+                        Modifier.height(AppDimens.IntroGap)
                 )
 
                 val totalCells =
@@ -328,19 +329,13 @@ fun JalaliDatePickerDialog(
                                                 .size(38.dp)
                                                 .background(
                                                     color =
-                                                        if (
-                                                            isSelected
-                                                        ) {
-                                                            Color(
-                                                                0xFFE9ECEF
-                                                            )
+                                                        if (isSelected) {
+                                                            MaterialTheme.colorScheme.surfaceVariant
                                                         } else {
                                                             Color.Transparent
                                                         },
                                                     shape =
-                                                        RoundedCornerShape(
-                                                            50
-                                                        )
+                                                        RoundedCornerShape(50)
                                                 )
                                                 .clickable {
 
@@ -391,7 +386,7 @@ fun JalaliDatePickerDialog(
 
                 Spacer(
                     modifier =
-                        Modifier.height(8.dp)
+                        Modifier.height(AppDimens.ItemGap)
                 )
 
                 Text(
@@ -403,7 +398,7 @@ fun JalaliDatePickerDialog(
                         ),
                     fontWeight =
                         FontWeight.Bold,
-                    fontSize = 15.sp
+                    style = AppTextStyles.titleSm
                 )
             }
         },

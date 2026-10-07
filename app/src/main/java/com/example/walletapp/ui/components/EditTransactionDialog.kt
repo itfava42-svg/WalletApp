@@ -12,13 +12,13 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.Transaction
 import com.example.walletapp.data.TransactionCategories
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.data.suggestCategoryFromTitle
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.AppError
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.AppTextStyles
@@ -49,11 +49,11 @@ fun EditTransactionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("ویرایش تراکنش", fontWeight = FontWeight.Bold) },
+        title = { Text("ویرایش تراکنش", style = AppTextStyles.titleLg) },
         text = {
             Column {
-                Text("عنوان", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
-                Spacer(Modifier.height(8.dp))
+                Text("عنوان", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
+                Spacer(Modifier.height(AppDimens.ItemGap))
                 OutlinedTextField(
                     value = title,
                     onValueChange = { input ->
@@ -66,7 +66,7 @@ fun EditTransactionDialog(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(AppDimens.SectionGap))
                 Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
                 Row(
@@ -82,7 +82,7 @@ fun EditTransactionDialog(
                                 categoryManuallySet = true
                             },
                             label = { Text(cat.label) },
-                            modifier = Modifier.padding(end = 6.dp),
+                            modifier = Modifier.padding(end = AppDimens.IntroGap),
                         )
                     }
                 }
@@ -115,7 +115,7 @@ fun EditTransactionDialog(
                                     Icon(
                                         Icons.Filled.Close,
                                         contentDescription = "حذف",
-                                        modifier = Modifier.size(16.dp),
+                                        modifier = Modifier.size(AppDimens.IconSmall),
                                     )
                                 },
                                 modifier = Modifier.padding(end = 6.dp),
@@ -127,7 +127,7 @@ fun EditTransactionDialog(
                 Spacer(Modifier.height(16.dp))
                 AppTextButton(onClick = { showDeleteConfirm = true }) {
                     Icon(Icons.Filled.Delete, contentDescription = null, tint = AppError, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(6.dp))
+                    Spacer(Modifier.width(AppDimens.IntroGap))
                     Text("حذف تراکنش", color = AppError)
                 }
             }
