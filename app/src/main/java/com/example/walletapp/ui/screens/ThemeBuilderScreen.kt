@@ -1,4 +1,4 @@
-﻿package com.example.walletapp.ui.screens
+package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppTopBar
 
@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppOutlinedButton
@@ -222,12 +220,11 @@ fun ThemeBuilderScreen(
                 Text(
                     "🌓 حالت نمایش",
                     modifier = Modifier.padding(
-                        horizontal = 16.dp,
-                        vertical = 4.dp
+                        horizontal = AppDimens.PagePadding,
+                        vertical = AppDimens.TightGap
                     ),
                     style =
-                        AppTextStyles.titleMd,
-                    fontWeight = FontWeight.Bold
+                        AppTextStyles.titleMd
                 )
             }
 
@@ -538,7 +535,7 @@ private fun PreviewCard(
 
         AppCard(
             containerColor = card,
-            contentPadding = PaddingValues(14.dp),
+            contentPadding = PaddingValues(AppDimens.CardPadding),
         ) {
 
                 Text(
