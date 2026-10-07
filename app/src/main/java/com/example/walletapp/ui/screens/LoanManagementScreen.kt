@@ -195,7 +195,7 @@ fun LoanManagementScreen(
                             color = MatureColors.TextPrimary
                         )
 
-                        Spacer(modifier = Modifier.height(6.dp))
+                        Spacer(modifier = Modifier.height(AppDimens.ItemGap))
 
                         Text(
                             text = "نمای کلی تعهدات و پرداخت‌های شما",
@@ -203,11 +203,11 @@ fun LoanManagementScreen(
                             color = MatureColors.TextPrimary.copy(alpha = 0.62f)
                         )
 
-                        Spacer(modifier = Modifier.height(18.dp))
+                        Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
                         ) {
 
                             LoanSummaryTile(
@@ -229,7 +229,7 @@ fun LoanManagementScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(AppDimens.ItemGap))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -275,12 +275,12 @@ fun LoanManagementScreen(
                                 trackColor = MatureColors.CardBackground
                             )
 
-                            Spacer(modifier = Modifier.height(7.dp))
+                            Spacer(modifier = Modifier.height(AppDimens.ItemGap))
 
                             Text(
                                 text =
                                     "${(progress * 100).toInt()}٪ از اقساط کل پرداخت شده",
-                                fontSize = 11.sp,
+                                style = AppTextStyles.labelMd,
                                 color = MatureColors.TextPrimary.copy(alpha = 0.60f)
                             )
                         }
