@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:designsystem"))
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.6.8")
