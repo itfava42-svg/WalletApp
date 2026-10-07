@@ -436,7 +436,7 @@ fun AppBankCardCarousel(
             Text("حساب‌های من", style = AppTextStyles.headlineSm)
 
             Row {
-                IconButton(
+                AppIconButton(
                     onClick = {
                         if (selectedIndex > 0) {
                             selectedIndex--
@@ -448,7 +448,7 @@ fun AppBankCardCarousel(
                 ) {
                     Icon(Icons.Filled.ChevronRight, contentDescription = "حساب قبلی")
                 }
-                IconButton(
+                AppIconButton(
                     onClick = {
                         if (selectedIndex < items.lastIndex) {
                             selectedIndex++
