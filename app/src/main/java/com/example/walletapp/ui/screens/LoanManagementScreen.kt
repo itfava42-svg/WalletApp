@@ -5,6 +5,7 @@ import com.example.walletapp.ui.components.AppTopBar
 import com.example.walletapp.ui.components.AppFloatingActionButton
 import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.RadioButton
@@ -171,12 +172,12 @@ fun LoanManagementScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
             contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 16.dp,
+                start = AppDimens.PagePadding,
+                end = AppDimens.PagePadding,
+                top = AppDimens.PagePadding,
                 bottom = 96.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
         ) {
 
             item {
@@ -192,8 +193,7 @@ fun LoanManagementScreen(
 
                         Text(
                             text = "وضعیت وام‌ها",
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold,
+                            style = AppTextStyles.titleMd,
                             color = MatureColors.TextPrimary
                         )
 
@@ -201,7 +201,7 @@ fun LoanManagementScreen(
 
                         Text(
                             text = "نمای کلی تعهدات و پرداخت‌های شما",
-                            fontSize = 12.sp,
+                            style = AppTextStyles.bodyMd,
                             color = MatureColors.TextPrimary.copy(alpha = 0.62f)
                         )
 
@@ -300,14 +300,13 @@ fun LoanManagementScreen(
                     ) {
                         Text(
                             text = "وام‌های من",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
+                            style = AppTextStyles.headlineSm,
                             color = MatureColors.TextPrimary
                         )
 
                         Text(
                             text = "برای مشاهده جزئیات و اقساط انتخاب کنید",
-                            fontSize = 12.sp,
+                            style = AppTextStyles.bodyMd,
                             color = MatureColors.TextPrimary.copy(alpha = 0.58f)
                         )
                     }
