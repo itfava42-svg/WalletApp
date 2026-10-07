@@ -1,7 +1,5 @@
-﻿package com.example.walletapp.ui.components
+package com.example.walletapp.ui.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,74 +9,60 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 
+/**
+ * Compatibility facade for older premium/dashboard call sites.
+ *
+ * CI-170 keeps the public surface of this helper while routing its rendered
+ * UI through the shared WalletApp design system. New screens should prefer
+ * AppCard, AppStatCard, AppTextStyles and AppDimens directly.
+ */
 object PremiumUi {
 
-    val ScreenPadding = 18.dp
-    val CardRadius = 22.dp
-    val SmallRadius = 14.dp
-    val SectionGap = 18.dp
-    val ItemGap = 10.dp
+    // Kept for source compatibility with older callers; rendered UI uses the
+    // active Material 3 theme instead of these legacy palette values.
+    val Primary = androidx.compose.ui.graphics.Color(0xFF008F83)
+    val PrimaryDark = androidx.compose.ui.graphics.Color(0xFF006E67)
+    val Income = androidx.compose.ui.graphics.Color(0xFF00A878)
+    val Expense = androidx.compose.ui.graphics.Color(0xFFE85D68)
+    val Transfer = androidx.compose.ui.graphics.Color(0xFF3D8BDE)
+    val Surface = androidx.compose.ui.graphics.Color(0xFFF8FAFB)
+    val Card = androidx.compose.ui.graphics.Color.White
+    val Border = androidx.compose.ui.graphics.Color(0xFFE6ECEE)
 
-    val Primary = Color(0xFF008F83)
-    val PrimaryDark = Color(0xFF006E67)
-
-    val Income = Color(0xFF00A878)
-    val Expense = Color(0xFFE85D68)
-    val Transfer = Color(0xFF3D8BDE)
-
-    val Surface = Color(0xFFF8FAFB)
-    val Card = Color.White
-    val Border = Color(0xFFE6ECEE)
+    val ScreenPadding = AppDimens.PagePadding
+    val CardRadius = AppDimens.CardRadius
+    val SmallRadius = AppDimens.SmallCardRadius
+    val SectionGap = AppDimens.SectionGap
+    val ItemGap = AppDimens.ItemGap
 
     @Composable
     fun SectionTitle(
         title: String,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
     ) {
         Text(
             text = title,
             modifier = modifier.fillMaxWidth(),
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            style = AppTextStyles.titleMd,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 
     @Composable
     fun PremiumCard(
         modifier: Modifier = Modifier,
-        content: @Composable () -> Unit
+        content: @Composable () -> Unit,
     ) {
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = Border,
-                    shape = RoundedCornerShape(CardRadius)
-                ),
-            shape = RoundedCornerShape(CardRadius),
-            colors = CardDefaults.cardColors(
-                containerColor = Card
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 1.dp
-            )
-        ) {
+        AppCard(modifier = modifier) {
             content()
         }
     }
@@ -88,38 +72,28 @@ object PremiumUi {
         title: String,
         amount: String,
         subtitle: String? = null,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
     ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(CardRadius))
-                .background(Primary)
-                .padding(22.dp)
+        AppCard(
+            modifier = modifier,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
         ) {
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)) {
                 Text(
                     text = title,
-                    color = Color.White.copy(alpha = .82f),
-                    fontSize = 14.sp
+                    style = AppTextStyles.bodyMd,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-
-                Spacer(Modifier.height(8.dp))
-
                 Text(
                     text = amount,
-                    color = Color.White,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold
+                    style = AppTextStyles.numeralXl,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-
                 if (!subtitle.isNullOrBlank()) {
-                    Spacer(Modifier.height(6.dp))
-
                     Text(
                         text = subtitle,
-                        color = Color.White.copy(alpha = .78f),
-                        fontSize = 12.sp
+                        style = AppTextStyles.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                 }
             }
@@ -131,32 +105,15 @@ object PremiumUi {
         income: String,
         expense: String,
         transfer: String,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
     ) {
         Row(
             modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(ItemGap)
+            horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
         ) {
-            StatItem(
-                title = "درآمد",
-                value = income,
-                color = Income,
-                modifier = Modifier.weight(1f)
-            )
-
-            StatItem(
-                title = "هزینه",
-                value = expense,
-                color = Expense,
-                modifier = Modifier.weight(1f)
-            )
-
-            StatItem(
-                title = "انتقال",
-                value = transfer,
-                color = Transfer,
-                modifier = Modifier.weight(1f)
-            )
+            StatItem("درآمد", income, modifier = Modifier.weight(1f))
+            StatItem("هزینه", expense, modifier = Modifier.weight(1f))
+            StatItem("انتقال", transfer, modifier = Modifier.weight(1f))
         }
     }
 
@@ -164,35 +121,22 @@ object PremiumUi {
     private fun StatItem(
         title: String,
         value: String,
-        color: Color,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
     ) {
-        Card(
+        AppCard(
             modifier = modifier,
-            shape = RoundedCornerShape(SmallRadius),
-            colors = CardDefaults.cardColors(
-                containerColor = color.copy(alpha = .08f)
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 0.dp
-            )
+            contentPadding = PaddingValues(AppDimens.CompactPadding),
         ) {
-            Column(
-                modifier = Modifier.padding(13.dp)
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(AppDimens.TightGap)) {
                 Text(
                     text = title,
-                    fontSize = 12.sp,
-                    color = color
+                    style = AppTextStyles.labelMd,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-
-                Spacer(Modifier.height(5.dp))
-
                 Text(
                     text = value,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = AppTextStyles.titleMd,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
@@ -202,28 +146,24 @@ object PremiumUi {
     fun QuickAction(
         title: String,
         modifier: Modifier = Modifier,
-        content: @Composable () -> Unit
+        content: @Composable () -> Unit,
     ) {
         Column(
             modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(Primary.copy(alpha = .10f)),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.size(AppDimens.ButtonHeight),
+                contentAlignment = Alignment.Center,
             ) {
                 content()
             }
 
-            Spacer(Modifier.height(7.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
 
             Text(
                 text = title,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium
+                style = AppTextStyles.labelSmall,
             )
         }
     }
