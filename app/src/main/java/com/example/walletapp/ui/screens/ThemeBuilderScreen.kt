@@ -45,6 +45,7 @@ import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.ui.components.AppTextField
 import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.ui.theme.WalletThemePreferences
 
 private data class ColorSetting(
@@ -174,7 +175,7 @@ fun ThemeBuilderScreen(
                             )
 
                             Spacer(
-                                Modifier.size(8.dp)
+                                Modifier.size(AppDimens.ItemGap)
                             )
 
                             Text(
@@ -184,7 +185,7 @@ fun ThemeBuilderScreen(
                         }
 
                         Spacer(
-                            Modifier.height(8.dp)
+                            Modifier.height(AppDimens.ItemGap)
                         )
 
                         Text(
@@ -201,7 +202,7 @@ fun ThemeBuilderScreen(
                         vertical = 4.dp
                     ),
                     style =
-                        MaterialTheme.typography.titleMedium,
+                        AppTextStyles.titleMd,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -227,7 +228,7 @@ fun ThemeBuilderScreen(
                         vertical = 4.dp
                     ),
                     style =
-                        MaterialTheme.typography.titleMedium,
+                        AppTextStyles.titleMd,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -239,7 +240,7 @@ fun ThemeBuilderScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = AppDimens.PagePadding),
                     horizontalArrangement =
                         Arrangement.spacedBy(AppDimens.ItemGap)
                 ) {
@@ -351,7 +352,7 @@ private fun ColorSettingCard(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = AppDimens.PagePadding),
         containerColor = MaterialTheme.colorScheme.surface,
         contentPadding = PaddingValues(14.dp),
     ) {
@@ -363,21 +364,19 @@ private fun ColorSettingCard(
 
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(AppDimens.FeatureIconBox)
                         .background(
                             currentColor,
-                            RoundedCornerShape(12.dp)
+                            RoundedCornerShape(AppDimens.SmallCardRadius)
                         )
                         .border(
                             1.dp,
                             MaterialTheme.colorScheme.outline,
-                            RoundedCornerShape(12.dp)
+                            RoundedCornerShape(AppDimens.SmallCardRadius)
                         )
                 )
 
-                Spacer(
-                    Modifier.size(12.dp)
-                )
+                Spacer(Modifier.size(AppDimens.CardGap))
 
                 Column(
                     modifier = Modifier.weight(1f)
@@ -390,7 +389,7 @@ private fun ColorSettingCard(
                     Text(
                         setting.description,
                         style =
-                            MaterialTheme.typography.bodySmall,
+                            AppTextStyles.labelSmall,
                         color =
                             MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -398,27 +397,27 @@ private fun ColorSettingCard(
             }
 
             Spacer(
-                Modifier.height(10.dp)
+                Modifier.height(AppDimens.ItemGap)
             )
 
             Row(
                 horizontalArrangement =
-                    Arrangement.spacedBy(7.dp)
+                    Arrangement.spacedBy(AppDimens.IntroGap)
             ) {
 
                 colorPalette.forEach { color ->
 
                     Box(
                         modifier = Modifier
-                            .size(28.dp)
+                            .size(AppDimens.IconBox)
                             .background(
                                 color,
-                                RoundedCornerShape(8.dp)
+                                RoundedCornerShape(AppDimens.TightGap)
                             )
                             .border(
                                 1.dp,
                                 MaterialTheme.colorScheme.outline,
-                                RoundedCornerShape(8.dp)
+                                RoundedCornerShape(AppDimens.TightGap)
                             )
                             .clickable {
 
@@ -435,7 +434,7 @@ private fun ColorSettingCard(
             }
 
             Spacer(
-                Modifier.height(10.dp)
+                Modifier.height(AppDimens.ItemGap)
             )
 
             AppTextField(
@@ -469,7 +468,7 @@ private fun ColorSettingCard(
                                     onChanged()
                                 }
                             }
-                            .padding(12.dp),
+                            .padding(AppDimens.CompactPadding),
                         color =
                             MaterialTheme.colorScheme.primary,
                         fontWeight =
@@ -522,12 +521,12 @@ private fun PreviewCard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(AppDimens.PagePadding)
             .background(
                 page,
-                RoundedCornerShape(18.dp)
+                RoundedCornerShape(AppDimens.CardRadius)
             )
-            .padding(14.dp)
+            .padding(AppDimens.CompactPadding)
     ) {
 
         Text(
@@ -537,7 +536,7 @@ private fun PreviewCard(
         )
 
         Spacer(
-            Modifier.height(10.dp)
+            Modifier.height(AppDimens.ItemGap)
         )
 
         AppCard(
@@ -553,27 +552,27 @@ private fun PreviewCard(
                 Text(
                     "۲۸۵,۴۰۰,۰۰۰ تومان",
                     style =
-                        MaterialTheme.typography.titleLarge,
+                        AppTextStyles.titleLg,
                     fontWeight = FontWeight.Bold,
                     color = text
                 )
 
                 Spacer(
-                    Modifier.height(10.dp)
+                    Modifier.height(AppDimens.ItemGap)
                 )
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(8.dp)
+                        .height(AppDimens.ItemGap)
                         .background(
                             accent,
-                            RoundedCornerShape(8.dp)
+                            RoundedCornerShape(AppDimens.TightGap)
                         )
                 )
 
                 Spacer(
-                    Modifier.height(10.dp)
+                    Modifier.height(AppDimens.ItemGap)
                 )
 
 
