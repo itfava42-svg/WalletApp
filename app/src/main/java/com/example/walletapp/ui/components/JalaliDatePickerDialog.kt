@@ -117,7 +117,7 @@ fun JalaliDatePickerDialog(
                         Alignment.CenterVertically
                 ) {
 
-                    AppAppIconButton(
+                    AppIconButton(
                         onClick = {
                             if (displayMonth == 1) {
                                 displayMonth = 12
@@ -148,7 +148,7 @@ fun JalaliDatePickerDialog(
                         style = AppTextStyles.titleMd
                     )
 
-                    IconButton(
+                    AppIconButton(
                         onClick = {
                             if (displayMonth == 12) {
                                 displayMonth = 1
