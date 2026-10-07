@@ -82,9 +82,9 @@ fun ToolsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = AppDimens.PagePadding),
         ) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -100,7 +100,7 @@ fun ToolsScreen(
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(AppDimens.SectionGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -116,13 +116,13 @@ fun ToolsScreen(
                         style = MaterialTheme.typography.headlineSmall
                     )
 
-                    Spacer(Modifier.width(6.dp))
+                    Spacer(Modifier.width(AppDimens.IntroGap))
 
                     Icon(
                         Icons.Filled.Apps,
                         contentDescription = null,
                         tint = OnSurfaceVariant,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(AppDimens.IconSmall)
                     )
                 }
 
@@ -135,13 +135,13 @@ fun ToolsScreen(
                 )
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 24.dp),
+                contentPadding = PaddingValues(bottom = AppDimens.SectionGap),
                 modifier = Modifier.fillMaxSize(),
             ) {
                 toolsGrid.forEach { item ->
@@ -201,12 +201,12 @@ private fun ToolGridCard(
         modifier = modifier
             .fillMaxWidth()
             .height(132.dp),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(AppDimens.CardPadding),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(AppDimens.CardPadding)
         ) {
             Icon(
                 item.icon,
@@ -214,7 +214,7 @@ private fun ToolGridCard(
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(28.dp),
+                    .size(AppDimens.IconLarge),
             )
 
             Column(
@@ -227,7 +227,7 @@ private fun ToolGridCard(
                     color = OnSurface,
                 )
 
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(AppDimens.TightGap))
 
                 Text(
                     item.description,
