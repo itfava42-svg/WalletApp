@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.ui.models.ToolAction
 import com.example.walletapp.ui.models.ToolItem
@@ -27,6 +26,7 @@ import com.example.walletapp.ui.components.appNavItems
 import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.OnSurface
 import com.example.walletapp.ui.theme.OnSurfaceVariant
+import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.ui.theme.Primary
 import kotlinx.coroutines.launch
 
@@ -113,8 +113,7 @@ fun ToolsScreen(
                 ) {
                     Text(
                         "ابزارها",
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = AppTextStyles.headlineSm
                     )
 
                     Spacer(Modifier.width(AppDimens.IntroGap))
@@ -140,8 +139,8 @@ fun ToolsScreen(
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
+                verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
                 contentPadding = PaddingValues(bottom = AppDimens.SectionGap),
                 modifier = Modifier.fillMaxSize(),
             ) {
@@ -180,13 +179,12 @@ private fun TopIconButton(
     ) {
         AppIconBadge(icon = item.icon, contentDescription = item.title, onClick = onClick, size = 52.dp, iconSize = 24.dp)
 
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(AppDimens.IntroGap))
 
         Text(
             item.title,
-            style = MaterialTheme.typography.labelMedium,
-            color = OnSurface,
-            fontWeight = FontWeight.SemiBold
+            style = AppTextStyles.titleSm,
+            color = OnSurface
         )
     }
 }
@@ -223,8 +221,7 @@ private fun ToolGridCard(
             ) {
                 Text(
                     item.title,
-                    fontWeight = FontWeight.SemiBold,
-                    style = com.example.walletapp.ui.theme.AppTextStyles.titleSm,
+                    style = AppTextStyles.titleSm,
                     color = OnSurface,
                 )
 
@@ -232,7 +229,7 @@ private fun ToolGridCard(
 
                 Text(
                     item.description,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTextStyles.labelMd,
                     color = OnSurfaceVariant,
                     maxLines = 2,
                 )

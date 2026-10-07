@@ -23,7 +23,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.walletapp.data.Budget
@@ -55,7 +54,7 @@ fun BudgetScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            AppTopBar(centerAligned = true, title = { Text("بودجه‌بندی", fontWeight = FontWeight.Bold) })
+            AppTopBar(centerAligned = true, title = { Text("بودجه‌بندی", style = AppTextStyles.titleLg) })
         },
         bottomBar = {
             DashboardBottomBar(items = appNavItems, selectedIndex = selectedNavIndex, onSelect = onNavSelect)
@@ -95,7 +94,7 @@ fun BudgetScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    Text("هنوز بودجه‌ای تعریف نشده است", fontWeight = FontWeight.Bold, style = AppTextStyles.bodyLg)
+                    Text("هنوز بودجه‌ای تعریف نشده است", style = AppTextStyles.bodyLg.copy(fontWeight = AppTextStyles.titleMd.fontWeight))
                     Spacer(Modifier.height(AppDimens.ItemGap))
                     Text(
                         "برای هر دسته‌بندی سقف خرج تعیین کنید و مصرف خود را دنبال کنید.",
@@ -140,7 +139,7 @@ private fun SummaryStatColumn(label: String, amount: Long) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(label, color = OnPrimary.copy(alpha = 0.85f), style = AppTextStyles.labelMd)
         Spacer(Modifier.height(AppDimens.TightGap))
-        Text("${amount.toPersianCurrency()} تومان", color = OnPrimary, fontWeight = FontWeight.Bold)
+        Text("${amount.toPersianCurrency()} تومان", color = OnPrimary, style = AppTextStyles.titleMd)
     }
 }
 
@@ -159,12 +158,12 @@ private fun BudgetCard(budget: Budget) {
             ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
-                    Text(budget.category, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
+                    Text(budget.category, style = AppTextStyles.bodyLg.copy(fontWeight = AppTextStyles.titleMd.fontWeight))
                     Text(budget.period.label, style = AppTextStyles.labelMd, color = OnSurfaceVariant)
                 }
                 Text(
                     "${(percentage * 100).toInt()}%",
-                    fontWeight = FontWeight.Bold,
+                    style = AppTextStyles.titleMd,
                     color = progressColor,
                 )
             }
@@ -187,7 +186,7 @@ private fun BudgetCard(budget: Budget) {
                 )
                 Text(
                     "از ${budget.amount.toPersianCurrency()} تومان",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTextStyles.labelMd,
                     color = OnSurfaceVariant,
                 )
             }
@@ -206,10 +205,10 @@ private fun AddBudgetDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("بودجه جدید", fontWeight = FontWeight.Bold) },
+        title = { Text("بودجه جدید", style = AppTextStyles.titleLg) },
         text = {
             Column {
-                Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+                Text("دسته‌بندی", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
                 Spacer(Modifier.height(AppDimens.ItemGap))
                 Row(
                     modifier = Modifier
@@ -226,7 +225,7 @@ private fun AddBudgetDialog(
                     }
                 }
                 Spacer(Modifier.height(AppDimens.ItemGap))
-                Text("مبلغ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+                Text("مبلغ", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
                 Spacer(Modifier.height(AppDimens.ItemGap))
                 AppTextField(
                     value = amountDigits,
@@ -239,7 +238,7 @@ private fun AddBudgetDialog(
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(Modifier.height(AppDimens.ItemGap))
-                Text("دوره", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+                Text("دوره", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
                 Spacer(Modifier.height(AppDimens.ItemGap))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     BudgetPeriod.entries.forEach { period ->

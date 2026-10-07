@@ -375,7 +375,6 @@ fun TransactionsScreen(
                         "قدیمی‌ترین تراکنش‌ها"
                     },
                     style = AppTextStyles.titleMd,
-                    fontWeight = FontWeight.Bold,
                 )
 
                 AppTextButton(
@@ -435,7 +434,7 @@ fun TransactionsScreen(
                         fontWeight = FontWeight.Bold,
                     )
 
-                    Spacer(Modifier.height(6.dp))
+                    Spacer(Modifier.height(AppDimens.IntroGap))
 
                     Text(
                         text = if (transactions.isEmpty()) {
@@ -443,7 +442,7 @@ fun TransactionsScreen(
                         } else {
                             "فیلتر یا عبارت جستجو را تغییر دهید"
                         },
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppTextStyles.bodyMd,
                         color = OnSurfaceVariant,
                     )
                 }
@@ -628,7 +627,7 @@ private fun TransactionFullCard(
                 ) {
                     Text(
                         text = "$sign${formatTransactionAmount(transaction.amount)}",
-                        style = AppTextStyles.titleSm.copy(fontWeight = FontWeight.Bold),
+                        style = AppTextStyles.titleSm.copy(fontWeight = AppTextStyles.titleMd.fontWeight),
                         color = accentColor,
                     )
 
