@@ -1,9 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
 import com.example.walletapp.ui.components.AppTopBar
-
 import com.example.walletapp.ui.components.AppIconButton
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +21,7 @@ import com.example.walletapp.ui.models.ToolAction
 import com.example.walletapp.ui.models.ToolItem
 import com.example.walletapp.ui.models.ToolSection
 import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.ui.theme.OnSurface
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import kotlinx.coroutines.launch
@@ -74,11 +73,11 @@ fun SettingsListScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            AppTopBar(centerAligned = true, 
+            AppTopBar(centerAligned = true,
                 title = {
                     Text(
                         "تنظیمات",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = AppTextStyles.titleLg,
                         fontWeight = FontWeight.Bold,
                     )
                 },
@@ -116,10 +115,10 @@ fun SettingsListScreen(
 private fun SettingsSectionHeader(section: ToolSection) {
     Text(
         section.title,
-        style = MaterialTheme.typography.labelLarge,
+        style = AppTextStyles.labelMd,
         color = OnSurfaceVariant,
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
+        modifier = Modifier.padding(top = AppDimens.ItemGap, bottom = AppDimens.TightGap),
     )
 }
 
@@ -130,27 +129,30 @@ private fun SettingsRow(
 ) {
     AppCard(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(16.dp),
         onClick = onClick,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AppIconBadge(icon = item.icon, size = 40.dp, iconSize = 22.dp)
+            AppIconBadge(
+                icon = item.icon,
+                size = AppDimens.IconBox,
+                iconSize = AppDimens.Icon,
+            )
 
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(AppDimens.CardGap))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     item.title,
                     fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = AppTextStyles.bodyLg,
                     color = OnSurface,
                 )
                 Text(
                     item.description,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTextStyles.labelMd,
                     color = OnSurfaceVariant,
                 )
             }
