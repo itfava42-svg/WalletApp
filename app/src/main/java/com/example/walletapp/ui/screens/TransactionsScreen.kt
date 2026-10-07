@@ -219,7 +219,7 @@ fun TransactionsScreen(
                         )
                         Text(
                             text = "${filteredTransactions.size} مورد",
-                            style = MaterialTheme.typography.labelSmall,
+                            style = AppTextStyles.labelSmall,
                             color = OnSurfaceVariant,
                         )
                     }
@@ -255,7 +255,7 @@ fun TransactionsScreen(
                 .padding(horizontal = AppDimens.PagePadding)
         ) {
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(AppDimens.IntroGap))
 
             AppTextField(
                 value = searchQuery,
@@ -277,11 +277,11 @@ fun TransactionsScreen(
                 }
             )
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(AppDimens.SectionGap))
 
             Text(
                 text = "نوع تراکنش",
-                style = MaterialTheme.typography.labelLarge,
+                style = AppTextStyles.labelMd,
                 fontWeight = FontWeight.Bold,
                 color = OnSurface,
             )
@@ -305,12 +305,12 @@ fun TransactionsScreen(
                 }
             }
 
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(AppDimens.CardGap))
 
             if (AccountStore.accounts.any { it.isActive }) {
                 Text(
                     text = "حساب",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = AppTextStyles.labelMd,
                     fontWeight = FontWeight.Bold,
                     color = OnSurface,
                 )
@@ -320,10 +320,10 @@ fun TransactionsScreen(
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
+                         .height(AppDimens.TabHeight),
                     horizontalArrangement = Arrangement.spacedBy(7.dp),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 1.dp
+                        horizontal = AppDimens.TightGap
                     )
                 ) {
                     item {
@@ -373,7 +373,7 @@ fun TransactionsScreen(
                     } else {
                         "قدیمی‌ترین تراکنش‌ها"
                     },
-                    style = MaterialTheme.typography.titleMedium,
+                    style = AppTextStyles.titleMd,
                     fontWeight = FontWeight.Bold,
                 )
 
@@ -407,7 +407,7 @@ fun TransactionsScreen(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(72.dp)
+                             .size(AppDimens.IconBox + AppDimens.CardGap * 2)
                             .clip(CircleShape)
                             .background(
                                 Primary.copy(alpha = 0.10f)
@@ -418,7 +418,7 @@ fun TransactionsScreen(
                             Icons.Outlined.HistoryToggleOff,
                             contentDescription = null,
                             tint = Primary,
-                            modifier = Modifier.size(34.dp),
+                            modifier = Modifier.size(AppDimens.IconLarge),
                         )
                     }
 
@@ -430,7 +430,7 @@ fun TransactionsScreen(
                         } else {
                             "تراکنشی با این فیلتر پیدا نشد"
                         },
-                        style = MaterialTheme.typography.titleMedium,
+                        style = AppTextStyles.titleMd,
                         fontWeight = FontWeight.Bold,
                     )
 
@@ -453,9 +453,9 @@ fun TransactionsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        bottom = 16.dp
+                        bottom = AppDimens.PagePadding
                     )
                 ) {
                     items(
@@ -573,7 +573,7 @@ private fun TransactionFullCard(
 
     AppCard(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(AppDimens.CardPadding),
         onClick = onClick,
     ) {
 
@@ -583,8 +583,8 @@ private fun TransactionFullCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(15.dp))
+                         .size(AppDimens.FeatureIconBox)
+                        .clip(RoundedCornerShape(AppDimens.SmallCardRadius))
                         .background(
                             accentColor.copy(alpha = 0.10f)
                         ),
@@ -594,11 +594,11 @@ private fun TransactionFullCard(
                         imageVector = icon,
                         contentDescription = null,
                         tint = accentColor,
-                        modifier = Modifier.size(23.dp),
+                        modifier = Modifier.size(AppDimens.Icon),
                     )
                 }
 
-                Spacer(Modifier.size(12.dp))
+                Spacer(Modifier.width(AppDimens.ItemGap))
 
                 Column(
                     modifier = Modifier.weight(1f)
@@ -613,11 +613,11 @@ private fun TransactionFullCard(
                         maxLines = 1,
                     )
 
-                    Spacer(Modifier.height(3.dp))
+                    Spacer(Modifier.height(AppDimens.TightGap))
 
                     Text(
                         text = formatTransactionDate(transaction),
-                        style = MaterialTheme.typography.labelSmall,
+                        style = AppTextStyles.labelSmall,
                         color = OnSurfaceVariant,
                     )
                 }
@@ -631,11 +631,11 @@ private fun TransactionFullCard(
                         color = accentColor,
                     )
 
-                    Spacer(Modifier.height(2.dp))
+                    Spacer(Modifier.height(AppDimens.TightGap))
 
                     Text(
                         text = "ریال",
-                        style = MaterialTheme.typography.labelSmall,
+                        style = AppTextStyles.labelSmall,
                         color = Outline,
                     )
                 }
@@ -665,22 +665,22 @@ private fun TransactionFullCard(
             )
 
             if (transaction.subtitle.isNotBlank()) {
-                Spacer(Modifier.height(7.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
 
                 Text(
                     text = transaction.subtitle,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTextStyles.labelMd,
                     color = OnSurfaceVariant,
                     maxLines = 1,
                 )
             }
 
             if (transaction.note.isNotBlank()) {
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(AppDimens.TightGap))
 
                 Text(
                     text = transaction.note,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = AppTextStyles.bodyMd,
                     color = Outline,
                     maxLines = 2,
                 )
