@@ -35,7 +35,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -51,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.CheckEntry
 import com.example.walletapp.data.CheckStatus
 import com.example.walletapp.data.CheckManager
@@ -63,6 +61,8 @@ import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppEmptyState
 import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.components.AppFloatingActionButton
+import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.ui.components.AppTextField
@@ -122,7 +122,7 @@ fun CheckManagementScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = AppDimens.PagePadding),
                 onAdd = {
                     editingCheck = null
                     showEditor = true
@@ -133,11 +133,8 @@ fun CheckManagementScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                    horizontal = 16.dp,
-                    vertical = 16.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(AppDimens.PagePadding),
+                verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
             ) {
                 items(
                     items = CheckStore.checks,
@@ -244,26 +241,26 @@ private fun CheckCard(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AppIconBadge(icon = Icons.Filled.FactCheck, size = 48.dp, iconSize = 24.dp)
+                AppIconBadge(icon = Icons.Filled.FactCheck, size = AppDimens.IconBox, iconSize = AppDimens.Icon)
 
-                Spacer(Modifier.size(12.dp))
+                Spacer(Modifier.size(AppDimens.ItemGap))
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = check.title,
-                        fontSize = 17.sp,
+                        style = AppTextStyles.titleMd,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = check.type.label,
-                        fontSize = 13.sp,
+                        style = AppTextStyles.bodyMd,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -285,22 +282,22 @@ private fun CheckCard(
                 }
             }
 
-            AppCard(modifier = Modifier.fillMaxWidth(), containerColor = statusBackground, contentPadding = PaddingValues(14.dp)) {
+            AppCard(modifier = Modifier.fillMaxWidth(), containerColor = statusBackground, contentPadding = PaddingValues(AppDimens.CompactPadding)) {
                     Text(
                         text = "مبلغ چک",
-                        fontSize = 12.sp,
+                        style = AppTextStyles.labelMd,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
                         text = check.amount.toPersianCurrency(),
-                        fontSize = 20.sp,
+                        style = AppTextStyles.numeralXl,
                         fontWeight = FontWeight.Bold,
                         color = statusColor
                     )
-                    Spacer(Modifier.height(6.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     Text(
                         text = "وضعیت: ${check.status.label}",
-                        fontSize = 13.sp,
+                        style = AppTextStyles.bodyMd,
                         fontWeight = FontWeight.SemiBold,
                         color = statusColor
                     )
@@ -308,7 +305,7 @@ private fun CheckCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
             ) {
                 CheckSmallInfo(
                     modifier = Modifier.weight(1f),
@@ -345,16 +342,16 @@ private fun CheckSmallInfo(
     title: String,
     value: String
 ) {
-    AppCard(modifier = modifier, containerColor = MaterialTheme.colorScheme.surfaceVariant, contentPadding = PaddingValues(10.dp)) {
+    AppCard(modifier = modifier, containerColor = MaterialTheme.colorScheme.surfaceVariant, contentPadding = PaddingValues(AppDimens.CompactPadding)) {
             Text(
                 text = title,
-                fontSize = 11.sp,
+                style = AppTextStyles.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(Modifier.height(3.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
             Text(
                 text = value,
-                fontSize = 14.sp,
+                style = AppTextStyles.bodyMd,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -406,7 +403,7 @@ private fun CheckEditorDialog(
         },
         text = {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
             ) {
                 item {
                     AppTextField(
@@ -594,22 +591,22 @@ private fun CheckInputTile(
     accent: Color,
     icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
-    AppCard(modifier = Modifier.fillMaxWidth(), containerColor = background, contentPadding = PaddingValues(14.dp)) {
+    AppCard(modifier = Modifier.fillMaxWidth(), containerColor = background, contentPadding = PaddingValues(AppDimens.CompactPadding)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
                     tint = accent,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(AppDimens.Icon)
                 )
-                Spacer(Modifier.size(8.dp))
+                Spacer(Modifier.size(AppDimens.ItemGap))
                 Text(
                     text = title,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(AppDimens.ItemGap))
             AppTextField(
                 value = value,
                 onValueChange = onValueChange,
