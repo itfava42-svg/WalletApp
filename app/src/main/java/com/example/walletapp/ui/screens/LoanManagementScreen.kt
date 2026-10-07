@@ -1554,8 +1554,8 @@ private fun LoanEditorFullScreen(
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(paddingValues),
-            contentPadding = PaddingValues(horizontal = 18.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            contentPadding = PaddingValues(horizontal = AppDimens.PagePadding, vertical = AppDimens.PagePadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
         ) {
             item {
                 AppCard(
@@ -1658,7 +1658,7 @@ private fun LoanEditorFullScreen(
                 LoanEditorDashboardCard(title = "وضعیت وام") {
                     Text(
                         text = "مشخص کنید این وام را از ابتدا ثبت می‌کنید یا ادامه وضعیت قبلی را پیگیری می‌کنید.",
-                        fontSize = 11.sp,
+                        style = AppTextStyles.labelMd,
                         color = MatureColors.TextSecondary
                     )
                     Spacer(Modifier.height(10.dp))
@@ -1935,8 +1935,7 @@ private fun LoanTrackingModeCard(
             Text(
                 text = mode.label,
                 modifier = Modifier.weight(1f),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
+                style = AppTextStyles.titleSm,
                 color = MatureColors.TextPrimary,
                 maxLines = 1
             )
@@ -1948,7 +1947,7 @@ private fun LoanTrackingModeCard(
                 "ادامه از وضعیت فعلی"
             },
             modifier = Modifier.fillMaxWidth(),
-            fontSize = 10.sp,
+            style = AppTextStyles.labelMd,
             color = MatureColors.TextSecondary,
             maxLines = 1
         )
@@ -1964,9 +1963,9 @@ private fun LoanEditorDashboardCard(
         modifier = Modifier.fillMaxWidth(),
         containerColor = MatureColors.Surface
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
-            Spacer(Modifier.height(12.dp))
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(text = title, style = AppTextStyles.titleMd, color = MatureColors.TextPrimary)
+            Spacer(Modifier.height(AppDimens.CardGap))
             content()
         }
     }
