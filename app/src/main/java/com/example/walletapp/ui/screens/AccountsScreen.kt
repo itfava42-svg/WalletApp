@@ -264,7 +264,7 @@ bottomBar = {
 
                         Text(
                             text = "حساب‌های بانکی و مالی شما",
-                            style = AppTextStyles.bodySmall,
+                            style = AppTextStyles.bodyMd,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
