@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppIconButton
+
 import com.example.walletapp.ui.components.AppTextButton
 
 import androidx.compose.foundation.layout.Arrangement
@@ -79,7 +81,7 @@ fun SmsLearningScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    AppIconButton(onClick = onBack) {
                         Icon(
                             Icons.Filled.ArrowForward,
                             contentDescription = "بازگشت"
@@ -881,7 +883,7 @@ private fun LearnedPatternCard(
                     )
                 }
 
-                IconButton(onClick = onDelete) {
+                AppIconButton(onClick = onDelete) {
                     Icon(
                         Icons.Filled.Delete,
                         contentDescription = "حذف الگو"
@@ -946,7 +948,7 @@ private fun IgnoredPatternCard(
                     )
                 }
 
-                IconButton(onClick = onDelete) {
+                AppIconButton(onClick = onDelete) {
                     Icon(
                         Icons.Filled.Delete,
                         contentDescription = "حذف الگو"

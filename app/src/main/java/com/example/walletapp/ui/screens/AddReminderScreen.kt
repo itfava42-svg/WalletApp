@@ -1,5 +1,7 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppIconButton
+
 import com.example.walletapp.ui.components.JalaliDatePickerDialog
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppPrimaryButton
@@ -231,7 +233,7 @@ fun AddReminderScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(onClick = onBack) {
+                AppIconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "بازگشت",

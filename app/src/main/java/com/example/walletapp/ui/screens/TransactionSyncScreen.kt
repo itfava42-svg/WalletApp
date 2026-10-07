@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppIconButton
+
 import com.example.walletapp.ui.theme.AppDimens
 
 import androidx.activity.compose.BackHandler
@@ -51,7 +53,7 @@ fun TransactionSyncScreen(
                     Text("همگام‌سازی")
                 },
                 navigationIcon = {
-                    IconButton(
+                    AppIconButton(
                         onClick = onBack
                     ) {
                         Icon(

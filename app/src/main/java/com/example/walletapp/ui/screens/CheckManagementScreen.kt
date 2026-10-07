@@ -1,5 +1,7 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppIconButton
+
 import com.example.walletapp.ui.components.JalaliDatePickerDialog
 
 import androidx.compose.foundation.layout.Arrangement
@@ -92,7 +94,7 @@ fun CheckManagementScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    AppIconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "بازگشت"
@@ -266,7 +268,7 @@ private fun CheckCard(
                     )
                 }
 
-                IconButton(onClick = onEdit) {
+                AppIconButton(onClick = onEdit) {
                     Icon(
                         Icons.Filled.Edit,
                         contentDescription = "ویرایش",
@@ -274,7 +276,7 @@ private fun CheckCard(
                     )
                 }
 
-                IconButton(onClick = onDelete) {
+                AppIconButton(onClick = onDelete) {
                     Icon(
                         Icons.Filled.Delete,
                         contentDescription = "حذف",
@@ -638,7 +640,7 @@ private fun DateField(
             Icon(Icons.Filled.CalendarMonth, contentDescription = null)
         },
         trailingIcon = {
-            IconButton(onClick = { showPicker = true }) {
+            AppIconButton(onClick = { showPicker = true }) {
                 Icon(Icons.Filled.CalendarMonth, contentDescription = "انتخاب تاریخ")
             }
         }

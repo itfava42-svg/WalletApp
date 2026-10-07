@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppIconButton
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -131,7 +133,7 @@ fun ThemeBuilderScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
+                    AppIconButton(
                         onClick = onBack
                     ) {
                         Icon(

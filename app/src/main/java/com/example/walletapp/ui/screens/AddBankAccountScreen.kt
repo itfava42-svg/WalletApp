@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppIconButton
+
 import androidx.compose.foundation.layout.heightIn
 
 import androidx.compose.foundation.background
@@ -127,7 +129,7 @@ fun AddBankAccountScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(
+                AppIconButton(
                     onClick = onBack,
                     modifier =
                         Modifier
@@ -154,7 +156,7 @@ fun AddBankAccountScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                IconButton(
+                AppIconButton(
                     onClick = onBack,
                     modifier = Modifier.size(40.dp),
                 ) {
