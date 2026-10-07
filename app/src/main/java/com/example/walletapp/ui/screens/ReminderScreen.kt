@@ -233,7 +233,7 @@ fun ReminderScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(start = 16.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
+                    .padding(start = AppDimens.PagePadding, end = AppDimens.CompactPadding, top = AppDimens.CardGap, bottom = AppDimens.ItemGap),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
@@ -284,16 +284,10 @@ fun ReminderScreen(
                         paddingValues
                     ),
 
-            contentPadding =
-                androidx.compose.foundation.layout.PaddingValues(
-                    horizontal = 16.dp,
-                    vertical = 16.dp
-                ),
+            contentPadding = PaddingValues(AppDimens.PagePadding),
 
             verticalArrangement =
-                Arrangement.spacedBy(
-                    12.dp
-                )
+                Arrangement.spacedBy(AppDimens.CardGap)
         ) {
 
             item {
@@ -330,10 +324,7 @@ fun ReminderScreen(
                     fontWeight =
                         FontWeight.Bold,
                     modifier =
-                        Modifier.padding(
-                            top = 4.dp,
-                            bottom = 2.dp
-                        )
+                        Modifier.padding(top = AppDimens.ItemGap, bottom = AppDimens.ItemGap)
                 )
             }
 
@@ -432,9 +423,7 @@ private fun ReminderHeader(
 
             Column(
                 modifier =
-                    Modifier.padding(
-                        18.dp
-                    )
+                    Modifier.padding(AppDimens.CardPadding)
             ) {
 
                 Row(
@@ -468,9 +457,7 @@ private fun ReminderHeader(
 
                     Spacer(
                         modifier =
-                            Modifier.size(
-                                12.dp
-                            )
+                            Modifier.size(AppDimens.ItemGap)
                     )
 
                     Column(
@@ -500,18 +487,14 @@ private fun ReminderHeader(
 
                 Spacer(
                     modifier =
-                        Modifier.height(
-                            18.dp
-                        )
+                        Modifier.height(AppDimens.CardGap)
                 )
 
                 Row(
                     modifier =
                         Modifier.fillMaxWidth(),
                     horizontalArrangement =
-                        Arrangement.spacedBy(
-                            8.dp
-                        )
+                        Arrangement.spacedBy(AppDimens.ItemGap)
                 ) {
 
                     SummaryBox(
@@ -575,14 +558,12 @@ private fun ReminderHeader(
                     AppCard(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { onSelectFilter(ReminderFilter.NEXT_THREE_DAYS) },
-                        contentPadding = PaddingValues(12.dp),
+                        contentPadding = PaddingValues(AppDimens.CompactPadding),
                     ) {
 
                         Row(
                             modifier =
-                                Modifier.padding(
-                                    12.dp
-                                ),
+                                Modifier.padding(AppDimens.CompactPadding),
                             verticalAlignment =
                                 Alignment.CenterVertically
                         ) {
@@ -593,9 +574,7 @@ private fun ReminderHeader(
                                 contentDescription =
                                     null,
                                 modifier =
-                                    Modifier.size(
-                                        20.dp
-                                    )
+                                    Modifier.size(AppDimens.IconSmall)
                             )
 
                             Spacer(
@@ -692,9 +671,7 @@ private fun NextReminderCard(
 
                 Spacer(
                     modifier =
-                        Modifier.size(
-                            8.dp
-                        )
+                        Modifier.size(AppDimens.ItemGap)
                 )
 
                 Text(
@@ -731,9 +708,7 @@ private fun NextReminderCard(
 
             Spacer(
                 modifier =
-                    Modifier.height(
-                        4.dp
-                    )
+                    Modifier.height(AppDimens.ItemGap)
             )
 
             Text(
@@ -776,9 +751,7 @@ private fun LazyFilterRow(
 
     androidx.compose.foundation.lazy.LazyRow(
         horizontalArrangement =
-            Arrangement.spacedBy(
-                8.dp
-            )
+            Arrangement.spacedBy(AppDimens.ItemGap)
     ) {
 
         items(
@@ -959,9 +932,7 @@ private fun ReminderItemCard(
 
                         Spacer(
                             modifier =
-                                Modifier.height(
-                                    3.dp
-                                )
+                                Modifier.height(AppDimens.ItemGap)
                         )
 
                         Text(
@@ -980,9 +951,7 @@ private fun ReminderItemCard(
 
                         Spacer(
                             modifier =
-                                Modifier.height(
-                                    3.dp
-                                )
+                                Modifier.height(AppDimens.ItemGap)
                         )
 
                         Text(
@@ -1009,9 +978,7 @@ private fun ReminderItemCard(
 
             Spacer(
                 modifier =
-                    Modifier.height(
-                        4.dp
-                    )
+                    Modifier.height(AppDimens.ItemGap)
             )
 
             Row(
