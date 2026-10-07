@@ -588,7 +588,7 @@ private fun AccountCard(
                         if (account.bankName.isNotBlank()) {
                             Text(
                                 text = account.bankName,
-                                style = AppTextStyles.bodySmall,
+                                style = AppTextStyles.bodyMd,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
@@ -598,14 +598,14 @@ private fun AccountCard(
                             if (account.bankName.isNotBlank()) {
                                 Text(
                                     text = "  •  ",
-                                    style = AppTextStyles.bodySmall,
+                                    style = AppTextStyles.bodyMd,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
 
                             Text(
                                 text = "•••• ${account.cardLast4}",
-                                style = AppTextStyles.bodySmall,
+                                style = AppTextStyles.bodyMd,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
