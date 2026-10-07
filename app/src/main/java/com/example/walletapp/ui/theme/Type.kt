@@ -84,6 +84,11 @@ object AppTextStyles {
         lineHeight = 18.sp
     )
 
+    val labelSmall = labelMd.copy(
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+    )
+
     val numeralXl = TextStyle(
         fontFamily = AppFontFamily,
         fontWeight = FontWeight.Bold,
@@ -109,8 +114,5 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Medium,
     ),
     labelMedium = AppTextStyles.labelMd,
-    labelSmall = AppTextStyles.labelMd.copy(
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-    ),
+    labelSmall = AppTextStyles.labelSmall,
 )
