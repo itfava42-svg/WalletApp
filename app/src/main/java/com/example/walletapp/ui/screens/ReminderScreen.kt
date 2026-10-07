@@ -58,6 +58,7 @@ import com.example.walletapp.data.Reminder
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppIconButton
 import com.example.walletapp.ui.components.AppEmptyState
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.loan.MatureColors
 import com.example.walletapp.data.ReminderKind
 import com.example.walletapp.data.ReminderStore
