@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppTextButton
 import com.example.walletapp.ui.components.AppSegmentedButton
 import com.example.walletapp.ui.components.AppSelectionTile
@@ -193,7 +195,7 @@ fun AddTransactionScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            AppTopBar(centerAligned = true, 
                 title = { Text("ثبت تراکنش جدید", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     AppIconButton(onClick = onBack) {

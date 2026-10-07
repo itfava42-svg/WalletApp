@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppTextButton
 
 import com.example.walletapp.data.toPersianCurrency
@@ -106,7 +108,7 @@ fun AccountsScreen(
 
     Scaffold(
         topBar = {
-    CenterAlignedTopAppBar(
+    AppTopBar(centerAligned = true, 
         title = { Text("حساب‌ها", fontWeight = FontWeight.Bold) },
         actions = {
             AppIconButton(onClick = { showAddDialog = true }) {

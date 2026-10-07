@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppIconButton
 
 import androidx.compose.foundation.layout.*
@@ -72,7 +74,7 @@ fun SettingsListScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            CenterAlignedTopAppBar(
+            AppTopBar(centerAligned = true, 
                 title = {
                     Text(
                         "تنظیمات",

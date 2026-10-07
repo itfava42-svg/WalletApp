@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppIconButton
 
 import com.example.walletapp.ui.components.AppTextButton
@@ -236,7 +238,7 @@ fun TransferScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            AppTopBar(centerAligned = false, 
                 title = {
                     Text(
                         "انتقال بین حساب‌ها",

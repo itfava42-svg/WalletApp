@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppTextButton
 
 import androidx.compose.foundation.layout.*
@@ -394,7 +396,7 @@ val dashboardMonthCategories =
 
     Scaffold(
         topBar = {
-    CenterAlignedTopAppBar(
+    AppTopBar(centerAligned = true, 
         title = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("سلام، مطلب 👋", fontWeight = FontWeight.Bold)

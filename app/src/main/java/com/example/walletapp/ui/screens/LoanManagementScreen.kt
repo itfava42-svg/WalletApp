@@ -1,5 +1,7 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppFloatingActionButton
 import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.theme.AppDimens
@@ -1516,7 +1518,7 @@ private fun LoanEditorFullScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            AppTopBar(centerAligned = false, 
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(

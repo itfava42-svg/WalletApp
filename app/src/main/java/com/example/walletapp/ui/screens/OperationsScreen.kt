@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppIconButton
 
 import androidx.compose.foundation.layout.Arrangement
@@ -69,7 +71,7 @@ fun OperationsScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
+            AppTopBar(centerAligned = false, 
                 title = {
                     Text(
                         "عملیات",

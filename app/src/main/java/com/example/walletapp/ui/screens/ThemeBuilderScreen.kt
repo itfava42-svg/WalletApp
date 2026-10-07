@@ -1,5 +1,7 @@
 ﻿package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppIconButton
 
 import androidx.compose.foundation.background
@@ -125,7 +127,7 @@ fun ThemeBuilderScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            AppTopBar(centerAligned = true, 
                 title = {
                     Text(
                         "🎨 تم‌ساز",

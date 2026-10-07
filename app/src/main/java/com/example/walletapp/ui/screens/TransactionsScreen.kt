@@ -1,5 +1,7 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppTextButton
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppFilterChip
@@ -206,7 +208,7 @@ fun TransactionsScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            AppTopBar(centerAligned = true, 
                 title = {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally

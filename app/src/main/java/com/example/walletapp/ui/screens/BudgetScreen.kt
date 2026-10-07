@@ -1,5 +1,7 @@
 package com.example.walletapp.ui.screens
 
+import com.example.walletapp.ui.components.AppTopBar
+
 import com.example.walletapp.ui.components.AppFloatingActionButton
 import com.example.walletapp.ui.components.AppFilterChip
 import com.example.walletapp.ui.components.AppCard
@@ -52,7 +54,7 @@ fun BudgetScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            CenterAlignedTopAppBar(title = { Text("بودجه‌بندی", fontWeight = FontWeight.Bold) })
+            AppTopBar(centerAligned = true, title = { Text("بودجه‌بندی", fontWeight = FontWeight.Bold) })
         },
         bottomBar = {
             DashboardBottomBar(items = appNavItems, selectedIndex = selectedNavIndex, onSelect = onNavSelect)

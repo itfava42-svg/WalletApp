@@ -165,6 +165,43 @@ fun AppSectionHeader(
     }
 }
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+fun AppTopBar(
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
+    centerAligned: Boolean = true,
+    colors: androidx.compose.material3.TopAppBarColors =
+        androidx.compose.material3.TopAppBarDefaults.topAppBarColors(),
+    windowInsets: androidx.compose.foundation.layout.WindowInsets =
+        androidx.compose.material3.TopAppBarDefaults.windowInsets,
+    scrollBehavior: androidx.compose.material3.TopAppBarScrollBehavior? = null,
+) {
+    if (centerAligned) {
+        androidx.compose.material3.CenterAlignedTopAppBar(
+            title = title,
+            modifier = modifier,
+            navigationIcon = navigationIcon,
+            actions = actions,
+            colors = colors,
+            windowInsets = windowInsets,
+            scrollBehavior = scrollBehavior,
+        )
+    } else {
+        androidx.compose.material3.TopAppBar(
+            title = title,
+            modifier = modifier,
+            navigationIcon = navigationIcon,
+            actions = actions,
+            colors = colors,
+            windowInsets = windowInsets,
+            scrollBehavior = scrollBehavior,
+        )
+    }
+}
+
 @Composable
 fun AppIconButton(
     onClick: () -> Unit,
