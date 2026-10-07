@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
@@ -279,6 +280,21 @@ fun AppFilterChip(
     )
 }
 
+
+@Composable
+fun AppAssistChip(
+    label: @Composable () -> Unit,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    AssistChip(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        label = label,
+    )
+}
 
 @Composable
 fun AppSegmentedButton(
