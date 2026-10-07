@@ -41,6 +41,7 @@ import com.example.walletapp.ui.components.AppOutlinedButton
 import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.ui.components.DashboardBottomBar
 import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.ui.components.appNavItems
 import java.util.Calendar
 private enum class ReportPeriod(
@@ -135,7 +136,7 @@ val p7ExpenseCategories = currentMonthCategories.filter { it.expense > 0 }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 Spacer(modifier = Modifier.weight(1f))
@@ -145,12 +146,12 @@ Spacer(modifier = Modifier.weight(1f))
             ) {
                 Text(
                     text = "مرکز گزارش مالی",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = AppTextStyles.headlineSm,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = selectedPeriod.title,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = AppTextStyles.labelSmall,
                 )
             }
         }
@@ -158,7 +159,7 @@ Spacer(modifier = Modifier.weight(1f))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = AppDimens.ItemGap),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             ReportPeriod.entries.forEach { period ->
@@ -181,8 +182,8 @@ Spacer(modifier = Modifier.weight(1f))
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 0.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                ,
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
         ) {
             item {
                 HeroFinancialCard(
@@ -517,12 +518,12 @@ private fun FinancialHealthCard(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(AppDimens.CardPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -530,24 +531,24 @@ private fun FinancialHealthCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(AppDimens.TightGap),
                 ) {
                     Text(
                         text = "سلامت مالی",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = AppTextStyles.titleMd,
                         fontWeight = FontWeight.Bold,
                     )
 
                     Text(
                         text = status,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppTextStyles.bodyMd,
                         fontWeight = FontWeight.Medium,
                     )
                 }
 
                 Text(
                     text = "$score / 100",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = AppTextStyles.headlineSm,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -561,7 +562,7 @@ private fun FinancialHealthCard(
 
             Text(
                 text = message,
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
             )
 
             AppCard(
@@ -572,7 +573,7 @@ private fun FinancialHealthCard(
                 Text(
                     text = trendText,
                     modifier = Modifier.padding(13.dp),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = AppTextStyles.labelSmall,
                     fontWeight = FontWeight.Medium,
                 )
             }
@@ -653,22 +654,22 @@ private fun P7FinancialTrendChart(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(AppDimens.CardPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
         ) {
             Text(
                 text = "روند مالی ۶ ماه اخیر",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
                 text = "مقایسه درآمد، هزینه و خالص جریان مالی",
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
             )
 
             val incomeColor = MaterialTheme.colorScheme.primary
@@ -878,17 +879,17 @@ private fun P7ExpenseDonutChart(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(AppDimens.CardPadding),
         ) {
             Text(
                 text = "ترکیب هزینه‌ها",
-                style = MaterialTheme.typography.headlineSmall,
+                style = AppTextStyles.headlineSm,
                 fontWeight = FontWeight.Bold,
             )
 
@@ -896,7 +897,7 @@ private fun P7ExpenseDonutChart(
 
             Text(
                 text = "سهم هر دسته از هزینه‌های این ماه",
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
@@ -952,13 +953,13 @@ private fun P7ExpenseDonutChart(
                     ) {
                         Text(
                             text = "هزینه",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = AppTextStyles.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
 
                         Text(
                             text = formatMoney(totalExpense),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = AppTextStyles.titleMd,
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -968,7 +969,7 @@ private fun P7ExpenseDonutChart(
 
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
                 ) {
                     chartItems.take(5).forEachIndexed { index, item ->
                         val percent =
@@ -994,13 +995,13 @@ private fun P7ExpenseDonutChart(
                             ) {
                                 Text(
                                     text = item.category,
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = AppTextStyles.bodyMd,
                                     maxLines = 1,
                                 )
 
                                 Text(
                                     text = formatMoney(item.expense),
-                                    style = MaterialTheme.typography.bodySmall,
+                                    style = AppTextStyles.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
@@ -1048,17 +1049,17 @@ private fun P7AccountBalanceChart(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(AppDimens.CardPadding),
         ) {
             Text(
                 text = "مقایسه موجودی حساب‌ها",
-                style = MaterialTheme.typography.headlineSmall,
+                style = AppTextStyles.headlineSm,
                 fontWeight = FontWeight.Bold,
             )
 
@@ -1066,7 +1067,7 @@ private fun P7AccountBalanceChart(
 
             Text(
                 text = "توزیع موجودی فعلی بین حساب‌های شما",
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 color = onSurfaceVariant,
             )
 
@@ -1126,7 +1127,7 @@ private fun P7AccountBalanceChart(
                         ) {
                             Text(
                                 text = account.account.name,
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = AppTextStyles.bodyMd,
                                 fontWeight = FontWeight.SemiBold,
                                 maxLines = 1,
                             )
@@ -1214,7 +1215,7 @@ private fun P7AccountBalanceChart(
 
                 Text(
                     text = "۶ حساب با بیشترین موجودی نمایش داده شده‌اند.",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = AppTextStyles.labelSmall,
                     color = onSurfaceVariant,
                 )
             }
@@ -1250,22 +1251,22 @@ private fun AnalyticsCard(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(AppDimens.CardPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
         ) {
             Text(
                 text = "تحلیل عملکرد مالی",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
             ) {
                 MetricBox(
                     title = "بیشترین هزینه",
@@ -1282,7 +1283,7 @@ private fun AnalyticsCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
             ) {
                 MetricBox(
                     title = "مبلغ بیشترین دسته",
@@ -1304,7 +1305,7 @@ private fun AnalyticsCard(
             if (expenseCategories.isNotEmpty() && totalExpense > 0L) {
                 Text(
                     text = "توزیع هزینه‌ها",
-                    style = MaterialTheme.typography.titleSmall,
+                    style = AppTextStyles.titleSm,
                     fontWeight = FontWeight.Bold,
                 )
 
@@ -1318,7 +1319,7 @@ private fun AnalyticsCard(
             } else {
                 Text(
                     text = "برای این بازه هزینه‌ای ثبت نشده است.",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = AppTextStyles.bodyMd,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -1339,7 +1340,7 @@ private fun MetricBox(
     ) {
         Column(
             modifier = Modifier.padding(13.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.TightGap),
         ) {
             Text(
                 text = title,
@@ -1349,7 +1350,7 @@ private fun MetricBox(
 
             Text(
                 text = value,
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -1379,13 +1380,13 @@ private fun ExpenseBar(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
                 fontWeight = FontWeight.Medium,
             )
 
             Text(
                 text = "  •  ",
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
@@ -1424,11 +1425,11 @@ private fun HeroFinancialCard(
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
         ) {
             Text(
                 text = "تصویر کلی وضعیت مالی",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
@@ -1440,7 +1441,7 @@ private fun HeroFinancialCard(
 
             Text(
                 text = "موجودی کل فعلی",
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
             )
 
             Row(
@@ -1467,7 +1468,7 @@ private fun HeroFinancialCard(
                     .background(
                         MaterialTheme.colorScheme.surfaceVariant
                     )
-                    .padding(14.dp)
+                    .padding(AppDimens.CompactPadding)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -1501,17 +1502,17 @@ private fun MiniMetric(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.padding(AppDimens.CompactPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.TightGap),
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
             )
 
             Text(
                 text = value,
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -1531,17 +1532,17 @@ private fun SmartAlertsCard(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(AppDimens.CardPadding),
         ) {
             Text(
                 text = "هشدارهای هوشمند",
-                style = MaterialTheme.typography.headlineSmall,
+                style = AppTextStyles.headlineSm,
                 fontWeight = FontWeight.Bold,
             )
 
@@ -1549,7 +1550,7 @@ private fun SmartAlertsCard(
 
             Text(
                 text = "تحلیل خودکار وضعیت مالی این ماه",
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 color = onSurfaceVariant,
             )
 
@@ -1573,7 +1574,7 @@ private fun SmartAlertsCard(
                         .background(
                             color = backgroundColor,
                                             )
-                        .padding(14.dp),
+                        .padding(AppDimens.CompactPadding),
                     verticalAlignment = Alignment.Top,
                 ) {
                     Box(
@@ -1594,7 +1595,7 @@ private fun SmartAlertsCard(
                             },
                             color = alertColor,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = AppTextStyles.titleMd,
                         )
                     }
 
@@ -1605,7 +1606,7 @@ private fun SmartAlertsCard(
                     ) {
                         Text(
                             text = alert.title,
-                            style = MaterialTheme.typography.titleSmall,
+                            style = AppTextStyles.titleSm,
                             fontWeight = FontWeight.Bold,
                             color = alertColor,
                         )
@@ -1614,14 +1615,14 @@ private fun SmartAlertsCard(
 
                         Text(
                             text = alert.message,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = AppTextStyles.labelSmall,
                             color = onSurfaceVariant,
                         )
                     }
                 }
 
                 if (index < alerts.lastIndex) {
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(AppDimens.TightGap))
                 }
             }
         }
@@ -1668,19 +1669,19 @@ private fun SmartInsightCard(
         ) {
             Text(
                 text = "تحلیل هوشمند مالی",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
                 text = message,
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
             )
 
             if (topCategory != null) {
                 Text(
                     text = "دسته شاخص: ${topCategory.category}",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = AppTextStyles.bodyMd,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -1698,7 +1699,7 @@ private fun SectionTitle(
             start = 4.dp,
             top = 4.dp,
         ),
-        style = MaterialTheme.typography.titleMedium,
+        style = AppTextStyles.titleMd,
         fontWeight = FontWeight.Bold,
     )
 }
@@ -1714,8 +1715,8 @@ private fun FlowCard(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(AppDimens.CardPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
         ) {
             FlowLine("درآمد", income)
             FlowLine("هزینه", expense)
@@ -1787,16 +1788,16 @@ private fun MonthComparisonCard(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(AppDimens.CardPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap),
         ) {
             Text(
                 text = "مقایسه با ماه قبل",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
@@ -1828,8 +1829,8 @@ private fun MonthComparisonCard(
             ) {
                 Text(
                     text = insight,
-                    modifier = Modifier.padding(14.dp),
-                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(AppDimens.CompactPadding),
+                    style = AppTextStyles.bodyMd,
                     fontWeight = FontWeight.Medium,
                 )
             }
@@ -1856,13 +1857,13 @@ private fun ComparisonRow(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
                 text = formatMoney(current),
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -1873,7 +1874,7 @@ private fun ComparisonRow(
         ) {
             Text(
                 text = "ماه قبل: ${formatMoney(previous)}",
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
@@ -1884,7 +1885,7 @@ private fun ComparisonRow(
                     change < 0.0 -> "▼ ${formatPercent(kotlin.math.abs(change))}"
                     else -> "بدون تغییر"
                 },
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -1966,29 +1967,29 @@ private fun CategoryGrowthCard(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.ItemGap),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(AppDimens.CardPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
         ) {
             Text(
                 text = "رشد هزینه‌ها",
-                style = MaterialTheme.typography.titleMedium,
+                style = AppTextStyles.titleMd,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
                 text = "مقایسه دسته‌های هزینه با ماه قبل",
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             if (growthItems.isEmpty()) {
                 Text(
                     text = "برای مقایسه دسته‌ها داده کافی وجود ندارد.",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = AppTextStyles.bodyMd,
                 )
             } else {
 
@@ -1999,24 +2000,24 @@ private fun CategoryGrowthCard(
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
                     ) {
                         Column(
-                            modifier = Modifier.padding(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.padding(AppDimens.CompactPadding),
+                            verticalArrangement = Arrangement.spacedBy(AppDimens.TightGap),
                         ) {
                             Text(
                                 text = "بیشترین افزایش",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = AppTextStyles.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
 
                             Text(
                                 text = item.category,
-                                style = MaterialTheme.typography.titleSmall,
+                                style = AppTextStyles.titleSm,
                                 fontWeight = FontWeight.Bold,
                             )
 
                             Text(
                                 text = "+${formatMoney(item.change)}",
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = AppTextStyles.bodyMd,
                                 fontWeight = FontWeight.Bold,
                             )
 
@@ -2024,7 +2025,7 @@ private fun CategoryGrowthCard(
                                 text = item.percent?.let {
                                     "رشد ${formatPercent(it)}"
                                 } ?: "هزینه جدید",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = AppTextStyles.labelSmall,
                             )
                         }
                     }
@@ -2051,7 +2052,7 @@ private fun CategoryGrowthCard(
                 biggestDecrease?.let { item ->
                     Text(
                         text = "بهترین کاهش هزینه: ${item.category} با ${formatMoney(kotlin.math.abs(item.change))}",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = AppTextStyles.labelSmall,
                         fontWeight = FontWeight.Medium,
                     )
                 }
@@ -2082,13 +2083,13 @@ private fun CategoryGrowthRow(
         ) {
             Text(
                 text = category,
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
                 text = formatMoney(currentExpense),
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -2099,7 +2100,7 @@ private fun CategoryGrowthRow(
         ) {
             Text(
                 text = "ماه قبل: ${formatMoney(previousExpense)}",
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
@@ -2114,7 +2115,7 @@ private fun CategoryGrowthRow(
                     else ->
                         "بدون تغییر"
                 },
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -2128,32 +2129,32 @@ private fun CategoryRow(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.padding(AppDimens.CompactPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.TightGap),
         ) {
             Text(
                 text = item.category,
-                style = MaterialTheme.typography.titleSmall,
+                style = AppTextStyles.titleSm,
                 fontWeight = FontWeight.Bold,
             )
 
             if (item.income > 0L) {
                 Text(
                     text = "درآمد: ${formatMoney(item.income)}",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = AppTextStyles.bodyMd,
                 )
             }
 
             if (item.expense > 0L) {
                 Text(
                     text = "هزینه: ${formatMoney(item.expense)}",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = AppTextStyles.bodyMd,
                 )
             }
 
             Text(
                 text = "تعداد: ${item.transactionCount.toString().toFaDigits()}",
-                style = MaterialTheme.typography.bodySmall,
+                style = AppTextStyles.labelSmall,
             )
         }
     }
@@ -2167,12 +2168,12 @@ private fun AccountRow(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.padding(AppDimens.CompactPadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.TightGap),
         ) {
             Text(
                 text = item.account.name,
-                style = MaterialTheme.typography.titleSmall,
+                style = AppTextStyles.titleSm,
                 fontWeight = FontWeight.Bold,
             )
 
@@ -2208,12 +2209,12 @@ private fun SummaryLine(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium,
+            style = AppTextStyles.bodyMd,
         )
 
         Text(
             text = value,
-            style = MaterialTheme.typography.bodyMedium,
+            style = AppTextStyles.bodyMd,
             fontWeight = FontWeight.Bold,
         )
     }
