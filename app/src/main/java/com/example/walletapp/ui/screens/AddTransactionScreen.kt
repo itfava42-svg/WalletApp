@@ -195,7 +195,7 @@ fun AddTransactionScreen(
             CenterAlignedTopAppBar(
                 title = { Text("ثبت تراکنش جدید", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    AppIconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowForward, contentDescription = "بازگشت")
                     }
                 },
