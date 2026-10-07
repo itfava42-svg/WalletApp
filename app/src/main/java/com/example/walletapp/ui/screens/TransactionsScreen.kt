@@ -3,6 +3,8 @@ package com.example.walletapp.ui.screens
 import com.example.walletapp.ui.components.AppTextButton
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppFilterChip
+import com.example.walletapp.ui.components.AppAssistChip
+import com.example.walletapp.ui.components.AppStatusPill
 
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.toPersianCurrency
@@ -33,7 +35,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.outlined.HistoryToggleOff
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -640,66 +641,26 @@ private fun TransactionFullCard(
 
             Spacer(Modifier.height(AppDimens.CardGap))
 
-            Surface(
-                color = accentColor.copy(alpha = 0.07f),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = 11.dp,
-                            vertical = 8.dp
-                        ),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = typeTitle,
-                        color = accentColor,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-
-                    Spacer(Modifier.weight(1f))
-
-                    if (isTransfer) {
-
-                        val source =
-                            sourceName
-                                ?: transaction.sourceAccountId
-                                ?: "مبدأ نامشخص"
-
-                        val destination =
-                            destinationName
-                                ?: transaction.destinationAccountId
-                                ?: "مقصد نامشخص"
-
-                        Text(
-                            text = "$source ← $destination",
-                            color = OnSurfaceVariant,
-                            style = MaterialTheme.typography.labelSmall,
-                            maxLines = 1,
-                        )
-
-                    } else {
-
-                        val detail =
-                            accountName
-                                ?: transaction.category
-                                    ?.takeIf { it.isNotBlank() }
-                                ?: ""
-
-                        if (detail.isNotBlank()) {
-                            Text(
-                                text = detail,
-                                color = OnSurfaceVariant,
-                                style = MaterialTheme.typography.labelSmall,
-                                maxLines = 1,
-                            )
-                        }
-                    }
-                }
-            }
+            AppStatusPill(
+                text = if (isTransfer) {
+                    val source =
+                        sourceName
+                            ?: transaction.sourceAccountId
+                            ?: "مبدأ نامشخص"
+                    val destination =
+                        destinationName
+                            ?: transaction.destinationAccountId
+                            ?: "مقصد نامشخص"
+                    "$typeTitle • $source ← $destination"
+                } else {
+                    val detail =
+                        accountName
+                            ?: transaction.category?.takeIf { it.isNotBlank() }
+                            ?: ""
+                    if (detail.isBlank()) typeTitle else "$typeTitle • $detail"
+                },
+                accentColor = accentColor,
+            )
 
             if (transaction.subtitle.isNotBlank()) {
                 Spacer(Modifier.height(7.dp))
