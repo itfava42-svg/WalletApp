@@ -10,6 +10,9 @@ object AppDimens {
     val ItemGap = 8.dp
     val TightGap = 4.dp
     val IntroGap = 6.dp
+    val FilterChipGap = 7.dp
+    val HeroContentPadding = 20.dp
+    val BottomContentPadding = 80.dp
 
     val AppBarHeight = 56.dp
     val BottomBarHeight = 64.dp
