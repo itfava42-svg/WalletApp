@@ -7,6 +7,8 @@ import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppPrimaryButton
 import com.example.walletapp.ui.components.AppSectionHeader
 import com.example.walletapp.ui.components.AppTextField
+import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +40,6 @@ import androidx.compose.material.icons.filled.CallReceived
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -48,10 +49,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.Reminder
 import com.example.walletapp.data.ReminderKind
 import com.example.walletapp.data.RepeatFrequency
@@ -216,20 +215,19 @@ fun AddReminderScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(start = 20.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
+                    .padding(start = AppDimens.PagePadding, end = AppDimens.ItemGap, top = AppDimens.ItemGap, bottom = AppDimens.TightGap),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = if (existingReminder == null) "افزودن یادآوری" else "ویرایش یادآوری",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        style = AppTextStyles.headlineSm,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    Spacer(Modifier.height(3.dp))
+                    Spacer(Modifier.height(AppDimens.TightGap))
                     Text(
                         text = "اطلاعات یادآوری را وارد کنید",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = AppTextStyles.bodyMd,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -249,11 +247,11 @@ fun AddReminderScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 18.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(horizontal = AppDimens.PagePadding),
+            verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
         ) {
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(AppDimens.TightGap))
 
             /*
              * Preview card
@@ -264,14 +262,14 @@ fun AddReminderScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(18.dp),
+                        .padding(AppDimens.CardPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Box(
                         modifier = Modifier
-                            .size(58.dp)
-                            .clip(RoundedCornerShape(18.dp))
+                            .size(AppDimens.FeatureIconBox)
+                            .clip(RoundedCornerShape(AppDimens.SmallCardRadius))
                             .background(
                                 selectedKindColor.copy(alpha = 0.12f)
                             ),
@@ -285,11 +283,11 @@ fun AddReminderScreen(
                                     Icons.Default.CallReceived,
                             contentDescription = null,
                             tint = selectedKindColor,
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(AppDimens.FeatureIcon)
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(14.dp))
+                    Spacer(modifier = Modifier.width(AppDimens.CardGap))
 
                     Column(
                         modifier = Modifier.weight(1f)
@@ -299,8 +297,7 @@ fun AddReminderScreen(
                                 title.ifBlank {
                                     "عنوان یادآوری"
                                 },
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold,
+                            style = AppTextStyles.titleMd,
                             color = TextDark
                         )
 
@@ -312,7 +309,7 @@ fun AddReminderScreen(
                                     "یادآوری پرداخت"
                                 else
                                     "یادآوری دریافت",
-                            fontSize = 12.sp,
+                            style = AppTextStyles.labelMd,
                             color = selectedKindColor
                         )
                     }
@@ -323,14 +320,13 @@ fun AddReminderScreen(
                         ) {
                             Text(
                                 text = amountText,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
+                                style = AppTextStyles.titleMd,
                                 color = TextDark
                             )
 
                             Text(
                                 text = "مبلغ",
-                                fontSize = 11.sp,
+                                style = AppTextStyles.labelSmall,
                                 color = TextGray
                             )
                         }
@@ -345,7 +341,7 @@ fun AddReminderScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
             ) {
 
                 ReminderTypeTile(
@@ -435,7 +431,7 @@ fun AddReminderScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
             ) {
 
                 InfoTile(
@@ -516,13 +512,12 @@ fun AddReminderScreen(
                     Text(
                         text = message,
                         color = Red,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
+                        style = AppTextStyles.bodyMd,
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AppDimens.TightGap))
 
             AppPrimaryButton(
                 text =
@@ -540,7 +535,7 @@ fun AddReminderScreen(
                 },
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(AppDimens.SectionGap))
         }
     }
 
@@ -601,29 +596,29 @@ private fun ReminderTypeTile(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(13.dp))
+                        .size(AppDimens.IconBox)
+                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(AppDimens.TileRadius))
                         .background(color.copy(alpha = 0.13f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(imageVector = icon, contentDescription = null, tint = color)
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(AppDimens.ItemGap))
 
                 if (selected) {
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = null,
                         tint = color,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(AppDimens.IconSmall)
                     )
                 }
             }
 
             Column {
-                Text(text = title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                Text(text = subtitle, color = TextGray, fontSize = 10.sp)
+                Text(text = title, style = AppTextStyles.titleMd)
+                Text(text = subtitle, color = TextGray, style = AppTextStyles.labelSmall)
             }
         }
     }
@@ -648,23 +643,22 @@ private fun InfoTile(
         ) {
             Box(
                 modifier = Modifier
-                    .size(42.dp)
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(13.dp))
+                    .size(AppDimens.IconBox)
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(AppDimens.TileRadius))
                     .background(color.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(imageVector = icon, contentDescription = null, tint = color)
             }
 
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(AppDimens.CardGap))
 
             Column {
-                Text(text = title, fontSize = 11.sp, color = TextGray)
-                Spacer(modifier = Modifier.height(3.dp))
+                Text(text = title, style = AppTextStyles.labelSmall, color = TextGray)
+                Spacer(modifier = Modifier.height(AppDimens.TightGap))
                 Text(
                     text = value,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = AppTextStyles.titleSm,
                     color = TextDark
                 )
             }
@@ -704,11 +698,11 @@ private fun RepeatTile(
                     )
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(AppDimens.CardGap))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = title, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                Text(text = subtitle, color = TextGray, fontSize = 10.sp)
+                Text(text = title, style = AppTextStyles.titleSm)
+                Text(text = subtitle, color = TextGray, style = AppTextStyles.labelSmall)
             }
 
             if (selected) {
@@ -716,7 +710,7 @@ private fun RepeatTile(
                     imageVector = Icons.Default.Check,
                     contentDescription = null,
                     tint = color,
-                    modifier = Modifier.size(21.dp)
+                    modifier = Modifier.size(AppDimens.IconSmall)
                 )
             }
         }
