@@ -3,6 +3,7 @@
 import com.example.walletapp.ui.components.AppTextButton
 import com.example.walletapp.ui.components.AppSegmentedButton
 import com.example.walletapp.ui.components.AppSelectionTile
+import com.example.walletapp.ui.components.AppAssistChip
 
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -369,7 +370,7 @@ fun AddTransactionScreen(
             Text("تاریخ", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                AssistChip(
+                AppAssistChip(
                     onClick = {
                         dateLabel = JalaliCalendar.todaySlashed()
                         dateEpochMillis = null
@@ -377,7 +378,7 @@ fun AddTransactionScreen(
                     label = { Text("امروز") },
                 )
                 Spacer(Modifier.width(8.dp))
-                AssistChip(
+                AppAssistChip(
                     onClick = {
                         dateLabel = JalaliCalendar.daysAgoSlashed(1)
                         dateEpochMillis = null
