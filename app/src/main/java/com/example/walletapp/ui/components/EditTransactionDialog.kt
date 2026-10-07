@@ -67,7 +67,7 @@ fun EditTransactionDialog(
                 )
 
                 Spacer(Modifier.height(AppDimens.SectionGap))
-                Text("دسته‌بندی", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+                Text("دسته‌بندی", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
                 Row(
                     modifier = Modifier
@@ -88,7 +88,7 @@ fun EditTransactionDialog(
                 }
 
                 Spacer(Modifier.height(16.dp))
-                Text("هشتگ‌ها", style = MaterialTheme.typography.labelMedium, color = OnSurfaceVariant)
+                Text("هشتگ‌ها", style = AppTextStyles.labelMd, color = OnSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
                 AppTextField(
                     value = tagInput,
