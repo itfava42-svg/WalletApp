@@ -1530,8 +1530,8 @@ private fun LoanEditorFullScreen(
         bottomBar = {
             Surface(color = MatureColors.Surface, shadowElevation = 8.dp) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    modifier = Modifier.fillMaxWidth().padding(AppDimens.CompactPadding),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
                 ) {
                     AppOutlinedButton(
                         text = "انصراف",
@@ -1562,64 +1562,55 @@ private fun LoanEditorFullScreen(
                     modifier = Modifier.fillMaxWidth(),
                     containerColor = MatureColors.Primary
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
                         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Surface(
-                                modifier = Modifier.size(48.dp),
-                                shape = RoundedCornerShape(18.dp),
-                                color = Color.White.copy(alpha = 0.12f)
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Icon(
-                                        Icons.Filled.AccountBalance,
-                                        contentDescription = null,
-                                        tint = MatureColors.Secondary,
-                                        modifier = Modifier.size(27.dp)
-                                    )
-                                }
-                            }
+                            AppIconBadge(
+                                icon = Icons.Filled.AccountBalance,
+                                contentDescription = null,
+                                containerColor = Color.White.copy(alpha = 0.12f),
+                                iconTint = MatureColors.Secondary,
+                                size = AppDimens.IconBox,
+                                iconSize = AppDimens.IconLarge
+                            )
                             Spacer(Modifier.width(12.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = if (existingLoan == null) "وام جدید" else "ویرایش وام",
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    style = AppTextStyles.titleLg,
                                     color = Color.White
                                 )
                                 Spacer(Modifier.height(3.dp))
                                 Text(
                                     text = "اطلاعات و شرایط وام را ثبت کنید",
-                                    fontSize = 12.sp,
+                                    style = AppTextStyles.bodyMd,
                                     color = Color.White.copy(alpha = 0.76f)
                                 )
                             }
                         }
-                        Spacer(Modifier.height(18.dp))
+                        Spacer(Modifier.height(AppDimens.CardGap))
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(17.dp),
                             color = Color.White.copy(alpha = 0.10f)
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth().padding(14.dp),
+                                modifier = Modifier.fillMaxWidth().padding(AppDimens.CompactPadding),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text("قسط ماهیانه", fontSize = 11.sp, color = Color.White.copy(alpha = 0.68f))
+                                    Text("قسط ماهیانه", style = AppTextStyles.labelMd, color = Color.White.copy(alpha = 0.68f))
                                     Spacer(Modifier.height(3.dp))
                                     Text(
                                         text = if (calculatedInstallment > 0) calculatedInstallment.toPersianCurrency() else "—",
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold,
+                                        style = AppTextStyles.titleMd,
                                         color = Color.White
                                     )
                                 }
                                 Column(horizontalAlignment = Alignment.End) {
-                                    Text("تعداد اقساط", fontSize = 11.sp, color = Color.White.copy(alpha = 0.68f))
+                                    Text("تعداد اقساط", style = AppTextStyles.labelMd, color = Color.White.copy(alpha = 0.68f))
                                     Text(
                                         text = totalInstallmentsText.ifBlank { "—" },
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold,
+                                        style = AppTextStyles.titleMd,
                                         color = MatureColors.Secondary
                                     )
                                 }
