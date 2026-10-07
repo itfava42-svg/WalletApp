@@ -132,7 +132,7 @@ fun ThemeBuilderScreen(
                 title = {
                     Text(
                         "🎨 تم‌ساز",
-                        fontWeight = FontWeight.Bold
+                        style = AppTextStyles.titleLg
                     )
                 },
                 navigationIcon = {
@@ -180,7 +180,7 @@ fun ThemeBuilderScreen(
 
                             Text(
                                 "شخصی‌سازی کامل ظاهر",
-                                fontWeight = FontWeight.Bold
+                                style = AppTextStyles.titleMd
                             )
                         }
 
@@ -198,12 +198,10 @@ fun ThemeBuilderScreen(
                 Text(
                     "🎨 رنگ‌های برنامه",
                     modifier = Modifier.padding(
-                        horizontal = 16.dp,
-                        vertical = 4.dp
+                        horizontal = AppDimens.PagePadding,
+                        vertical = AppDimens.TightGap
                     ),
-                    style =
-                        AppTextStyles.titleMd,
-                    fontWeight = FontWeight.Bold
+                    style = AppTextStyles.titleMd
                 )
             }
 
@@ -354,7 +352,7 @@ private fun ColorSettingCard(
             .fillMaxWidth()
             .padding(horizontal = AppDimens.PagePadding),
         containerColor = MaterialTheme.colorScheme.surface,
-        contentPadding = PaddingValues(14.dp),
+        contentPadding = PaddingValues(AppDimens.CardPadding)
     ) {
 
             Row(
@@ -383,7 +381,7 @@ private fun ColorSettingCard(
                 ) {
                     Text(
                         setting.title,
-                        fontWeight = FontWeight.Bold
+                        style = AppTextStyles.titleMd
                     )
 
                     Text(
@@ -471,8 +469,7 @@ private fun ColorSettingCard(
                             .padding(AppDimens.CompactPadding),
                         color =
                             MaterialTheme.colorScheme.primary,
-                        fontWeight =
-                            FontWeight.Bold
+                        style = AppTextStyles.labelMd
                     )
                 }
             )
@@ -531,7 +528,7 @@ private fun PreviewCard(
 
         Text(
             "👁 پیش‌نمایش",
-            fontWeight = FontWeight.Bold,
+            style = AppTextStyles.titleMd,
             color = text
         )
 
@@ -551,9 +548,7 @@ private fun PreviewCard(
 
                 Text(
                     "۲۸۵,۴۰۰,۰۰۰ تومان",
-                    style =
-                        AppTextStyles.titleLg,
-                    fontWeight = FontWeight.Bold,
+                    style = AppTextStyles.titleLg,
                     color = text
                 )
 
