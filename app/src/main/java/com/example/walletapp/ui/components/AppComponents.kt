@@ -471,7 +471,7 @@ fun AppBankCardCarousel(
         ) {
             itemsIndexed(items) { index, item ->
                 AppCard(
-                    modifier = Modifier.width(292.dp),
+                    modifier = Modifier.width(AppDimens.BankCardWidth),
                     containerColor = if (index == selectedIndex) {
                         MaterialTheme.colorScheme.primaryContainer
                     } else {
@@ -652,7 +652,7 @@ private fun AppTableRow(
                 if (header) MaterialTheme.colorScheme.primaryContainer
                 else MaterialTheme.colorScheme.surface,
             )
-            .padding(horizontal = AppDimens.CardPadding, vertical = 12.dp),
+            .padding(horizontal = AppDimens.CardPadding, vertical = AppDimens.TableRowVerticalPadding),
         horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
     ) {
         cells.forEach { cell ->
@@ -669,7 +669,7 @@ private fun AppTableRow(
 
 
 @Composable
-fun AppIconBadge(icon: ImageVector, contentDescription: String? = null, modifier: Modifier = Modifier, containerColor: Color = MaterialTheme.colorScheme.primaryContainer, iconTint: Color = MaterialTheme.colorScheme.primary, onClick: (() -> Unit)? = null, size: Dp = 40.dp, iconSize: Dp = 22.dp) {
+fun AppIconBadge(icon: ImageVector, contentDescription: String? = null, modifier: Modifier = Modifier, containerColor: Color = MaterialTheme.colorScheme.primaryContainer, iconTint: Color = MaterialTheme.colorScheme.primary, onClick: (() -> Unit)? = null, size: Dp = AppDimens.BadgeSize, iconSize: Dp = AppDimens.BadgeIconSize) {
     val content: @Composable () -> Unit = { Box(contentAlignment = androidx.compose.ui.Alignment.Center) { Icon(icon, contentDescription, tint = iconTint, modifier = Modifier.size(iconSize)) } }
     if (onClick == null) Surface(modifier = modifier.size(size), shape = MaterialTheme.shapes.medium, color = containerColor, content = content) else Surface(onClick = onClick, modifier = modifier.size(size), shape = MaterialTheme.shapes.medium, color = containerColor, content = content)
 }
@@ -752,7 +752,7 @@ fun AppStatusPill(
         Box(
             modifier = Modifier.padding(
                 horizontal = AppDimens.CompactPadding,
-                vertical = 8.dp,
+                vertical = AppDimens.StatusPillVerticalPadding,
             ),
             contentAlignment = androidx.compose.ui.Alignment.CenterStart,
         ) {
