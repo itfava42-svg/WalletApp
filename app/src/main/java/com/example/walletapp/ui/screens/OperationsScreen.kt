@@ -23,14 +23,12 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.theme.AppDimens
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -103,7 +101,7 @@ fun OperationsScreen(
                 color = MaterialTheme.colorScheme.onSurface,
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(AppDimens.IntroGap))
 
             Text(
                 text = "مدیریت عملیات و خدمات مالی برنامه",
@@ -111,7 +109,7 @@ fun OperationsScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(AppDimens.SectionGap))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -124,7 +122,7 @@ fun OperationsScreen(
                     AppCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(150.dp),
+                            .height(AppDimens.OperationCardHeight),
                         onClick = {
                             when (operation.title) {
                                 "انتقال بین حساب‌ها" -> onOpenTransfer()
@@ -143,7 +141,7 @@ fun OperationsScreen(
                                 .padding(AppDimens.CardPadding),
                             verticalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            AppIconBadge(icon = operation.icon, size = 48.dp, iconSize = 28.dp)
+                            AppIconBadge(icon = operation.icon, size = AppDimens.FeatureIconBox, iconSize = AppDimens.FeatureIcon)
 
                             Column {
                                 Text(
@@ -152,7 +150,7 @@ fun OperationsScreen(
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
 
-                                Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(AppDimens.TightGap))
 
                                 Text(
                                     text = operation.description,
