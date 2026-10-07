@@ -70,10 +70,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.walletapp.data.JalaliCalendar
 import com.example.walletapp.data.LoanEntry
 import com.example.walletapp.data.LoanPayment
@@ -233,7 +231,7 @@ fun LoanManagementScreen(
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
                         ) {
 
                             LoanSummaryTile(
@@ -311,8 +309,8 @@ fun LoanManagementScreen(
 
                     Text(
                         text = "$totalLoans مورد",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        style = AppTextStyles.labelMd,
+                        fontWeight = AppTextStyles.titleSm.fontWeight,
                         color = MatureColors.Primary
                     )
                 }
@@ -422,7 +420,6 @@ fun LoanManagementScreen(
         )
     }
 }
-
 
 @Composable
 private fun LoanHeader(
@@ -839,7 +836,6 @@ private fun LoanCard(
     }
 }
 
-
 @Composable
 private fun LoanInfoTile(modifier: Modifier,title: String,value: String,background: Color,icon: androidx.compose.ui.graphics.vector.ImageVector,iconTint: Color) {
     AppCard(modifier = modifier, containerColor = background, contentPadding = PaddingValues(AppDimens.CompactPadding)) {
@@ -934,20 +930,20 @@ private fun LoanInstallmentsDialog(
             ) {
                 Text(
                     text = "مدیریت اقساط",
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = AppTextStyles.titleMd.fontWeight,
                     color = MatureColors.TextPrimary
                 )
 
                 Text(
                     text = currentLoan.title,
-                    fontSize = 13.sp,
+                    style = AppTextStyles.bodyMd,
                     color = MatureColors.TextSecondary
                 )
             }
         },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(AppDimens.CardGap)
             ) {
 
                 AppCard(
@@ -958,8 +954,8 @@ private fun LoanInstallmentsDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            .padding(AppDimens.CompactPadding),
+                        horizontalArrangement = Arrangement.spacedBy(AppDimens.TightGap)
                     ) {
                         SmallLoanInfo(
                             modifier = Modifier.weight(1f),
@@ -1001,7 +997,7 @@ private fun LoanInstallmentsDialog(
                         Text(
                             text = "تاریخ اولین قسط برای این وام ثبت نشده است. برای نمایش سررسید اقساط، ابتدا تاریخ اولین قسط را در ویرایش وام وارد کنید.",
                             modifier = Modifier.padding(14.dp),
-                            fontSize = 13.sp,
+                            style = AppTextStyles.bodyMd,
                             color = MatureColors.TextPrimary
                         )
                     }
@@ -1010,7 +1006,7 @@ private fun LoanInstallmentsDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(430.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(AppDimens.TightGap)
                     ) {
                         items(
                             items = (
@@ -1038,7 +1034,7 @@ private fun LoanInstallmentsDialog(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(12.dp),
+                                        .padding(AppDimens.CompactPadding),
                                     verticalAlignment =
                                         Alignment.CenterVertically
                                 ) {
@@ -1058,7 +1054,7 @@ private fun LoanInstallmentsDialog(
                                             Text(
                                                 text = number.toString(),
                                                 fontWeight =
-                                                    FontWeight.Bold,
+                                                    AppTextStyles.titleMd.fontWeight,
                                                 color = if (isPaid) {
                                                     Color.White
                                                 } else {
@@ -1068,7 +1064,7 @@ private fun LoanInstallmentsDialog(
                                         }
                                     }
 
-                                    Spacer(Modifier.size(10.dp))
+                                    Spacer(Modifier.size(AppDimens.ItemGap))
 
                                     Column(
                                         modifier = Modifier.weight(1f),
@@ -1078,14 +1074,14 @@ private fun LoanInstallmentsDialog(
                                         Text(
                                             text = "قسط شماره $number",
                                             fontWeight =
-                                                FontWeight.Bold,
+                                                AppTextStyles.titleMd.fontWeight,
                                             color =
                                                 MatureColors.TextPrimary
                                         )
 
                                         Text(
                                             text = "سررسید: $dueDate",
-                                            fontSize = 12.sp,
+                                            style = AppTextStyles.labelMd,
                                             color =
                                                 MatureColors.TextSecondary
                                         )
@@ -1095,9 +1091,9 @@ private fun LoanInstallmentsDialog(
                                                 currentLoan
                                                     .installmentAmount
                                                     .toPersianCurrency(),
-                                            fontSize = 13.sp,
+                                            style = AppTextStyles.bodyMd,
                                             fontWeight =
-                                                FontWeight.Bold,
+                                                AppTextStyles.titleMd.fontWeight,
                                             color =
                                                 MatureColors.Primary
                                         )
@@ -1106,9 +1102,9 @@ private fun LoanInstallmentsDialog(
                                     if (isPaid) {
                                         Text(
                                             text = "پرداخت شده",
-                                            fontSize = 11.sp,
+                                            style = AppTextStyles.labelSmall,
                                             fontWeight =
-                                                FontWeight.Bold,
+                                                AppTextStyles.titleMd.fontWeight,
                                             color =
                                                 MatureColors.Success
                                         )
@@ -1156,7 +1152,7 @@ private fun LoanInstallmentsDialog(
             title = {
                 Text(
                     text = "خطای ثبت پرداخت",
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = AppTextStyles.titleMd.fontWeight,
                     color = MatureColors.TextPrimary
                 )
             },
@@ -1184,7 +1180,7 @@ private fun LoanInstallmentsDialog(
             title = {
                 Text(
                     text = "انتخاب حساب پرداخت",
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = AppTextStyles.titleMd.fontWeight,
                     color = MatureColors.TextPrimary
                 )
             },
@@ -1240,7 +1236,7 @@ private fun LoanInstallmentsDialog(
                                     Text(
                                         text = account.name,
                                         fontWeight =
-                                            FontWeight.Bold,
+                                            AppTextStyles.titleMd.fontWeight,
                                         color =
                                             MatureColors.TextPrimary
                                     )
@@ -1250,7 +1246,7 @@ private fun LoanInstallmentsDialog(
                                     ) {
                                         Text(
                                             text = account.bankName,
-                                            fontSize = 11.sp,
+                                            style = AppTextStyles.labelSmall,
                                             color =
                                                 MatureColors.TextSecondary
                                         )
@@ -1389,7 +1385,6 @@ private fun calculateLoanInstallmentDate(
     return "$newYear/${newMonth.toString().padStart(2, '0')}/${newDay.toString().padStart(2, '0')}"
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoanEditorFullScreen(
@@ -1505,11 +1500,11 @@ private fun LoanEditorFullScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = if (existingLoan == null) "ثبت وام جدید" else "ویرایش وام",
-                            fontWeight = FontWeight.Bold
+                            fontWeight = AppTextStyles.titleMd.fontWeight
                         )
                         Text(
                             text = "مدیریت مالی شما",
-                            fontSize = 11.sp,
+                            style = AppTextStyles.labelSmall,
                             color = MatureColors.TextSecondary
                         )
                     }
@@ -1566,7 +1561,7 @@ private fun LoanEditorFullScreen(
                                 size = AppDimens.IconBox,
                                 iconSize = AppDimens.IconLarge
                             )
-                            Spacer(Modifier.width(12.dp))
+                            Spacer(Modifier.width(AppDimens.CardGap))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = if (existingLoan == null) "وام جدید" else "ویرایش وام",
@@ -1624,7 +1619,7 @@ private fun LoanEditorFullScreen(
                         label = "نام وام",
                         placeholder = { Text("مثلاً وام خرید") },                        leadingIcon = { Icon(Icons.Filled.AccountBalance, contentDescription = null) }
                     )
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     AppTextField(
                         value = amountText,
                         onValueChange = { amountText = it.filter(Char::isDigit) },
@@ -1646,10 +1641,10 @@ private fun LoanEditorFullScreen(
                         style = AppTextStyles.labelMd,
                         color = MatureColors.TextSecondary
                     )
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
                     ) {
                         LoanTrackingModeCard(
                             modifier = Modifier.weight(1f),
@@ -1665,7 +1660,7 @@ private fun LoanEditorFullScreen(
                         )
                     }
                     if (trackingMode == LoanTrackingMode.EXISTING) {
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(AppDimens.CardGap))
                         AppTextField(
                             value = historicalPaidText,
                             onValueChange = { historicalPaidText = it.filter(Char::isDigit) },
@@ -1675,14 +1670,14 @@ private fun LoanEditorFullScreen(
                             leadingIcon = { Icon(Icons.Filled.Payments, contentDescription = null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(AppDimens.ItemGap))
                         DateField(
                             label = "شروع پیگیری از این تاریخ",
                             value = trackingStartDate,
                             onDateSelected = { trackingStartDate = it },
                             context = context
                         )
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(AppDimens.ItemGap))
                         AppCard(
                             modifier = Modifier.fillMaxWidth(),
                             containerColor = MatureColors.SecondaryLight,
@@ -1691,7 +1686,7 @@ private fun LoanEditorFullScreen(
                             Text(
                                 text = "اقساط قبلی فقط به‌عنوان سابقه پرداخت در نظر گرفته می‌شوند و برای آن‌ها تراکنش مالی جدید ساخته نمی‌شود. از تاریخ شروع پیگیری، فقط اقساط باقی‌مانده مدیریت و یادآوری خواهند شد.",
                                 modifier = Modifier.padding(14.dp),
-                                fontSize = 11.sp,
+                                style = AppTextStyles.labelSmall,
                                 color = MatureColors.TextPrimary
                             )
                         }
@@ -1701,7 +1696,7 @@ private fun LoanEditorFullScreen(
 
             item {
                 LoanEditorDashboardCard(title = "شرایط بازپرداخت") {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)) {
                         AppTextField(
                             value = interestText,
                             onValueChange = { interestText = it },
@@ -1722,7 +1717,7 @@ private fun LoanEditorFullScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                     }
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     Box(modifier = Modifier.fillMaxWidth()) {
                         AppTextField(
                             value = "هر $intervalMonths ماه",
@@ -1741,7 +1736,7 @@ private fun LoanEditorFullScreen(
                             }
                         }
                     }
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     AppCard(
                         modifier = Modifier.fillMaxWidth(),
                         containerColor = MatureColors.Success.copy(alpha = 0.10f),
@@ -1749,21 +1744,21 @@ private fun LoanEditorFullScreen(
                     ) {
                         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Filled.Calculate, contentDescription = null, tint = MatureColors.Success, modifier = Modifier.size(23.dp))
-                            Spacer(Modifier.width(10.dp))
+                            Spacer(Modifier.width(AppDimens.ItemGap))
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("قسط ماهیانه محاسبه‌شده", fontSize = 11.sp, color = MatureColors.TextSecondary)
+                                Text("قسط ماهیانه محاسبه‌شده", style = AppTextStyles.labelSmall, color = MatureColors.TextSecondary)
                                 Spacer(Modifier.height(2.dp))
                                 Text(
                                     text = if (calculatedInstallment > 0) calculatedInstallment.toPersianCurrency()
                                     else "با تکمیل مبلغ، سود و تعداد اقساط محاسبه می‌شود",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    style = AppTextStyles.bodyLg,
+                                    fontWeight = AppTextStyles.titleMd.fontWeight,
                                     color = MatureColors.TextPrimary
                                 )
                             }
                         }
                     }
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     Box(modifier = Modifier.fillMaxWidth()) {
                         AppTextField(
                             value = loanType.label,
@@ -1793,7 +1788,7 @@ private fun LoanEditorFullScreen(
                         onDateSelected = { startDate = it },
                         context = context
                     )
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     DateField(
                         label = "تاریخ اولین قسط",
                         value = firstInstallmentDate,
@@ -1807,10 +1802,10 @@ private fun LoanEditorFullScreen(
                 LoanEditorDashboardCard(title = "حساب بانکی وام") {
                 Text(
                     text = "حسابی را که این وام به آن مربوط است انتخاب کنید. برای وام‌های قدیمی، انتخاب حساب اختیاری است.",
-                    fontSize = 11.sp,
+                    style = AppTextStyles.labelSmall,
                     color = MatureColors.TextSecondary
                 )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(AppDimens.ItemGap))
                 val accountLabel = selectedLoanAccountId?.let { id ->
                     AccountStore.accounts.firstOrNull { it.id == id }?.name
                 } ?: "بدون حساب مشخص"
@@ -1862,7 +1857,7 @@ private fun LoanEditorFullScreen(
                         label = "ضمانت و توضیحات",
                         placeholder = { Text("توضیحات اختیاری") }
                     )
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(AppDimens.ItemGap))
                     AppCard(
                         modifier = Modifier.fillMaxWidth(),
                         containerColor = MatureColors.CardBackground,
@@ -1873,15 +1868,15 @@ private fun LoanEditorFullScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("یادآوری اقساط", fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
-                                Text("برای سررسیدهای این وام یادآوری فعال شود", fontSize = 11.sp, color = MatureColors.TextSecondary)
+                                Text("یادآوری اقساط", fontWeight = AppTextStyles.titleMd.fontWeight, color = MatureColors.TextPrimary)
+                                Text("برای سررسیدهای این وام یادآوری فعال شود", style = AppTextStyles.labelSmall, color = MatureColors.TextSecondary)
                             }
                             Switch(checked = reminderEnabled, onCheckedChange = { reminderEnabled = it })
                         }
                     }
                 }
             }
-            item { Spacer(Modifier.height(8.dp)) }
+            item { Spacer(Modifier.height(AppDimens.TightGap)) }
         }
     }
 }
@@ -2025,13 +2020,13 @@ private fun LoanEditorDialog(
             ) {
                 Text(
                     text = if (existingLoan == null) "ثبت وام جدید" else "ویرایش وام",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = AppTextStyles.titleLg,
+                    fontWeight = AppTextStyles.titleMd.fontWeight,
                     color = MatureColors.TextPrimary
                 )
                 Text(
                     text = "اطلاعات وام را وارد کنید",
-                    fontSize = 12.sp,
+                    style = AppTextStyles.labelMd,
                     color = MatureColors.TextSecondary
                 )
             }
@@ -2048,7 +2043,7 @@ private fun LoanEditorDialog(
                         top = 2.dp,
                         bottom = 4.dp
                     ),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
                 ) {
                     item { LoanEditorSectionTitle(title = "اطلاعات وام") }
 
@@ -2095,7 +2090,7 @@ private fun LoanEditorDialog(
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
                         ) {
                             AppTextField(
                                 value = interestText,
@@ -2197,11 +2192,11 @@ private fun LoanEditorDialog(
                                     tint = LoanGreen,
                                     modifier = Modifier.size(22.dp)
                                 )
-                                Spacer(Modifier.size(10.dp))
+                                Spacer(Modifier.size(AppDimens.ItemGap))
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
                                         text = "قسط ماهیانه محاسبه‌شده",
-                                        fontSize = 12.sp,
+                                        style = AppTextStyles.labelMd,
                                         color = MatureColors.TextSecondary
                                     )
                                     Spacer(Modifier.height(2.dp))
@@ -2211,8 +2206,8 @@ private fun LoanEditorDialog(
                                         } else {
                                             "—"
                                         },
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
+                                        style = AppTextStyles.bodyLg,
+                                        fontWeight = AppTextStyles.titleMd.fontWeight,
                                         color = MatureColors.TextPrimary
                                     )
                                 }
@@ -2376,8 +2371,8 @@ private fun LoanEditorSectionTitle(
         Spacer(Modifier.size(AppDimens.ItemGap))
         Text(
             text = title,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
+            style = AppTextStyles.titleSm,
+            fontWeight = AppTextStyles.titleMd.fontWeight,
             color = MatureColors.Primary
         )
     }
@@ -2386,9 +2381,9 @@ private fun LoanEditorSectionTitle(
 @Composable
 private fun SmallLoanInfo(modifier: Modifier,title: String,value: String) {
     AppCard(modifier = modifier, containerColor = MatureColors.Surface, contentPadding = PaddingValues(10.dp)) {
-        Text(text = title, fontSize = 10.sp, color = MatureColors.TextSecondary)
+        Text(text = title, style = AppTextStyles.labelSmall, color = MatureColors.TextSecondary)
         Spacer(Modifier.height(3.dp))
-        Text(text = value, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
+        Text(text = value, style = AppTextStyles.titleSm, fontWeight = AppTextStyles.titleMd.fontWeight, color = MatureColors.TextPrimary)
     }
 }
 
@@ -2498,41 +2493,3 @@ private fun calculateMonthlyInstallment(
 
     val monthlyRate =
         annualInterestPercent /
-            100.0 /
-            12.0
-
-    val power =
-        (1.0 + monthlyRate)
-            .pow(numberOfPayments)
-
-    val payment =
-        principal *
-            (monthlyRate * power) /
-            (power - 1.0)
-
-    return payment.toLong()
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
