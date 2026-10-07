@@ -186,9 +186,7 @@ fun LoanManagementScreen(
                     containerColor = MatureColors.Surface
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
+                        modifier = Modifier.fillMaxWidth()
                     ) {
 
                         Text(
@@ -534,23 +532,18 @@ private fun LoanSectionTitle(
     subtitle: String
 ) {
     Column(
-        modifier = Modifier.padding(
-            start = 3.dp,
-            end = 3.dp,
-            top = 3.dp
-        ),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        modifier = Modifier.padding(horizontal = AppDimens.ItemGap),
+        verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
     ) {
         Text(
             text = title,
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Bold,
+            style = AppTextStyles.titleMd,
             color = MatureColors.TextPrimary
         )
 
         Text(
             text = subtitle,
-            fontSize = 11.sp,
+            style = AppTextStyles.labelMd,
             color = MatureColors.TextSecondary
         )
     }
@@ -563,7 +556,7 @@ private fun EmptyLoanState(
     AppCard(
         modifier = Modifier.fillMaxWidth(),
         containerColor = MatureColors.CardBackground,
-        contentPadding = PaddingValues(30.dp)
+        contentPadding = PaddingValues(AppDimens.CardPadding)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -580,13 +573,12 @@ private fun EmptyLoanState(
             )
             Text(
                 text = "هنوز وامی ثبت نشده است",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
+                style = AppTextStyles.headlineSm,
                 color = MatureColors.TextPrimary
             )
             Text(
                 text = "برای شروع، اولین وام خود را ثبت کنید.",
-                fontSize = 13.sp,
+                style = AppTextStyles.bodyMd,
                 color = MatureColors.TextSecondary
             )
             AppPrimaryButton(
@@ -646,9 +638,7 @@ private fun LoanCard(
     ) {
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(18.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
 
             Row(
@@ -680,8 +670,7 @@ private fun LoanCard(
 
                     Text(
                         text = loan.title,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = AppTextStyles.titleMd,
                         color = MatureColors.TextPrimary
                     )
 
@@ -689,7 +678,7 @@ private fun LoanCard(
 
                     Text(
                         text = loan.type.label,
-                        fontSize = 12.sp,
+                        style = AppTextStyles.bodyMd,
                         color = MatureColors.TextPrimary.copy(alpha = 0.58f)
                     )
                 }
