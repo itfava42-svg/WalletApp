@@ -291,7 +291,7 @@ fun TransactionsScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(7.dp),
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.FilterChipGap),
             ) {
                 TransactionFilter.entries.forEach { filter ->
                     AppFilterChip(
