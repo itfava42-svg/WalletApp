@@ -464,13 +464,12 @@ private fun LoanHeader(
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "مدیریت وام‌ها",
-                            fontSize = 23.sp,
-                            fontWeight = FontWeight.Bold,
+                            style = AppTextStyles.headlineSm,
                             color = Color.White
                         )
                         Text(
                             text = "مدیریت و پیگیری تعهدات مالی",
-                            fontSize = 12.sp,
+                            style = AppTextStyles.bodyMd,
                             color = Color.White.copy(alpha = 0.76f)
                         )
                     }
@@ -496,26 +495,24 @@ private fun LoanHeader(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "تعداد وام",
-                                fontSize = 11.sp,
+                                style = AppTextStyles.labelMd,
                                 color = Color.White.copy(alpha = 0.68f)
                             )
                             Text(
                                 text = totalLoans.toString(),
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
+                                style = AppTextStyles.titleLg,
                                 color = Color.White
                             )
                         }
                         Column(modifier = Modifier.weight(2f)) {
                             Text(
                                 text = "مانده تعهدات",
-                                fontSize = 11.sp,
+                                style = AppTextStyles.labelMd,
                                 color = Color.White.copy(alpha = 0.68f)
                             )
                             Text(
                                 text = totalRemainingAmount.toPersianCurrency(),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
+                                style = AppTextStyles.titleMd,
                                 color = MatureColors.Secondary
                             )
                         }
@@ -753,11 +750,11 @@ private fun LoanCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             Text(
                 text = "مبلغ وام",
-                fontSize = 11.sp,
+                style = AppTextStyles.labelMd,
                 color = MatureColors.TextPrimary.copy(alpha = 0.55f)
             )
 
@@ -765,16 +762,15 @@ private fun LoanCard(
 
             Text(
                 text = loan.totalAmount.toPersianCurrency(),
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
+                style = AppTextStyles.numeralXl,
                 color = MatureColors.TextPrimary
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)
             ) {
 
                 LoanMiniSummary(
@@ -796,7 +792,7 @@ private fun LoanCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -805,21 +801,19 @@ private fun LoanCard(
 
                 Text(
                     text = "$paidCount از ${loan.totalInstallments} قسط",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    style = AppTextStyles.labelMd,
                     color = MatureColors.TextPrimary.copy(alpha = 0.68f),
                     modifier = Modifier.weight(1f)
                 )
 
                 Text(
                     text = "${(progress * 100).toInt()}٪",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = AppTextStyles.labelMd,
                     color = MatureColors.Primary
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AppDimens.ItemGap))
 
             LinearProgressIndicator(
                 progress = { progress },
@@ -831,7 +825,7 @@ private fun LoanCard(
                 trackColor = MatureColors.CardBackground
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(AppDimens.CardGap))
 
             AppOutlinedButton(
                 text = "مشاهده و مدیریت اقساط",
@@ -848,42 +842,42 @@ private fun LoanCard(
 
 @Composable
 private fun LoanInfoTile(modifier: Modifier,title: String,value: String,background: Color,icon: androidx.compose.ui.graphics.vector.ImageVector,iconTint: Color) {
-    AppCard(modifier = modifier, containerColor = background, contentPadding = PaddingValues(13.dp)) {
-        Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+    AppCard(modifier = modifier, containerColor = background, contentPadding = PaddingValues(AppDimens.CompactPadding)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)) {
             Icon(imageVector = icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(23.dp))
-            Text(text = title, fontSize = 11.sp, color = MatureColors.TextSecondary)
-            Text(text = value, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
+            Text(text = title, style = AppTextStyles.labelMd, color = MatureColors.TextSecondary)
+            Text(text = value, style = AppTextStyles.titleMd, color = MatureColors.TextPrimary)
         }
     }
 }
 
 @Composable
 private fun LoanSummaryTile(modifier: Modifier,title: String,value: String,icon: androidx.compose.ui.graphics.vector.ImageVector,background: Color,iconTint: Color) {
-    AppCard(modifier = modifier, containerColor = background, contentPadding = PaddingValues(14.dp)) {
-        Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+    AppCard(modifier = modifier, containerColor = background, contentPadding = PaddingValues(AppDimens.CompactPadding)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)) {
             Icon(imageVector = icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(23.dp))
-            Text(text = title, fontSize = 11.sp, color = MatureColors.TextSecondary)
-            Text(text = value, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MatureColors.TextPrimary)
+            Text(text = title, style = AppTextStyles.labelMd, color = MatureColors.TextSecondary)
+            Text(text = value, style = AppTextStyles.titleMd, color = MatureColors.TextPrimary)
         }
     }
 }
 
 @Composable
 private fun LoanMiniSummary(modifier: Modifier,title: String,value: String) {
-    AppCard(modifier = modifier, containerColor = MatureColors.Surface, contentPadding = PaddingValues(10.dp)) {
-        Text(text = title, fontSize = 10.sp, color = MatureColors.TextSecondary)
-        Spacer(Modifier.height(3.dp))
-        Text(text = value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MatureColors.Primary)
+    AppCard(modifier = modifier, containerColor = MatureColors.Surface, contentPadding = PaddingValues(AppDimens.CompactPadding)) {
+        Text(text = title, style = AppTextStyles.labelMd, color = MatureColors.TextSecondary)
+        Spacer(Modifier.height(AppDimens.ItemGap))
+        Text(text = value, style = AppTextStyles.titleMd, color = MatureColors.Primary)
     }
 }
 
 @Composable
 private fun LoanDetailChip(modifier: Modifier,title: String,value: String,icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    AppCard(modifier = modifier, containerColor = MatureColors.Surface, contentPadding = PaddingValues(9.dp)) {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    AppCard(modifier = modifier, containerColor = MatureColors.Surface, contentPadding = PaddingValues(AppDimens.CompactPadding)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AppDimens.ItemGap)) {
             Icon(imageVector = icon, contentDescription = null, tint = MatureColors.PrimaryLight, modifier = Modifier.size(17.dp))
-            Text(text = title, fontSize = 10.sp, color = MatureColors.TextSecondary)
-            Text(text = value, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MatureColors.TextPrimary)
+            Text(text = title, style = AppTextStyles.labelMd, color = MatureColors.TextSecondary)
+            Text(text = value, style = AppTextStyles.bodyMd, color = MatureColors.TextPrimary)
         }
     }
 }
