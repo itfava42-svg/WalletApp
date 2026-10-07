@@ -24,6 +24,7 @@ import com.example.walletapp.ui.components.DashboardBottomBar
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.components.appNavItems
+import com.example.walletapp.ui.theme.AppDimens
 import com.example.walletapp.ui.theme.OnSurface
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.Primary
