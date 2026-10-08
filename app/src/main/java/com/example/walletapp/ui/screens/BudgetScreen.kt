@@ -172,8 +172,8 @@ private fun BudgetCard(budget: Budget) {
                 progress = { percentage.coerceIn(0f, 1f) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
+                    .height(AppDimens.ProgressHeight)
+                    .clip(RoundedCornerShape(AppDimens.TightGap)),
                 color = progressColor,
                 trackColor = SurfaceContainer,
             )
@@ -246,7 +246,7 @@ private fun AddBudgetDialog(
                             selected = selectedPeriod == period,
                             onClick = { selectedPeriod = period },
                             label = { Text(period.label) },
-                            modifier = Modifier.padding(end = 6.dp),
+                            modifier = Modifier.padding(end = AppDimens.FilterChipGap),
                         )
                     }
                 }
