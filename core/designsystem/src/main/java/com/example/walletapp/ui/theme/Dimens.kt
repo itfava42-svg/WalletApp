@@ -24,6 +24,7 @@ object AppDimens {
     val BankCardWidth = 292.dp
     val TableRowVerticalPadding = 12.dp
     val StatusPillVerticalPadding = 8.dp
+    val ProgressHeight = 8.dp
 
     val IconBox = 40.dp
     val IconSmall = 18.dp
