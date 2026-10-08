@@ -117,6 +117,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-186 — ممیزی نهایی مرز ماژول‌ها و وابستگی‌ها"
+    },
+    {
+      "id": "CI-186",
+      "title": "ممیزی نهایی مرز ماژول‌ها و وابستگی‌ها",
+      "commit": "051eb87d6e1be9c8054d1f36df18d06733bc351b",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-187 — ممیزی نهایی آمادگی DesignSystem برای توسعه بعدی"
     }
   ]
 }
