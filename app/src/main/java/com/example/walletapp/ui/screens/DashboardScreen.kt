@@ -27,6 +27,7 @@ import com.example.walletapp.data.TransactionStore
 import com.example.walletapp.data.TransactionType
 import com.example.walletapp.ui.components.resolveTransactionIcon
 import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.ui.components.*
 import com.example.walletapp.ui.theme.OnSurfaceVariant
 import com.example.walletapp.ui.theme.Outline
@@ -402,7 +403,7 @@ val dashboardMonthCategories =
                 Text("سلام، مطلب 👋", fontWeight = FontWeight.Bold)
                 Text(
                     "مدیریت مالی شما",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = AppTextStyles.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
