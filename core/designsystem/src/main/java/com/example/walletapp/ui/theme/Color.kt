@@ -1,63 +1,50 @@
-package com.example.walletapp.ui.theme
+﻿package com.example.walletapp.ui.theme
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.walletapp.core.designsystem.R
 
-// Design tokens sourced from DESIGN.md — "Vibrant Finance Modernist"
+/**
+ * Application font family.
+ *
+ * Vazirmatn is used consistently across the application so Persian text
+ * remains readable and visually consistent, including SMS completion UI.
+ */
+val AppFontFamily = FontFamily(
+    Font(R.font.vazirmatn_regular, FontWeight.Normal),
+    Font(R.font.vazirmatn_bold, FontWeight.Bold),
+)
 
-val Surface = Color(0xFFF5F6FA)
-val SurfaceDim = Color(0xFFE2E8F0)
-val SurfaceBright = Color(0xFFFFFFFF)
-val SurfaceContainerLowest = Color(0xFFFFFFFF)
-val SurfaceContainerLow = Color(0xFFF8F9FC)
-val SurfaceContainer = Color(0xFFF8F9FC)
-val SurfaceContainerHigh = Color(0xFFF8F9FC)
-val SurfaceContainerHighest = Color(0xFFE2E8F0)
+// Custom app-specific text styles matching DESIGN.md tokens.
+object AppTextStyles {
+    val displayLg = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.Bold, fontSize = 32.sp, lineHeight = 48.sp)
+    val headlineMd = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 36.sp)
+    val headlineSm = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, lineHeight = 30.sp)
+    val titleLg = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold, fontSize = 22.sp, lineHeight = 30.sp)
+    val titleMd = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, lineHeight = 24.sp)
+    val titleSm = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 22.sp)
+    val bodyLg = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 24.sp)
+    val bodyMd = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 22.sp)
+    val labelMd = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.Medium, fontSize = 12.sp, lineHeight = 18.sp)
+    val labelSmall = labelMd.copy(fontSize = 11.sp, lineHeight = 16.sp)
+    val numeralXl = TextStyle(fontFamily = AppFontFamily, fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 34.sp)
+}
 
-val OnSurface = Color(0xFF0F172A)
-val OnSurfaceVariant = Color(0xFF64748B)
-val InverseSurface = Color(0xFF283044)
-val InverseOnSurface = Color(0xFFEEF0FF)
-
-val Outline = Color(0xFF94A3B8)
-val OutlineVariant = Color(0xFFE2E8F0)
-
-val SurfaceTint = Color(0xFF2563EB)
-val Primary = Color(0xFF2563EB)
-val OnPrimary = Color(0xFFFFFFFF)
-val PrimaryContainer = Color(0xFFEFF6FF)
-val OnPrimaryContainer = Color(0xFF1E3A8A)
-val InversePrimary = Color(0xFF3B82F6)
-
-val Secondary = Color(0xFFF97316)
-val OnSecondary = Color(0xFFFFFFFF)
-val SecondaryContainer = Color(0xFFFED7AA)
-val OnSecondaryContainer = Color(0xFF9A3412)
-
-val Tertiary = Color(0xFF8B5CF6)
-val OnTertiary = Color(0xFFFFFFFF)
-val TertiaryContainer = Color(0xFFEDE9FE)
-val OnTertiaryContainer = Color(0xFF6D28D9)
-
-val AppError = Color(0xFFBA1A1A)
-val OnError = Color(0xFFFFFFFF)
-val ErrorContainer = Color(0xFFFFDAD6)
-val OnErrorContainer = Color(0xFF93000A)
-
-val PrimaryFixed = Color(0xFF57FAE9)
-val PrimaryFixedDim = Color(0xFF2ADDCD)
-val OnPrimaryFixed = Color(0xFF00201D)
-val OnPrimaryFixedVariant = Color(0xFF005049)
-
-val SecondaryFixed = Color(0xFFFFDCC4)
-val SecondaryFixedDim = Color(0xFFFFB77F)
-val OnSecondaryFixed = Color(0xFF2F1500)
-val OnSecondaryFixedVariant = Color(0xFF6F3900)
-
-val TertiaryFixed = Color(0xFFE9DDFF)
-val TertiaryFixedDim = Color(0xFFD1BCFF)
-val OnTertiaryFixed = Color(0xFF23005B)
-val OnTertiaryFixedVariant = Color(0xFF5700C9)
-
-val Background = Color(0xFFF5F6FA)
-val OnBackground = Color(0xFF0F172A)
-val SurfaceVariant = Color(0xFFF8F9FC)
+val AppTypography = Typography(
+    displayLarge = AppTextStyles.displayLg,
+    headlineMedium = AppTextStyles.headlineMd,
+    headlineSmall = AppTextStyles.headlineSm,
+    titleLarge = AppTextStyles.titleLg,
+    titleMedium = AppTextStyles.titleMd,
+    titleSmall = AppTextStyles.titleSm,
+    bodyLarge = AppTextStyles.bodyLg,
+    bodyMedium = AppTextStyles.bodyMd,
+    bodySmall = AppTextStyles.labelMd.copy(fontSize = 13.sp, lineHeight = 20.sp),
+    labelLarge = AppTextStyles.bodyMd.copy(fontWeight = FontWeight.Medium),
+    labelMedium = AppTextStyles.labelMd,
+    labelSmall = AppTextStyles.labelSmall,
+)
