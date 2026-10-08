@@ -140,7 +140,7 @@ fun DashboardPeriodSelector(
     ) {
         periods.forEach { period ->
 
-            FilterChip(
+            AppFilterChip(
                 selected = selectedPeriod == period,
                 onClick = {
                     onPeriodSelected(period)
@@ -309,7 +309,7 @@ fun DashboardCategorySummaryCard(
     AppCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = AppDimens.PagePadding, vertical = AppDimens.CardGap),
+            .padding(vertical = AppDimens.CardGap),
     ) {
             Text(
                 text = "هزینه‌ها بر اساس دسته‌بندی",
@@ -352,7 +352,7 @@ fun DashboardCategorySummaryCard(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = "%",
+                        text = "${percentage.toInt()}٪",
                         style = AppTextStyles.labelMd,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
