@@ -28,11 +28,11 @@ import androidx.compose.material3.Scaffold
 import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppIconBadge
 import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 
 private data class OperationItem(
     val title: String,
@@ -73,7 +73,7 @@ fun OperationsScreen(
                 title = {
                     Text(
                         "عملیات",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = AppTextStyles.titleLg,
                     )
                 },
                 navigationIcon = {
@@ -97,7 +97,7 @@ fun OperationsScreen(
 
             Text(
                 text = "عملیات مالی",
-                style = MaterialTheme.typography.headlineSmall,
+                style = AppTextStyles.headlineSm,
                 color = MaterialTheme.colorScheme.onSurface,
             )
 
@@ -105,7 +105,7 @@ fun OperationsScreen(
 
             Text(
                 text = "مدیریت عملیات و خدمات مالی برنامه",
-                style = MaterialTheme.typography.bodyMedium,
+                style = AppTextStyles.bodyMd,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
@@ -146,7 +146,7 @@ fun OperationsScreen(
                             Column {
                                 Text(
                                     text = operation.title,
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = AppTextStyles.titleMd,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
 
@@ -154,7 +154,7 @@ fun OperationsScreen(
 
                                 Text(
                                     text = operation.description,
-                                    style = MaterialTheme.typography.bodySmall,
+                                    style = AppTextStyles.bodySm,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
