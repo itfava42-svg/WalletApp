@@ -49,10 +49,34 @@
     {
       "id": "CI-177",
       "title": "تکمیل وابستگی‌های صریح DesignSystem",
+      "commit": "2f2d1f6b7a5918f185813cb2baa9ee39694e304e",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-178 — ممیزی نهایی UI مشترک"
+    },
+    {
+      "id": "CI-178",
+      "title": "ممیزی نهایی UI مشترک",
+      "commit": "fbc4bcbd5cab4ca9cf1f4dcd193387fd9559c571",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-179 — یکپارچه‌سازی کامپوننت‌های DesignSystem در مصرف‌کننده‌ها"
+    },
+    {
+      "id": "CI-179",
+      "title": "یکپارچه‌سازی کامپوننت‌های DesignSystem در مصرف‌کننده‌ها",
+      "commit": "fbc4bcbd5cab4ca9cf1f4dcd193387fd9559c571",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-180 — ممیزی نهایی مصرف‌کننده‌های DesignSystem"
+    },
+    {
+      "id": "CI-180",
+      "title": "ممیزی نهایی مصرف‌کننده‌های DesignSystem",
       "commit": null,
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "active",
-      "next": "CI-178 — ممیزی نهایی UI مشترک"
+      "next": "CI-181 — استانداردسازی نهایی صفحات باقی‌مانده"
     }
   ]
 }
