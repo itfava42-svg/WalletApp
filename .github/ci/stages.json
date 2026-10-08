@@ -101,6 +101,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-184 — ممیزی یکپارچگی نهایی داشبورد"
+    },
+    {
+      "id": "CI-184",
+      "title": "ممیزی یکپارچگی نهایی داشبورد",
+      "commit": "b3c98c937a5634e3d648c8ff0c1ddebc3d37cc60",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-185 — ممیزی نهایی DesignSystem در صفحات اصلی"
     }
   ]
 }
