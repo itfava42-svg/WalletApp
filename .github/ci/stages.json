@@ -85,6 +85,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-182 — ممیزی نهایی DesignSystem و آماده‌سازی مرحله بعد"
+    },
+    {
+      "id": "CI-182",
+      "title": "ممیزی نهایی DesignSystem و آماده‌سازی مرحله بعد",
+      "commit": "6b3c0dc12dce5f6a33ac15727b00c2eb780f7ec6",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-183 — یکپارچه‌سازی Bank Card Carousel در داشبورد"
     }
   ]
 }
