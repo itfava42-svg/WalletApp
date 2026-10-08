@@ -154,7 +154,7 @@ fun OperationsScreen(
 
                                 Text(
                                     text = operation.description,
-                                    style = AppTextStyles.bodySm,
+                                    style = AppTextStyles.bodyMd,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
