@@ -1,26 +1,178 @@
 {
   "version": 1,
-  "policy": {"green":"NEXT","red":"STOP_AND_FIX","unknown":"STOP"},
+  "policy": {
+    "green": "NEXT",
+    "red": "STOP_AND_FIX",
+    "unknown": "STOP"
+  },
   "stages": [
-    {"id":"CI-172","title":"ایجاد ماژول DesignSystem پایه","commit":"2f1ced1490e8fb8f458d43c98b65e75c65f26c37","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-173 — انتقال امن کامپوننت‌های اشتراکی به DesignSystem"},
-    {"id":"CI-173","title":"انتقال امن کامپوننت‌های اشتراکی به DesignSystem","commit":"a7c85c2d113bf777eeeff64212da01ef582d4df6","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-174 — انتقال Typography و Theme با حفظ منابع فونت"},
-    {"id":"CI-174","title":"انتقال Typography و Theme با حفظ منابع فونت","commit":"3ab2304735253a29ae3196ba1297811c7b677f4d","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-175 — انتقال کامپوننت‌های UI اشتراکی با حفظ مرز ماژول"},
-    {"id":"CI-175","title":"انتقال کامپوننت‌های UI اشتراکی با حفظ مرز ماژول","commit":"6c203da2caa779c5d88dd00c77bcca44d08bbc65","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-176 — ممیزی نهایی مرز DesignSystem و وابستگی‌های باقی‌مانده"},
-    {"id":"CI-176","title":"ممیزی نهایی مرز DesignSystem و وابستگی‌های باقی‌مانده","commit":"cd81eb3ed45d57572d4a8a8454212b3928717104","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-177 — تکمیل وابستگی‌های صریح DesignSystem"},
-    {"id":"CI-177","title":"تکمیل وابستگی‌های صریح DesignSystem","commit":"2f2d1f6b7a5918f185813cb2baa9ee39694e304e","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-178 — ممیزی نهایی UI مشترک"},
-    {"id":"CI-178","title":"ممیزی نهایی UI مشترک","commit":"fbc4bcbd5cab4ca9cf1f4dcd193387fd9559c571","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-179 — یکپارچه‌سازی کامپوننت‌های DesignSystem در مصرف‌کننده‌ها"},
-    {"id":"CI-179","title":"یکپارچه‌سازی کامپوننت‌های DesignSystem در مصرف‌کننده‌ها","commit":"fbc4bcbd5cab4ca9cf1f4dcd193387fd9559c571","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-180 — ممیزی نهایی مصرف‌کننده‌های DesignSystem"},
-    {"id":"CI-180","title":"ممیزی نهایی مصرف‌کننده‌های DesignSystem","commit":"927fa9b4fff5188db54282788202c2e70a46e590","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-181 — استانداردسازی نهایی صفحات باقی‌مانده"},
-    {"id":"CI-181","title":"استانداردسازی نهایی صفحات باقی‌مانده","commit":"b91232aceb220e9e61c7e1a6cce1150b863a9f63","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-182 — ممیزی نهایی DesignSystem و آماده‌سازی مرحله بعد"},
-    {"id":"CI-182","title":"ممیزی نهایی DesignSystem و آماده‌سازی مرحله بعد","commit":"4ec283706d2429befc8db44951c033430f253648","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-183 — یکپارچه‌سازی Bank Card Carousel در داشبورد"},
-    {"id":"CI-183","title":"یکپارچه‌سازی Bank Card Carousel در داشبورد","commit":"4ec283706d2429befc8db44951c033430f253648","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-184 — ممیزی یکپارچگی نهایی داشبورد"},
-    {"id":"CI-184","title":"ممیزی یکپارچگی نهایی داشبورد","commit":"b3c98c937a5634e3d648c8ff0c1ddebc3d37cc60","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-185 — ممیزی نهایی DesignSystem در صفحات اصلی"},
-    {"id":"CI-185","title":"ممیزی نهایی DesignSystem در صفحات اصلی","commit":"e21b890a1e7964fa43770d9c1446b8f1d978580e","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-186 — ممیزی نهایی مرز ماژول‌ها و وابستگی‌ها"},
-    {"id":"CI-186","title":"ممیزی نهایی مرز ماژول‌ها و وابستگی‌ها","commit":"051eb87d6e1be9c8054d1f36df18d06733bc351b","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-187 — ممیزی نهایی آمادگی DesignSystem برای توسعه بعدی"},
-    {"id":"CI-187","title":"ممیزی نهایی آمادگی DesignSystem برای توسعه بعدی","commit":"bfec57a50828ff4c4f59ffb27c98c280f391fb1b","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-188 — ممیزی و پاک‌سازی باقی‌مانده‌های Legacy UI"},
-    {"id":"CI-188","title":"ممیزی و پاک‌سازی باقی‌مانده‌های Legacy UI","commit":"cf7b556135308c40c7f157e147bd19a22800c1d4","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-189 — ممیزی نهایی یکپارچگی DesignSystem و UI مصرف‌کننده‌ها"},
-    {"id":"CI-189","title":"ممیزی نهایی یکپارچگی DesignSystem و UI مصرف‌کننده‌ها","commit":"c0d96a5dafa27d9201f34353816597788e6a2ab9","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-190 — ممیزی نهایی API/کامپوننت‌های مشترک"},
-    {"id":"CI-190","title":"ممیزی نهایی API/کامپوننت‌های مشترک","commit":"22c31e6b2fbaf4091a74cc6a73f6fa1461c1c8f6","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-191 — بررسی نهایی یکپارچگی DesignSystem پس از ممیزی API"},
-    {"id":"CI-191","title":"بررسی نهایی یکپارچگی DesignSystem پس از ممیزی API","commit":"f6ad08073af98abbedb7cb9745b8ee6c9896ca62","branch":"ci/ci-46-navigation-entry-audit","status":"done","next":"CI-192 — ممیزی نهایی آماده‌سازی Build/Release"}
+    {
+      "id": "CI-172",
+      "title": "ایجاد ماژول DesignSystem پایه",
+      "commit": "2f1ced1490e8fb8f458d43c98b65e75c65f26c37",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-173 — انتقال امن کامپوننت‌های اشتراکی به DesignSystem"
+    },
+    {
+      "id": "CI-173",
+      "title": "انتقال امن کامپوننت‌های اشتراکی به DesignSystem",
+      "commit": "a7c85c2d113bf777eeeff64212da01ef582d4df6",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-174 — انتقال Typography و Theme با حفظ منابع فونت"
+    },
+    {
+      "id": "CI-174",
+      "title": "انتقال Typography و Theme با حفظ منابع فونت",
+      "commit": "3ab2304735253a29ae3196ba1297811c7b677f4d",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-175 — انتقال کامپوننت‌های UI اشتراکی با حفظ مرز ماژول"
+    },
+    {
+      "id": "CI-175",
+      "title": "انتقال کامپوننت‌های UI اشتراکی با حفظ مرز ماژول",
+      "commit": "6c203da2caa779c5d88dd00c77bcca44d08bbc65",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-176 — ممیزی نهایی مرز DesignSystem و وابستگی‌های باقی‌مانده"
+    },
+    {
+      "id": "CI-176",
+      "title": "ممیزی نهایی مرز DesignSystem و وابستگی‌های باقی‌مانده",
+      "commit": "cd81eb3ed45d57572d4a8a8454212b3928717104",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-177 — تکمیل وابستگی‌های صریح DesignSystem"
+    },
+    {
+      "id": "CI-177",
+      "title": "تکمیل وابستگی‌های صریح DesignSystem",
+      "commit": "2f2d1f6b7a5918f185813cb2baa9ee39694e304e",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-178 — ممیزی نهایی UI مشترک"
+    },
+    {
+      "id": "CI-178",
+      "title": "ممیزی نهایی UI مشترک",
+      "commit": "fbc4bcbd5cab4ca9cf1f4dcd193387fd9559c571",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-179 — یکپارچه‌سازی کامپوننت‌های DesignSystem در مصرف‌کننده‌ها"
+    },
+    {
+      "id": "CI-179",
+      "title": "یکپارچه‌سازی کامپوننت‌های DesignSystem در مصرف‌کننده‌ها",
+      "commit": "fbc4bcbd5cab4ca9cf1f4dcd193387fd9559c571",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-180 — ممیزی نهایی مصرف‌کننده‌های DesignSystem"
+    },
+    {
+      "id": "CI-180",
+      "title": "ممیزی نهایی مصرف‌کننده‌های DesignSystem",
+      "commit": "927fa9b4fff5188db54282788202c2e70a46e590",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-181 — استانداردسازی نهایی صفحات باقی‌مانده"
+    },
+    {
+      "id": "CI-181",
+      "title": "استانداردسازی نهایی صفحات باقی‌مانده",
+      "commit": "b91232aceb220e9e61c7e1a6cce1150b863a9f63",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-182 — ممیزی نهایی DesignSystem و آماده‌سازی مرحله بعد"
+    },
+    {
+      "id": "CI-182",
+      "title": "ممیزی نهایی DesignSystem و آماده‌سازی مرحله بعد",
+      "commit": "4ec283706d2429befc8db44951c033430f253648",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-183 — یکپارچه‌سازی Bank Card Carousel در داشبورد"
+    },
+    {
+      "id": "CI-183",
+      "title": "یکپارچه‌سازی Bank Card Carousel در داشبورد",
+      "commit": "4ec283706d2429befc8db44951c033430f253648",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-184 — ممیزی یکپارچگی نهایی داشبورد"
+    },
+    {
+      "id": "CI-184",
+      "title": "ممیزی یکپارچگی نهایی داشبورد",
+      "commit": "b3c98c937a5634e3d648c8ff0c1ddebc3d37cc60",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-185 — ممیزی نهایی DesignSystem در صفحات اصلی"
+    },
+    {
+      "id": "CI-185",
+      "title": "ممیزی نهایی DesignSystem در صفحات اصلی",
+      "commit": "e21b890a1e7964fa43770d9c1446b8f1d978580e",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-186 — ممیزی نهایی مرز ماژول‌ها و وابستگی‌ها"
+    },
+    {
+      "id": "CI-186",
+      "title": "ممیزی نهایی مرز ماژول‌ها و وابستگی‌ها",
+      "commit": "051eb87d6e1be9c8054d1f36df18d06733bc351b",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-187 — ممیزی نهایی آمادگی DesignSystem برای توسعه بعدی"
+    },
+    {
+      "id": "CI-187",
+      "title": "ممیزی نهایی آمادگی DesignSystem برای توسعه بعدی",
+      "commit": "bfec57a50828ff4c4f59ffb27c98c280f391fb1b",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-188 — ممیزی و پاک‌سازی باقی‌مانده‌های Legacy UI"
+    },
+    {
+      "id": "CI-188",
+      "title": "ممیزی و پاک‌سازی باقی‌مانده‌های Legacy UI",
+      "commit": "cf7b556135308c40c7f157e147bd19a22800c1d4",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-189 — ممیزی نهایی یکپارچگی DesignSystem و UI مصرف‌کننده‌ها"
+    },
+    {
+      "id": "CI-189",
+      "title": "ممیزی نهایی یکپارچگی DesignSystem و UI مصرف‌کننده‌ها",
+      "commit": "c0d96a5dafa27d9201f34353816597788e6a2ab9",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-190 — ممیزی نهایی API/کامپوننت‌های مشترک"
+    },
+    {
+      "id": "CI-190",
+      "title": "ممیزی نهایی API/کامپوننت‌های مشترک",
+      "commit": "22c31e6b2fbaf4091a74cc6a73f6fa1461c1c8f6",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-191 — بررسی نهایی یکپارچگی DesignSystem پس از ممیزی API"
+    },
+    {
+      "id": "CI-191",
+      "title": "بررسی نهایی یکپارچگی DesignSystem پس از ممیزی API",
+      "commit": "f6ad08073af98abbedb7cb9745b8ee6c9896ca62",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-192 — ممیزی نهایی آماده‌سازی Build/Release"
+    },
+    {
+      "id": "CI-192",
+      "title": "ممیزی نهایی آماده‌سازی Build/Release",
+      "commit": "660597f85b414488bde5e504b00dcc4cb6b6fa99",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-193 — ممیزی امنیتی Manifest و مجوزهای حساس پیش از انتشار"
+    }
   ]
 }
