@@ -73,10 +73,18 @@
     {
       "id": "CI-180",
       "title": "ممیزی نهایی مصرف‌کننده‌های DesignSystem",
-      "commit": null,
+      "commit": "927fa9b4fff5188db54282788202c2e70a46e590",
       "branch": "ci/ci-46-navigation-entry-audit",
-      "status": "active",
+      "status": "done",
       "next": "CI-181 — استانداردسازی نهایی صفحات باقی‌مانده"
+    },
+    {
+      "id": "CI-181",
+      "title": "استانداردسازی نهایی صفحات باقی‌مانده",
+      "commit": "b91232aceb220e9e61c7e1a6cce1150b863a9f63",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-182 — ممیزی نهایی DesignSystem و آماده‌سازی مرحله بعد"
     }
   ]
 }
