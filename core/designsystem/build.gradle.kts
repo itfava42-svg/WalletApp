@@ -1,3 +1,4 @@
+// CI-186: module-boundary audit completed; this module must remain independent from :app.
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
