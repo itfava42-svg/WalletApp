@@ -125,6 +125,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-187 — ممیزی نهایی آمادگی DesignSystem برای توسعه بعدی"
+    },
+    {
+      "id": "CI-187",
+      "title": "ممیزی نهایی آمادگی DesignSystem برای توسعه بعدی",
+      "commit": "bfec57a50828ff4c4f59ffb27c98c280f391fb1b",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-188 — ممیزی و پاک‌سازی باقی‌مانده‌های Legacy UI"
     }
   ]
 }
