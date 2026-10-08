@@ -109,6 +109,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-185 — ممیزی نهایی DesignSystem در صفحات اصلی"
+    },
+    {
+      "id": "CI-185",
+      "title": "ممیزی نهایی DesignSystem در صفحات اصلی",
+      "commit": "e21b890a1e7964fa43770d9c1446b8f1d978580e",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-186 — ممیزی نهایی مرز ماژول‌ها و وابستگی‌ها"
     }
   ]
 }
