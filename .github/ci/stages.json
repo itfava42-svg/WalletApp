@@ -173,6 +173,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-193 — ممیزی امنیتی Manifest و مجوزهای حساس پیش از انتشار"
+    },
+    {
+      "id": "CI-193",
+      "title": "ممیزی امنیتی Manifest و مجوزهای حساس پیش از انتشار",
+      "commit": "c843caf302f6ca4236a92d94e38c19f7c07a6f6c",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-194 — ممیزی ReminderScheduler و مسیرهای fallback برای Exact Alarm"
     }
   ]
 }
