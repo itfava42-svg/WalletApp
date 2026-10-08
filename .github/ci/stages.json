@@ -141,6 +141,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-189 — ممیزی نهایی یکپارچگی DesignSystem و UI مصرف‌کننده‌ها"
+    },
+    {
+      "id": "CI-189",
+      "title": "ممیزی نهایی یکپارچگی DesignSystem و UI مصرف‌کننده‌ها",
+      "commit": "c0d96a5dafa27d9201f34353816597788e6a2ab9",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-190 — ممیزی نهایی API/کامپوننت‌های مشترک"
     }
   ]
 }
