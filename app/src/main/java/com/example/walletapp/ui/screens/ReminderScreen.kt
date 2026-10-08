@@ -59,6 +59,7 @@ import com.example.walletapp.ui.components.AppCard
 import com.example.walletapp.ui.components.AppIconButton
 import com.example.walletapp.ui.components.AppEmptyState
 import com.example.walletapp.ui.theme.AppDimens
+import com.example.walletapp.ui.theme.AppTextStyles
 import com.example.walletapp.loan.MatureColors
 import com.example.walletapp.data.ReminderKind
 import com.example.walletapp.data.ReminderStore
@@ -240,14 +241,14 @@ fun ReminderScreen(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "یادآوری‌ها",
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = AppTextStyles.headlineSm,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(3.dp))
                     Text(
                         text = "مدیریت اقساط، پرداخت‌ها و رویدادهای مهم",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = AppTextStyles.labelMd,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -321,7 +322,7 @@ fun ReminderScreen(
                 Text(
                     text = "دسته‌بندی یادآوری‌ها",
                     style =
-                        MaterialTheme.typography.titleMedium,
+                        AppTextStyles.titleMd,
                     fontWeight =
                         FontWeight.Bold,
                     modifier =
@@ -472,7 +473,7 @@ private fun ReminderHeader(
                             text =
                                 "مرکز یادآوری مالی",
                             style =
-                                MaterialTheme.typography.titleLarge,
+                                AppTextStyles.titleLg,
                             fontWeight =
                                 FontWeight.Bold
                         )
@@ -481,7 +482,7 @@ private fun ReminderHeader(
                             text =
                                 "اقساط، پرداخت‌ها و رویدادهای مهم",
                             style =
-                                MaterialTheme.typography.bodySmall
+                                AppTextStyles.labelMd
                         )
                     }
                 }
@@ -591,7 +592,7 @@ private fun ReminderHeader(
                                     text =
                                         "مبلغ قابل پرداخت تا ۳ روز آینده",
                                     style =
-                                        MaterialTheme.typography.labelMedium
+                                        AppTextStyles.labelMd
                                 )
 
                                 Text(
@@ -685,7 +686,7 @@ private fun NextReminderCard(
                             "نزدیک‌ترین یادآوری"
                         },
                     style =
-                        MaterialTheme.typography.titleMedium,
+                        AppTextStyles.titleMd,
                     fontWeight =
                         FontWeight.Bold
                 )
@@ -702,7 +703,7 @@ private fun NextReminderCard(
                 text =
                     reminder.title,
                 style =
-                    MaterialTheme.typography.titleLarge,
+                    AppTextStyles.titleLg,
                 fontWeight =
                     FontWeight.Bold
             )
@@ -719,7 +720,7 @@ private fun NextReminderCard(
                         now
                     ),
                 style =
-                    MaterialTheme.typography.bodyLarge,
+                    AppTextStyles.bodyLg,
                 fontWeight =
                     FontWeight.SemiBold
             )
@@ -942,7 +943,7 @@ private fun ReminderItemCard(
                                     reminder.amount
                                 ),
                             style =
-                                MaterialTheme.typography.bodyMedium
+                                AppTextStyles.bodyMd
                         )
                     }
 
@@ -959,7 +960,7 @@ private fun ReminderItemCard(
                             text =
                                 reminder.description,
                             style =
-                                MaterialTheme.typography.bodySmall,
+                                AppTextStyles.labelMd,
                             maxLines = 2,
                             overflow =
                                 TextOverflow.Ellipsis
@@ -1045,7 +1046,7 @@ private fun ReminderItemCard(
                             reminder.triggerAtMillis
                         ),
                     style =
-                        MaterialTheme.typography.labelMedium
+                        AppTextStyles.labelMd
                 )
             }
         }
