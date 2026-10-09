@@ -130,16 +130,14 @@ class ReminderReceiver : BroadcastReceiver() {
             dueAtMillis == null
         ) {
             /*
-             * Safety fallback for an incomplete generated reminder.
+             * An auto-generated installment reminder without its source
+             * identity cannot be verified against the loan/payment state.
+             * Deactivate it silently rather than risk a false notification.
              */
-            ReminderNotifier.notify(
-                context,
-                reminder
-            )
-
             ReminderStore.update(
                 reminder.copy(
-                    isActive = false
+                    isActive = false,
+                    isCompleted = true
                 )
             )
 
