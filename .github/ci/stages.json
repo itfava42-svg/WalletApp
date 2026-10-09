@@ -180,7 +180,15 @@
       "commit": "c843caf302f6ca4236a92d94e38c19f7c07a6f6c",
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
-      "next": "CI-194 — ممیزی ReminderScheduler و مسیرهای fallback برای Exact Alarm"
+      "next": "CI-194 — بازیابی و زمان‌بندی امن یادآورها پس از مجوز Exact Alarm"
+    },
+    {
+      "id": "CI-194",
+      "title": "بازیابی و زمان‌بندی امن یادآورها پس از مجوز Exact Alarm",
+      "commit": "cc032ab9ba94ead34a82d8246602ad4027003817",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-195 — ممیزی بازیابی یادآورها، لغو مجوز و سازگاری Manifest"
     }
   ]
 }
