@@ -40,6 +40,8 @@ import com.example.walletapp.ui.screens.AddReminderScreen
 import com.example.walletapp.ui.screens.LoanManagementScreen
 import com.example.walletapp.ui.screens.CheckManagementScreen
 import com.example.walletapp.data.Reminder
+import com.example.walletapp.data.ReminderStore
+import com.example.walletapp.reminders.ReminderScheduler
 import com.example.walletapp.ui.screens.ToolsScreen
 import com.example.walletapp.ui.screens.ReportsScreen
 
@@ -91,6 +93,24 @@ data object Budget : AppScreen()
 }
 
 class MainActivity : ComponentActivity() {
+
+    /**
+     * CI-195 — Restore active reminder alarms when the app returns to foreground.
+     *
+     * Android does not broadcast when exact-alarm access is revoked, and that
+     * revocation cancels existing exact alarms. Re-running the scheduler on
+     * resume restores inexact alarms when access is unavailable, or exact
+     * alarms when the user has granted access again.
+     */
+    override fun onResume() {
+        super.onResume()
+        ReminderStore.attachContext(applicationContext)
+        ReminderStore.reminders
+            .filter { it.isActive && !it.isCompleted }
+            .forEach { reminder ->
+                ReminderScheduler.schedule(applicationContext, reminder)
+            }
+    }
 
     companion object {
         const val EXTRA_SMS_TRANSACTION_ID = "sms_transaction_id"
