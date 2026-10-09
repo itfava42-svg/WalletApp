@@ -189,6 +189,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-195 — ممیزی بازیابی یادآورها، لغو مجوز و سازگاری Manifest"
+    },
+    {
+      "id": "CI-195",
+      "title": "بازیابی آلارم‌های یادآور هنگام بازگشت برنامه به پیش‌زمینه",
+      "commit": "1c45c0cf5324f95fee0e26170f35f85ffe8f9b17",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-196 — ممیزی نهایی چرخهٔ عمر یادآورها و سناریوهای اقساط"
     }
   ]
 }
