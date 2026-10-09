@@ -161,9 +161,9 @@ class ReminderReceiver : BroadcastReceiver() {
             return
         }
 
-        val alreadyPaid = loan.payments.any {
-            it.installmentNumber == installmentNumber
-        }
+        // Include both recorded payments and historical paid installments.
+        // A stale alarm must never notify for an installment already paid.
+        val alreadyPaid = loan.isInstallmentPaid(installmentNumber)
 
         if (alreadyPaid) {
             ReminderStore.update(
