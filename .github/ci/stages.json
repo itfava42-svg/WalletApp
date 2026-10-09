@@ -197,6 +197,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-196 — ممیزی نهایی چرخهٔ عمر یادآورها و سناریوهای اقساط"
+    },
+    {
+      "id": "CI-196",
+      "title": "ممیزی نهایی چرخهٔ عمر یادآورها و سناریوهای اقساط",
+      "commit": "a62994fa1003810a80395f7af9fab8aafe93cf23",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-197 — ممیزی همگام‌سازی یادآور با تغییر وضعیت و پرداخت اقساط"
     }
   ]
 }
