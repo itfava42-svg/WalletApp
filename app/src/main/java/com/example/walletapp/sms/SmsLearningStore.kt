@@ -369,6 +369,10 @@ object SmsLearningStore {
             .replace(Regex("\\s+"), " ")
     }
 
+    /** Returns a reusable learning pattern without retaining message numbers or identifiers. */
+    internal fun normalizePatternForStorage(value: String): String =
+        normalizeLearningPattern(value)
+
     private fun normalizeLearningPattern(value: String): String {
         return value
             .trim()
