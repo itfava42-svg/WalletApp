@@ -29,16 +29,11 @@ object SmsTransactionMetadataStore {
     )
 
     private var appContext: Context? = null
-    private val metadataMap =
-        mutableMapOf<String, Metadata>()
-
+    private val metadataMap = mutableMapOf<String, Metadata>()
     private var loaded = false
 
     fun attachContext(context: Context) {
-        if (appContext == null) {
-            appContext = context.applicationContext
-        }
-
+        if (appContext == null) appContext = context.applicationContext
         if (!loaded) {
             loaded = true
             load()
@@ -56,180 +51,90 @@ object SmsTransactionMetadataStore {
         cardLast4: String? = null,
         balance: Long? = null,
     ) {
-        val metadata =
-            Metadata(
-                transactionId = transactionId,
-                sender = sender,
-                rawBody = SmsLearningStore.normalizePatternForStorage(rawBody),
-                smsDate = smsDate,
-                originalBank = originalBank,
-                accountNumber = SmsLearningStore.lastFourDigitsForStorage(accountNumber),
-                cardNumber = SmsLearningStore.lastFourDigitsForStorage(cardLast4 ?: cardNumber),
-                cardLast4 = SmsLearningStore.lastFourDigitsForStorage(cardLast4 ?: cardNumber),
-                balance = balance,
-            )
-
-        metadataMap[transactionId] = metadata
+        val safeCard = SmsLearningStore.lastFourDigitsForStorage(cardLast4 ?: cardNumber)
+        metadataMap[transactionId] = Metadata(
+            transactionId = transactionId,
+            sender = sender,
+            rawBody = SmsLearningStore.normalizePatternForStorage(rawBody),
+            smsDate = smsDate,
+            originalBank = originalBank,
+            accountNumber = SmsLearningStore.lastFourDigitsForStorage(accountNumber),
+            cardNumber = safeCard,
+            cardLast4 = safeCard,
+            balance = balance,
+        )
         persist()
     }
 
-    fun get(
-        transactionId: String,
-    ): Metadata? {
-        return metadataMap[transactionId]
-    }
+    fun get(transactionId: String): Metadata? = metadataMap[transactionId]
 
-    fun remove(
-        transactionId: String,
-    ) {
+    fun remove(transactionId: String) {
         metadataMap.remove(transactionId)
         persist()
     }
 
-    fun getAll(): List<Metadata> {
-        return metadataMap.values.toList()
-    }
+    fun getAll(): List<Metadata> = metadataMap.values.toList()
 
     private fun persist() {
         val context = appContext ?: return
-
         val array = JSONArray()
-
         metadataMap.values.forEach { item ->
             val json = JSONObject()
-
-            json.put(
-                "transactionId",
-                item.transactionId
-            )
-            json.put(
-                "sender",
-                item.sender
-            )
-            json.put(
-                "rawBody",
-                item.rawBody
-            )
-            json.put(
-                "smsDate",
-                item.smsDate
-            )
-            json.put(
-                "originalBank",
-                item.originalBank
-            )
-            json.put(
-                "accountNumber",
-                item.accountNumber ?: ""
-            )
-            json.put(
-                "cardNumber",
-                item.cardNumber ?: ""
-            )
-            json.put(
-                "cardLast4",
-                item.cardLast4 ?: ""
-            )
-            json.put(
-                "balance",
-                item.balance ?: JSONObject.NULL
-            )
-
+            json.put("transactionId", item.transactionId)
+            json.put("sender", item.sender)
+            json.put("rawBody", item.rawBody)
+            json.put("smsDate", item.smsDate)
+            json.put("originalBank", item.originalBank)
+            json.put("accountNumber", item.accountNumber ?: "")
+            json.put("cardNumber", item.cardNumber ?: "")
+            json.put("cardLast4", item.cardLast4 ?: "")
+            json.put("balance", item.balance ?: JSONObject.NULL)
             array.put(json)
         }
-
-        context
-            .getSharedPreferences(
-                PREFS,
-                Context.MODE_PRIVATE
-            )
-            .edit()
-            .putString(
-                KEY_METADATA,
-                array.toString()
-            )
-            .apply()
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit().putString(KEY_METADATA, array.toString()).apply()
     }
 
     private fun load() {
         val context = appContext ?: return
+        val raw = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(KEY_METADATA, null) ?: return
 
-        val raw =
-            context
-                .getSharedPreferences(
-                    PREFS,
-                    Context.MODE_PRIVATE
-                )
-                .getString(
-                    KEY_METADATA,
-                    null
-                )
-                ?: return
-
+        var sanitizedLegacyBody = false
         var sanitizedLegacyMetadata = false
         runCatching {
             val array = JSONArray(raw)
-
             for (index in 0 until array.length()) {
                 val json = array.getJSONObject(index)
+                val transactionId = json.optString("transactionId")
+                if (transactionId.isBlank()) continue
 
-                val transactionId =
-                    json.optString(
-                        "transactionId"
-                    )
+                val storedBody = json.optString("rawBody")
+                val safeBody = SmsLearningStore.normalizePatternForStorage(storedBody)
+                if (safeBody != storedBody) sanitizedLegacyBody = true
 
-                if (transactionId.isBlank()) {
-                    continue
-                }
+                val oldAccount = json.optString("accountNumber").takeIf { it.isNotBlank() }
+                val safeAccount = SmsLearningStore.lastFourDigitsForStorage(oldAccount)
+                if (safeAccount != oldAccount) sanitizedLegacyMetadata = true
 
-                val metadata =
-                    Metadata(
-                        transactionId = transactionId,
-                        sender = json.optString("sender"),
-                        rawBody = json.optString("rawBody").let { storedBody ->
-                            SmsLearningStore.normalizePatternForStorage(storedBody).also { safeBody ->
-                                if (safeBody != storedBody) sanitizedLegacyBody = true
-                            }
-                        },
-                        smsDate = json.optLong("smsDate"),
-                        originalBank = json.optString("originalBank"),
-                        accountNumber = SmsLearningStore.lastFourDigitsForStorage(
-                            json.optString("accountNumber").takeIf { it.isNotBlank() }
-                        ).also { safe ->
-                            if (safe != json.optString("accountNumber").takeIf { it.isNotBlank() }) {
-                                sanitizedLegacyMetadata = true
-                            }
-                        },
-                        cardNumber = SmsLearningStore.lastFourDigitsForStorage(
-                            json.optString("cardLast4")
-                                .takeIf { it.isNotBlank() }
-                                ?: json.optString("cardNumber").takeIf { it.isNotBlank() }
-                        ).also { safe ->
-                            if (safe != json.optString("cardNumber").takeIf { it.isNotBlank() }) {
-                                sanitizedLegacyMetadata = true
-                            }
-                        },
-                        cardLast4 = SmsLearningStore.lastFourDigitsForStorage(
-                            json.optString("cardLast4")
-                                .takeIf { it.isNotBlank() }
-                                ?: json.optString("cardNumber").takeIf { it.isNotBlank() }
-                        ).also { safe ->
-                            if (safe != json.optString("cardLast4").takeIf { it.isNotBlank() }) {
-                                sanitizedLegacyMetadata = true
-                            }
-                        },
-                        balance =
-                            if (json.has("balance") && !json.isNull("balance")) {
-                                json.optLong("balance")
-                            } else {
-                                null
-                            },
-                    )
+                val oldCard = json.optString("cardNumber").takeIf { it.isNotBlank() }
+                val oldCardLast4 = json.optString("cardLast4").takeIf { it.isNotBlank() }
+                val safeCard = SmsLearningStore.lastFourDigitsForStorage(oldCardLast4 ?: oldCard)
+                if (safeCard != oldCard || safeCard != oldCardLast4) sanitizedLegacyMetadata = true
 
-                metadataMap[transactionId] = metadata
+                metadataMap[transactionId] = Metadata(
+                    transactionId = transactionId,
+                    sender = json.optString("sender"),
+                    rawBody = safeBody,
+                    smsDate = json.optLong("smsDate"),
+                    originalBank = json.optString("originalBank"),
+                    accountNumber = safeAccount,
+                    cardNumber = safeCard,
+                    cardLast4 = safeCard,
+                    balance = if (json.has("balance") && !json.isNull("balance")) json.optLong("balance") else null,
+                )
             }
         }.onSuccess {
-            // Migrate legacy raw bodies and full card/account identifiers to redacted values.
             if (sanitizedLegacyBody || sanitizedLegacyMetadata) persist()
         }
     }
@@ -239,5 +144,3 @@ object SmsTransactionMetadataStore {
         persist()
     }
 }
-
-
