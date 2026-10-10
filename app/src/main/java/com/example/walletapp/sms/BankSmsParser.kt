@@ -447,7 +447,8 @@ private val bankKeywords: List<Pair<String, String>> =
             type = type,
             rawBody = body,
             accountNumber = accountNumber,
-            cardNumber = cardNumber,
+            // Retain only the last four digits; never persist the full card number.
+            cardNumber = cardLast4,
             cardLast4 = cardLast4,
             balance = balance,
             isTransfer = isTransfer,
