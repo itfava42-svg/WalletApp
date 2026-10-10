@@ -63,9 +63,9 @@ object SmsTransactionMetadataStore {
                 rawBody = SmsLearningStore.normalizePatternForStorage(rawBody),
                 smsDate = smsDate,
                 originalBank = originalBank,
-                accountNumber = accountNumber,
-                cardNumber = cardNumber,
-                cardLast4 = cardLast4,
+                accountNumber = SmsLearningStore.lastFourDigitsForStorage(accountNumber),
+                cardNumber = SmsLearningStore.lastFourDigitsForStorage(cardLast4 ?: cardNumber),
+                cardLast4 = SmsLearningStore.lastFourDigitsForStorage(cardLast4 ?: cardNumber),
                 balance = balance,
             )
 
@@ -166,7 +166,7 @@ object SmsTransactionMetadataStore {
                 )
                 ?: return
 
-        var sanitizedLegacyBody = false
+        var sanitizedLegacyMetadata = false
         runCatching {
             val array = JSONArray(raw)
 
@@ -193,15 +193,31 @@ object SmsTransactionMetadataStore {
                         },
                         smsDate = json.optLong("smsDate"),
                         originalBank = json.optString("originalBank"),
-                        accountNumber =
-                            json.optString("accountNumber")
-                                .takeIf { it.isNotBlank() },
-                        cardNumber =
-                            json.optString("cardNumber")
-                                .takeIf { it.isNotBlank() },
-                        cardLast4 =
+                        accountNumber = SmsLearningStore.lastFourDigitsForStorage(
+                            json.optString("accountNumber").takeIf { it.isNotBlank() }
+                        ).also { safe ->
+                            if (safe != json.optString("accountNumber").takeIf { it.isNotBlank() }) {
+                                sanitizedLegacyMetadata = true
+                            }
+                        },
+                        cardNumber = SmsLearningStore.lastFourDigitsForStorage(
                             json.optString("cardLast4")
-                                .takeIf { it.isNotBlank() },
+                                .takeIf { it.isNotBlank() }
+                                ?: json.optString("cardNumber").takeIf { it.isNotBlank() }
+                        ).also { safe ->
+                            if (safe != json.optString("cardNumber").takeIf { it.isNotBlank() }) {
+                                sanitizedLegacyMetadata = true
+                            }
+                        },
+                        cardLast4 = SmsLearningStore.lastFourDigitsForStorage(
+                            json.optString("cardLast4")
+                                .takeIf { it.isNotBlank() }
+                                ?: json.optString("cardNumber").takeIf { it.isNotBlank() }
+                        ).also { safe ->
+                            if (safe != json.optString("cardLast4").takeIf { it.isNotBlank() }) {
+                                sanitizedLegacyMetadata = true
+                            }
+                        },
                         balance =
                             if (json.has("balance") && !json.isNull("balance")) {
                                 json.optLong("balance")
@@ -213,8 +229,8 @@ object SmsTransactionMetadataStore {
                 metadataMap[transactionId] = metadata
             }
         }.onSuccess {
-            // Migrate previously persisted raw SMS bodies to number-redacted patterns.
-            if (sanitizedLegacyBody) persist()
+            // Migrate legacy raw bodies and full card/account identifiers to redacted values.
+            if (sanitizedLegacyBody || sanitizedLegacyMetadata) persist()
         }
     }
 
