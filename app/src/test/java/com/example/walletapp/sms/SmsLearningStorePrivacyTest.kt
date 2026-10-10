@@ -26,6 +26,15 @@ class SmsLearningStorePrivacyTest {
     }
 
     @Test
+    fun persistedSensitiveIdentifiersKeepOnlyLastFourDigits() {
+        assertTrue(SmsLearningStore.lastFourDigitsForStorage("شماره حساب ۱۲۳۴۵۶۷۸۹۰") == "7890")
+        assertTrue(SmsLearningStore.lastFourDigitsForStorage("6037-9912-1234-5678") == "5678")
+        assertTrue(SmsLearningStore.lastFourDigitsForStorage("**** ١٢٣٤") == "1234")
+        assertTrue(SmsLearningStore.lastFourDigitsForStorage("123") == null)
+        assertTrue(SmsLearningStore.lastFourDigitsForStorage(null) == null)
+    }
+
+    @Test
     fun storedLearningPatternHandlesArabicAndPersianDigits() {
         val stored = SmsLearningStore.normalizePatternForStorage("انتقال ١٢٣٤٥٦ واریز ۱۲۳۴۵۶")
 
