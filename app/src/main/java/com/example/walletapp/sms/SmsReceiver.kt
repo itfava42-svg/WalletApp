@@ -257,10 +257,14 @@ class SmsReceiver : BroadcastReceiver() {
                     )
                 }
 
-            } catch (error: Throwable) {
+            } catch (error: Exception) {
 
                 /*
-                 * If importing failed after claiming, allow retry.
+                 * If importing failed after claiming, allow retry. The
+                 * sourceId-based transaction insert is idempotent, so retrying
+                 * after a partial save will reuse the existing transaction.
+                 * Do not rethrow from BroadcastReceiver: an ingestion failure
+                 * should be logged and retried, not crash the application process.
                  */
                 SmsProcessedManager.release(
                     context = context,
@@ -271,11 +275,9 @@ class SmsReceiver : BroadcastReceiver() {
 
                 Log.e(
                     TAG,
-                    "SMS processing failed",
+                    "SMS processing failed; claim released for retry",
                     error
                 )
-
-                throw error
             }
 
         } finally {
