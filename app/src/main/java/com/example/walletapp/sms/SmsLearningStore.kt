@@ -373,6 +373,15 @@ object SmsLearningStore {
     internal fun normalizePatternForStorage(value: String): String =
         normalizeLearningPattern(value)
 
+    /** Keeps only the final four numeric characters of a sensitive identifier. */
+    internal fun lastFourDigitsForStorage(value: String?): String? {
+        val digits = value
+            ?.mapNotNull { char -> Character.digit(char, 10).takeIf { it >= 0 }?.toChar() }
+            ?.joinToString("")
+            .orEmpty()
+        return digits.takeLast(4).takeIf { it.length == 4 }
+    }
+
     private fun normalizeLearningPattern(value: String): String {
         return value
             .trim()
