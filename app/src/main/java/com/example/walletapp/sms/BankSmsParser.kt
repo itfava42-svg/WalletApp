@@ -431,6 +431,14 @@ private val bankKeywords: List<Pair<String, String>> =
                 ?.groupValues
                 ?.getOrNull(1)
                 ?.let(::normalizeAmountToLong)
+                ?.let { parsedBalance ->
+                    // Balance numbers in the same SMS use the transaction's explicit currency unit.
+                    if (currencyMatch?.value?.contains("\\u0631\\u06cc\\u0627\\u0644") == true) {
+                        parsedBalance / 10L
+                    } else {
+                        parsedBalance
+                    }
+                }
 
         return ParsedBankSms(
             bankName = bankName,
