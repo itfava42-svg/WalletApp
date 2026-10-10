@@ -213,6 +213,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-198 — ممیزی حذف و بازسازی یادآورهای اقساط در چرخهٔ پرداخت"
+    },
+    {
+      "id": "CI-198",
+      "title": "ممیزی حذف و بازسازی یادآورهای اقساط در چرخهٔ پرداخت",
+      "commit": "347825ffbadc6d7864cae2688197190b556c9a2b",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-199 — ممیزی همگام‌سازی حذف و تغییر موعد اقساط"
     }
   ]
 }
