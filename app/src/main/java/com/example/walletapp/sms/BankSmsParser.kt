@@ -297,7 +297,7 @@ private val bankKeywords: List<Pair<String, String>> =
                     ?.let { parsedAmount ->
                         // WalletApp stores and displays amounts in toman.
                         // Explicit rial amounts must be converted (10 rial = 1 toman).
-                        if (currencyMatch.value.contains("\\u0631\\u06cc\\u0627\\u0644")) {
+                        if (currencyMatch.value.contains("\u0631\u06cc\u0627\u0644")) {
                             parsedAmount / 10L
                         } else {
                             parsedAmount
@@ -433,7 +433,7 @@ private val bankKeywords: List<Pair<String, String>> =
                 ?.let(::normalizeAmountToLong)
                 ?.let { parsedBalance ->
                     // Balance numbers in the same SMS use the transaction's explicit currency unit.
-                    if (currencyMatch?.value?.contains("\\u0631\\u06cc\\u0627\\u0644") == true) {
+                    if (currencyMatch?.value?.contains("\u0631\u06cc\u0627\u0644") == true) {
                         parsedBalance / 10L
                     } else {
                         parsedBalance
