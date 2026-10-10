@@ -331,7 +331,7 @@ fun SmsTransactionCompletionBottomSheetContent(
                 emptyList()
             } else {
                 matchingAccounts.filter { account ->
-                    account.accountNumber.trim() == smsAccountNumber
+                    SmsLearningStore.lastFourDigitsForStorage(account.accountNumber) == smsAccountNumber
                 }
             }
         }
