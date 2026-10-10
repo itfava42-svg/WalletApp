@@ -410,8 +410,7 @@ object SmsTransactionCompletionHandler {
 
             val matches =
                 matchingAccounts.filter {
-                    it.accountNumber
-                        .trim()
+                    SmsLearningStore.lastFourDigitsForStorage(it.accountNumber)
                         .equals(
                             cleanAccountNumber,
                             ignoreCase = true,
