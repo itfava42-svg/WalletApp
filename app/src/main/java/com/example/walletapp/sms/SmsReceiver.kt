@@ -240,6 +240,7 @@ class SmsReceiver : BroadcastReceiver() {
                             amount,
                             parsed.merchant,
                             parsed.type,
+                            transactionId = transaction.id,
                         )
                     }
                 } else {
@@ -254,6 +255,7 @@ class SmsReceiver : BroadcastReceiver() {
                         amount,
                         parsed.merchant,
                         parsed.type,
+                        transactionId = transaction.id,
                     )
                 }
 
