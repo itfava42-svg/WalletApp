@@ -249,7 +249,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         DisposableEffect(Unit) {
-                            SmsCompletionCoordinator.registerHost { transactionId ->
+                            val pendingCoordinatorId = SmsCompletionCoordinator.registerHost { transactionId ->
                                 android.util.Log.d(
                                     "SMS_SHEET_DIAG",
                                     "HOST_CALLBACK transactionId=$transactionId"
@@ -274,7 +274,11 @@ class MainActivity : ComponentActivity() {
                                             ?.let(Uri::parse)
                                 }
                             }
-                            // SMS completion is triggered by the SMS flow, not app startup.
+                            // Recover durable incomplete SMS transactions after process death.
+                            // An explicit notification/deep-link transaction ID is handled by LaunchedEffect above.
+                            if (pendingCoordinatorId == null && smsOpenTransactionId.value.isNullOrBlank()) {
+                                SmsTransactionQueue.showNextIfNeeded(context)
+                            }
                             onDispose {
                                 SmsCompletionCoordinator.unregisterHost()
                             }
