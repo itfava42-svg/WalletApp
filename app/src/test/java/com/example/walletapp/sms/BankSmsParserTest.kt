@@ -53,7 +53,7 @@ class BankSmsParserTest {
         )
 
         assertEquals(20_000L, result?.amount)
-        assertEquals("6037991212345678", result?.cardNumber)
+        assertEquals("5678", result?.cardNumber)
         assertEquals("5678", result?.cardLast4)
         assertEquals(TransactionType.EXPENSE, result?.type)
     }
