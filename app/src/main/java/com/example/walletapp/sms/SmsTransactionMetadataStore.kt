@@ -60,7 +60,7 @@ object SmsTransactionMetadataStore {
             Metadata(
                 transactionId = transactionId,
                 sender = sender,
-                rawBody = rawBody,
+                rawBody = SmsLearningStore.normalizePatternForStorage(rawBody),
                 smsDate = smsDate,
                 originalBank = originalBank,
                 accountNumber = accountNumber,
@@ -166,6 +166,7 @@ object SmsTransactionMetadataStore {
                 )
                 ?: return
 
+        var sanitizedLegacyBody = false
         runCatching {
             val array = JSONArray(raw)
 
@@ -185,7 +186,11 @@ object SmsTransactionMetadataStore {
                     Metadata(
                         transactionId = transactionId,
                         sender = json.optString("sender"),
-                        rawBody = json.optString("rawBody"),
+                        rawBody = json.optString("rawBody").let { storedBody ->
+                            SmsLearningStore.normalizePatternForStorage(storedBody).also { safeBody ->
+                                if (safeBody != storedBody) sanitizedLegacyBody = true
+                            }
+                        },
                         smsDate = json.optLong("smsDate"),
                         originalBank = json.optString("originalBank"),
                         accountNumber =
@@ -207,6 +212,9 @@ object SmsTransactionMetadataStore {
 
                 metadataMap[transactionId] = metadata
             }
+        }.onSuccess {
+            // Migrate previously persisted raw SMS bodies to number-redacted patterns.
+            if (sanitizedLegacyBody) persist()
         }
     }
 
