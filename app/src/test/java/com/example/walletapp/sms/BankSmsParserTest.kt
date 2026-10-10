@@ -17,7 +17,7 @@ class BankSmsParserTest {
         )
 
         assertEquals("بانک ملت", result?.bankName)
-        assertEquals(200_000L, result?.amount)
+        assertEquals(20_000L, result?.amount)
         assertEquals(TransactionType.EXPENSE, result?.type)
         assertFalse(result?.isTransfer ?: true)
     }
@@ -32,6 +32,17 @@ class BankSmsParserTest {
         assertEquals(200_000L, result?.amount)
         assertEquals(TransactionType.INCOME, result?.type)
         assertEquals(5_000_000L, result?.balance)
+    }
+
+    @Test
+    fun explicitTomanAmountIsNotScaled() {
+        val result = BankSmsParser.parse(
+            sender = "9830000",
+            body = "بانک ملت واریز مبلغ 200,000 تومان"
+        )
+
+        assertEquals(200_000L, result?.amount)
+        assertEquals(TransactionType.INCOME, result?.type)
     }
 
     @Test
