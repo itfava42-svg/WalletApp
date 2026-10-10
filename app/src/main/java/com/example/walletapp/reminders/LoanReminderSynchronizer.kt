@@ -107,7 +107,16 @@ object LoanReminderSynchronizer {
             val dueDate =
                 loan.installmentDueDateParts(
                     installmentNumber
-                ) ?: continue
+                ) ?: run {
+                    // A reminder without a valid due date must not keep
+                    // an older alarm alive after the loan has been edited.
+                    removeInstallmentReminder(
+                        context,
+                        loan.id,
+                        installmentNumber
+                    )
+                    continue
+                }
 
             val dueAtMillis =
                 JalaliCalendar.jalaliToEpochMillis(
