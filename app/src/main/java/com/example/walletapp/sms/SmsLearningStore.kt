@@ -375,10 +375,14 @@ object SmsLearningStore {
 
     /** Keeps only the final four numeric characters of a sensitive identifier. */
     internal fun lastFourDigitsForStorage(value: String?): String? {
-        val digits = value
-            ?.mapNotNull { char -> Character.digit(char, 10).takeIf { it >= 0 }?.toChar() }
-            ?.joinToString("")
-            .orEmpty()
+        val digits = value.orEmpty().mapNotNull { char ->
+            when (char) {
+                in '0'..'9' -> char
+                in '\u06F0'..'\u06F9' -> ('0'.code + (char.code - '\u06F0'.code)).toChar()
+                in '\u0660'..'\u0669' -> ('0'.code + (char.code - '\u0660'.code)).toChar()
+                else -> null
+            }
+        }.joinToString("")
         return digits.takeLast(4).takeIf { it.length == 4 }
     }
 
