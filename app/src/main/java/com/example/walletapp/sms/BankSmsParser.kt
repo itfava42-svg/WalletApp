@@ -294,6 +294,15 @@ private val bankKeywords: List<Pair<String, String>> =
 
             amount =
                 normalizeAmountToLong(number)
+                    ?.let { parsedAmount ->
+                        // WalletApp stores and displays amounts in toman.
+                        // Explicit rial amounts must be converted (10 rial = 1 toman).
+                        if (currencyMatch.value.contains("\\u0631\\u06cc\\u0627\\u0644")) {
+                            parsedAmount / 10L
+                        } else {
+                            parsedAmount
+                        }
+                    }
         }
 
         if (amount == null) {
