@@ -205,6 +205,14 @@
       "branch": "ci/ci-46-navigation-entry-audit",
       "status": "done",
       "next": "CI-197 — ممیزی همگام‌سازی یادآور با تغییر وضعیت و پرداخت اقساط"
+    },
+    {
+      "id": "CI-197",
+      "title": "ممیزی همگام‌سازی یادآور با تغییر وضعیت و پرداخت اقساط",
+      "commit": "cf62ded0e6b1d7964039cbc5ac97eb228c6465ce",
+      "branch": "ci/ci-46-navigation-entry-audit",
+      "status": "done",
+      "next": "CI-198 — ممیزی حذف و بازسازی یادآورهای اقساط در چرخهٔ پرداخت"
     }
   ]
 }
