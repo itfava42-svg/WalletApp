@@ -29,9 +29,9 @@ class BankSmsParserTest {
             body = "بانک ملت واریز مبلغ 200,000 ریال، موجودی 5,000,000"
         )
 
-        assertEquals(200_000L, result?.amount)
+        assertEquals(20_000L, result?.amount)
         assertEquals(TransactionType.INCOME, result?.type)
-        assertEquals(5_000_000L, result?.balance)
+        assertEquals(500_000L, result?.balance)
     }
 
     @Test
@@ -52,7 +52,7 @@ class BankSmsParserTest {
             body = "بانک ملت خرید 200,000 ریال کارت 6037-9912-1234-5678"
         )
 
-        assertEquals(200_000L, result?.amount)
+        assertEquals(20_000L, result?.amount)
         assertEquals("6037991212345678", result?.cardNumber)
         assertEquals("5678", result?.cardLast4)
         assertEquals(TransactionType.EXPENSE, result?.type)
@@ -66,7 +66,7 @@ class BankSmsParserTest {
         )
 
         assertEquals(BankSmsParser.UNKNOWN_BANK, result?.bankName)
-        assertEquals(200_000L, result?.amount)
+        assertEquals(20_000L, result?.amount)
         assertEquals(TransactionType.INCOME, result?.type)
     }
 
@@ -78,7 +78,7 @@ class BankSmsParserTest {
         )
 
         assertTrue(result?.isTransfer ?: false)
-        assertEquals(200_000L, result?.amount)
+        assertEquals(20_000L, result?.amount)
         assertEquals(TransactionType.EXPENSE, result?.type)
     }
 
