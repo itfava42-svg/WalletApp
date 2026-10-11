@@ -789,10 +789,7 @@ fun DashboardAccountsCard(
             }
         AppBankCardItem(
             title = account.name,
-            subtitle = listOfNotNull(
-                account.bankName.trim().takeIf { it.isNotBlank() },
-                accountType,
-            ).joinToString(" • "),
+            subtitle = accountType,
             balance = summary.balance.toPersianCurrency(),
             icon = when (account.type) {
                 com.example.walletapp.data.AccountType.BANK -> Icons.Filled.AccountBalance
@@ -801,6 +798,8 @@ fun DashboardAccountsCard(
                 com.example.walletapp.data.AccountType.SAVINGS -> Icons.Filled.Savings
                 com.example.walletapp.data.AccountType.WALLET -> Icons.Filled.AccountBalanceWallet
             },
+            bankName = account.bankName.trim(),
+            cardLast4 = account.cardLast4,
         )
     }
     AppBankCardCarousel(items = items)
