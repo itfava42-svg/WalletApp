@@ -37,7 +37,9 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -427,21 +429,42 @@ fun AppBankCardCarousel(
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
+    // Keep the highlighted account in sync with manual horizontal swipes as well
+    // as the previous/next controls.
+    androidx.compose.runtime.LaunchedEffect(listState, items.size) {
+        kotlinx.coroutines.flow.snapshotFlow { listState.firstVisibleItemIndex }
+            .distinctUntilChanged()
+            .collect { visibleIndex ->
+                val safeIndex = visibleIndex.coerceIn(items.indices)
+                if (safeIndex != selectedIndex) {
+                    selectedIndex = safeIndex
+                    onCardSelected?.invoke(safeIndex)
+                }
+            }
+    }
+
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
         ) {
-            Text("حساب‌های من", style = AppTextStyles.headlineSm)
-
+            Column {
+                Text("حساب‌های من", style = AppTextStyles.headlineSm)
+                Text(
+                    "${items.size} حساب ثبت‌شده",
+                    style = AppTextStyles.labelMd,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Row {
                 AppIconButton(
                     onClick = {
                         if (selectedIndex > 0) {
-                            selectedIndex--
-                            coroutineScope.launch { listState.animateScrollToItem(selectedIndex) }
-                            onCardSelected?.invoke(selectedIndex)
+                            val next = selectedIndex - 1
+                            selectedIndex = next
+                            coroutineScope.launch { listState.animateScrollToItem(next) }
+                            onCardSelected?.invoke(next)
                         }
                     },
                     enabled = selectedIndex > 0,
@@ -451,9 +474,10 @@ fun AppBankCardCarousel(
                 AppIconButton(
                     onClick = {
                         if (selectedIndex < items.lastIndex) {
-                            selectedIndex++
-                            coroutineScope.launch { listState.animateScrollToItem(selectedIndex) }
-                            onCardSelected?.invoke(selectedIndex)
+                            val next = selectedIndex + 1
+                            selectedIndex = next
+                            coroutineScope.launch { listState.animateScrollToItem(next) }
+                            onCardSelected?.invoke(next)
                         }
                     },
                     enabled = selectedIndex < items.lastIndex,
@@ -467,21 +491,26 @@ fun AppBankCardCarousel(
 
         LazyRow(
             state = listState,
+            contentPadding = PaddingValues(end = AppDimens.ItemGap, start = AppDimens.ItemGap),
             horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
         ) {
             itemsIndexed(items) { index, item ->
+                val selected = index == selectedIndex
                 AppCard(
                     modifier = Modifier.width(AppDimens.BankCardWidth),
-                    containerColor = if (index == selectedIndex) {
+                    containerColor = if (selected) {
                         MaterialTheme.colorScheme.primaryContainer
                     } else {
-                        MaterialTheme.colorScheme.surface
+                        MaterialTheme.colorScheme.surfaceVariant
                     },
-                    border = if (index == selectedIndex) {
-                        BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                    } else null,
+                    border = BorderStroke(
+                        if (selected) 2.dp else 1.dp,
+                        if (selected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.outlineVariant,
+                    ),
                     onClick = {
                         selectedIndex = index
+                        coroutineScope.launch { listState.animateScrollToItem(index) }
                         onCardSelected?.invoke(index)
                     },
                 ) {
@@ -490,29 +519,74 @@ fun AppBankCardCarousel(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                     ) {
-                        Icon(
-                            imageVector = item.icon,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                        Text(
-                            item.title,
-                            style = AppTextStyles.headlineSm,
-                            modifier = Modifier.weight(1f).padding(start = AppDimens.ItemGap),
-                        )
+                        Surface(
+                            shape = RoundedCornerShape(14.dp),
+                            color = if (selected) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.surface,
+                            modifier = Modifier.size(48.dp),
+                        ) {
+                            Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
+                                Icon(
+                                    imageVector = item.icon,
+                                    contentDescription = null,
+                                    tint = if (selected) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(26.dp),
+                                )
+                            }
+                        }
+                        Spacer(Modifier.width(AppDimens.ItemGap))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                item.title,
+                                style = AppTextStyles.titleMd,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                item.subtitle,
+                                style = AppTextStyles.labelMd,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 2,
+                            )
+                        }
+                        if (selected) {
+                            Surface(
+                                shape = RoundedCornerShape(50),
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(8.dp),
+                            ) {}
+                        }
                     }
-                    Spacer(Modifier.height(AppDimens.ItemGap))
+
+                    Spacer(Modifier.height(AppDimens.CompactPadding))
                     Text(
-                        item.subtitle,
-                        style = AppTextStyles.bodyMd,
+                        "موجودی حساب",
+                        style = AppTextStyles.labelMd,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Spacer(Modifier.height(AppDimens.CompactPadding))
+                    Spacer(Modifier.height(4.dp))
                     Text(
                         item.balance,
                         style = AppTextStyles.numeralXl,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
+                    Spacer(Modifier.height(AppDimens.ItemGap))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "حساب مالی",
+                            style = AppTextStyles.labelMd,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            "${index + 1} از ${items.size}",
+                            style = AppTextStyles.labelMd,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 }
             }
         }
