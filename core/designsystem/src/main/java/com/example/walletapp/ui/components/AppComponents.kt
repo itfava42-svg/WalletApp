@@ -509,7 +509,7 @@ fun AppBankCardCarousel(
         ) {
             itemsIndexed(items) { index, item ->
                 val selected = index == selectedIndex
-                val bankLabel = item.bankName.ifBlank { item.title }
+                val bankLabel = item.bankName.ifBlank { "حساب مالی" }
                 val paletteIndex = (bankLabel.hashCode() and Int.MAX_VALUE) % cardPalettes.size
                 val palette = cardPalettes[paletteIndex]
 
