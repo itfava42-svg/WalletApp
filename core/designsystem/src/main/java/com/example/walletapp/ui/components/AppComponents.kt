@@ -48,6 +48,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
@@ -415,6 +416,8 @@ data class AppBankCardItem(
     val subtitle: String,
     val balance: String,
     val icon: ImageVector,
+    val bankName: String = "",
+    val cardLast4: String = "",
 )
 
 @Composable
@@ -424,6 +427,16 @@ fun AppBankCardCarousel(
     onCardSelected: ((Int) -> Unit)? = null,
 ) {
     if (items.isEmpty()) return
+
+    // Give accounts consistent, bank-themed colors without changing saved account data.
+    val cardPalettes = listOf(
+        listOf(Color(0xFF102A43), Color(0xFF0F766E)),
+        listOf(Color(0xFF25215E), Color(0xFF6D3DB5)),
+        listOf(Color(0xFF153D37), Color(0xFF32856A)),
+        listOf(Color(0xFF62302F), Color(0xFFB85C38)),
+        listOf(Color(0xFF153C70), Color(0xFF4178BA)),
+        listOf(Color(0xFF3A285D), Color(0xFF975C88)),
+    )
 
     var selectedIndex by remember { mutableIntStateOf(0) }
     val listState = rememberLazyListState()
@@ -461,10 +474,10 @@ fun AppBankCardCarousel(
                 AppIconButton(
                     onClick = {
                         if (selectedIndex > 0) {
-                            val next = selectedIndex - 1
-                            selectedIndex = next
-                            coroutineScope.launch { listState.animateScrollToItem(next) }
-                            onCardSelected?.invoke(next)
+                            val nextIndex = selectedIndex - 1
+                            selectedIndex = nextIndex
+                            coroutineScope.launch { listState.animateScrollToItem(nextIndex) }
+                            onCardSelected?.invoke(nextIndex)
                         }
                     },
                     enabled = selectedIndex > 0,
@@ -474,10 +487,10 @@ fun AppBankCardCarousel(
                 AppIconButton(
                     onClick = {
                         if (selectedIndex < items.lastIndex) {
-                            val next = selectedIndex + 1
-                            selectedIndex = next
-                            coroutineScope.launch { listState.animateScrollToItem(next) }
-                            onCardSelected?.invoke(next)
+                            val nextIndex = selectedIndex + 1
+                            selectedIndex = nextIndex
+                            coroutineScope.launch { listState.animateScrollToItem(nextIndex) }
+                            onCardSelected?.invoke(nextIndex)
                         }
                     },
                     enabled = selectedIndex < items.lastIndex,
@@ -496,17 +509,18 @@ fun AppBankCardCarousel(
         ) {
             itemsIndexed(items) { index, item ->
                 val selected = index == selectedIndex
+                val bankLabel = item.bankName.ifBlank { item.title }
+                val paletteIndex = (bankLabel.hashCode() and Int.MAX_VALUE) % cardPalettes.size
+                val palette = cardPalettes[paletteIndex]
+
                 AppCard(
                     modifier = Modifier.width(AppDimens.BankCardWidth),
-                    containerColor = if (selected) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    },
+                    containerColor = Color.Transparent,
+                    contentPadding = PaddingValues(0.dp),
                     border = BorderStroke(
                         if (selected) 2.dp else 1.dp,
-                        if (selected) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.outlineVariant,
+                        if (selected) Color(0xFFFFD477)
+                        else Color.White.copy(alpha = 0.34f),
                     ),
                     onClick = {
                         selectedIndex = index
@@ -514,78 +528,112 @@ fun AppBankCardCarousel(
                         onCardSelected?.invoke(index)
                     },
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                brush = Brush.linearGradient(palette),
+                                shape = RoundedCornerShape(AppDimens.CardRadius),
+                            )
+                            .padding(AppDimens.CardPadding),
                     ) {
-                        Surface(
-                            shape = RoundedCornerShape(14.dp),
-                            color = if (selected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.surface,
-                            modifier = Modifier.size(48.dp),
-                        ) {
-                            Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = null,
-                                    tint = if (selected) MaterialTheme.colorScheme.onPrimary
-                                    else MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(26.dp),
+                        Column {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        bankLabel,
+                                        style = AppTextStyles.titleMd,
+                                        color = Color.White,
+                                        maxLines = 1,
+                                    )
+                                    Spacer(Modifier.height(3.dp))
+                                    Text(
+                                        item.title,
+                                        style = AppTextStyles.labelMd,
+                                        color = Color.White.copy(alpha = 0.76f),
+                                        maxLines = 1,
+                                    )
+                                }
+                                Spacer(Modifier.width(AppDimens.ItemGap))
+                                Surface(
+                                    shape = RoundedCornerShape(14.dp),
+                                    color = Color.White.copy(alpha = 0.14f),
+                                    modifier = Modifier.size(46.dp),
+                                ) {
+                                    Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
+                                        Icon(
+                                            imageVector = item.icon,
+                                            contentDescription = null,
+                                            tint = Color.White,
+                                            modifier = Modifier.size(26.dp),
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(Modifier.height(14.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(AppDimens.ItemGap),
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            ) {
+                                // A decorative EMV-style chip; no real card data is stored here.
+                                Surface(
+                                    shape = RoundedCornerShape(6.dp),
+                                    color = Color(0xFFE5D3A3),
+                                    modifier = Modifier.size(width = 38.dp, height = 27.dp),
+                                ) {
+                                    Box(
+                                        contentAlignment = androidx.compose.ui.Alignment.Center,
+                                    ) {
+                                        Text(
+                                            "▦",
+                                            color = Color(0xFF685B3B),
+                                            style = AppTextStyles.titleMd,
+                                        )
+                                    }
+                                }
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        "موجودی حساب",
+                                        style = AppTextStyles.labelMd,
+                                        color = Color.White.copy(alpha = 0.76f),
+                                    )
+                                    Text(
+                                        item.balance,
+                                        style = AppTextStyles.numeralXl,
+                                        color = Color.White,
+                                        maxLines = 1,
+                                    )
+                                }
+                            }
+
+                            Spacer(Modifier.height(AppDimens.ItemGap))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    if (item.cardLast4.isNotBlank()) "••••  ••••  ${item.cardLast4}"
+                                    else item.subtitle,
+                                    style = AppTextStyles.labelMd,
+                                    color = Color.White.copy(alpha = 0.88f),
+                                    maxLines = 1,
+                                )
+                                Text(
+                                    "${index + 1} از ${items.size}",
+                                    style = AppTextStyles.labelMd,
+                                    color = Color.White,
                                 )
                             }
                         }
-                        Spacer(Modifier.width(AppDimens.ItemGap))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                item.title,
-                                style = AppTextStyles.titleMd,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Text(
-                                item.subtitle,
-                                style = AppTextStyles.labelMd,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 2,
-                            )
-                        }
-                        if (selected) {
-                            Surface(
-                                shape = RoundedCornerShape(50),
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(8.dp),
-                            ) {}
-                        }
-                    }
-
-                    Spacer(Modifier.height(AppDimens.CompactPadding))
-                    Text(
-                        "موجودی حساب",
-                        style = AppTextStyles.labelMd,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        item.balance,
-                        style = AppTextStyles.numeralXl,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Spacer(Modifier.height(AppDimens.ItemGap))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            "حساب مالی",
-                            style = AppTextStyles.labelMd,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            "${index + 1} از ${items.size}",
-                            style = AppTextStyles.labelMd,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
                     }
                 }
             }
