@@ -432,7 +432,7 @@ fun AppBankCardCarousel(
     // Keep the highlighted account in sync with manual horizontal swipes as well
     // as the previous/next controls.
     androidx.compose.runtime.LaunchedEffect(listState, items.size) {
-        kotlinx.coroutines.flow.snapshotFlow { listState.firstVisibleItemIndex }
+        androidx.compose.runtime.snapshotFlow { listState.firstVisibleItemIndex }
             .distinctUntilChanged()
             .collect { visibleIndex ->
                 val safeIndex = visibleIndex.coerceIn(items.indices)
