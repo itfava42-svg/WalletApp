@@ -15,3 +15,7 @@
 local.properties
 
 build-log*.txt
+
+# Local backups
+_BACKUP*/
+BACKUP_*/
